@@ -1,0 +1,407 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.1: LLMs como Máquinas de Criação**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Entender que LLMs não reproduzem textos do passado — eles transformam o presente e criam o futuro.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O Imaginário Comum (e Errado)</h2>
+                        <p>Muita gente pensa que usar LLMs é:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li><strong>Trapaça</strong> — "está copiando de algum lugar"</li>
+                            <li><strong>Antiético</strong> — "está roubando trabalho de outras pessoas"</li>
+                            <li><strong>Coisa de mentes preguiçosas</strong> — "não quer pensar por conta própria"</li>
+                        </ul>
+                        <p>Esse imaginário vem de uma <strong>compreensão errada</strong> de como os LLMs funcionam.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Modo Google vs Modo LLM</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Modo Google</th><th>Modo LLM</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Reproduz o passado</strong></td><td><strong>Transforma o presente</strong></td></tr>
+                                    <tr><td>Arquivos escritos, publicados e indexados</td><td>Não há arquivos dentro do LLM</td></tr>
+                                    <tr><td>O arquivo original é reproduzido fielmente</td><td>Cada resposta é única e criada no momento</td></tr>
+                                    <tr><td>Busca → Encontra → Reproduz</td><td>Processa → Transforma → Cria</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">💡 Não há PDFs dentro do LLM</div>
+                        <p>O LLM <strong>não consulta um "banco de textos"</strong>. Não existem PDFs, DOCs ou arquivos dentro dele.</p>
+                        <p>O que existe são <strong>parâmetros</strong> — bilhões de números (pesos) que codificam padrões estatísticos de linguagem.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Cada Resposta é Única</h2>
+                        <p>Quando você faz uma pergunta ao LLM:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li>Ele <strong>não busca</strong> uma resposta pronta em algum banco de dados</li>
+                            <li>Ele <strong>gera</strong> uma resposta nova, token a token</li>
+                            <li>A resposta é um <strong>mosaico de possibilidades estatísticas</strong></li>
+                            <li>Raramente ele "regurgita" — reproduz verbatim algo que viu no treino</li>
+                        </ul>
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎨 A Metáfora do Artista</div>
+                            <p>Um artista que estudou milhares de pinturas não está "copiando" quando pinta algo novo. Ele <strong>aprendeu técnicas</strong> e as aplica de forma original.</p>
+                            <p>O LLM faz algo similar: aprendeu <strong>padrões de linguagem</strong> e os recombina de formas novas.</p>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">O que os LLMs Realmente São</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Conceito</th><th>Explicação</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Large Language Model</strong></td><td>Modelos de Linguagem de Larga Escala</td></tr>
+                                    <tr><td><strong>Treinamento</strong></td><td>Treinados com trilhões de textos para prever a próxima palavra</td></tr>
+                                    <tr><td><strong>Por dentro</strong></td><td>Não há textos — há números (parâmetros)</td></tr>
+                                    <tr><td><strong>Funcionamento</strong></td><td>Máquinas de transformação e criação, não de reprodução</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">A Recombinação</h2>
+                        <p>A <strong>recombinação</strong> de padrões pode resultar em:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li>Algo <strong>semelhante</strong> ao que já existe (padrões comuns)</li>
+                            <li>Algo <strong>completamente inusitado</strong> (combinações novas)</li>
+                        </ul>
+                        <p>É por isso que o LLM pode ser <strong>criativo</strong>: ele não está limitado a reproduzir — está recombinando de formas que podem nunca ter existido antes.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Entendendo a Natureza Criativa dos LLMs
+Prompt: undefined
+Checklist:
+- Entendo que LLMs não têm 'banco de textos' interno
+- Compreendo a diferença entre Modo Google (reprodução) e Modo LLM (criação)
+- Sei que cada resposta é gerada no momento, não buscada
+- Entendo que LLMs aprendem padrões, não memorizam textos
+
+
+**Tip:** Quando alguém disser que usar LLMs é 'trapaça', explique: <strong>não há textos dentro do modelo</strong>. Ele aprende padrões de linguagem e os recombina — como um músico que estudou milhares de músicas e compõe algo novo.
+
+**Warning:** <strong>"O LLM está copiando textos da internet."</strong><br>Não é assim que funciona. O LLM foi treinado com textos, mas armazenou <strong>padrões estatísticos</strong>, não os textos em si. Ele gera respostas novas usando esses padrões.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.1",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.2: Máquinas de Linguagem**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Compreender a arquitetura Transformer e o mecanismo de atenção que revolucionou o processamento de linguagem.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que é um Transformer?</h2>
+                        <p>Um <strong>Transformer</strong> é a arquitetura de rede neural por trás de todos os LLMs modernos (Claude, ChatGPT, Gemini). Foi introduzido em 2017 no paper <em>"Attention is All You Need"</em> da Google.</p>
+                        <p>Pense no LLM como um <strong>compressor estatístico de linguagem</strong>:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Analogia</th><th>O que faz</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>JPEG para imagens</strong></td><td>Comprime milhões de pixels em padrões visuais</td></tr>
+                                    <tr><td><strong>LLM para linguagem</strong></td><td>Comprime bilhões de textos em padrões probabilísticos</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>É uma compressão <strong>com perdas</strong> (lossy): preserva a essência, não a reprodução exata. Por isso, LLMs capturam padrões gerais, mas podem errar detalhes específicos.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Self-Attention: A Metáfora do Coquetel</h2>
+                        <p>O mecanismo central do Transformer é a <strong>self-attention</strong> (autoatenção). Imagine uma festa:</p>
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎉 A Festa das Palavras</div>
+                            <p>Você está num coquetel onde <strong>todos falam ao mesmo tempo</strong>. Você ouve todo mundo, mas seu cérebro <strong>foca nas conversas relevantes</strong> para o que você quer entender.</p>
+                            <p>No Transformer, cada palavra "olha" para todas as outras e <strong>decide quais são importantes</strong> para entender o significado naquele contexto.</p>
+                        </div>
+                        <p><strong>Exemplo prático:</strong></p>
+                        <div class="code-block">"O juiz analisou o <strong>processo</strong> e determinou que o <strong>processo</strong> de fabricação estava irregular."</div>
+                        <p>A palavra "processo" aparece duas vezes, mas com significados diferentes. O mecanismo de atenção permite que o modelo entenda:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li>Primeiro "processo" → contexto jurídico (próximo de "juiz", "analisou")</li>
+                            <li>Segundo "processo" → contexto industrial (próximo de "fabricação")</li>
+                        </ul>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Tokens: As Unidades de Processamento</h2>
+                        <p>LLMs não processam <strong>palavras</strong> — processam <strong>tokens</strong> (subpalavras).</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Palavra</th><th>Possível Tokenização</th></tr></thead>
+                                <tbody>
+                                    <tr><td>transformação</td><td>["trans", "form", "ação"]</td></tr>
+                                    <tr><td>inconstitucionalidade</td><td>["in", "constitu", "cional", "idade"]</td></tr>
+                                    <tr><td>LLM</td><td>["LL", "M"] ou ["LLM"]</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Por que tokens?</strong> Permitem vocabulário finito (~50.000-100.000) para representar infinitas palavras, incluindo neologismos e termos técnicos.</p>
+                        <p><strong>Regra prática:</strong> Em português, 1 token ≈ 0,7 palavras (ou ~4 caracteres).</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Embeddings: Palavras como Coordenadas</h2>
+                        <p>Cada token é convertido em um <strong>vetor</strong> — uma lista de números que representa seu significado num espaço matemático de alta dimensão.</p>
+                        <div class="callout callout-tip">
+                            <div class="callout-title">🗺️ O Mapa Semântico</div>
+                            <p>Imagine um mapa onde palavras similares ficam <strong>próximas geometricamente</strong>:</p>
+                            <p>• "rei" e "rainha" estão próximos<br>• "cachorro" e "gato" estão próximos<br>• "rei" e "cachorro" estão distantes</p>
+                            <p>A matemática famosa: <strong>"rei" - "homem" + "mulher" ≈ "rainha"</strong></p>
+                        </div>
+                        <p>Isso permite que o modelo capture <strong>relações semânticas</strong> entre conceitos — a base para "entender" linguagem.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Resumo Visual</h2>
+                        <div class="code-block">TEXTO DE ENTRADA
+    ↓
+[Tokenização] → Divide em tokens
+    ↓
+[Embedding] → Converte em vetores numéricos
+    ↓
+[Self-Attention] → Cada token "olha" para os outros
+    ↓
+[Camadas Transformer] → Processa padrões (×12 a ×96 camadas)
+    ↓
+[Saída] → Probabilidades para próximo token</div>
+                    </div>
+                
+
+**Exercise:**
+Title: Explorando Tokens e Atenção
+Prompt: undefined
+Checklist:
+- Entendo que LLMs usam arquitetura Transformer
+- Compreendo a metáfora da atenção como 'coquetel'
+- Sei que LLMs processam tokens, não palavras
+- Entendo que embeddings são coordenadas numéricas de significado
+- Reconheço que LLMs são 'compressores com perdas' — capturam padrões, não detalhes exatos
+
+
+**Tip:** Quando o modelo erra um detalhe específico (número de processo, data exata), lembre-se: ele é um <strong>compressor estatístico</strong>. Padrões gerais são confiáveis; detalhes específicos precisam de verificação.
+
+**Warning:** <strong>"O modelo 'entende' o texto como um humano."</strong><br>Não exatamente. O modelo captura <strong>padrões estatísticos</strong> de como palavras se relacionam. É sofisticado o suficiente para parecer compreensão, mas o mecanismo é matemático, não cognitivo.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.2",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.3: O Jogo da Adivinhação**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Compreender que LLMs geram texto prevendo o próximo token — como um autocomplete sofisticado.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">Experimente o Jogo da Previsão</h2>
+                        <p>Antes de explicarmos a teoria, <strong>experimente você mesmo</strong> como os LLMs geram texto. Escolha palavras para continuar a história e veja as probabilidades em ação:</p>
+                        <div class="iframe-container">
+                            <iframe src="../docs/caderno/jogo-previsao.html" style="width:100%;height:700px;border:1px solid var(--border-light);border-radius:12px;margin:20px 0;box-shadow:var(--shadow-md);" loading="lazy" title="Jogo da Previsao de Tokens" onerror="this.classList.add('error')"></iframe>
+                            <div class="iframe-fallback">
+                                <p>Conteudo interativo indisponivel.</p>
+                                <p><a href="../docs/caderno/jogo-previsao.html" target="_blank">Abrir o Jogo da Previsao em nova aba</a></p>
+                            </div>
+                        </div>
+                        <p class="screenshot-caption" style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:-12px;margin-bottom:24px;">Jogo interativo: escolha palavras e veja como funciona a predicao de proximo token</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">O Autocomplete Mais Sofisticado do Mundo</h2>
+                        <p>LLMs funcionam como o <strong>autocomplete do celular</strong> — mas com bilhões de parâmetros e treinado em trilhões de textos.</p>
+                        <p>O processo é simples:</p>
+                        <div class="code-block">Entrada: "O juiz determinou a"
+    ↓
+Modelo calcula probabilidades para TODOS os tokens possíveis:
+    • "prisão" → 15%
+    • "soltura" → 12%
+    • "citação" → 8%
+    • "intimação" → 7%
+    • ... (50.000+ opções)
+    ↓
+Escolhe um token (ex: "prisão")
+    ↓
+Repete o processo: "O juiz determinou a prisão"
+    ↓
+Próximo token: "preventiva" (mais provável dado o contexto)</div>
+                        <p>Isso se chama <strong>geração autorregressiva</strong>: cada token é gerado condicionado a todos os anteriores.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Temperature: O Controle de "Criatividade"</h2>
+                        <p>O parâmetro <strong>temperature</strong> controla como o modelo escolhe entre os tokens possíveis:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Temperature</th><th>Comportamento</th><th>Quando usar</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>0.0</strong> (frio)</td><td>Sempre escolhe o mais provável (determinístico)</td><td>Fatos, dados, precisão</td></tr>
+                                    <tr><td><strong>0.5-0.7</strong></td><td>Equilibrado: provável mas com variação</td><td>Redação, análises</td></tr>
+                                    <tr><td><strong>1.0+</strong> (quente)</td><td>Mais aleatório, escolhe tokens menos prováveis</td><td>Brainstorming, criatividade</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎮 Experimente a Temperature em Ação!</div>
+                            <p>Mova o controle deslizante para ver como diferentes valores de temperature afetam a "criatividade" do modelo:</p>
+                        </div>
+                        <div class="iframe-container">
+                            <iframe src="../docs/caderno/temperatura-llm.html" style="width:100%;height:650px;border:1px solid var(--border-light);border-radius:12px;margin:20px 0;box-shadow:var(--shadow-md);" loading="lazy" title="Demonstracao de Temperatura LLM" onerror="this.classList.add('error')"></iframe>
+                            <div class="iframe-fallback">
+                                <p>Conteudo interativo indisponivel.</p>
+                                <p><a href="../docs/caderno/temperatura-llm.html" target="_blank">Abrir demonstracao de Temperatura em nova aba</a></p>
+                            </div>
+                        </div>
+                        <div class="callout callout-info">
+                            <div class="callout-title">🍷 Metáfora do Vinho</div>
+                            <p><strong>Temperature 0</strong> = Sóbrio — responde de forma previsível e segura</p>
+                            <p><strong>Temperature 1.5</strong> = Embriagado — respostas criativas, mas pode "divagar"</p>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">O Paradoxo: Determinismo vs Criatividade</h2>
+                        <p>Um fato contraintuitivo:</p>
+                        <div class="callout callout-warning">
+                            <div class="callout-title">🎲 LLMs são Determinísticos!</div>
+                            <p>Dado o <strong>mesmo input</strong> e a <strong>mesma seed</strong> (semente aleatória), o modelo produz <strong>exatamente a mesma resposta</strong>.</p>
+                            <p>A "criatividade" que observamos vem da <strong>amostragem probabilística</strong> — o modelo sorteia entre as opções, ponderado pelas probabilidades.</p>
+                        </div>
+                        <p><strong>Implicação prática:</strong> Se você precisa de respostas consistentes e reproduzíveis, use temperature baixa. Se precisa de variação e ideias diferentes, use temperature mais alta.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Outras Estratégias de Amostragem</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Estratégia</th><th>O que faz</th><th>Analogia</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Greedy</strong></td><td>Sempre escolhe o token mais provável</td><td>Sempre pedir o prato mais popular</td></tr>
+                                    <tr><td><strong>Top-k</strong></td><td>Considera apenas os k tokens mais prováveis</td><td>Escolher entre os 5 pratos mais populares</td></tr>
+                                    <tr><td><strong>Top-p (nucleus)</strong></td><td>Considera tokens que somam p% de probabilidade</td><td>Escolher entre pratos que representam 90% dos pedidos</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>Na prática, a maioria das interfaces já configura esses parâmetros. O Claude usa valores balanceados por padrão.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Por que Isso Importa?</h2>
+                        <p>Entender a predição de tokens explica vários comportamentos:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li><strong>Por que o modelo "inventa"?</strong> Ele completa o que é estatisticamente provável, mesmo sem saber se é verdade</li>
+                            <li><strong>Por que respostas variam?</strong> Amostragem probabilística produz resultados diferentes</li>
+                            <li><strong>Por que às vezes é repetitivo?</strong> Temperature baixa = sempre escolhe o mais provável</li>
+                            <li><strong>Por que pode ser incoerente?</strong> Cada token é escolhido localmente, sem "plano" global</li>
+                        </ul>
+                    </div>
+                
+
+**Exercise:**
+Title: Experimentando Predição de Tokens
+Prompt: undefined
+Checklist:
+- Entendo que LLMs geram texto token a token
+- Compreendo o conceito de autocomplete sofisticado
+- Sei que temperature controla a 'criatividade'
+- Entendo por que respostas variam (amostragem)
+- Reconheço que o modelo é determinístico com mesma seed
+
+
+**Tip:** Para tarefas que exigem <strong>consistência</strong> (relatórios, análises), prefira instruções que pedem respostas objetivas. Para <strong>brainstorming</strong>, peça explicitamente variações e alternativas.
+
+**Warning:** <strong>"O modelo pensou e decidiu escrever isso."</strong><br>Não há 'pensamento' no sentido humano. O modelo calcula probabilidades e amostra — é um processo estatístico, não deliberativo. Cada token é escolhido sem 'plano' para o texto completo.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.3",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

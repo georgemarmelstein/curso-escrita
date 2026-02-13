@@ -1,0 +1,80 @@
+{
+  "name": "Formação em IA Aplicada ao Direito - Caderno de Exercícios",
+  "short_name": "IA Direito",
+  "description": "Caderno de exercícios do curso de IA aplicada ao Direito",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FDFCFA",
+  "theme_color": "#194A68",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "assets/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Módulo 1 - Fundamentos",
+      "url": "./index.html#aula-1.1",
+      "description": "Ir para o Módulo 1"
+    },
+    {
+      "name": "Módulo 2 - Engenharia de Prompt",
+      "url": "./index.html#aula-2.1",
+      "description": "Ir para o Módulo 2"
+    },
+    {
+      "name": "Módulo 3 - Prática Avançada",
+      "url": "./index.html#aula-3.1",
+      "description": "Ir para o Módulo 3"
+    }
+  ]
+}

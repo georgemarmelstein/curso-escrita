@@ -1,0 +1,1003 @@
+{
+  "meta": {
+    "lang": "pt-BR",
+    "title": "Escrita Jurídica com IA",
+    "subtitle": "Caderno de Exercícios Práticos",
+    "author": "George Marmelstein",
+    "version": "1.0.0"
+  },
+
+  "ui": {
+    "progress": "Progresso",
+    "copy": "Copiar",
+    "copied": "Copiado!",
+    "prev": "Exercício anterior",
+    "next": "Próximo exercício",
+    "expand": "Expandir",
+    "collapse": "Recolher",
+    "completed": "Concluído",
+    "in_progress": "Em progresso",
+    "not_started": "Não iniciado",
+    "minutes": "min de leitura",
+    "reset": "Reiniciar progresso",
+    "language": "Idioma"
+  },
+
+  "modules": [
+    {
+      "id": "modulo-0",
+      "title": "Primeiros Passos",
+      "description": "Fundamentos essenciais antes de começar a usar LLMs no contexto jurídico",
+      "icon": "foundation",
+      "exercises": [
+        {
+          "id": "ex-0-1",
+          "title": "Privacidade e Proteção de Dados",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Distinguir dados sensíveis (LGPD) de dados sigilosos (segredo de justiça)",
+              "Identificar quando um processo pode ou não ser usado em LLMs externos",
+              "Conhecer as alternativas para processos sigilosos: anonimização manual, modelos locais",
+              "Configurar o modo de privacidade do Claude e ChatGPT"
+            ]
+          },
+          "context": "A **[Resolução CNJ nº 615/2025](https://atos.cnj.jus.br/atos/detalhar/6001)** estabelece as regras para uso de IA no Poder Judiciário. Um ponto fundamental — e frequentemente mal compreendido — é a distinção entre **dados sensíveis** e **dados sigilosos**.\n\n**Dados sensíveis** (definidos pela LGPD) como informações de saúde, religião, orientação sexual, etc., **podem** ser usados em LLMs externos. A resolução não proíbe isso.\n\n**Dados sigilosos** (processos em segredo de justiça, menores, investigações) **não podem** ser enviados a LLMs externos como Claude ou ChatGPT. A vedação é específica para o sigilo processual, não para dados sensíveis em geral.\n\nEssa distinção é crucial: muitos profissionais deixam de usar IA em casos que poderiam, por confundir os conceitos. Este exercício esclarece quando você pode e quando não pode usar LLMs externos.",
+          "concept": "### O Marco Normativo: Resolução CNJ 615/2025\n\nA Resolução CNJ 615/2025 é a norma fundamental sobre uso de IA no Judiciário. Seus principais dispositivos sobre privacidade:\n\n**Art. 7º** - Dados de treinamento devem ser \"anonimizados sempre que possível\" e é \"obrigatória para dados sigilosos\".\n\n**Art. 19, § 3º, IV-V** - É **proibido** processar \"documentos ou dados sigilosos ou protegidos por segredo de justiça\" em ferramentas de IA generativa externas.\n\n**Art. 30** - Proíbe compartilhamento de dados judiciais exceto quando \"anonimizados ou pseudoanonimizados na origem\".\n\n### Distinção Fundamental: Dados Sensíveis vs. Dados Sigilosos\n\nÉ crucial distinguir dois conceitos que frequentemente são confundidos:\n\n**Dados Sensíveis (Art. 5º, II, LGPD)** — PODEM ser usados em LLMs\n- Informações sobre saúde física ou mental\n- Origem racial ou étnica\n- Convicções religiosas ou filosóficas\n- Opiniões políticas, filiação sindical\n- Dados genéticos ou biométricos\n- Orientação sexual\n\nA LGPD exige cuidado no tratamento desses dados, mas a Resolução CNJ 615/2025 **não proíbe** seu uso em LLMs. São dados que aparecem naturalmente em processos judiciais e podem ser processados.\n\n**Dados Sigilosos (Segredo de Justiça)** — NÃO podem ser usados em LLMs externos\n- Processos que tramitam em segredo de justiça\n- Dados de menores em processos de família/infância\n- Informações protegidas por sigilo legal específico\n- Investigações criminais em curso\n- Processos com restrição de publicidade\n\nA vedação da Resolução é específica: **documentos sigilosos ou protegidos por segredo de justiça** não podem ser enviados a LLMs externos (na nuvem).\n\n### O Paradoxo da Anonimização com LLM\n\n**ATENÇÃO**: Você **não pode** usar um LLM externo para anonimizar um documento sigiloso.\n\nIsso porque, para pedir ao LLM que anonimize o documento, você precisaria enviar o documento sigiloso para ele — o que é exatamente o que a norma proíbe. É uma contradição lógica.\n\n### Como Trabalhar com Processos Sigilosos\n\nPara processos sob segredo de justiça, as opções são:\n\n**1. Anonimização Manual Prévia**\n- Você mesmo substitui os dados identificadores antes de enviar\n- Trabalhoso, mas garante que dados sigilosos nunca saiam do ambiente seguro\n\n**2. Modelos Locais (Offline)**\n- Utilizar LLMs que rodam localmente no computador\n- Os dados não são enviados para servidores externos\n- Exemplos: LLaMA, Mistral, ou outros modelos open-source\n\n**3. Soluções Institucionais**\n- Ferramentas de IA fornecidas pelo próprio tribunal\n- Sistemas homologados que garantem o sigilo\n- Ambientes controlados pelo Judiciário\n\n### Técnicas de Anonimização Manual\n\nQuando precisar anonimizar manualmente antes de usar LLM:\n\n**Substituição por Placeholders**\n- PARTE AUTORA, PARTE RÉ em vez dos nomes\n- [TESTEMUNHA_1], [TESTEMUNHA_2]\n- [ENDEREÇO_SUPRIMIDO]\n- [CPF_OCULTO]\n\n**Generalização**\n- \"Hospital na capital\" em vez do nome específico\n- \"Empresa do setor bancário\" em vez do nome\n\n**Supressão**\n- Remova informações desnecessárias para a análise\n\n### Como Desativar o Uso de Dados para Treinamento\n\nIndependentemente do tipo de processo, é recomendável desativar o uso de suas conversas para treinamento dos modelos.\n\n**No Claude (Anthropic)**\n\nAcesse Configurações > Privacidade e desative a opção:\n\n![Configuração de privacidade no Claude](assets/img/claude-privacidade.png)\n\n**No ChatGPT (OpenAI)**\n\nAcesse Configurações > Controlar dados e clique em \"Desativar\":\n\n![Configuração de privacidade no ChatGPT](assets/img/chatgpt-privacidade.png)\n\n### Privacy by Design e Privacy by Default\n\nA Resolução CNJ 615/2025 (Art. 20, IX) exige que contratações de IA generativa observem:\n\n**Privacy by Design**: A privacidade deve ser considerada desde o início. Antes de usar um LLM, pergunte-se: este processo é sigiloso? Se sim, não use LLMs externos.\n\n**Privacy by Default**: Sempre configure as opções de privacidade ANTES de começar a usar qualquer plataforma de IA.",
+          "prompt": {
+            "label": "Checklist de Verificação Pré-Uso",
+            "content": "# VERIFICAÇÃO DE SIGILO\n\nAntes de usar este documento em um LLM externo, responda:\n\n## 1. O PROCESSO É SIGILOSO?\n\n- [ ] Tramita em segredo de justiça?\n- [ ] Envolve menor de idade (família/infância)?\n- [ ] Contém investigação criminal em curso?\n- [ ] Possui restrição de publicidade?\n- [ ] É protegido por sigilo legal específico?\n\n**Se marcou SIM em qualquer item acima:**\n→ NÃO use LLMs externos (Claude, ChatGPT, etc.)\n→ Use: anonimização manual, modelos locais, ou ferramentas do tribunal\n\n## 2. SE O PROCESSO É PÚBLICO\n\nVocê pode usar LLMs externos normalmente.\nDados sensíveis (saúde, religião, etc.) podem ser processados.\n\n**Recomendação:** Mesmo em processos públicos, considere:\n- Desativar uso para treinamento nas configurações\n- Não incluir informações desnecessárias para a tarefa\n\n## RESUMO DA REGRA\n\n| Tipo de Dado | Pode usar LLM externo? |\n|--------------|------------------------|\n| Processo público | SIM |\n| Dados sensíveis (LGPD) | SIM |\n| Segredo de justiça | NÃO |\n| Menores (família) | NÃO |\n| Investigação sigilosa | NÃO |"
+          },
+          "examples": [
+            {
+              "title": "Decisão: Posso usar LLM?",
+              "before": "**Caso 1 - Processo Público**\nAção de cobrança entre empresas, processo público.\n→ Contém dados sensíveis? Não relevante.\n→ É sigiloso? NÃO.\n**Resultado: PODE usar LLM externo.**",
+              "after": "**Caso 2 - Processo Sigiloso**\nAção de guarda envolvendo menor de idade.\n→ Contém dados sensíveis? Sim (menor).\n→ É sigiloso? SIM (segredo de justiça).\n**Resultado: NÃO pode usar LLM externo.**\nOpções: anonimização manual prévia, modelo local, ou ferramenta do tribunal."
+            }
+          ],
+          "tips": {
+            "do": [
+              "Sempre verifique se o processo é sigiloso ANTES de usar LLM",
+              "Configure o modo de privacidade nas plataformas que usar",
+              "Para processos sigilosos: use modelos locais ou anonimize manualmente",
+              "Dados sensíveis (LGPD) podem ser usados — a vedação é para sigilosos",
+              "Prefira soluções institucionais do tribunal quando disponíveis"
+            ],
+            "dont": [
+              "Nunca envie processos em segredo de justiça para LLMs externos",
+              "Não tente usar o LLM para anonimizar documento sigiloso (contradição)",
+              "Não confunda dados sensíveis (LGPD) com dados sigilosos (segredo)",
+              "Evite processos de menores em LLMs externos, mesmo anonimizados",
+              "Nunca insira senhas, tokens de acesso ou credenciais"
+            ]
+          },
+          "checklist": [
+            "Configurei o modo de privacidade no Claude e/ou ChatGPT",
+            "Entendi a diferença entre dados sensíveis (LGPD) e sigilosos (segredo de justiça)",
+            "Sei que dados sensíveis PODEM ser usados em LLMs",
+            "Sei que processos sigilosos NÃO podem ser usados em LLMs externos",
+            "Conheço as alternativas: anonimização manual, modelos locais, soluções do tribunal"
+          ]
+        },
+        {
+          "id": "ex-0-2",
+          "title": "Conhecendo a Interface do Claude",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Navegar com fluência pela interface do Claude",
+              "Utilizar recursos como Projects, Artifacts e histórico de conversas",
+              "Configurar preferências de uso para otimizar sua experiência",
+              "Entender as diferenças entre modelos (Haiku, Sonnet, Opus)"
+            ]
+          },
+          "context": "Antes de dominar técnicas avançadas de prompt, é fundamental conhecer profundamente a ferramenta que você está usando. O Claude, desenvolvido pela Anthropic, possui uma interface rica em recursos que muitos usuários não exploram completamente.\n\nConhecer a interface não é apenas uma questão de eficiência — é também uma questão de segurança e organização. Saber onde estão as configurações de privacidade, como organizar conversas em projetos, e como utilizar recursos avançados como Artifacts pode transformar completamente sua produtividade.",
+          "concept": "### Anatomia da Interface do Claude\n\n**1. Barra Lateral Esquerda**\n\nA barra lateral é seu centro de comando:\n\n- **Nova Conversa**: Inicia uma conversa limpa, sem contexto anterior\n- **Histórico**: Todas as suas conversas anteriores, organizadas por data\n- **Projects** (Projetos): Agrupa conversas relacionadas a um mesmo tema ou caso\n- **Configurações**: Acesso às preferências de privacidade, modelo padrão, etc.\n\n**2. Área de Conversa**\n\nOnde a mágica acontece:\n\n- **Campo de Input**: Onde você digita suas mensagens e prompts\n- **Botão de Anexo**: Permite enviar arquivos (PDF, DOCX, imagens, etc.)\n- **Histórico da Conversa**: Visualização de todas as mensagens trocadas\n- **Indicador de Modelo**: Mostra qual modelo está sendo usado\n\n**3. Artifacts (Artefatos)**\n\nUm dos recursos mais poderosos e subutilizados:\n\n- São \"documentos\" que o Claude cria separadamente da conversa\n- Podem ser código, textos formatados, tabelas, diagramas\n- Ficam em um painel lateral para fácil visualização\n- Podem ser editados, copiados e baixados independentemente\n\n### Os Três Modelos Claude\n\n**Claude Haiku**\n- Mais rápido e econômico\n- Ideal para tarefas simples e rotineiras\n- Bom para rascunhos iniciais e brainstorming\n\n**Claude Sonnet**\n- Equilíbrio entre velocidade e capacidade\n- Recomendado para a maioria das tarefas jurídicas\n- Boa compreensão de contexto e nuances\n\n**Claude Opus**\n- Modelo mais poderoso e sofisticado\n- Melhor para análises complexas e textos longos\n- Maior capacidade de raciocínio e criatividade\n\n### Projects: Organizando seu Trabalho\n\nProjects permitem:\n\n- Agrupar conversas relacionadas a um mesmo processo ou tema\n- Manter contexto persistente entre sessões\n- Adicionar arquivos de referência que ficam disponíveis em todas as conversas do projeto\n- Definir instruções específicas para aquele projeto\n\n**Como Usar Projects Efetivamente**\n\n1. Crie um projeto para cada caso ou área de atuação\n2. Adicione documentos base (petições, contratos, normas relevantes)\n3. Configure instruções personalizadas (estilo de escrita, preferências)\n4. Mantenha conversas separadas para diferentes aspectos do caso\n\n### Configurações Importantes\n\nAcesse as configurações para:\n\n- **Privacidade**: Desativar uso de dados para treinamento\n- **Modelo Padrão**: Escolher qual modelo usar por padrão\n- **Aparência**: Modo claro/escuro, tamanho de fonte\n- **Idioma**: Preferência de idioma para a interface",
+          "prompt": {
+            "label": "Prompt de Exploração da Interface",
+            "content": "# EXPLORAÇÃO GUIADA DA INTERFACE\n\nOlá! Vamos fazer um tour pela interface do Claude juntos.\n\n## TAREFA 1: Configurações de Privacidade\n\nPor favor, me guie para verificar e configurar minhas opções de privacidade. Quero garantir que:\n- Minhas conversas não sejam usadas para treinamento\n- O histórico esteja configurado corretamente\n\n## TAREFA 2: Projects\n\nExplique como posso criar um Project para organizar um caso jurídico complexo, incluindo:\n- Como adicionar documentos de referência\n- Como definir instruções personalizadas\n- Boas práticas de organização\n\n## TAREFA 3: Artifacts\n\nDemonstre como usar Artifacts para:\n- Criar um documento formatado\n- Gerar uma tabela comparativa\n- Produzir um texto que eu possa baixar\n\n## TAREFA 4: Escolha de Modelo\n\nMe ajude a entender quando devo usar cada modelo:\n- Haiku para quais tarefas?\n- Sonnet para quais tarefas?\n- Opus para quais tarefas?\n\nPor favor, responda de forma prática e didática."
+          },
+          "tips": {
+            "do": [
+              "Explore todas as configurações antes de começar a usar intensivamente",
+              "Crie Projects para organizar casos ou áreas de atuação",
+              "Use Artifacts para documentos que precisam ser editados ou baixados",
+              "Experimente diferentes modelos para entender suas diferenças",
+              "Mantenha conversas separadas para temas diferentes"
+            ],
+            "dont": [
+              "Não ignore as configurações de privacidade",
+              "Evite conversas muito longas — divida em tópicos",
+              "Não misture assuntos diferentes na mesma conversa",
+              "Não use sempre o modelo mais potente — às vezes Haiku resolve",
+              "Não deixe de organizar seu histórico periodicamente"
+            ]
+          },
+          "checklist": [
+            "Explorei todas as áreas da interface do Claude",
+            "Configurei minhas preferências de privacidade",
+            "Entendi a diferença entre os modelos Haiku, Sonnet e Opus",
+            "Sei como criar e organizar Projects",
+            "Compreendo o que são Artifacts e como utilizá-los"
+          ]
+        },
+        {
+          "id": "ex-0-3",
+          "title": "Modos de Operação: Conversacional vs. Agêntico",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Distinguir entre modo conversacional e modo agêntico de LLMs",
+              "Identificar quando usar cada modo no contexto jurídico",
+              "Compreender as capacidades e limitações de cada abordagem",
+              "Escolher estrategicamente o modo mais adequado para cada tarefa"
+            ]
+          },
+          "context": "Uma das decisões mais importantes ao usar LLMs é escolher o **modo de operação** adequado para a tarefa. Muitos profissionais usam LLMs apenas no modo conversacional básico, sem perceber que existem formas muito mais poderosas de interação.\n\nCompreender essa distinção fundamental vai transformar a forma como você utiliza IA no trabalho jurídico — passando de um uso básico de \"perguntas e respostas\" para uma utilização estratégica como ferramenta de produtividade.",
+          "concept": "### Modo Conversacional: O Básico\n\nO modo conversacional é a forma mais comum de interação com LLMs:\n\n**Características**\n- Diálogo livre, como uma conversa natural\n- O usuário faz perguntas, o modelo responde\n- Contexto limitado à conversa atual\n- Modelo é \"reativo\" — responde ao que você pergunta\n\n**Quando Usar**\n- Tirar dúvidas pontuais\n- Brainstorming e exploração de ideias\n- Conversas exploratórias\n- Tarefas simples e diretas\n\n**Limitações**\n- Depende da qualidade das perguntas do usuário\n- Não executa ações no mundo real\n- Sem acesso a ferramentas externas\n- Pode \"esquecer\" contexto em conversas longas\n\n### Modo Agêntico: O Avançado\n\nO modo agêntico representa uma evolução significativa:\n\n**Características**\n- O modelo age como um \"agente\" autônomo\n- Pode usar ferramentas: busca na web, cálculos, execução de código\n- Divide tarefas complexas em subtarefas\n- Planeja e executa sequências de ações\n- Verifica e corrige seus próprios resultados\n\n**Ferramentas Disponíveis no Modo Agêntico**\n\n1. **Busca na Web** (Web Search)\n   - Pesquisa informações atualizadas\n   - Verifica legislação e jurisprudência recentes\n   - Acessa fontes externas\n\n2. **Análise de Documentos** (Document Analysis)\n   - Processa PDFs, DOCXs e outros formatos\n   - Extrai informações estruturadas\n   - Compara múltiplos documentos\n\n3. **Cálculos e Código** (Code Execution)\n   - Realiza cálculos complexos\n   - Gera gráficos e visualizações\n   - Processa dados estruturados\n\n4. **Artifacts e Documentos**\n   - Cria documentos formatados\n   - Gera tabelas e relatórios\n   - Produz conteúdo editável\n\n**Quando Usar**\n- Tarefas complexas que exigem múltiplas etapas\n- Pesquisa que requer informações atualizadas\n- Análise de múltiplos documentos\n- Cálculos precisos (atualização monetária, juros, etc.)\n- Geração de documentos estruturados\n\n### Comparativo Prático\n\n| Aspecto | Conversacional | Agêntico |\n|---------|----------------|----------|\n| Complexidade | Baixa | Alta |\n| Autonomia | Reativo | Proativo |\n| Ferramentas | Nenhuma | Múltiplas |\n| Verificação | Manual | Automática |\n| Ideal para | Dúvidas simples | Tarefas complexas |\n\n### Exemplo Prático: Pesquisa de Jurisprudência\n\n**Modo Conversacional**\nVocê pergunta: \"Qual é a jurisprudência do STJ sobre danos morais por negativação indevida?\"\nO modelo responde com base no conhecimento que possui até sua data de corte, que pode estar desatualizado.\n\n**Modo Agêntico**\nVocê solicita: \"Pesquise a jurisprudência atual do STJ sobre danos morais por negativação indevida, verifique os valores mais recentes de indenização fixados e me apresente um resumo estruturado.\"\nO modelo:\n1. Busca na web por decisões recentes\n2. Identifica padrões de valores\n3. Organiza as informações\n4. Apresenta um relatório estruturado\n5. Cita as fontes consultadas\n\n### Como Ativar o Modo Agêntico\n\nNo Claude, o modo agêntico é ativado automaticamente quando você:\n- Solicita pesquisas que requerem informações atuais\n- Pede para analisar documentos anexados\n- Requisita cálculos ou processamento de dados\n- Solicita criação de artifacts\n\nVocê pode explicitamente solicitar: \"Use suas ferramentas de busca para...\" ou \"Pesquise na web e me traga...\"",
+          "prompt": {
+            "label": "Prompt de Pesquisa Agêntica",
+            "content": "# TAREFA DE PESQUISA AGÊNTICA\n\n## OBJETIVO\nRealize uma pesquisa completa utilizando suas ferramentas disponíveis.\n\n## TEMA\n{{DESCREVA O TEMA DA PESQUISA JURÍDICA}}\n\n## INSTRUÇÕES\n\n1. **PESQUISE** na web por:\n   - Legislação atual aplicável\n   - Jurisprudência recente (últimos 2 anos)\n   - Doutrina relevante\n   - Súmulas e enunciados\n\n2. **ORGANIZE** as informações encontradas em:\n   - Quadro normativo\n   - Posições jurisprudenciais\n   - Pontos controversos\n   - Tendências recentes\n\n3. **ANALISE** criticamente:\n   - Convergências e divergências\n   - Argumentos mais fortes de cada posição\n   - Riscos e oportunidades\n\n4. **APRESENTE** em formato estruturado:\n   - Resumo executivo\n   - Análise detalhada por tópico\n   - Conclusões e recomendações\n   - Referências completas\n\n## REGRAS\n- Cite TODAS as fontes utilizadas\n- Indique a data de cada decisão citada\n- Sinalize quando informações podem estar desatualizadas\n- Seja transparente sobre limitações da pesquisa"
+          },
+          "examples": [
+            {
+              "title": "Comparação de Modos",
+              "before": "Conversacional: 'O que é dano moral?'\nResposta: Definição genérica baseada em conhecimento estático.",
+              "after": "Agêntico: 'Pesquise os valores de dano moral por negativação indevida fixados pelo STJ nos últimos 6 meses e me apresente uma tabela comparativa.'\nResposta: Tabela com casos reais, valores, datas e fundamentação, com links para as decisões."
+            }
+          ],
+          "tips": {
+            "do": [
+              "Use modo agêntico quando precisar de informações atualizadas",
+              "Solicite explicitamente o uso de ferramentas quando necessário",
+              "Peça para o modelo verificar suas próprias respostas",
+              "Combine modos: explore no conversacional, execute no agêntico",
+              "Sempre peça citação de fontes no modo agêntico"
+            ],
+            "dont": [
+              "Não confie em datas e valores do modo conversacional sem verificar",
+              "Evite tarefas complexas no modo conversacional puro",
+              "Não assuma que o modelo sabe que você quer pesquisa atualizada",
+              "Não ignore as fontes citadas — verifique-as",
+              "Não use modo agêntico para tarefas simples que não o requerem"
+            ]
+          },
+          "checklist": [
+            "Compreendo a diferença entre modo conversacional e agêntico",
+            "Sei identificar quando cada modo é mais adequado",
+            "Entendo as ferramentas disponíveis no modo agêntico",
+            "Sei como solicitar pesquisas com busca na web",
+            "Compreendo as limitações de cada modo de operação"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "modulo-1",
+      "title": "Fundamentos",
+      "description": "Conceitos essenciais sobre como LLMs funcionam e suas limitações",
+      "icon": "book",
+      "exercises": [
+        {
+          "id": "ex-1-1",
+          "title": "Janela de Contexto e Memória",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Entender o que é janela de contexto e por que ela importa",
+              "Gerenciar conversas longas de forma eficiente",
+              "Compreender o fenômeno 'Lost in the Middle'",
+              "Posicionar informações estrategicamente no prompt"
+            ]
+          },
+          "context": "Um dos maiores equívocos sobre LLMs é tratá-los como se tivessem memória ilimitada. Na realidade, cada modelo possui uma **janela de contexto** — um limite de tokens que pode processar de uma vez. Entender essa limitação é crucial para usar LLMs efetivamente no trabalho jurídico, especialmente ao lidar com documentos longos como petições, contratos e processos.\n\nAlém do limite quantitativo, existe um fenômeno qualitativo importante: o modelo tende a \"prestar mais atenção\" ao início e ao final do contexto, podendo \"esquecer\" ou dar menos peso a informações que estão no meio. Isso tem implicações práticas significativas.",
+          "concept": "### O Que É Janela de Contexto\n\nA **janela de contexto** (context window) é o número máximo de tokens que um modelo pode processar em uma única interação. Um token é aproximadamente 3/4 de uma palavra em português.\n\n**Tamanhos Típicos de Janela**\n- Claude Sonnet/Opus: 200.000 tokens (~150.000 palavras)\n- GPT-4: 128.000 tokens (~96.000 palavras)\n- Modelos menores: 4.000-32.000 tokens\n\nPara referência, uma petição inicial típica tem 2.000-5.000 palavras. Um processo completo pode ter 50.000-200.000 palavras.\n\n### Memória Entre Conversas\n\nÉ crucial entender: **LLMs não têm memória entre conversas**.\n\nCada nova conversa começa do zero. O modelo não lembra:\n- Conversas anteriores\n- Preferências que você expressou ontem\n- Casos que você discutiu na semana passada\n- Instruções dadas em outras sessões\n\n**Implicação Prática**: Se você quer que o modelo \"lembre\" algo, precisa incluir essa informação no prompt atual ou usar recursos como Projects.\n\n### O Fenômeno \"Lost in the Middle\"\n\nPesquisas mostram que LLMs prestam atenção de forma desigual ao longo do contexto:\n\n**Alta Atenção**: Início do prompt\n**Baixa Atenção**: Meio do prompt\n**Muito Alta Atenção**: Final do prompt\n\nIsso significa que informações colocadas no meio de um prompt longo podem ser \"esquecidas\" ou ter menos peso na resposta.\n\n### Estratégias para Gerenciar Contexto\n\n**1. Posicionamento Estratégico**\n- Coloque instruções críticas no INÍCIO do prompt\n- Repita regras importantes no FINAL do prompt\n- Use o meio para contexto e documentos\n\n**2. Estruturação Clara**\n- Use seções com cabeçalhos\n- Separe claramente instruções de conteúdo\n- Use delimitadores (XML, Markdown)\n\n**3. Síntese Progressiva**\n- Para processos longos, faça resumos intermediários\n- Processe documentos em partes, depois consolide\n- Peça ao modelo para sintetizar antes de prosseguir\n\n**4. Referência a Posições**\n- \"Conforme o ITEM 3 acima...\"\n- \"Retorne ao documento no INÍCIO deste prompt...\"\n- Use numeração para facilitar referências\n\n### Conversas Longas: Quando Reiniciar\n\nSinais de que a conversa ficou longa demais:\n- Modelo começa a \"esquecer\" instruções iniciais\n- Respostas ficam inconsistentes com o contexto\n- Modelo confunde informações de diferentes partes\n- Tempo de resposta aumenta significativamente\n\n**Solução**: Inicie nova conversa, resumindo o contexto essencial no início.",
+          "prompt": {
+            "label": "Prompt com Estruturação de Contexto",
+            "content": "# INSTRUÇÕES PRINCIPAIS (INÍCIO - ALTA ATENÇÃO)\n\nVocê é um assistente jurídico experiente. Sua tarefa é analisar o documento a seguir e extrair as informações solicitadas.\n\n## REGRAS OBRIGATÓRIAS\n1. Base-se EXCLUSIVAMENTE no documento fornecido\n2. Cite a página/seção de cada informação extraída\n3. Sinalize quando informações estiverem incompletas\n\n---\n\n# DOCUMENTO PARA ANÁLISE (MEIO - CONTEXTO)\n\n<documento>\n{{COLE O DOCUMENTO AQUI}}\n</documento>\n\n---\n\n# TAREFA ESPECÍFICA (FINAL - MUITO ALTA ATENÇÃO)\n\nAgora, extraia do documento acima:\n\n1. **Partes envolvidas**: Nomes e qualificações\n2. **Fatos principais**: Lista cronológica\n3. **Pedidos**: Todos os pedidos formulados\n4. **Fundamentos jurídicos**: Normas e precedentes citados\n\n## LEMBRETE FINAL (REFORÇO)\nNUNCA invente informações que não estejam no documento.\nSempre indique [NÃO CONSTA] quando uma informação não for encontrada."
+          },
+          "tips": {
+            "do": [
+              "Coloque instruções críticas no início E no final do prompt",
+              "Use estrutura clara com seções delimitadas",
+              "Inicie nova conversa quando a atual ficar muito longa",
+              "Faça resumos intermediários em análises longas",
+              "Numere seções para facilitar referências"
+            ],
+            "dont": [
+              "Não assuma que o modelo 'lembra' conversas anteriores",
+              "Evite colocar instruções críticas apenas no meio do prompt",
+              "Não sobrecarregue uma única conversa com muitos documentos",
+              "Não confie que todas as informações do meio serão consideradas",
+              "Não ignore sinais de que a conversa ficou longa demais"
+            ]
+          },
+          "checklist": [
+            "Entendo o conceito de janela de contexto e seus limites",
+            "Sei que LLMs não têm memória entre conversas",
+            "Compreendo o fenômeno 'Lost in the Middle'",
+            "Sei posicionar informações estrategicamente no prompt",
+            "Reconheço quando devo iniciar uma nova conversa"
+          ]
+        },
+        {
+          "id": "ex-1-2",
+          "title": "Alucinações: Por Que LLMs Inventam",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Compreender por que LLMs 'alucinam' e inventam informações",
+              "Identificar os tipos mais comuns de alucinação no contexto jurídico",
+              "Aplicar estratégias para detectar e mitigar alucinações",
+              "Desenvolver hábitos de verificação para uso seguro de LLMs"
+            ]
+          },
+          "context": "**Alucinação** é o termo usado para descrever quando um LLM gera informações que parecem plausíveis mas são factualmente incorretas ou completamente inventadas. No contexto jurídico, isso é particularmente perigoso: o modelo pode inventar precedentes que não existem, citar artigos de lei com numeração errada, ou atribuir posições a ministros que nunca as defenderam.\n\nEntender por que isso acontece — e não é um \"bug\", é uma característica fundamental de como LLMs funcionam — é essencial para qualquer profissional que queira usar essas ferramentas de forma responsável.",
+          "concept": "### Por Que LLMs Alucinam\n\nLLMs não são bases de dados — são **máquinas de predição de texto**. Eles não \"sabem\" fatos; eles geram sequências de palavras que são estatisticamente prováveis dado o contexto.\n\n**O Mecanismo Fundamental**\nQuando você pergunta \"Qual a posição do STJ sobre X?\", o modelo:\n1. Não consulta uma base de dados de jurisprudência\n2. Prevê quais palavras são mais prováveis de aparecer após sua pergunta\n3. Gera uma resposta que \"parece\" correta baseado em padrões\n\nSe o modelo foi treinado com muitos textos sobre o tema, a resposta provavelmente será correta. Se não, ele vai gerar algo plausível mas potencialmente inventado.\n\n### Tipos de Alucinação no Contexto Jurídico\n\n**1. Alucinação Factual**\n- Datas erradas de decisões\n- Valores incorretos de jurisprudência\n- Atribuição errônea de votos a ministros\n\n**2. Alucinação de Fontes**\n- Citação de artigos de lei que não existem\n- Referência a súmulas inexistentes\n- Menção a precedentes fictícios com número de processo inventado\n\n**3. Alucinação de Conteúdo**\n- Parafrasear incorretamente uma decisão\n- Atribuir posição oposta à realmente adotada\n- Inventar trechos de votos ou ementas\n\n**4. Alucinação por Interpolação**\n- Misturar informações de diferentes casos\n- Combinar teses incompatíveis\n- Criar \"frankensteins\" jurídicos\n\n### Fatores que Aumentam o Risco\n\n- **Perguntas sobre eventos recentes**: Data de corte do treinamento\n- **Temas muito específicos**: Menos dados de treinamento\n- **Pedidos de citação exata**: Modelo tende a inventar quando forçado\n- **Pressão por resposta**: Modelo prefere inventar a dizer \"não sei\"\n\n### Estratégias de Mitigação\n\n**1. Prompts que Permitem Incerteza**\n- \"Se você não tiver certeza, diga 'não tenho informação confiável'\"\n- \"Indique seu nível de confiança em cada informação\"\n- \"Prefira dizer 'não sei' a inventar\"\n\n**2. Verificação de Fontes**\n- Sempre verifique citações em fontes primárias\n- Use o modo agêntico para buscar informações atuais\n- Não confie em números de processos ou de artigos sem conferir\n\n**3. Triangulação**\n- Compare respostas de diferentes modelos\n- Gere múltiplas respostas e compare\n- Use diferentes formulações da mesma pergunta\n\n**4. Conhecimento Contextual**\n- Forneça documentos como contexto (modo RAG)\n- Base as respostas em textos que você fornece\n- Peça para citar exatamente onde encontrou cada informação",
+          "prompt": {
+            "label": "Prompt Anti-Alucinação",
+            "content": "# TAREFA DE ANÁLISE JURÍDICA COM VERIFICAÇÃO\n\n## REGRAS DE HONESTIDADE EPISTÊMICA\n\n**OBRIGATÓRIO:**\n- Se você não tem certeza sobre uma informação, diga explicitamente\n- Use frases como \"não tenho informação confiável sobre...\" quando aplicável\n- Indique se uma informação pode estar desatualizada\n- Prefira dizer \"não sei\" a inventar\n\n**PROIBIDO:**\n- NUNCA invente números de processos, artigos de lei ou datas\n- NUNCA cite precedentes sem indicar que precisam de verificação\n- NUNCA atribua posições a ministros sem certeza\n\n## FORMATO DE RESPOSTA\n\nPara cada informação fornecida, indique:\n- [ALTA CONFIANÇA] - Informação bem estabelecida em meu treinamento\n- [MÉDIA CONFIANÇA] - Requer verificação em fonte primária\n- [BAIXA CONFIANÇA] - Possivelmente impreciso ou desatualizado\n- [SEM INFORMAÇÃO] - Não tenho dados confiáveis\n\n## CONSULTA\n\n{{INSIRA SUA PERGUNTA JURÍDICA AQUI}}\n\n## LEMBRETE FINAL\n\nHonestidade sobre limitações é mais valiosa que respostas inventadas.\nSempre que citar legislação ou jurisprudência, indique: \"Verificar na fonte primária\"."
+          },
+          "examples": [
+            {
+              "title": "Resposta com Honestidade Epistêmica",
+              "before": "O STJ, no REsp 1.234.567/SP, fixou que o valor de danos morais por negativação indevida deve ser de R$ 10.000,00. (Resposta inventada com confiança aparente)",
+              "after": "[MÉDIA CONFIANÇA] O STJ tem jurisprudência sobre danos morais por negativação indevida. [VERIFICAR] O valor médio costumava girar em torno de R$ 5.000 a R$ 15.000, mas recomendo verificar decisões recentes no site do STJ, pois meu conhecimento pode estar desatualizado. [SEM INFORMAÇÃO] Não posso fornecer um número de processo específico sem risco de alucinação."
+            }
+          ],
+          "tips": {
+            "do": [
+              "Sempre verifique citações de leis e jurisprudência em fontes primárias",
+              "Instrua o modelo a expressar incerteza quando apropriado",
+              "Use modo agêntico com busca para informações que precisam ser atuais",
+              "Forneça documentos como contexto para reduzir alucinações",
+              "Desconfie de números muito específicos (valores, datas, processos)"
+            ],
+            "dont": [
+              "Nunca cite jurisprudência diretamente do LLM em petições sem verificar",
+              "Não pressione o modelo a dar respostas quando ele expressa incerteza",
+              "Evite perguntas que forcem citação exata de fontes",
+              "Não confie em números de artigos ou processos sem conferência",
+              "Não use LLMs como substituto de pesquisa jurídica real"
+            ]
+          },
+          "checklist": [
+            "Compreendo por que LLMs alucinam (são preditores de texto, não bancos de dados)",
+            "Sei identificar os tipos de alucinação mais comuns no contexto jurídico",
+            "Aplico prompts que permitem ao modelo expressar incerteza",
+            "Verifico citações de leis e jurisprudência em fontes primárias",
+            "Entendo que alucinação não é bug, é característica fundamental"
+          ]
+        },
+        {
+          "id": "ex-1-3",
+          "title": "Estocasticidade: Respostas Probabilísticas",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Compreender que LLMs geram respostas probabilísticas, não determinísticas",
+              "Entender por que a mesma pergunta pode gerar respostas diferentes",
+              "Identificar quando a variabilidade é benéfica e quando é problemática",
+              "Aplicar estratégias para obter consistência quando necessário"
+            ]
+          },
+          "context": "Uma característica fundamental dos LLMs que muitos usuários desconhecem é sua natureza **estocástica** — ou seja, probabilística e não determinística. Diferente de uma calculadora que sempre retorna o mesmo resultado para a mesma operação, um LLM pode gerar respostas diferentes para a mesma pergunta, mesmo em condições aparentemente idênticas.\n\nIsso não é um defeito — é uma característica intencional que permite criatividade e variação. Mas compreender essa natureza é essencial para usar LLMs de forma eficaz no contexto jurídico, onde precisão e consistência frequentemente são cruciais.",
+          "concept": "### Como Funciona a Geração de Texto\n\nQuando você faz uma pergunta ao LLM, ele não \"busca\" uma resposta pronta. Em vez disso, ele **gera** a resposta token por token (aproximadamente palavra por palavra), escolhendo a cada passo qual token é mais provável vir em seguida.\n\n**O Processo de Amostragem**\n\nA cada token, o modelo calcula probabilidades para todos os tokens possíveis:\n- \"O\" (30% de probabilidade)\n- \"A\" (25% de probabilidade)\n- \"Um\" (15% de probabilidade)\n- etc.\n\nO modelo então **amostra** dessa distribuição — ou seja, escolhe um token de forma probabilística. Isso significa que nem sempre escolhe o mais provável.\n\n**Parâmetro de Temperatura**\n\nA \"temperatura\" controla quão aleatória é essa escolha:\n- **Temperatura baixa (0.0-0.3)**: Mais determinístico, escolhe tokens mais prováveis\n- **Temperatura média (0.5-0.7)**: Equilíbrio entre consistência e criatividade\n- **Temperatura alta (0.8-1.0)**: Mais criativo e variado, mas menos previsível\n\n### Implicações Práticas\n\n**1. Mesma Pergunta, Respostas Diferentes**\nSe você fizer a mesma pergunta em duas conversas separadas, provavelmente receberá respostas diferentes — não contraditórias, mas formuladas de formas distintas.\n\n**2. Vieses de Frequência**\nO modelo tende a responder com base em frequências do treinamento. Pergunte \"nome de uma fruta\" e provavelmente ouvirá \"maçã\" — não porque seja a melhor resposta, mas porque é estatisticamente mais comum.\n\n**3. Criatividade vs. Consistência**\nA natureza estocástica permite criatividade, mas pode ser problemática quando você precisa de respostas idênticas (como em templates).\n\n### Estratégias para Maior Consistência\n\n**1. Forneça Exemplos**\nQuanto mais exemplos você fornecer do formato desejado, mais consistente será a saída.\n\n**2. Use Templates Estruturados**\nFormatos rígidos (como o FIRAC+) reduzem a variabilidade.\n\n**3. Seja Específico**\nInstruções vagas permitem mais variação; instruções detalhadas a reduzem.\n\n**4. Regenere e Compare**\nPara tarefas importantes, gere múltiplas respostas e compare-as.",
+          "prompt": {
+            "label": "Experimento de Estocasticidade",
+            "content": "# EXPERIMENTO: OBSERVANDO A ESTOCASTICIDADE\n\n## TAREFA 1: RESPOSTA RÁPIDA\nResponda rápido, sem pensar muito:\n- Nome de uma FRUTA:\n- Nome de uma FERRAMENTA:\n- Um NÚMERO de 1 a 100:\n\n## TAREFA 2: ESCOLHA FORÇADA\nIndique, sem enrolar, UM ÚNICO time que você considera o melhor de São Paulo.\n\n## TAREFA 3: REPETIÇÃO\nRepita as tarefas 1 e 2 em uma NOVA conversa e compare os resultados.\n\n## OBSERVAÇÃO\nNote como as respostas tendem a seguir padrões estatísticos:\n- Frutas: maçã é muito mais frequente\n- Ferramentas: martelo predomina\n- Números: 27 e 42 aparecem desproporcionalmente\n- Times: variam entre Corinthians, Palmeiras, Santos, São Paulo"
+          },
+          "tips": {
+            "do": [
+              "Entenda que variação é normal e esperada",
+              "Use templates estruturados quando precisar de consistência",
+              "Gere múltiplas respostas para tarefas importantes",
+              "Forneça exemplos para guiar o formato desejado",
+              "Aproveite a variabilidade para brainstorming"
+            ],
+            "dont": [
+              "Não espere respostas idênticas em conversas diferentes",
+              "Não confunda variação com erro ou inconsistência",
+              "Evite instruções vagas quando precisar de precisão",
+              "Não assuma que a primeira resposta é a melhor",
+              "Não ignore a influência da temperatura nas respostas"
+            ]
+          },
+          "checklist": [
+            "Compreendo que LLMs geram respostas de forma probabilística",
+            "Sei que a mesma pergunta pode gerar respostas diferentes",
+            "Entendo o conceito de temperatura e amostragem",
+            "Conheço estratégias para obter maior consistência",
+            "Sei quando a variabilidade é útil e quando é problemática"
+          ]
+        },
+        {
+          "id": "ex-1-4",
+          "title": "Maldição da Reversão",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Compreender o fenômeno da 'maldição da reversão' em LLMs",
+              "Entender por que relacionamentos bidirecionais são problemáticos",
+              "Identificar situações onde esse fenômeno pode afetar seu trabalho",
+              "Aplicar estratégias para contornar essa limitação"
+            ]
+          },
+          "context": "A **maldição da reversão** (reversal curse) é um fenômeno fascinante e contraintuitivo: LLMs podem saber que \"A está relacionado a B\", mas falhar completamente ao tentar responder \"o que está relacionado a B?\"\n\nIsso acontece porque LLMs aprendem associações na direção em que aparecem frequentemente nos dados de treinamento, mas não necessariamente na direção inversa. Para profissionais jurídicos, isso tem implicações práticas importantes ao usar LLMs para pesquisa e análise.",
+          "concept": "### O Fenômeno Explicado\n\n**Exemplo Clássico: Anitta e Miriam Macedo**\n\nPergunta: \"Quem é a mãe da Anitta?\"\nResposta: \"Miriam Macedo\" ✓ (Correto)\n\nPergunta (nova conversa): \"Quem é a filha de Miriam Macedo?\"\nResposta: \"Não sei\" ou inventa um nome fictício ✗\n\n**Por que isso acontece?**\n\nNos dados de treinamento, a frase \"A mãe da Anitta é Miriam Macedo\" aparece com frequência. Mas \"A filha de Miriam Macedo é Anitta\" quase nunca aparece — porque Miriam não é famosa por si mesma.\n\nO modelo aprende: Anitta → Miriam Macedo\nMas NÃO aprende: Miriam Macedo → Anitta\n\n### Implicações no Contexto Jurídico\n\n**1. Pesquisa de Precedentes**\n- \"Qual o entendimento do Min. Barroso sobre liberdade de expressão?\" ✓\n- \"Quais ministros defendem a posição X?\" ✗ (mais difícil)\n\n**2. Legislação**\n- \"O que diz o art. 5º, X, da CF?\" ✓\n- \"Qual artigo da CF trata de danos morais?\" ✗ (pode falhar)\n\n**3. Doutrina**\n- \"Qual a teoria de Alexy sobre princípios?\" ✓\n- \"Quem desenvolveu a teoria da ponderação?\" ✗ (pode confundir)\n\n### Por que LLMs não \"entendem\" relações bidirecionais?\n\nLLMs não constroem grafos de conhecimento ou bancos de dados relacionais. Eles aprendem padrões estatísticos de sequências de texto.\n\nSe \"A → B\" aparece 1000 vezes nos dados e \"B → A\" aparece 5 vezes, o modelo terá confiança muito maior na primeira direção.\n\n### Estratégias de Contorno\n\n**1. Reformule a Pergunta**\nEm vez de \"Quem é filho de X?\", pergunte \"X tem filhos? Se sim, quem são?\"\n\n**2. Use Contexto Adicional**\nForneça informações que ajudem o modelo a fazer a conexão.\n\n**3. Modo Agêntico com Busca**\nQuando precisar de informações reversas, use busca na web.\n\n**4. Verifique Sempre**\nNunca confie em respostas que envolvam relações inversas sem verificação.",
+          "prompt": {
+            "label": "Teste de Maldição da Reversão",
+            "content": "# EXPERIMENTO: TESTANDO A MALDIÇÃO DA REVERSÃO\n\n## INSTRUÇÕES\nDesative a busca na web. Responda apenas com conhecimento parametrizado.\n\n## TESTE 1: DIREÇÃO DIRETA\nQuem é a mãe da cantora Anitta?\n\n## TESTE 2: DIREÇÃO REVERSA (nova conversa)\nNÃO CONSULTE A INTERNET.\nQuem é a filha de Miriam Macedo?\n\n## TESTE 3: CONTEXTO JURÍDICO\nDireção direta: Qual o entendimento do STF no RE 1.010.606 (direito ao esquecimento)?\n\nDireção reversa (nova conversa): Qual o número do processo do STF que tratou do direito ao esquecimento envolvendo a família de Aída Curi?\n\n## OBSERVAÇÃO\nCompare a confiança e precisão das respostas em cada direção."
+          },
+          "tips": {
+            "do": [
+              "Reformule perguntas reversas de formas alternativas",
+              "Use modo agêntico com busca para relações inversas",
+              "Forneça contexto adicional para ajudar conexões",
+              "Verifique sempre respostas que envolvam direção reversa",
+              "Entenda que é uma limitação estrutural, não falha do modelo"
+            ],
+            "dont": [
+              "Não confie cegamente em respostas de direção reversa",
+              "Não assuma que o modelo 'entende' relações bidirecionais",
+              "Evite perguntas do tipo 'quem fez X' sem contexto",
+              "Não descarte o modelo por essa limitação — contorne-a",
+              "Não espere que versões futuras resolvam completamente"
+            ]
+          },
+          "checklist": [
+            "Compreendo o fenômeno da maldição da reversão",
+            "Sei que LLMs aprendem relações na direção de frequência",
+            "Identifico quando uma pergunta envolve direção reversa",
+            "Conheço estratégias para contornar essa limitação",
+            "Verifico respostas que envolvem relações inversas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "modulo-2",
+      "title": "Modos de Uso",
+      "description": "Diferentes formas de interagir com LLMs e quando usar cada uma",
+      "icon": "layers",
+      "exercises": [
+        {
+          "id": "ex-2-1",
+          "title": "Modo Extrativo: Conhecimento da Máquina",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Compreender o que é conhecimento parametrizado (da máquina)",
+              "Identificar quando o modo extrativo é adequado e quando não é",
+              "Distinguir entre conhecimento conceitual e factual",
+              "Usar estrategicamente o conhecimento da máquina para tarefas criativas"
+            ]
+          },
+          "context": "O **modo extrativo** refere-se ao uso do LLM baseando-se exclusivamente em seu conhecimento interno — aquilo que foi aprendido durante o treinamento. É como consultar a 'memória' do modelo.\n\nEste modo é valioso para conceitos, definições, explicações teóricas e tarefas criativas. Porém, é limitado e perigoso para dados factuais específicos, como números de processos, datas exatas ou jurisprudência recente.",
+          "concept": "### Conhecimento Parametrizado\n\nDurante o treinamento, o LLM 'comprime' bilhões de textos em seus parâmetros (pesos da rede neural). Esse conhecimento:\n\n**Pontos Fortes**\n- Conceitos e definições bem estabelecidos\n- Explicações teóricas e doutrinárias\n- Relações entre ideias abstratas\n- Criatividade e geração de cenários\n- Síntese de conhecimento interdisciplinar\n\n**Pontos Fracos**\n- Dados factuais específicos (datas, números, nomes)\n- Informações recentes (após data de corte do treinamento)\n- Citações exatas de fontes\n- Jurisprudência com números de processos\n- Estatísticas e valores numéricos\n\n### Quando Usar o Modo Extrativo\n\n**Adequado para:**\n- \"Explique o conceito de dignidade da pessoa humana\"\n- \"Quais são os elementos do ato administrativo?\"\n- \"Descreva a teoria tridimensional do Direito\"\n- \"Crie um cenário hipotético sobre...\"\n\n**Inadequado para:**\n- \"Cite as 10 decisões mais recentes do STJ sobre X\"\n- \"Qual o valor médio de indenização por dano moral?\"\n- \"Quem é o atual presidente do TRF5?\"\n\n### O Teste do Modo Extrativo\n\nUm bom exercício é pedir ao modelo para:\n1. Explicar um conceito jurídico (deve ir bem)\n2. Citar precedentes específicos SEM busca (vai alucinar)\n3. Criar cenário contrafactual (deve ir bem)\n\nIsso revela claramente as forças e fraquezas do conhecimento parametrizado.",
+          "prompt": {
+            "label": "Teste do Modo Extrativo",
+            "content": "# EXPERIMENTO: CONHECIMENTO DA MÁQUINA\n\n## INSTRUÇÕES\nDesative a busca na web. Use apenas conhecimento parametrizado.\n\n## TAREFA 1: CONCEITUAL (deve funcionar bem)\nExplique os limites constitucionais da liberdade de expressão no Brasil.\n\n## TAREFA 2: FACTUAL (provavelmente vai alucinar)\nSEM CONSULTAR A INTERNET, liste as 10 decisões mais relevantes do STJ sobre responsabilidade civil por fake news, incluindo número do processo, relator e data.\n\n## TAREFA 3: CRIATIVA (deve funcionar bem)\nCrie um cenário contrafactual: 'E se não existissem direitos fundamentais? Como seria a sociedade brasileira?'\n\n## ANÁLISE\nCompare a qualidade das respostas:\n- Tarefa 1: Provavelmente sólida e fundamentada\n- Tarefa 2: Provavelmente com dados inventados\n- Tarefa 3: Provavelmente criativa e interessante"
+          },
+          "tips": {
+            "do": [
+              "Use modo extrativo para conceitos e explicações teóricas",
+              "Aproveite para brainstorming e cenários criativos",
+              "Solicite sínteses interdisciplinares",
+              "Peça explicações em diferentes níveis de complexidade",
+              "Use para entender doutrinas e teorias jurídicas"
+            ],
+            "dont": [
+              "Não confie em citações de jurisprudência sem verificar",
+              "Evite pedir dados factuais específicos neste modo",
+              "Não solicite informações recentes (pós data de corte)",
+              "Não use para pesquisa de precedentes",
+              "Não cite na petição números de processos fornecidos sem busca"
+            ]
+          },
+          "checklist": [
+            "Compreendo o que é conhecimento parametrizado",
+            "Sei distinguir entre conhecimento conceitual e factual",
+            "Identifico quando o modo extrativo é adequado",
+            "Entendo as limitações para dados factuais específicos",
+            "Uso o modo extrativo estrategicamente para tarefas criativas"
+          ]
+        },
+        {
+          "id": "ex-2-2",
+          "title": "Modo via Prompt: Fornecendo Contexto",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Fornecer documentos e textos diretamente no prompt",
+              "Estruturar o contexto de forma clara para o modelo",
+              "Combinar conhecimento do usuário com capacidade analítica do modelo",
+              "Reduzir alucinações através de contexto bem fornecido"
+            ]
+          },
+          "context": "O **modo via prompt** consiste em fornecer o texto ou documento diretamente no corpo do prompt, para que o modelo analise e interprete o material fornecido. Isso combina o conhecimento contextual que você fornece com a capacidade analítica do modelo.\n\nEste modo é extremamente poderoso porque reduz drasticamente as alucinações — o modelo está analisando material real, não inventando. É ideal para análises, resumos, comparações e extração de informações.",
+          "concept": "### Como Funciona\n\nEm vez de perguntar \"O que diz a jurisprudência sobre X?\" (modo extrativo), você fornece a decisão e pergunta \"Analise esta decisão\".\n\n**Estrutura Típica**\n```\n[Instruções do que fazer]\n\n<documento>\n[Cole o texto aqui]\n</documento>\n\n[Perguntas específicas sobre o documento]\n```\n\n### Vantagens\n\n**1. Redução de Alucinações**\nO modelo trabalha com dados reais que você forneceu.\n\n**2. Análise Precisa**\nCapacidade analítica do modelo aplicada a conteúdo específico.\n\n**3. Controle Total**\nVocê define exatamente qual material será considerado.\n\n**4. Consistência**\nRespostas baseadas em fontes verificáveis.\n\n### Limitações\n\n**1. Limite de Contexto**\nDocumentos muito longos podem não caber na janela de contexto.\n\n**2. Cópia Manual**\nRequer copiar e colar textos no prompt.\n\n**3. Formatação**\nTextos complexos podem perder formatação.\n\n### Dica: Adaptação para Públicos\n\nUma técnica poderosa é pedir análises do mesmo texto para diferentes públicos:\n- Crianças de 12 anos\n- Estudantes de graduação\n- Especialistas na área\n\nIsso revela a capacidade do modelo de adaptar linguagem mantendo a precisão conceitual.",
+          "prompt": {
+            "label": "Prompt de Análise via Contexto",
+            "content": "# TAREFA DE ANÁLISE CONTEXTUAL\n\n## INSTRUÇÕES\nAnalise o documento fornecido abaixo em DETALHES. Base sua resposta EXCLUSIVAMENTE no conteúdo do documento.\n\n## DOCUMENTO PARA ANÁLISE\n\n<documento>\n{{COLE O TEXTO AQUI - Pode ser uma decisão, petição, artigo, contrato, etc.}}\n</documento>\n\n## ANÁLISE SOLICITADA\n\n1. **RESUMO EXECUTIVO**: Sintetize o conteúdo em 3 parágrafos\n\n2. **PONTOS PRINCIPAIS**: Liste os 5 pontos mais relevantes\n\n3. **ARGUMENTOS**: Identifique os argumentos centrais apresentados\n\n4. **CONCLUSÃO**: Qual a conclusão ou posição defendida?\n\n5. **ANÁLISE CRÍTICA**: Quais são os pontos fortes e fracos do texto?\n\n## REGRAS\n- Base-se APENAS no documento fornecido\n- Cite trechos específicos quando relevante\n- Indique [NÃO CONSTA] quando uma informação não estiver presente\n- Não adicione informações externas ao documento"
+          },
+          "tips": {
+            "do": [
+              "Delimite claramente o documento com tags XML",
+              "Forneça instruções específicas sobre o que analisar",
+              "Peça citações diretas do documento quando relevante",
+              "Use para resumos, análises e extração de informações",
+              "Experimente análises para diferentes públicos-alvo"
+            ],
+            "dont": [
+              "Não assuma que o modelo vai buscar informações externas",
+              "Evite documentos excessivamente longos em um único prompt",
+              "Não esqueça de delimitar onde começa e termina o documento",
+              "Não misture instruções com o conteúdo do documento",
+              "Não deixe de verificar se a formatação foi preservada"
+            ]
+          },
+          "checklist": [
+            "Sei fornecer documentos diretamente no prompt",
+            "Uso delimitadores claros (tags XML) para o conteúdo",
+            "Entendo que este modo reduz alucinações",
+            "Combino conhecimento fornecido com análise do modelo",
+            "Sei estruturar instruções separadas do documento"
+          ]
+        },
+        {
+          "id": "ex-2-3",
+          "title": "Modo via Anexo: Documentos Complexos",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Anexar documentos (PDF, DOCX, imagens) para análise pelo LLM",
+              "Compreender como o modelo processa diferentes tipos de arquivo",
+              "Formular perguntas eficazes sobre documentos anexados",
+              "Combinar múltiplos documentos para análise comparativa"
+            ]
+          },
+          "context": "O **modo via anexo** é a forma mais prática de trabalhar com documentos no dia a dia. Em vez de copiar e colar textos, você anexa arquivos diretamente na interface do Claude, que processa PDFs, documentos Word, imagens e outros formatos.\n\nEste modo é especialmente valioso para processos judiciais, contratos, pareceres e outros documentos que seriam trabalhosos de copiar manualmente.",
+          "concept": "### Formatos Suportados\n\n**Documentos de Texto**\n- PDF (incluindo digitalizados com OCR)\n- DOCX, DOC (Microsoft Word)\n- TXT (texto puro)\n- RTF (Rich Text Format)\n\n**Imagens**\n- PNG, JPG, JPEG, GIF, WebP\n- Útil para capturas de tela, diagramas, documentos escaneados\n\n**Outros**\n- CSV (dados tabulares)\n- JSON (dados estruturados)\n\n### Como o Modelo Processa\n\n**PDFs Nativos**\nTexto extraído diretamente, mantendo estrutura.\n\n**PDFs Digitalizados**\nOCR (Reconhecimento Óptico de Caracteres) é ativado automaticamente.\n\n**Imagens**\nAnálise visual multimodal — o modelo \"vê\" a imagem.\n\n**Múltiplos Arquivos**\nPode processar vários documentos simultaneamente.\n\n### Boas Práticas\n\n**1. Nomeie os Arquivos**\nUse nomes descritivos: \"peticao_inicial.pdf\", \"contestacao.pdf\"\n\n**2. Indique Ordem de Leitura**\n\"Leia primeiro o documento 1, depois o documento 2...\"\n\n**3. Especifique Foco**\n\"Foque nas páginas 5-10\" ou \"Analise especificamente a cláusula 3.2\"\n\n**4. Confirme Recebimento**\nPergunte \"Você conseguiu ler o documento?\" antes de perguntas complexas.\n\n### Limitações\n\n- Arquivos muito grandes podem ser truncados\n- PDFs protegidos por senha não são processados\n- OCR pode falhar em documentos de baixa qualidade\n- Tabelas complexas podem perder formatação",
+          "prompt": {
+            "label": "Prompt para Documentos Anexados",
+            "content": "# ANÁLISE DE DOCUMENTOS ANEXADOS\n\n## INSTRUÇÕES DE LEITURA\n\nConsulte todos os documentos fornecidos na íntegra. Eles podem ter informações contraditórias. Por isso, faça uma leitura holística para captar todos os pontos e questões na sua profundidade e totalidade.\n\nPara PDFs digitalizados, ative ferramentas adequadas de Reconhecimento Óptico de Caracteres (OCR), garantindo a extração completa e precisa do conteúdo textual.\n\nSe o documento apresentar layout complexo (tabelas, gráficos ou elementos visuais), utilize análise visual multimodal para interpretar corretamente todos os componentes.\n\n## TAREFA\n\nApós ler os documentos anexados:\n\n1. **CONFIRMAÇÃO**: Liste os documentos que você conseguiu ler e suas características principais\n\n2. **SÍNTESE**: Resuma o conteúdo de cada documento em um parágrafo\n\n3. **ANÁLISE**: Responda às perguntas específicas do usuário sobre os documentos\n\n## REGRAS\n- Base-se APENAS nos documentos fornecidos\n- Indique de qual documento veio cada informação\n- Sinalize quando houver contradições entre documentos\n- Indique [NÃO LOCALIZADO] quando uma informação não for encontrada"
+          },
+          "tips": {
+            "do": [
+              "Use nomes de arquivo descritivos",
+              "Especifique qual documento ou página analisar quando relevante",
+              "Pergunte se o modelo conseguiu ler os documentos",
+              "Combine múltiplos documentos para análise comparativa",
+              "Peça para indicar a fonte de cada informação"
+            ],
+            "dont": [
+              "Não anexe arquivos protegidos por senha",
+              "Evite PDFs de baixa qualidade para OCR",
+              "Não assuma que tabelas complexas serão lidas perfeitamente",
+              "Não esqueça de verificar se documentos muito grandes foram truncados",
+              "Não anexe documentos confidenciais sem anonimização prévia"
+            ]
+          },
+          "checklist": [
+            "Sei anexar diferentes tipos de arquivo (PDF, DOCX, imagens)",
+            "Entendo como o modelo processa cada formato",
+            "Uso instruções de leitura claras para documentos anexados",
+            "Sei combinar múltiplos documentos para análise",
+            "Verifico se os documentos foram lidos corretamente"
+          ]
+        },
+        {
+          "id": "ex-2-4",
+          "title": "Modo Interativo: Diálogo Direcionado",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Utilizar o modo conversacional de forma estratégica",
+              "Direcionar o modelo através de feedback iterativo",
+              "Refinar respostas progressivamente através do diálogo",
+              "Compreender a natureza 'obediente' dos LLMs"
+            ]
+          },
+          "context": "O **modo interativo** é o uso conversacional do LLM, onde o usuário direciona progressivamente a saída através de diálogo, feedback e refinamentos. Diferente de prompts únicos elaborados, aqui a interação é iterativa e adaptativa.\n\nUma característica fundamental a entender: LLMs são projetados para serem úteis e, em grande medida, 'obedientes'. Eles tendem a fazer o que você pede, mesmo quando isso leva a resultados questionáveis. Compreender essa natureza é essencial para usar o modo interativo de forma responsável.",
+          "concept": "### A Natureza do LLM no Modo Interativo\n\n**O Modelo como 'Máquina de Escrever Inteligente'**\n\nNo modo interativo, o LLM funciona como uma ferramenta poderosa de escrita que:\n- Possui inteligência limitada ao conhecimento de treinamento\n- É projetado para obediência às instruções do usuário\n- Adapta-se completamente às suas necessidades\n- Não tem 'vontade própria' ou agenda\n\n**Implicações Práticas**\n\n1. **Flexibilidade**: O modelo pode reescrever, adaptar, mudar de tom\n2. **Docilidade**: Tende a concordar e fazer o que você pede\n3. **Risco**: Pode produzir conteúdo problemático se você insistir\n4. **Responsabilidade**: O direcionamento ético é SEU\n\n### Técnicas do Modo Interativo\n\n**1. Refinamento Iterativo**\n- Gere uma primeira versão\n- Peça ajustes específicos\n- Refine progressivamente\n\n**2. Exploração de Alternativas**\n- \"Agora faça uma versão diferente...\"\n- \"E se você escrevesse no sentido contrário?\"\n- \"Quais outras abordagens são possíveis?\"\n\n**3. Feedback Direcionado**\n- \"Está bom, mas precisa ser mais conciso\"\n- \"Mantenha a estrutura, mude o tom para mais formal\"\n- \"Adicione mais exemplos práticos\"\n\n**4. Teste de Limites**\n- Entenda até onde o modelo vai\n- Identifique quando ele recusa\n- Compreenda suas guardrails\n\n### O Experimento da Decisão Contrária\n\nUm exercício revelador:\n1. Peça ao modelo para julgar um caso\n2. Depois, peça para argumentar no sentido contrário\n3. Observe como ele consegue fazer ambos de forma convincente\n\nIsso demonstra que o modelo não 'pensa' — ele gera texto plausível na direção solicitada.",
+          "prompt": {
+            "label": "Experimento de Modo Interativo",
+            "content": "# EXPERIMENTO: MODO INTERATIVO E OBEDIÊNCIA\n\n## CENÁRIO\nJoão pulou o muro da casa de Pedro para furtar sua TV. Na fuga, ao pular o muro, João quebrou o pé. Em razão disso, João ingressou com uma ação de indenização contra Pedro porque o muro era muito alto.\n\n## TAREFA 1: JULGAMENTO INICIAL\nComo você julgaria este caso? João tem direito a indenização?\n\n## TAREFA 2: INVERSÃO\n[Após a primeira resposta]\nAgora faça uma decisão no sentido CONTRÁRIO ao que você decidiu, com argumentação convincente.\n\n## TAREFA 3: TESTE DE LIMITES\n[Após a segunda resposta]\nInclua uma referência poética a uma música brasileira na fundamentação.\n\n## OBSERVAÇÃO\nNote como o modelo:\n- Consegue argumentar em ambos os sentidos\n- Tende a fazer o que você pede (mesmo o inusual)\n- Adapta-se às suas instruções iterativas\n\nIsso demonstra sua natureza: ferramenta poderosa de escrita, não 'pensador' independente."
+          },
+          "tips": {
+            "do": [
+              "Use refinamento iterativo para melhorar respostas",
+              "Explore alternativas e perspectivas diferentes",
+              "Forneça feedback específico sobre o que ajustar",
+              "Aproveite a flexibilidade para experimentar",
+              "Entenda que a responsabilidade final é sua"
+            ],
+            "dont": [
+              "Não confunda obediência com concordância genuína",
+              "Evite pressionar por conteúdo claramente inadequado",
+              "Não assuma que argumentação convincente = verdade",
+              "Não delegue julgamentos éticos ao modelo",
+              "Não esqueça que você direciona, você é responsável"
+            ]
+          },
+          "checklist": [
+            "Compreendo a natureza 'obediente' dos LLMs",
+            "Sei usar refinamento iterativo para melhorar respostas",
+            "Entendo que o modelo pode argumentar em qualquer direção",
+            "Assumo responsabilidade pelo direcionamento do diálogo",
+            "Uso o modo interativo estrategicamente para explorar opções"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "modulo-3",
+      "title": "Técnicas Avançadas",
+      "description": "Ferramentas e técnicas para elevar a qualidade dos prompts",
+      "icon": "wand",
+      "exercises": [
+        {
+          "id": "ex-3-1",
+          "title": "Personas e POV",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Definir personas eficazes para diferentes contextos jurídicos",
+              "Alternar pontos de vista (POV) para análises multifacetadas",
+              "Usar personas como ativadores de vocabulário e estilo",
+              "Combinar personas com instruções de tarefa"
+            ]
+          },
+          "context": "A **persona** é a definição de quem o modelo deve ser. Funciona como um ativador que faz o modelo 'circular' no vocabulário, terminologia e padrões de raciocínio adequados.\n\nO **POV (Point of View)** é pedir ao modelo que analise de diferentes perspectivas — como juiz, advogado, promotor, ou parte interessada.",
+          "concept": "### Como Funcionam as Personas\n\n**O Mecanismo**\nQuando você define \"Você é um juiz experiente...\", o modelo ativa padrões de linguagem associados a textos jurídicos e decisões judiciais.\n\n**Componentes de uma Boa Persona**\n1. **Papel profissional**: \"Você é um juiz...\"\n2. **Qualificadores**: \"...experiente, criterioso...\"\n3. **Áreas de especialização**: \"...em Direito Civil...\"\n4. **Competências**: \"...com expertise em análise probatória.\"\n\n### Template Base de Persona\n\n```xml\n<persona>\nVocê é um [PAPEL] DE ALTO NÍVEL especializado em\n[ÁREA 1], [ÁREA 2] e [ÁREA 3], com expertise em\n[COMPETÊNCIA 1], [COMPETÊNCIA 2] e [COMPETÊNCIA 3].\n</persona>\n```\n\n### A Técnica do POV\n\nPedir análises de diferentes perspectivas revela ângulos que uma análise única não captaria.\n\n**Exemplo: Caso de Família**\n- POV do Juiz: foco em melhor interesse da criança\n- POV do Advogado do Pai: argumentos de guarda\n- POV do Advogado da Mãe: contrargumentos",
+          "prompt": {
+            "label": "Análise Multi-POV",
+            "content": "# ANÁLISE MULTI-POV\n\n## CASO\n{{DESCREVA O CASO OU COLE O DOCUMENTO}}\n\n## TAREFA\nAnalise o caso de DIFERENTES perspectivas:\n\n### POV 1: JUIZ\nComo um juiz criterioso analisaria? Quais os pontos de atenção?\n\n### POV 2: ADVOGADO DO AUTOR\nQuais os melhores argumentos para a parte autora?\n\n### POV 3: ADVOGADO DO RÉU\nQuais os melhores argumentos para a defesa?\n\n### POV 4: OBSERVADOR NEUTRO\nQuais as forças e fraquezas de cada lado?\n\n## SÍNTESE\nQual o desfecho mais provável e por quê?"
+          },
+          "tips": {
+            "do": [
+              "Defina personas com papel, qualificadores e competências",
+              "Use múltiplos POVs para análises complexas",
+              "Combine persona com instruções específicas de tarefa",
+              "Peça debate entre perspectivas contraditórias"
+            ],
+            "dont": [
+              "Não gaste muito espaço na definição de persona",
+              "Evite personas genéricas demais",
+              "Não confunda persona com instrução de tarefa",
+              "Não assuma que a persona substitui instruções claras"
+            ]
+          },
+          "checklist": [
+            "Sei definir personas eficazes",
+            "Uso a técnica de múltiplos POVs para análises completas",
+            "Entendo que persona ativa vocabulário específico",
+            "Combino persona com instruções claras de tarefa"
+          ]
+        },
+        {
+          "id": "ex-3-2",
+          "title": "Revisão Gramatical e de Estilo",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Usar LLMs como revisores gramaticais e de estilo",
+              "Configurar critérios específicos de revisão",
+              "Obter feedback detalhado sobre textos jurídicos",
+              "Melhorar a escrita através de revisão iterativa"
+            ]
+          },
+          "context": "Uma das aplicações mais seguras de LLMs é a **revisão de textos**. Na revisão, o modelo trabalha com material fornecido, corrigindo erros e sugerindo melhorias — risco muito menor de alucinação.\n\nPara profissionais jurídicos, isso é valioso: petições, sentenças e contratos podem ser revisados rapidamente.",
+          "concept": "### Tipos de Revisão\n\n**1. Revisão Gramatical**\n- Ortografia e acentuação\n- Concordância verbal e nominal\n- Regência\n- Pontuação e crase\n\n**2. Revisão de Estilo**\n- Clareza e concisão\n- Eliminação de juridiquês\n- Coesão textual\n- Tom e registro\n\n**3. Revisão de Conteúdo**\n- Consistência argumentativa\n- Contradições internas\n- Lacunas lógicas\n\n### Estratégias de Revisão\n\n**Revisão em Camadas**\n1. Primeira passada: erros gramaticais\n2. Segunda passada: clareza e concisão\n3. Terceira passada: estrutura e fluxo\n\n**Revisão com Nível de Intervenção**\n- Mínima: só erros objetivos\n- Moderada: erros + sugestões de estilo\n- Profunda: reescrita significativa\n\n### Plain Language\n\n**Antes**: \"Destarte, à luz do acima expendido, resta inequívoco que...\"\n**Depois**: \"Diante disso, fica claro que...\"",
+          "prompt": {
+            "label": "Revisão de Texto Jurídico",
+            "content": "# REVISÃO DE TEXTO JURÍDICO\n\n## TEXTO PARA REVISÃO\n<texto>\n{{COLE O TEXTO AQUI}}\n</texto>\n\n## TAREFA\nRevise em três camadas:\n\n### CAMADA 1: GRAMATICAL\n- Erros de ortografia e acentuação\n- Problemas de concordância\n- Erros de regência\n- Pontuação incorreta\n\n### CAMADA 2: ESTILO\n- Clareza e concisão\n- Eliminação de juridiquês\n- Coesão entre parágrafos\n\n### CAMADA 3: ESTRUTURA\n- Organização lógica\n- Consistência argumentativa\n- Contradições\n\n## FORMATO\nPara cada correção:\n- **Original**: [texto original]\n- **Sugestão**: [texto corrigido]\n- **Justificativa**: [por que melhora]\n\n## VERSÃO FINAL\nForneça a versão completa revisada."
+          },
+          "tips": {
+            "do": [
+              "Use revisão em camadas para análise detalhada",
+              "Peça justificativas para cada alteração",
+              "Defina o nível de intervenção desejado",
+              "Aproveite para aprender com as correções"
+            ],
+            "dont": [
+              "Não aceite correções cegamente — verifique",
+              "Evite revisões genéricas sem critérios",
+              "Não envie textos confidenciais sem anonimização",
+              "Não esqueça de revisar a revisão"
+            ]
+          },
+          "checklist": [
+            "Sei usar LLMs para revisão gramatical e de estilo",
+            "Aplico revisão em camadas",
+            "Peço justificativas para entender alterações",
+            "Verifico as correções antes de aceitar"
+          ]
+        },
+        {
+          "id": "ex-3-3",
+          "title": "Paletas de Estilos",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Definir estilos de escrita específicos",
+              "Criar 'paletas de estilo' reutilizáveis",
+              "Adaptar tom e registro para diferentes públicos",
+              "Manter consistência estilística em documentos"
+            ]
+          },
+          "context": "Assim como designers usam paletas de cores, escritores podem usar **paletas de estilo** — conjuntos de características que definem como o texto deve ser escrito.\n\nUma paleta bem definida transforma o LLM em um escritor consistente.",
+          "concept": "### Componentes de uma Paleta\n\n**1. Tom**\nFormal vs. Informal | Autoritativo vs. Didático\n\n**2. Registro**\nJurídico tradicional | Plain language | Acadêmico\n\n**3. Estrutura**\nParágrafos curtos/longos | Listas vs. texto | Títulos\n\n**4. Vocabulário**\nTécnico | Acessível | O que evitar\n\n**5. Características**\nExemplos | Citações | Voz ativa/passiva\n\n### Exemplo de Paleta\n\n```\nTom: Didático e claro\nRegistro: Plain language\nEstrutura: Parágrafos médios, subtítulos\nEvitar: Juridiquês, latinismos, clichês\nPreferir: Voz ativa, conexões explícitas\n```\n\n### Paletas Predefinidas\n\n**Estilo Marmelstein**\nClareza, didatismo, referências culturais.\n\n**Estilo Plain Language**\nMáxima clareza, frases curtas, sem jargões.",
+          "prompt": {
+            "label": "Escrita com Paleta de Estilo",
+            "content": "# ESCRITA COM PALETA DE ESTILO\n\n## PALETA: JURÍDICO MODERNO\n\n<estilo>\n**Tom**: Claro, direto, profissional\n**Registro**: Acessível ao cidadão comum\n\n**Estrutura**:\n- Parágrafos de 3-5 linhas\n- Subtítulos informativos\n- Listas quando enumerar\n\n**EVITAR**:\n- \"Destarte\", \"Outrossim\", \"Data venia\"\n- \"Resta inequívoco\", \"É cediço que\"\n- Frases com mais de 3 linhas\n- Latinismos sem necessidade\n\n**PREFERIR**:\n- \"Portanto\", \"Assim\", \"Dessa forma\"\n- \"Fica claro que\"\n- Frases diretas e assertivas\n</estilo>\n\n## TAREFA\nReescreva o texto seguindo a paleta:\n\n<texto_original>\n{{COLE O TEXTO}}\n</texto_original>"
+          },
+          "tips": {
+            "do": [
+              "Crie paletas reutilizáveis",
+              "Seja específico sobre o que evitar",
+              "Inclua exemplos do estilo desejado",
+              "Adapte a paleta ao público-alvo"
+            ],
+            "dont": [
+              "Não use paletas vagas",
+              "Evite contradições na paleta",
+              "Não ignore o contexto do documento",
+              "Não force estilo inadequado ao propósito"
+            ]
+          },
+          "checklist": [
+            "Sei definir paletas de estilo completas",
+            "Crio paletas para diferentes contextos",
+            "Incluo o que evitar e preferir",
+            "Adapto paletas para diferentes públicos"
+          ]
+        },
+        {
+          "id": "ex-3-4",
+          "title": "Marcadores e Delimitadores",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Usar tags XML para estruturar prompts",
+              "Aplicar Markdown para formatação",
+              "Combinar diferentes tipos de delimitadores",
+              "Criar prompts claros e bem organizados"
+            ]
+          },
+          "context": "**Delimitadores** são marcadores que separam partes de um prompt. São essenciais para prompts complexos onde instruções, contexto e dados precisam estar claramente separados.\n\nOs principais são **tags XML** (`<documento>...</documento>`) e **Markdown** (`# Título`, `**negrito**`).",
+          "concept": "### Tags XML\n\n**Quando usar**\n- Delimitar documentos\n- Separar seções lógicas\n- Isolar instruções de conteúdo\n\n**Exemplos**\n```xml\n<documento>\n[texto do documento]\n</documento>\n\n<instrucoes>\n[suas instruções]\n</instrucoes>\n```\n\n### Markdown\n\n**Para Títulos**\n```\n# Título Principal\n## Subtítulo\n### Seção\n```\n\n**Para Ênfase**\n```\n**negrito** para destaque\n*itálico* para ênfase\n`código` para termos técnicos\n```\n\n### Combinando\n\n- **XML** para blocos lógicos grandes\n- **Markdown** para formatação dentro dos blocos\n\n### Estrutura Recomendada\n\n```\n# TAREFA\n[Descrição geral]\n\n<documento>\n[Conteúdo a ser analisado]\n</documento>\n\n## INSTRUÇÕES\n1. [Passo 1]\n2. [Passo 2]\n\n<formato_saida>\n### Seção 1\n`[O que incluir]`\n</formato_saida>\n```",
+          "prompt": {
+            "label": "Prompt Estruturado",
+            "content": "# ANÁLISE ESTRUTURADA\n\n<persona>\nVocê é um ANALISTA JURÍDICO DE ALTO NÍVEL especializado em análise de documentos, com expertise em identificação de questões jurídicas.\n</persona>\n\n<documento>\n{{COLE O DOCUMENTO}}\n</documento>\n\n<instrucoes>\n## TAREFAS\n1. **Leia** o documento integralmente\n2. **Identifique** os pontos principais\n3. **Organize** conforme formato de saída\n</instrucoes>\n\n<formato_saida>\n### DADOS GERAIS\n`Tipo, partes, objeto`\n\n### FATOS\n`Lista cronológica`\n\n### QUESTÕES JURÍDICAS\n`Questões de direito`\n\n### PEDIDOS/CONCLUSÕES\n`O que é pedido ou decidido`\n</formato_saida>\n\n<regras>\n- Base-se APENAS no documento\n- Indique [NÃO CONSTA] quando não houver info\n</regras>"
+          },
+          "tips": {
+            "do": [
+              "Use XML para blocos lógicos grandes",
+              "Use Markdown para formatação interna",
+              "Mantenha consistência nos nomes das tags",
+              "Use placeholders descritivos"
+            ],
+            "dont": [
+              "Não misture convenções inconsistentemente",
+              "Evite tags aninhadas demais",
+              "Não esqueça de fechar tags",
+              "Evite formatação excessiva"
+            ]
+          },
+          "checklist": [
+            "Sei usar tags XML para delimitar conteúdo",
+            "Aplico Markdown para formatação",
+            "Combino XML e Markdown eficazmente",
+            "Mantenho estrutura consistente"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "modulo-4",
+      "title": "Produção Jurídica",
+      "description": "Prompts especializados para análise e redação de peças jurídicas",
+      "icon": "gavel",
+      "exercises": [
+        {
+          "id": "ex-4-1",
+          "title": "Análise FIRAC+",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Aplicar a metodologia FIRAC+ para análise de processos",
+              "Estruturar relatórios analíticos completos",
+              "Identificar fatos, questões jurídicas e direito aplicável",
+              "Produzir análises equilibradas que consideram todos os lados"
+            ]
+          },
+          "context": "O **FIRAC+** é uma metodologia estruturada de análise jurídica, evolução do tradicional IRAC (Issue, Rule, Application, Conclusion). A versão \"plus\" adiciona elementos essenciais: dados do processo, fatos detalhados, e análise dos argumentos de ambas as partes.\n\nEssa metodologia é especialmente valiosa para juízes e assessores, pois organiza o raciocínio jurídico de forma sistemática e completa.",
+          "concept": "### Componentes do FIRAC+\n\n**1. DADOS DO PROCESSO**\nInformações básicas: tipo de ação, partes, objeto.\n\n**2. FATOS (Facts)**\nNarração cronológica e objetiva dos fatos relevantes.\n\n**3. QUESTÃO (Issue)**\nA pergunta jurídica central que precisa ser respondida.\n\n**4. DIREITO (Rule)**\nNormas, princípios e precedentes aplicáveis.\n\n**5. ARGUMENTOS DAS PARTES**\nSíntese equilibrada dos argumentos de autor e réu.\n\n**6. ANÁLISE (Application)**\nAplicação do direito aos fatos, com raciocínio explícito.\n\n**7. CONCLUSÃO (Conclusion)**\nResposta à questão jurídica com fundamentação.\n\n### Vantagens do FIRAC+\n\n- **Completude**: cobre todos os aspectos relevantes\n- **Objetividade**: estrutura reduz vieses\n- **Clareza**: organização facilita compreensão\n- **Imparcialidade**: considera ambos os lados\n- **Replicabilidade**: padrão consistente",
+          "prompt": {
+            "label": "Prompt FIRAC+ Completo",
+            "content": "<persona>\nVocê é um ASSISTENTE JURÍDICO DE ALTO NÍVEL especializado EM DIREITO, LINGUAGEM E INTERPRETAÇÃO, com expertise em análise processual, teoria da decisão e pensamento crítico.\n</persona>\n\n<objetivo>\nSua tarefa é analisar o caso fornecido usando a metodologia FIRAC+, seguindo a estrutura abaixo.\n\nConsulte todos os documentos fornecidos na íntegra. Eles podem ter informações contraditórias. Por isso, faça uma leitura holística para captar todos os pontos controvertidos e todas as questões jurídicas.\n\nPara PDFs digitalizados, ative ferramentas de OCR. Se houver layout complexo, use análise visual multimodal.\n</objetivo>\n\n<estilo>\nAdote um tom analítico, imparcial e profundo. Sua ANÁLISE é objetiva, captando as sutilezas. Você não é influenciado por vieses de posição.\n\nVá direto para a resposta, começando com **DADOS DO PROCESSO**.\n</estilo>\n\n<modelo>\nUse a metodologia FIRAC+:\n\n<formato_saida>\n### **DADOS DO PROCESSO**\n`Identifique: tipo de ação, partes (autor e réu), objeto do processo`\n\n### **FATOS**\n`Narre cronologicamente os fatos relevantes, numerando-os`\n\n### **QUESTÃO JURÍDICA**\n`Formule a(s) pergunta(s) central(is) que o caso coloca`\n\n### **DIREITO APLICÁVEL**\n`Identifique normas, princípios e precedentes relevantes`\n\n### **ARGUMENTOS DO AUTOR**\n`Sintetize os argumentos da parte autora`\n\n### **ARGUMENTOS DO RÉU**\n`Sintetize os argumentos da parte requerida`\n\n### **ANÁLISE**\n`Aplique o direito aos fatos, analisando os argumentos`\n\n### **CONCLUSÃO**\n`Responda à questão jurídica com fundamentação`\n</formato_saida>\n</modelo>\n\n<adicionais>\n- Base-se APENAS nos documentos fornecidos\n- Indique [NÃO CONSTA] quando informação não estiver presente\n- Mantenha imparcialidade ao apresentar argumentos\n- Numere fatos e argumentos para referência\n</adicionais>"
+          },
+          "tips": {
+            "do": [
+              "Numere os fatos cronologicamente",
+              "Formule questões jurídicas como perguntas",
+              "Apresente argumentos de ambos os lados",
+              "Cite trechos dos documentos quando relevante",
+              "Mantenha tom imparcial na análise"
+            ],
+            "dont": [
+              "Não omita argumentos de nenhuma das partes",
+              "Evite antecipar conclusão na narração dos fatos",
+              "Não confunda fatos com argumentos",
+              "Não esqueça de verificar dados contra os documentos",
+              "Evite análise superficial de questões complexas"
+            ]
+          },
+          "checklist": [
+            "Sei aplicar a metodologia FIRAC+ completa",
+            "Identifico corretamente dados do processo",
+            "Narro fatos de forma cronológica e objetiva",
+            "Formulo questões jurídicas precisas",
+            "Apresento argumentos de ambas as partes",
+            "Produzo análises equilibradas e fundamentadas"
+          ]
+        },
+        {
+          "id": "ex-4-2",
+          "title": "Relatório de Petição Inicial",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Elaborar relatórios de petições iniciais",
+              "Sistematizar informações processuais",
+              "Extrair fatos, argumentos e pedidos de forma organizada",
+              "Produzir relatórios úteis para a decisão judicial"
+            ]
+          },
+          "context": "O **relatório da petição inicial** é a primeira etapa do trabalho jurisdicional. Um bom relatório sintetiza os elementos essenciais da demanda: partes, fatos alegados, causa de pedir e pedidos.\n\nLLMs são excelentes para essa tarefa, pois extraem e organizam informações de documentos extensos de forma sistemática.",
+          "concept": "### Estrutura do Relatório\n\n**1. Cabeçalho**\n- Tipo de ação\n- Partes (autor e réu)\n- Objeto da demanda\n\n**2. Fatos Alegados**\n- Narração cronológica\n- Todos os fatos relevantes\n- Numeração para referência\n\n**3. Causa de Pedir**\n- Fundamentos jurídicos\n- Argumentos principais\n- Referências normativas\n\n**4. Pedidos**\n- Pedido principal\n- Pedidos acessórios\n- Tutela provisória (se houver)\n\n### Boas Práticas\n\n- Use lista numerada para fatos\n- Distinga fatos de argumentos\n- Seja fiel ao texto da petição\n- Mantenha objetividade",
+          "prompt": {
+            "label": "Prompt Relatório Inicial",
+            "content": "# TAREFA PRINCIPAL\n\n- Você é um juiz experiente na elaboração de relatórios de petições iniciais. Sua tarefa é analisar a petição fornecida e escrever um relatório seguindo a ESTRUTURA MODELO abaixo.\n\n- ESCREVA UM RELATÓRIO da petição inicial, usando como base a ESTRUTURA MODELO, adaptando e inserindo novos dados se necessário.\n\n# ESTRUTURA MODELO\n\nRELATÓRIO\n\nTrata-se de `TIPO DE AÇÃO EM MAIÚSCULAS` proposta por `NOME DA(S) PARTE(S) AUTORA(S) EM MAIÚSCULAS` contra `NOME DA(S) PARTE(S) REQUERIDA(S) EM MAIÚSCULAS`, com o objetivo de `sintetizar o pedido da ação`.\n\nAlega a parte autora que:\n`ESCREVER UMA LISTA NUMERADA DETALHADA COM TODOS OS FATOS ALEGADOS. SEJA MINUCIOSO E EXTRAIA TODOS OS FATOS NARRADOS.`\n\nPara reforçar sua alegação, argumenta que:\n`INDICAR, EM LISTA NUMERADA, OS ARGUMENTOS JURÍDICOS ALEGADOS.`\n\nSustenta ainda que:\n`INDICAR OUTRAS CONSIDERAÇÕES RELEVANTES.`\n\nPor fim, requer que:\n`DESCREVER O PEDIDO CENTRAL DE MODO DETALHADO E OS PEDIDOS SECUNDÁRIOS.`\n\n# REGRAS\n- Base-se APENAS no documento fornecido\n- Seja minucioso na extração dos fatos\n- Distinga fatos de argumentos jurídicos\n- Mantenha fidelidade ao texto original"
+          },
+          "tips": {
+            "do": [
+              "Extraia TODOS os fatos alegados",
+              "Use lista numerada para organização",
+              "Distinga fatos de argumentos jurídicos",
+              "Inclua pedidos principais e acessórios",
+              "Mantenha fidelidade ao texto original"
+            ],
+            "dont": [
+              "Não omita fatos relevantes",
+              "Evite adicionar informações não constantes",
+              "Não confunda alegações com provas",
+              "Não simplifique demais os pedidos",
+              "Evite juízos de valor no relatório"
+            ]
+          },
+          "checklist": [
+            "Sei elaborar relatórios de petições iniciais",
+            "Extraio fatos de forma completa e organizada",
+            "Distingo fatos de argumentos jurídicos",
+            "Incluo todos os pedidos relevantes",
+            "Mantenho fidelidade ao documento original"
+          ]
+        },
+        {
+          "id": "ex-4-3",
+          "title": "Relatório Inicial + Contestação",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Elaborar relatórios conjuntos de inicial e contestação",
+              "Identificar pontos controvertidos entre as partes",
+              "Organizar argumentos de ambos os lados",
+              "Produzir visão completa da controvérsia"
+            ]
+          },
+          "context": "O **relatório conjunto** é mais completo que o relatório apenas da inicial. Apresenta as alegações de ambas as partes, permitindo identificar claramente os pontos controvertidos.\n\nEsse formato é especialmente útil quando o processo já está instruído e pronto para julgamento.",
+          "concept": "### Estrutura do Relatório Conjunto\n\n**1. Identificação**\n- Tipo de ação, partes, objeto\n\n**2. Alegações do Autor**\n- Fatos narrados\n- Fundamentos jurídicos\n- Pedidos\n\n**3. Alegações do Réu**\n- Preliminares (se houver)\n- Contestação ao mérito\n- Pedidos\n\n**4. Pontos Controvertidos**\n- Divergências fáticas\n- Divergências jurídicas\n\n**5. Outras Informações**\n- Réplica, provas, perícias\n- Manifestações finais\n\n### Vantagens\n\n- Visão holística do conflito\n- Identificação clara dos pontos controvertidos\n- Base sólida para instrução e julgamento",
+          "prompt": {
+            "label": "Prompt Relatório Conjunto",
+            "content": "# TAREFA\n\n- Você é um juiz experiente. Analise a petição inicial e a contestação fornecidas.\n- Escreva um RELATÓRIO CONJUNTO seguindo a estrutura abaixo.\n\n# ESTRUTURA\n\nRELATÓRIO\n\nTrata-se de `TIPO DE AÇÃO` proposta por `AUTOR` contra `RÉU`, objetivando `pedido principal`.\n\n## ALEGAÇÕES DO AUTOR\n\nAlega a parte autora que:\n1. `Fato 1`\n2. `Fato 2`\n[...]\n\nArgumenta juridicamente que:\n1. `Argumento 1`\n2. `Argumento 2`\n[...]\n\nRequer: `pedidos`\n\n## ALEGAÇÕES DO RÉU\n\nEm contestação, a parte ré:\n\n**Preliminares** (se houver):\n- `Preliminar 1`\n\n**Mérito**:\nAlega que:\n1. `Contrafato/argumento 1`\n2. `Contrafato/argumento 2`\n[...]\n\nRequer: `pedidos da defesa`\n\n## PONTOS CONTROVERTIDOS\n\nAs partes divergem sobre:\n1. `Divergência 1`\n2. `Divergência 2`\n[...]\n\nÉ o que havia a relatar."
+          },
+          "tips": {
+            "do": [
+              "Apresente alegações de ambas as partes",
+              "Identifique claramente os pontos controvertidos",
+              "Inclua preliminares se houver",
+              "Mantenha equilíbrio na apresentação",
+              "Organize cronologicamente quando possível"
+            ],
+            "dont": [
+              "Não favoreça uma parte na apresentação",
+              "Evite misturar alegações das partes",
+              "Não omita argumentos relevantes de nenhum lado",
+              "Não antecipe julgamento no relatório",
+              "Evite comentários sobre a força dos argumentos"
+            ]
+          },
+          "checklist": [
+            "Sei elaborar relatórios conjuntos",
+            "Apresento alegações de ambas as partes",
+            "Identifico pontos controvertidos",
+            "Mantenho equilíbrio e imparcialidade",
+            "Organizo informações de forma clara"
+          ]
+        },
+        {
+          "id": "ex-4-4",
+          "title": "Minuta de Sentença",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Elaborar minutas de sentença estruturadas",
+              "Aplicar a estrutura relatório-fundamentação-dispositivo",
+              "Desenvolver fundamentação jurídica adequada",
+              "Formular dispositivos claros e completos"
+            ]
+          },
+          "context": "A **sentença judicial** é o ato pelo qual o juiz resolve o mérito da causa. Deve conter relatório, fundamentação e dispositivo (art. 489 do CPC).\n\nLLMs podem auxiliar na elaboração de minutas, organizando o raciocínio e garantindo que todos os elementos estejam presentes. O julgador mantém a responsabilidade pela decisão final.",
+          "concept": "### Estrutura da Sentença (art. 489, CPC)\n\n**1. RELATÓRIO**\n- Síntese do processo\n- Alegações das partes\n- Questões processuais relevantes\n\n**2. FUNDAMENTAÇÃO**\n- Questão central\n- Direito aplicável\n- Análise dos argumentos\n- Raciocínio decisório\n\n**3. DISPOSITIVO**\n- Decisão (procedente/improcedente)\n- Consequências (sucumbência)\n- Determinações finais\n\n### Boas Práticas\n\n- Fundamente todas as questões\n- Enfrente argumentos das partes\n- Dispositivo claro e específico\n- Coerência entre fundamentação e dispositivo",
+          "prompt": {
+            "label": "Prompt Minuta de Sentença",
+            "content": "## TAREFA\n\n- Você é um juiz, especializado na redação de minutas de sentença\n- Escreva a SENTENÇA JUDICIAL do caso fornecido, usando a ESTRUTURA abaixo\n- O resultado será: {{PROCEDENTE / IMPROCEDENTE / PARCIALMENTE PROCEDENTE}}\n\n## ESTRUTURA\n\nRELATÓRIO\n\n`NOME DO AUTOR` propôs a presente ação `TIPO DE AÇÃO` contra `NOME DO RÉU`, alegando que `resumir os fatos`. Para reforçar sua alegação, aponta como causa de pedir que `indicar fundamentos jurídicos`. Ao final, pediu que `resumir o pedido principal`.\n\n`NOME DO RÉU` apresentou contestação, sustentando que `resumir defesa`. Argumenta que `fundamentos da defesa`. Por fim, requereu `pedidos`.\n\n`Resumir outras peças relevantes, se houver`\n\nÉ o que havia a relatar. Passo a decidir.\n\nFUNDAMENTAÇÃO\n\nO ponto central da controvérsia é decidir se `formular a questão central`.\n\nO sistema jurídico brasileiro estabelece que `desenvolver o direito aplicável`.\n\nNo caso dos autos, `analisar os fatos à luz do direito`.\n\nConfrontando os argumentos das partes, entendo que `desenvolver o raciocínio`.\n\nConclui-se, assim, que `síntese da conclusão`.\n\nDISPOSITIVO\n\nAnte o exposto, JULGO `PROCEDENTE/IMPROCEDENTE/PARCIALMENTE PROCEDENTE` o pedido, no sentido de `especificar decisão`.\n\n`Aplicar regras de sucumbência: A parte sucumbente arcará com honorários advocatícios de 10% sobre o valor da condenação, nos termos do art. 85, §2º, do CPC.`\n\nSentença publicada e registrada eletronicamente. Intimem-se."
+          },
+          "tips": {
+            "do": [
+              "Siga a estrutura relatório-fundamentação-dispositivo",
+              "Fundamente todas as questões decididas",
+              "Enfrente os argumentos das partes",
+              "Formule dispositivo claro e específico",
+              "Aplique corretamente sucumbência"
+            ],
+            "dont": [
+              "Não decida no relatório",
+              "Evite fundamentação genérica",
+              "Não deixe de enfrentar argumentos relevantes",
+              "Não esqueça da sucumbência",
+              "Evite contradição entre fundamentação e dispositivo"
+            ]
+          },
+          "checklist": [
+            "Sei elaborar minutas de sentença estruturadas",
+            "Aplico a estrutura relatório-fundamentação-dispositivo",
+            "Desenvolvo fundamentação jurídica adequada",
+            "Enfrento os argumentos das partes",
+            "Formulo dispositivos claros e completos"
+          ]
+        },
+        {
+          "id": "ex-4-5",
+          "title": "Ementa Padrão CNJ",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Elaborar ementas no padrão CNJ",
+              "Estruturar caso, questão, razões e dispositivo",
+              "Formular teses jurídicas claras",
+              "Facilitar pesquisa e aplicação de precedentes"
+            ]
+          },
+          "context": "A **ementa padronizada** do CNJ foi desenvolvida para facilitar a compreensão das decisões, a aplicação de precedentes e o uso de inteligência artificial na pesquisa jurídica.\n\nO formato estruturado — Caso, Questão, Razões, Dispositivo — permite que qualquer pessoa identifique rapidamente o que foi decidido e por quê.",
+          "concept": "### Estrutura da Ementa CNJ\n\n**Cabeçalho**\n`RAMO DO DIREITO. CLASSE. ASSUNTO. CONCLUSÃO.`\n\n**I. CASO EM EXAME**\nApresentação objetiva do caso: fatos e pedido.\n\n**II. QUESTÃO EM DISCUSSÃO**\nA(s) pergunta(s) central(is) que o caso coloca.\n\n**III. RAZÕES DE DECIDIR**\nJustificativas da decisão, uma por item.\n\n**IV. DISPOSITIVO E TESE**\nResultado e tese(s) jurídica(s) firmada(s).\n\n**Rodapé**\nDispositivos e jurisprudência citados.\n\n### Vantagens\n\n- Clareza e objetividade\n- Facilita pesquisa de precedentes\n- Otimiza uso de IA\n- Padronização nacional",
+          "prompt": {
+            "label": "Prompt Ementa CNJ",
+            "content": "# TAREFA\n\n- Você é um analista jurídico especializado em elaborar EMENTAS no padrão CNJ\n- Analise o caso fornecido e escreva uma EMENTA seguindo a ESTRUTURA abaixo\n- Cite apenas fatos, normas e precedentes do caso fornecido\n- Comece o texto com ***Ementa***\n\n# ESTRUTURA\n\n***Ementa***: `RAMO DO DIREITO. CLASSE PROCESSUAL. ASSUNTO PRINCIPAL DO MAIS GERAL AO MAIS ESPECÍFICO. CONCLUSÃO.`\n\n### **I. CASO EM EXAME**\n\n1. `Apresente o caso: fatos relevantes e pedido principal`\n\n### **II. QUESTÃO EM DISCUSSÃO**\n\n2. `Identifique a(s) questão(ões) central(is). Quando única, inicie com \"A questão em discussão consiste em...\". Quando múltiplas, enumere: \"Há X questões: (i)...; (ii)...\"`\n\n### **III. RAZÕES DE DECIDIR**\n\n3. `Primeira justificativa - uma ideia por item`\n4. `Segunda justificativa`\n5. `Terceira justificativa (quantos itens forem necessários)`\n\n### **IV. DISPOSITIVO E TESE**\n\n6. `Resultado: Pedido procedente/improcedente OU Recurso provido/desprovido`\n\n*Tese de julgamento*: `1. [Tese 1]. 2. [Tese 2].`\n\n___________\n\n*Dispositivos relevantes citados*: `CF/1988, art. X; Lei Y, art. Z`\n\n*Jurisprudência relevante citada*: `STF, RE nº X, Rel. Min. Y, j. DD.MM.AAAA`"
+          },
+          "tips": {
+            "do": [
+              "Siga rigorosamente a estrutura CNJ",
+              "Uma justificativa por item numerado",
+              "Formule teses claras e concisas",
+              "Cite dispositivos e precedentes do caso",
+              "Use linguagem objetiva"
+            ],
+            "dont": [
+              "Não misture múltiplas ideias em um item",
+              "Evite linguagem rebuscada",
+              "Não omita a tese de julgamento",
+              "Não invente citações não constantes",
+              "Evite ementas excessivamente longas"
+            ]
+          },
+          "checklist": [
+            "Sei elaborar ementas no padrão CNJ",
+            "Estruturo caso, questão, razões e dispositivo",
+            "Formulo teses jurídicas claras",
+            "Identifico dispositivos e precedentes citados",
+            "Uso linguagem objetiva e padronizada"
+          ]
+        },
+        {
+          "id": "ex-4-6",
+          "title": "Framework P.O.E.M.A.",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Dominar a estrutura completa do P.O.E.M.A.",
+              "Construir prompts jurídicos estruturados e completos",
+              "Combinar todos os elementos para máxima eficácia",
+              "Criar prompts reutilizáveis e consistentes"
+            ]
+          },
+          "context": "O **P.O.E.M.A.** é um framework para construção de prompts estruturados, desenvolvido com base nas melhores práticas de engenharia de prompts. Cada letra representa um componente obrigatório que, juntos, garantem que o modelo entenda exatamente o que você precisa.\n\n**P** = Persona | **O** = Objetivo | **E** = Estilo | **M** = Modelo | **A** = Adicionais",
+          "concept": "### Os 5 Componentes\n\n**P - PERSONA**\nQuem o modelo deve ser. Papel profissional + especialização + competências.\n\n**O - OBJETIVO**\nO componente mais importante. Tarefa + finalidade + metodologia + instruções de leitura.\n\n**E - ESTILO**\nComo escrever: tom, características, instruções anti-viés, prefill.\n\n**M - MODELO**\nMetodologia (nome único!) + formato de saída estruturado.\n\n**A - ADICIONAIS**\nRestrições, guardrails, critérios de qualidade.\n\n### Tipos de Prompts\n\n| Tipo | Rigidez | Foco |\n|------|---------|------|\n| Análise | Rígido | Extração, interpretação |\n| Escrita | Rígido | Produção com formato |\n| Criação | Flexível | Conteúdo original |\n| Pesquisa | Flexível | Busca e síntese |\n\n### Técnica do Nome Único\n\nDê à metodologia um nome original. \"FIRAC\" pode ser ignorado; \"FIRAC+\" força o modelo a ler suas customizações.\n\n### Estrutura XML\n\n```xml\n<persona>[conteúdo]</persona>\n<objetivo>[conteúdo]</objetivo>\n<estilo>[conteúdo]</estilo>\n<modelo>\n  <formato_saida>[template]</formato_saida>\n</modelo>\n<adicionais>[conteúdo]</adicionais>\n```",
+          "prompt": {
+            "label": "Template P.O.E.M.A. Completo",
+            "content": "<persona>\nVocê é um [PAPEL] DE ALTO NÍVEL especializado em [ÁREA 1], [ÁREA 2] e [ÁREA 3], com expertise em [COMPETÊNCIA 1], [COMPETÊNCIA 2] e [COMPETÊNCIA 3].\n</persona>\n\n<objetivo>\nSua tarefa é [VERBO DE AÇÃO] + [OBJETO] + [QUALIFICADORES], para [FINALIDADE], visando a [OBJETIVO METODOLÓGICO].\n\nConsulte todos os documentos fornecidos na íntegra. Eles podem ter informações contraditórias. Por isso, faça uma leitura holística para captar todos os pontos e questões.\n\nPara PDFs digitalizados, ative ferramentas de OCR. Se houver layout complexo, use análise visual multimodal.\n</objetivo>\n\n<estilo>\nAdote um tom [ADJETIVO 1] e [ADJETIVO 2], sem [ELEMENTO A EVITAR].\nEscreva de modo [CARACTERÍSTICA], mas [QUALIFICADOR].\n\nSua ANÁLISE é objetiva, imparcial e multifacetada. Você não é influenciado por vieses de posição.\n\n[INSTRUÇÃO DE INÍCIO/PREFILL]\n</estilo>\n\n<modelo>\nUse a metodologia [NOME ÚNICO DA METODOLOGIA]:\n\n<formato_saida>\n### **[SEÇÃO 1]**\n`[INSTRUÇÃO EM MAIÚSCULAS]`\n\n### **[SEÇÃO 2]**\n`[INSTRUÇÃO EM MAIÚSCULAS]`\n\n### **[SEÇÃO 3]**\n`[INSTRUÇÃO EM MAIÚSCULAS]`\n</formato_saida>\n</modelo>\n\n<adicionais>\n- Base-se APENAS nos documentos fornecidos\n- Indique [NÃO CONSTA] quando informação não estiver presente\n- [OUTRAS RESTRIÇÕES]\n- [CRITÉRIOS DE QUALIDADE]\n</adicionais>"
+          },
+          "tips": {
+            "do": [
+              "Use todos os 5 componentes (P.O.E.M.A.)",
+              "Dê nomes únicos às metodologias",
+              "Inclua instruções de leitura no Objetivo",
+              "Use tags XML para estruturar",
+              "Teste e refine iterativamente"
+            ],
+            "dont": [
+              "Não gaste muito espaço na Persona",
+              "Evite metodologias com nomes genéricos",
+              "Não esqueça instruções anti-viés para análise",
+              "Não deixe o formato de saída vago",
+              "Evite prompts sem guardrails"
+            ]
+          },
+          "checklist": [
+            "Domino a estrutura completa do P.O.E.M.A.",
+            "Sei construir cada componente adequadamente",
+            "Uso nomes únicos para metodologias",
+            "Incluo instruções de leitura e anti-viés",
+            "Crio prompts reutilizáveis e consistentes"
+          ]
+        },
+        {
+          "id": "ex-4-7",
+          "title": "Tarefa Integradora",
+          "objective": {
+            "intro": "Ao final deste exercício, você será capaz de:",
+            "items": [
+              "Integrar todos os conhecimentos do curso",
+              "Aplicar metodologias completas em casos reais",
+              "Produzir análises e peças jurídicas de qualidade",
+              "Usar LLMs como ferramenta eficaz no trabalho jurídico"
+            ]
+          },
+          "context": "Esta é a **tarefa final** do curso, onde você aplicará todos os conhecimentos adquiridos em um caso real de sua responsabilidade.\n\nO objetivo é demonstrar domínio das técnicas e metodologias, produzindo um conjunto completo de documentos: análise FIRAC+, relatório, minuta de decisão e ementa.",
+          "concept": "### Etapas da Tarefa\n\n**1. Escolha do Caso**\nSelecione um processo real sob sua responsabilidade.\n\n**2. Análise FIRAC+**\nAplique a metodologia completa.\n\n**3. Relatório Processual**\nElabore relatório das peças essenciais.\n\n**4. Minuta de Decisão**\nRedija a minuta (sentença ou decisão).\n\n**5. Ementa CNJ**\nElabore ementa no padrão estruturado.\n\n### Critérios de Qualidade\n\n- **Consistência**: harmonia entre todas as peças\n- **Técnica**: uso correto dos prompts\n- **Clareza**: linguagem acessível e objetiva\n- **Completude**: análise abrangente\n- **Precisão**: adequação aos fatos e ao direito\n\n### Meta de Aprendizado\n\nAo final, você deve dominar o uso estratégico da IA para todas as fases da atividade jurídica, desde a análise inicial até a redação final das decisões.",
+          "prompt": {
+            "label": "Checklist da Tarefa Final",
+            "content": "# TAREFA INTEGRADORA - CHECKLIST\n\n## CASO SELECIONADO\nProcesso: _______________\nTipo: _______________\n\n## ETAPAS\n\n### 1. ANÁLISE FIRAC+\n[ ] Dados do processo identificados\n[ ] Fatos narrados cronologicamente\n[ ] Questão jurídica formulada\n[ ] Direito aplicável identificado\n[ ] Argumentos de ambas as partes\n[ ] Análise desenvolvida\n[ ] Conclusão fundamentada\n\n### 2. RELATÓRIO\n[ ] Relatório da inicial completo\n[ ] Contestação incluída (se houver)\n[ ] Pontos controvertidos identificados\n[ ] Outras peças relevantes\n\n### 3. MINUTA DE DECISÃO\n[ ] Relatório adequado\n[ ] Fundamentação completa\n[ ] Dispositivo claro\n[ ] Sucumbência aplicada\n\n### 4. EMENTA CNJ\n[ ] Cabeçalho correto\n[ ] Caso em exame\n[ ] Questão em discussão\n[ ] Razões de decidir\n[ ] Dispositivo e tese\n[ ] Citações identificadas\n\n## VERIFICAÇÃO FINAL\n[ ] Coerência entre todos os documentos\n[ ] Prompts utilizados corretamente\n[ ] Linguagem clara e precisa\n[ ] Revisão concluída"
+          },
+          "tips": {
+            "do": [
+              "Escolha um caso que conheça bem",
+              "Siga a ordem das etapas",
+              "Verifique coerência entre documentos",
+              "Use os prompts do curso",
+              "Revise cada documento produzido"
+            ],
+            "dont": [
+              "Não pule etapas",
+              "Evite casos excessivamente complexos para início",
+              "Não deixe de verificar citações",
+              "Não confie cegamente nas saídas",
+              "Não esqueça de anonimizar dados sensíveis"
+            ]
+          },
+          "checklist": [
+            "Apliquei todos os conhecimentos do curso",
+            "Produzi análise FIRAC+ completa",
+            "Elaborei relatório processual adequado",
+            "Redigi minuta de decisão estruturada",
+            "Criei ementa no padrão CNJ",
+            "Verifiquei coerência entre todos os documentos"
+          ]
+        }
+      ]
+    }
+  ]
+}

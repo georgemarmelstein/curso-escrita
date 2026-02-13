@@ -1,0 +1,282 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 0.1: Primeiros Passos**
+
+**Module:** Módulo 0 — Preparação
+
+**Objective:** Criar sua conta no Claude e escolher o plano adequado para uso profissional no Direito.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">Por que Claude como Base?</h2>
+                        <p>Neste curso, usamos o <strong>Claude</strong> (da Anthropic) como plataforma principal por seis razões:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Razão</th><th>O que significa</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Robustez cognitiva</strong></td><td>Projetado para atividades de alta profundidade analítica — ideal para análise jurídica complexa</td></tr>
+                                    <tr><td><strong>Transparência</strong></td><td>Explica com clareza o que está fazendo: quando busca na web, quando cria artefatos, quando raciocina. Outros modelos são mais opacos</td></tr>
+                                    <tr><td><strong>Alinhamento ético</strong></td><td>Desenvolvido sob os princípios do <a href="https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback" target="_blank">Constitutional AI</a> — foco em ser seguro, ético e genuinamente útil</td></tr>
+                                    <tr><td><strong>Janela de contexto</strong></td><td>Suporta documentos longos — essencial para análises jurídicas em processos volumosos</td></tr>
+                                    <tr><td><strong>Benchmarks</strong></td><td>Destaque nos principais benchmarks para tarefas de cognição profunda e solução de problemas complexos</td></tr>
+                                    <tr><td><strong>Didática</strong></td><td>Interface limpa, respostas estruturadas, comportamento previsível — facilita o aprendizado</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <img src="assets/img/modulo0/claude-tela-principal.png" alt="Interface principal do Claude" class="screenshot" loading="lazy">
+                        <p class="screenshot-caption">Interface principal do Claude — área de conversa com seletor de modelo</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Os Planos do Claude</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Plano</th><th>Preço</th><th>Para quem</th><th>Uso no Direito</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Free</strong></td><td>R$ 0</td><td>Curiosos, testes iniciais</td><td>Insuficiente</td></tr>
+                                    <tr><td><strong>Pro</strong></td><td>~US$ 17-20/mês</td><td>Profissionais</td><td style="color:var(--accent-success);font-weight:600;">RECOMENDADO</td></tr>
+                                    <tr><td><strong>Max</strong></td><td>US$ 100-200/mês</td><td>Uso massivo</td><td>Alta demanda</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+
+**Exercise:**
+Title: Criar Conta e Escolher Plano
+Prompt: undefined
+Checklist:
+- Conta criada no claude.ai
+- Email verificado
+- Consegui acessar a interface de chat
+- (Se Pro) Assinatura ativa confirmada
+- Entendo a diferença entre Free, Pro e Max
+
+
+**Tip:** Comece no Free para testar por alguns dias. Quando perceber que está "batendo no limite" frequentemente, faça o upgrade para Pro.
+
+**Warning:** <strong>"Vou usar o Free porque não quero gastar."</strong><br>Para uso profissional no Judiciário, o Free é inadequado: limites baixos, sem prioridade, sem extended thinking.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "0.1",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 0.2: Regulação de Uso da IA**
+
+**Module:** Módulo 0 — Preparação
+
+**Objective:** Conhecer as regras da Resolução 615/2025 do CNJ para uso de IA no Judiciário.
+
+**Content:**
+
+                    <div class="callout callout-error">
+                        <div class="callout-title">⚖️ <a href="https://atos.cnj.jus.br/atos/detalhar/6001" target="_blank" style="color:inherit;">Resolução 615/2025 do CNJ</a></div>
+                        <p>Estabelece a Política de Uso de Inteligência Artificial no Poder Judiciário brasileiro.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Princípios Fundamentais</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Princípio</th><th>O que significa</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Capacitação prévia</strong></td><td>Treinamento obrigatório sobre limitações, riscos e uso ético — fornecido pelos tribunais</td><td style="color:var(--accent-error);font-weight:600;">OBRIGATÓRIO</td></tr>
+                                    <tr><td><strong>Natureza auxiliar</strong></td><td>Uso apenas como apoio — vedada utilização autônoma para decisões judiciais</td><td style="color:var(--accent-error);font-weight:600;">OBRIGATÓRIO</td></tr>
+                                    <tr><td><strong>Responsabilidade</strong></td><td>Magistrado permanece integralmente responsável — necessária verificação e revisão</td><td style="color:var(--accent-error);font-weight:600;">OBRIGATÓRIO</td></tr>
+                                    <tr><td><strong>Proteção de dados</strong></td><td>Vedado uso de dados para treinamento sem autorização expressa</td><td style="color:var(--accent-error);font-weight:600;">OBRIGATÓRIO</td></tr>
+                                    <tr><td><strong>Dados sigilosos</strong></td><td>Dever de anonimização prévia — não inserir documentos sigilosos sem tratamento</td><td style="color:var(--accent-error);font-weight:600;">OBRIGATÓRIO</td></tr>
+                                    <tr><td><strong>Registro de uso</strong></td><td>Registro automático no sistema do Tribunal — menção na decisão é opcional</td><td>RECOMENDADO</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">O que PODE (Baixo Risco)</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Categoria</th><th>Usos Permitidos</th></tr></thead>
+                                <tbody>
+                                    <tr><td style="background:var(--accent-success);color:white;font-weight:600;">TRANSFORMAÇÃO</td><td><strong>Redação:</strong> Correção e melhoria de textos, organização de ideias, elaboração de ementa e relatório, rascunho de peças<br><strong>Análise:</strong> Análise de casos (FIRAC+), extração de fatos, análise descritiva da prova</td></tr>
+                                    <tr><td style="background:var(--accent-success);color:white;font-weight:600;">PESQUISA</td><td><strong>Simples:</strong> Pesquisa de precedentes e informações<br><strong>Profunda:</strong> Doutrina, MBE, precedentes, análise de casos complexos</td></tr>
+                                    <tr><td style="background:var(--accent-success);color:white;font-weight:600;">CRIAÇÃO</td><td><strong>Brainstorming:</strong> Geração de ideias e argumentos, objeções, pensamento contrafactual<br><strong>Sugestões:</strong> Perguntas e quesitos<br><strong>Artefatos:</strong> Sites, dashboards, slides, mapas mentais</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">O que NÃO PODE (Alto Risco e Risco Excessivo)</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Categoria</th><th>Usos Proibidos</th></tr></thead>
+                                <tbody>
+                                    <tr><td style="background:var(--accent-error);color:white;font-weight:600;">JULGAMENTO</td><td><strong>Tomada de decisão:</strong> Sistemas sem supervisão humana, automação absoluta<br><strong>Juízos conclusivos:</strong> Aplicação da lei, plausibilidade de direitos, tipificação de crimes<br><strong>Valoração da prova:</strong> Validade, força probatória, standards</td></tr>
+                                    <tr><td style="background:var(--accent-error);color:white;font-weight:600;">IMPACTO EM DIREITOS</td><td><strong>Avaliação de pessoas:</strong> Prever crimes/reiteração, perfilamento por comportamento social, identificação de emoções<br><strong>Quantificação:</strong> Dosimetria de penas, danos morais</td></tr>
+                                    <tr><td style="background:var(--accent-warning);color:white;font-weight:600;">PRIVACIDADE</td><td><strong>Processos sigilosos:</strong> Sem anonimização prévia<br><strong>Treinamento:</strong> Modelos que usem dados do usuário<br><strong>Credibilidade:</strong> Classificação de testemunhos (detecção de mentiras)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+
+**Exercise:**
+Title: Conhecer a Regulação
+Prompt: undefined
+Checklist:
+- Li ou conheço a Resolução 615/2025 do CNJ
+- Entendo que IA é ferramenta de APOIO, não de decisão
+- Sei que juízos conclusivos sobre aplicação da lei são vedados
+- Sei que valoração probatória por IA é alto risco
+- Entendo que o magistrado é integralmente responsável
+- Sei que devo anonimizar documentos sigilosos ANTES de usar IA
+
+
+**Tip:** A IA pode ajudar a <strong>organizar ideias</strong>, <strong>pesquisar precedentes</strong> e <strong>redigir rascunhos</strong> — mas a decisão, a valoração e o juízo são sempre do magistrado.
+
+**Warning:** <strong>"Vou pedir ao Claude para decidir se o autor tem razão."</strong><br><strong>VEDADO.</strong> Juízos conclusivos sobre aplicação de norma jurídica a fatos concretos são de <strong>alto risco</strong>. Use a IA para analisar, não para decidir.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "0.2",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 0.3: Configuração de Privacidade**
+
+**Module:** Módulo 0 — Preparação
+
+**Objective:** Configurar seu LLM para uso profissional, desativando o uso de dados para treinamento.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">Suas Conversas São Privadas</h2>
+                        <p>As conversas entre você e o modelo de IA são <strong>privadas</strong>. Elas não se tornam públicas, não são compartilhadas com outros usuários e não aparecem em buscas na internet.</p>
+                        <p>Os principais provedores de LLMs tratam suas conversas como dados confidenciais:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Modelo</th><th>O que garante</th><th>Política de Privacidade</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Claude</strong></td><td>Conversas armazenadas com segurança, não compartilhadas publicamente</td><td><a href="https://www.anthropic.com/legal/privacy" target="_blank">Anthropic Privacy Policy</a></td></tr>
+                                    <tr><td><strong>ChatGPT</strong></td><td>Dados do usuário protegidos, opção de desativar histórico</td><td><a href="https://openai.com/policies/privacy-policy" target="_blank">OpenAI Privacy Policy</a></td></tr>
+                                    <tr><td><strong>Gemini</strong></td><td>Conversas processadas conforme políticas Google</td><td><a href="https://support.google.com/gemini/answer/13594961" target="_blank">Gemini Apps Privacy</a></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="callout callout-info">
+                        <div class="callout-title">🔐 Privado ≠ Pode Usar para Treinamento</div>
+                        <p><strong>Privacidade:</strong> Suas conversas não são públicas — terceiros não têm acesso.</p>
+                        <p><strong>Treinamento:</strong> Questão diferente — o provedor pode usar seus dados para melhorar o modelo, a menos que você desative essa opção.</p>
+                        <p>Para uso no Judiciário, você precisa garantir <strong>ambos</strong>: privacidade E opt-out de treinamento.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Por que Configurar o Opt-out?</h2>
+                        <p>A <a href="https://atos.cnj.jus.br/atos/detalhar/6001" target="_blank">Resolução 615/2025</a> determina que dados do Judiciário <strong>não podem ser usados para treinamento</strong> de modelos de IA. Você precisa garantir o <strong>opt-out de treinamento</strong>.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Configuração no Claude</h2>
+                        <p>No Claude, a opção se chama <strong>"Ajudar a melhorar o Claude"</strong> e deve estar <strong>DESATIVADA</strong>.</p>
+                        <img src="assets/img/claude-privacidade.png" alt="Configuração de privacidade do Claude" class="screenshot" loading="lazy">
+                        <p class="screenshot-caption">Tela de privacidade do Claude — toggle de treinamento DESATIVADO</p>
+                    </div>
+                    <div class="callout callout-tip">
+                        <div class="callout-title">📝 Histórico vs Treinamento</div>
+                        <p><strong>Histórico:</strong> Suas conversas ficam salvas para você acessar depois — isso é útil e permitido.</p>
+                        <p><strong>Treinamento:</strong> Seus dados são usados para melhorar o modelo — isso é <strong>vedado</strong> no Judiciário.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Desativar Treinamento
+Prompt: undefined
+Checklist:
+- Entendo que minhas conversas são privadas (não públicas)
+- Sei a diferença entre privacidade e opt-out de treinamento
+- Opt-out de treinamento ativo no Claude
+- Sei onde fica a configuração de privacidade
+
+
+**Tip:** A configuração de privacidade é feita uma única vez. Depois de desativar o treinamento, todas as suas conversas futuras estarão protegidas.
+
+**Warning:** <strong>"Vou pedir ao Claude para anonimizar o documento antes de analisar."</strong><br><strong>ERRADO.</strong> Ao inserir o documento sigiloso para anonimização, você JÁ violou a regra. A anonimização deve ser <strong>manual</strong> ou com ferramenta que rode <strong>localmente</strong>.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "0.3",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

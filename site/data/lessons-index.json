@@ -1,0 +1,69 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-02-11",
+  "modules": [
+    {
+      "id": "0",
+      "title": "Módulo 0 — Preparação",
+      "lessons": [
+        { "id": "0.1", "title": "Primeiros Passos" },
+        { "id": "0.2", "title": "Regulação de Uso da IA" },
+        { "id": "0.3", "title": "Configuração de Privacidade" },
+        { "id": "0.4", "title": "Interface e Navegação" },
+        { "id": "0.5", "title": "Configurações Personalizadas" },
+        { "id": "0.6", "title": "Recursos Agênticos" }
+      ]
+    },
+    {
+      "id": "1",
+      "title": "Módulo 1 — Fundamentos",
+      "lessons": [
+        { "id": "1.1", "title": "LLMs como Máquinas de Criação" },
+        { "id": "1.2", "title": "Máquinas de Linguagem" },
+        { "id": "1.3", "title": "O Jogo da Adivinhação" },
+        { "id": "1.4", "title": "Máquinas Estocásticas" },
+        { "id": "1.5", "title": "Maldição da Reversão" },
+        { "id": "1.6", "title": "A Janela de Contexto" },
+        { "id": "1.7", "title": "O Conhecimento da Máquina" },
+        { "id": "1.8", "title": "Como Treinar um LLM" },
+        { "id": "1.9", "title": "Alucinações" },
+        { "id": "1.10", "title": "Alinhamento Ético (HHH)" },
+        { "id": "1.11", "title": "Habilidades Emergentes" },
+        { "id": "1.12", "title": "Multimodalidade" },
+        { "id": "1.13", "title": "Modos de Uso" },
+        { "id": "1.14", "title": "RAG e Anexos" },
+        { "id": "1.15", "title": "Introdução aos Agentes" },
+        { "id": "1.16", "title": "Os 10 Mandamentos" }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Módulo 2 — Engenharia de Prompt",
+      "lessons": [
+        { "id": "2.1", "title": "Introdução à Engenharia de Prompt" },
+        { "id": "2.2", "title": "Fundamentos" },
+        { "id": "2.3", "title": "Inputs Nobres = Outputs Nobres" },
+        { "id": "2.4", "title": "Vibe Prompting" },
+        { "id": "2.5", "title": "Os Três Desafios" },
+        { "id": "2.6", "title": "Prompt de Sistema" },
+        { "id": "2.7", "title": "Técnicas de Prompt Estruturado" },
+        { "id": "2.8", "title": "Prompt FIRAC+" },
+        { "id": "2.9", "title": "Prompt Relatório" },
+        { "id": "2.10", "title": "IA e Prova" }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Módulo 3 — Prática Avançada",
+      "lessons": [
+        { "id": "3.1", "title": "Projetos (Claude)" },
+        { "id": "3.2", "title": "Deep Research" },
+        { "id": "3.3", "title": "Metaprompt de Análise" },
+        { "id": "3.4", "title": "Metaprompt de Escrita" },
+        { "id": "3.5", "title": "Erros Comuns e Boas Práticas" }
+      ]
+    }
+  ],
+  "totalLessons": 37,
+  "note": "Este índice pode ser usado para gerar navegação dinamicamente. O conteúdo completo das aulas está inline em caderno-v2.html. Migração para carregamento dinâmico planejada para Fase 4."
+}

@@ -1,0 +1,476 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.10: Alinhamento Ético (HHH)**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Compreender os princípios Helpful, Honest, Harmless e a Constituição que guia o comportamento do Claude.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O Framework HHH</h2>
+                        <p>O alinhamento ético busca criar modelos de IA alinhados aos valores humanos. O modelo da Anthropic usa três princípios:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Princípio</th><th>Significado</th><th>Manifestação</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Helpful</strong><br>(Útil)</td><td>Responder perguntas, completar tarefas, ajudar genuinamente</td><td>Segue instruções, oferece alternativas, é proativo</td></tr>
+                                    <tr><td><strong>Honest</strong><br>(Honesto)</td><td>Dizer a verdade, admitir incerteza, não enganar</td><td>Reconhece limitações, corrige erros, não inventa</td></tr>
+                                    <tr><td><strong>Harmless</strong><br>(Inofensivo)</td><td>Não causar danos, recusar pedidos perigosos</td><td>Recusa armas, fraudes, conteúdo ilegal</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">A Constituição do Claude</h2>
+                        <p>A Anthropic publica uma <a href="https://www.anthropic.com/constitution" target="_blank"><strong>Constituição</strong></a> que articula os valores e comportamentos esperados do Claude. O documento é "escrito para o Claude" — fornece contexto para ele navegar situações complexas com julgamento, não apenas regras rígidas.</p>
+                        <div class="callout callout-info">
+                            <div class="callout-title">Hierarquia de Prioridades</div>
+                            <p>Quando há conflito, Claude deve priorizar nesta ordem:</p>
+                            <ol style="margin:8px 0;padding-left:24px;">
+                                <li><strong>Segurança ampla</strong> — Preservar supervisão humana sobre IA</li>
+                                <li><strong>Ética ampla</strong> — Honestidade, bons valores, evitar danos</li>
+                                <li><strong>Conformidade</strong> — Seguir diretrizes da Anthropic</li>
+                                <li><strong>Genuinamente útil</strong> — Beneficiar usuários e operadores</li>
+                            </ol>
+                        </div>
+                        <p>A mudança-chave da constituição atual: enfatiza <strong>compreensão profunda</strong> sobre <em>por que</em> comportamentos importam, não apenas <em>o que</em> é exigido. Isso permite generalização para situações novas, em vez de seguir regras mecanicamente.</p>
+                        <p><a href="https://www.anthropic.com/news/claude-new-constitution" target="_blank">Leia mais sobre a nova constituição do Claude →</a></p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Como se Implementa o Alinhamento</h2>
+                        <p>Os valores são inseridos em <strong>todas as etapas</strong>:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Fase</th><th>Técnicas</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Pré-treino</strong></td><td>Curadoria de dados, remoção de conteúdo tóxico, fact-check, sanitização, eliminação de dados pessoais</td></tr>
+                                    <tr><td><strong>Pós-treino</strong></td><td>RLHF (feedback humano), RLAIF (feedback de IA), fine-tuning supervisionado, <strong>Red Teaming</strong> (testes adversariais)</td></tr>
+                                    <tr><td><strong>Contexto</strong></td><td>System prompt com regras éticas, guardrails, anti-prompt injection, detecção de jailbreak</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">O Prompt de Sistema</h2>
+                        <p>Cada modelo tem um <strong>prompt de sistema</strong> que define seu comportamento. Exemplo de categorias no Claude:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Categoria</th><th>Regras</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Conteúdo Nocivo</strong></td><td>Armas, drogas, malware, discurso de ódio, conteúdo extremista, comportamentos autodestrutivos</td></tr>
+                                    <tr><td><strong>Direitos Autorais</strong></td><td>Citação obrigatória, paráfrase, não reproduzir >30 palavras de texto protegido</td></tr>
+                                    <tr><td><strong>Bem-estar do Usuário</strong></td><td>Proteção infantil (prioridade máxima), detecção de vulnerabilidades, transparência sobre IA</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Overalignment: Quando o Alinhamento Excede</h2>
+                        <p>O <strong>excesso de alinhamento</strong> pode frustrar usos legítimos:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Problema</th><th>Exemplo</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Casos sensíveis</strong></td><td>Recusa discutir tortura, racismo, crimes sexuais mesmo em contexto acadêmico/jurídico</td></tr>
+                                    <tr><td><strong>Direitos autorais</strong></td><td>Recusa reproduzir trechos curtos mesmo com fair use legítimo</td></tr>
+                                    <tr><td><strong>Viés do mundo cor de rosa</strong></td><td>Evita críticas, sempre busca "lado positivo"</td></tr>
+                                    <tr><td><strong>Ambiguidades</strong></td><td>Recusa em situações cinzentas (paradoxo do mosquito)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout callout-info">
+                            <div class="callout-title">🔧 Mitigadores para Overalignment</div>
+                            <ul style="margin:8px 0;padding-left:20px;">
+                                <li><strong>Colocar palavras na boca:</strong> Comece a resposta você mesmo ("Vamos começar!")</li>
+                                <li><strong>Contexto acadêmico:</strong> Explicite que é pesquisa, estudo, análise jurídica</li>
+                                <li><strong>Reformular o pedido:</strong> Às vezes a forma de perguntar ativa recusa desnecessária</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Red Team vs Blue Team</h2>
+                        <p>O alinhamento é uma <strong>batalha constante</strong>:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li><strong>Red Team:</strong> Pesquisadores tentam burlar proteções (jailbreak)</li>
+                            <li><strong>Blue Team:</strong> Empresas corrigem vulnerabilidades</li>
+                        </ul>
+                        <p>Técnicas de jailbreak incluem: DAN (Do Anything Now), roleplay, prompt injection, encoding em base64.</p>
+                        <div class="callout callout-warning">
+                            <div class="callout-title">🛡️ Corrida Armamentista</div>
+                            <p>Novos jailbreaks surgem constantemente. Claude é considerado robusto, mas nenhum modelo é 100% à prova.</p>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Por que Isso Importa no Direito?</h2>
+                        <p>O alinhamento explica comportamentos que podem frustrar juristas:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Situação</th><th>Comportamento</th><th>Solução</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Recusa discutir crime</td><td>Overalignment</td><td>Explicite contexto jurídico/acadêmico</td></tr>
+                                    <tr><td>Não cita jurisprudência</td><td>Medo de alucinar</td><td>Forneça o documento via anexo</td></tr>
+                                    <tr><td>Evasivo em danos morais</td><td>Juízo de valor = risco</td><td>Peça critérios, não valor final</td></tr>
+                                    <tr><td>Não reproduz trecho de lei</td><td>Proteção de copyright</td><td>Cole você mesmo o texto</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+
+**Exercise:**
+Title: Observando o Alinhamento HHH
+Prompt: undefined
+Checklist:
+- Entendo os 3 princípios: Helpful, Honest, Harmless
+- Conheço a Constituição do Claude e sua hierarquia de prioridades
+- Sei como o alinhamento é implementado (pré-treino, pós-treino, contexto)
+- Conheço o conceito de overalignment (excesso de cautela)
+- Sei usar mitigadores: contexto acadêmico, reformular pedido, colocar palavras na boca
+- Entendo a dinâmica Red Team vs Blue Team
+
+
+**Tip:** Se o modelo estiver recusando algo legítimo, <strong>explicite o contexto</strong>: 'Sou juiz/advogado/professor', 'Isso é para fins acadêmicos', 'Preciso analisar juridicamente'. Contexto profissional mitiga overalignment.
+
+**Warning:** <strong>"O modelo recusou, então é impossível fazer."</strong><br>Nem sempre. Recusas podem ser overalignment. Tente: (1) reformular o pedido, (2) explicar o contexto legítimo, (3) começar a resposta você mesmo. Se for pedido válido, geralmente funciona.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.10",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.11: Habilidades Emergentes**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Conhecer capacidades que surgem espontaneamente nos LLMs e métodos para avaliar a 'inteligência' das máquinas.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que são Habilidades Emergentes?</h2>
+                        <p><strong>Habilidades emergentes</strong> são capacidades que surgem espontaneamente nos LLMs após atingir certa escala — <strong>sem programação explícita</strong>.</p>
+                        <div class="code-block">Performance vs Escala
+
+     │
+     │                              ╭──── Habilidade emerge!
+     │                            ╱
+     │                          ╱
+     │  ───────────────────────╯
+     │
+     └────────────────────────────────
+       10B    50B   100B   175B   parâmetros
+
+Os LLMs foram treinados para prever o próximo token.
+Porém, ao se tornarem mais robustos, desenvolvem
+habilidades para as quais NÃO foram treinados.</div>
+                        <p>Isso torna LLMs imprevisíveis: não sabemos quais capacidades vão surgir com mais escala.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Taxonomia das Habilidades dos LLMs</h2>
+                        <p>As habilidades dos LLMs podem ser organizadas em cinco grandes categorias:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Categoria</th><th>Habilidades</th><th>Exemplos</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>1. Processamento Linguístico</strong></td><td>Geração, Extração, Classificação, Transformação</td><td>Traduzir, resumir, extrair entidades, reescrever</td></tr>
+                                    <tr><td><strong>2. Compreensão e Aprendizado</strong></td><td>In-context learning, Few-shot, Generalização</td><td>Aprender de exemplos no prompt, inferir padrões</td></tr>
+                                    <tr><td><strong>3. Resolução de Problemas</strong></td><td>Planejamento, Raciocínio lógico e matemático, CoT</td><td>Resolver equações, analisar argumentos, planejar passos</td></tr>
+                                    <tr><td><strong>4. Cognição Social e Moral</strong></td><td>Teoria da mente, Persuasão, Valoração ética</td><td>Inferir estados mentais, modelar perspectivas, julgar dilemas</td></tr>
+                                    <tr><td><strong>5. Agenticidade</strong></td><td>Agência, Planejamento de ações, Execução</td><td>Usar ferramentas, tomar decisões autônomas, agir no mundo</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout callout-warning">
+                            <div class="callout-title">Competência Formal vs Funcional</div>
+                            <p>Os LLMs são incrivelmente bons em <strong>competência formal de linguagem</strong> — dominam gramática, sintaxe e semântica. Porém, ainda são limitados em <strong>competência funcional</strong> (lógica, moral, verdade).</p>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Métodos para Medir a "Inteligência" dos LLMs</h2>
+                        <p>Como avaliar se um LLM é "inteligente"? Existem diversas abordagens:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Método</th><th>Como funciona</th><th>Limitações</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Teste de Turing</strong></td><td>Humano tenta distinguir máquina de pessoa em conversa</td><td>Subjetivo, fácil de "trapacear" com truques de linguagem</td></tr>
+                                    <tr><td><strong>Benchmarks</strong></td><td>Testes padronizados por área (MMLU, HumanEval, etc.)</td><td>Modelos podem ser otimizados para os testes específicos</td></tr>
+                                    <tr><td><strong>Winograd Schema</strong></td><td>Resolver ambiguidades que exigem conhecimento de mundo</td><td>Conjunto limitado de problemas</td></tr>
+                                    <tr><td><strong>Arenas (LMSys)</strong></td><td>Competição direta entre LLMs com votos humanos</td><td>Depende de preferências subjetivas</td></tr>
+                                    <tr><td><strong>Testes Personalizados</strong></td><td>Você cria testes específicos para sua tarefa</td><td>Melhor para uso prático!</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Winograd Schema Challenge</h2>
+                        <p>Um teste elegante que exige <strong>compreensão profunda de contexto</strong>:</p>
+                        <div class="code-block">Exemplo clássico:
+
+"Coloque o conteúdo da garrafa na taça até ELA ficar cheia."
+→ Quem fica cheia? A TAÇA (recebe o conteúdo)
+
+"Coloque o conteúdo da garrafa na taça até ELA ficar vazia."
+→ Quem fica vazia? A GARRAFA (perde o conteúdo)
+
+A mesma estrutura gramatical, mas a resposta muda
+baseada em conhecimento de mundo sobre recipientes.</div>
+                        <p>Este teste revela se o modelo <strong>entende o mundo</strong> ou apenas manipula padrões linguísticos.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Chain-of-Thought (CoT)</h2>
+                        <p>Uma das emergências mais úteis: fazer o modelo <strong>raciocinar passo a passo</strong>.</p>
+                        <div class="code-block">SEM Chain-of-Thought:
+Pergunta: "João tem 3 maçãs. Maria tem o dobro. Quantas no total?"
+Resposta: "9" (ERRADO - foi direto para resposta)
+
+COM Chain-of-Thought:
+Pergunta: "João tem 3 maçãs. Maria tem o dobro. Quantas no total? Pense passo a passo."
+Resposta: "
+1. João tem 3 maçãs
+2. Maria tem o dobro de João = 3 × 2 = 6 maçãs
+3. Total = 3 + 6 = 9 maçãs
+"
+(CORRETO - raciocínio explícito)</div>
+                        <p>Simplesmente adicionar <strong>"Pense passo a passo"</strong> pode melhorar drasticamente a precisão em problemas de raciocínio.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">In-Context Learning (ICL)</h2>
+                        <p>A capacidade de <strong>aprender de exemplos</strong> no próprio prompt, sem modificar o modelo.</p>
+                        <div class="code-block">PROMPT (Few-shot):
+
+Classifique como PROCEDENTE ou IMPROCEDENTE:
+
+Caso: Autor pede danos morais por atraso de voo de 2 horas.
+Classificação: IMPROCEDENTE
+
+Caso: Autor pede danos morais por negativação indevida.
+Classificação: PROCEDENTE
+
+Caso: Autor pede danos morais por entrega atrasada de 1 dia.
+Classificação: [MODELO COMPLETA: IMPROCEDENTE]</div>
+                        <p>O modelo "aprende" o padrão dos exemplos e aplica a novos casos — sem treinamento adicional.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Implicações Práticas</h2>
+                        <p>Trate os LLMs como <strong>máquinas de calcular textos</strong> que simulam linguagem humana, mas não têm sabedoria intrínseca, compromisso com a verdade ou senso de justiça inato.</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li><strong>Use CoT para problemas complexos:</strong> "Pense passo a passo" melhora raciocínio</li>
+                            <li><strong>Use exemplos (few-shot):</strong> Mostre o padrão desejado, o modelo generaliza</li>
+                            <li><strong>Modelos maiores = mais capacidades:</strong> Opus > Sonnet para tarefas complexas</li>
+                            <li><strong>Crie seus próprios testes:</strong> Benchmarks genéricos não medem sua tarefa específica</li>
+                            <li><strong>Capacidades futuras são imprevisíveis:</strong> O que modelos farão amanhã?</li>
+                        </ul>
+                    </div>
+                
+
+**Exercise:**
+Title: Explorando Habilidades dos LLMs
+Prompt: undefined
+Checklist:
+- Entendo o conceito de habilidades emergentes
+- Conheço a taxonomia das 5 categorias de habilidades
+- Sei a diferença entre competência formal e funcional
+- Conheço métodos para medir 'inteligência' de LLMs
+- Sei usar Chain-of-Thought e few-shot learning
+
+
+**Tip:** Para avaliar um LLM para sua tarefa específica, <strong>crie seu próprio benchmark</strong>. Escolha 10-20 casos com respostas conhecidas e teste. Benchmarks genéricos (MMLU, etc.) não refletem performance na sua realidade.
+
+**Warning:** <strong>"Se passou no benchmark, resolve meu problema."</strong><br>Benchmarks medem capacidades genéricas. Um modelo pode ter 90% no MMLU e falhar na sua tarefa específica. Sempre teste com casos reais do seu domínio.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.11",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.12: Multimodalidade**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Entender como LLMs processam diferentes tipos de entrada: texto, imagem, áudio, dados e ferramentas.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que é Multimodalidade?</h2>
+                        <p>LLMs <strong>multimodais</strong> processam múltiplos tipos de entrada além de texto:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Modalidade</th><th>Entrada</th><th>Exemplos de uso</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Texto</strong></td><td>Texto natural, código</td><td>Conversar, escrever, analisar</td></tr>
+                                    <tr><td><strong>Imagem</strong></td><td>Fotos, prints, documentos escaneados</td><td>Analisar documento, descrever foto, OCR</td></tr>
+                                    <tr><td><strong>Áudio</strong></td><td>Voz, gravações</td><td>Transcrever audiência, ditar petição</td></tr>
+                                    <tr><td><strong>Dados</strong></td><td>Planilhas, tabelas, CSV</td><td>Analisar dados financeiros, extrair padrões</td></tr>
+                                    <tr><td><strong>Ferramentas</strong></td><td>APIs, busca web, execução de código</td><td>RAG, buscar na web, rodar Python</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p style="margin-top:12px;font-size:14px;color:var(--text-muted);">Para uso prático das ferramentas no Claude, veja a <strong>Aula 0.6 — Recursos Agênticos</strong>.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Como Funciona a Visão?</h2>
+                        <p>Modelos de visão combinam um <strong>encoder de imagem</strong> com o LLM:</p>
+                        <div class="code-block">IMAGEM → [Vision Encoder] → Embeddings visuais
+                              ↓
+TEXTO → [LLM] ← Embeddings visuais → RESPOSTA
+
+O modelo "vê" a imagem como uma sequência de tokens visuais
+que se misturam com os tokens de texto.</div>
+                        <p>Claude, GPT-4V e Gemini usam variações dessa arquitetura.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Capacidades de Visão</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Funciona bem</th><th>Tem limitações</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Descrever conteúdo de imagens</td><td>OCR preciso em texto pequeno/borrado</td></tr>
+                                    <tr><td>Ler texto em documentos</td><td>Interpretar gráficos complexos</td></tr>
+                                    <tr><td>Analisar diagramas simples</td><td>Contar objetos com precisão</td></tr>
+                                    <tr><td>Identificar elementos visuais</td><td>Ler caligrafia difícil</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Usos Práticos no Direito</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Tarefa</th><th>Modalidade</th><th>Exemplo</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Análise de documentos</strong></td><td>Vision + PDF</td><td>Ler petição escaneada, extrair informações</td></tr>
+                                    <tr><td><strong>Transcrição de audiência</strong></td><td>Audio</td><td>Converter áudio em texto para análise</td></tr>
+                                    <tr><td><strong>Análise de provas</strong></td><td>Vision</td><td>Descrever foto de local de crime, dano</td></tr>
+                                    <tr><td><strong>Dados financeiros</strong></td><td>Data</td><td>Analisar planilha de movimentação</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="callout callout-warning">
+                        <div class="callout-title">⚠️ Limitações Importantes</div>
+                        <p><strong>OCR não é perfeito:</strong> Texto borrado, caligrafia ou imagens de baixa qualidade podem gerar erros.</p>
+                        <p><strong>Verificação necessária:</strong> Sempre confira dados extraídos de imagens contra o documento original.</p>
+                        <p><strong>Privacidade:</strong> Imagens de documentos sigilosos seguem as mesmas regras de texto — cuidado com dados pessoais.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">O Estado Atual (2024-2025)</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Capacidade</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Linguagem</strong></td><td style="color:var(--accent-success);">Excelente</td></tr>
+                                    <tr><td><strong>Visão</strong></td><td style="color:var(--accent-success);">Muito bom</td></tr>
+                                    <tr><td><strong>Áudio</strong></td><td style="color:var(--accent-success);">Bom (transcrição)</td></tr>
+                                    <tr><td><strong>Vídeo</strong></td><td style="color:var(--accent-warning);">Emergente (Gemini)</td></tr>
+                                    <tr><td><strong>Raciocínio complexo</strong></td><td style="color:var(--accent-warning);">Limitado</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+
+**Exercise:**
+Title: Explorando Multimodalidade
+Prompt: undefined
+Checklist:
+- Sei que LLMs podem processar imagens além de texto
+- Testei a capacidade de visão do Claude
+- Entendo que OCR não é perfeito
+- Sei que dados extraídos de imagens devem ser verificados
+- Compreendo usos práticos no Direito (documentos, provas)
+
+
+**Tip:** Ao usar visão para <strong>documentos jurídicos</strong>, sempre peça ao modelo para indicar trechos que não conseguiu ler bem. Isso ajuda a identificar onde verificação manual é necessária.
+
+**Warning:** <strong>"O modelo leu a imagem, então está certo."</strong><br>Não necessariamente. OCR tem erros, especialmente em textos pequenos, borrados ou com formatação complexa. <strong>Sempre verifique dados críticos</strong> (valores, datas, nomes) contra o documento original.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.12",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

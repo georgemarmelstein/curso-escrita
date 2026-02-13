@@ -1,0 +1,339 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 0.4: Interface e Navegação**
+
+**Module:** Módulo 0 — Preparação
+
+**Objective:** Conhecer os elementos essenciais da interface de um LLM — válidos para qualquer modelo.
+
+**Content:**
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">⚡ Interfaces Mudam Constantemente</div>
+                        <p>As interfaces dos LLMs (Claude, ChatGPT, Gemini) são atualizadas frequentemente. Os modelos também evoluem — novas versões são lançadas a cada poucos meses.</p>
+                        <p><strong>Não se preocupe:</strong> os elementos essenciais permanecem os mesmos em todas as plataformas. Se você entender esses elementos, conseguirá usar qualquer LLM.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Elementos Essenciais (Comuns a Todos os LLMs)</h2>
+                        <p>Independente do modelo ou da versão, toda interface de LLM possui estes elementos básicos:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Elemento</th><th>O que é</th><th>Função</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Área de Chat</strong></td><td>O espaço central da tela</td><td>Onde acontece a conversa: você digita (input) e o modelo responde (output). É o coração da interface.</td></tr>
+                                    <tr><td><strong>Campo de Texto</strong></td><td>Caixa de entrada na parte inferior</td><td>Onde você digita suas perguntas e instruções. Suporta textos longos.</td></tr>
+                                    <tr><td><strong>Botão de Anexo</strong></td><td>Geralmente um ícone [+] ou clipe</td><td>Permite enviar arquivos (PDFs, imagens, documentos) para o modelo analisar.</td></tr>
+                                    <tr><td><strong>Nova Conversa</strong></td><td>Botão para iniciar novo chat</td><td>Cria uma conversa limpa, <strong>sem memória</strong> da conversa anterior.</td></tr>
+                                    <tr><td><strong>Configurações</strong></td><td>Menu de ajustes (geralmente ícone ⚙️)</td><td>Privacidade, preferências, plano, personalização.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="callout callout-warning">
+                        <div class="callout-title">🧠 Conceito Fundamental: Cada Conversa é um Contexto Isolado</div>
+                        <p>Quando você clica em <strong>"Nova Conversa"</strong>, você está iniciando uma sessão completamente nova.</p>
+                        <p>O modelo <strong>não sabe</strong> o que foi discutido em conversas anteriores. É como se você estivesse falando com uma <strong>pessoa diferente</strong> que não participou das conversas passadas.</p>
+                        <p><strong>Implicação prática:</strong> Se você precisa que o modelo lembre de algo, deve incluir essa informação na conversa atual (ou usar Projetos com instruções fixas).</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Visão Geral da Interface do Claude</h2>
+                        <video controls style="width:100%;max-width:800px;border-radius:12px;border:1px solid var(--border-light);box-shadow:var(--shadow-md);margin:24px 0;">
+                            <source src="assets/videos/claude-interface.mp4" type="video/mp4">
+                            Seu navegador não suporta vídeos HTML5.
+                        </video>
+                        <p class="screenshot-caption">Interface do Claude: elementos essenciais presentes em todas as plataformas de LLM</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Identificar os Elementos Essenciais
+Prompt: undefined
+Checklist:
+- Sei identificar a área de chat (input e output)
+- Sei onde fica o botão de anexo
+- Entendo que cada nova conversa é um contexto isolado
+- Sei onde ficam as configurações
+- Entendo que interfaces mudam, mas elementos essenciais permanecem
+
+
+**Tip:** Não decore a interface atual — ela vai mudar. <strong>Entenda os conceitos</strong>: área de chat, anexo, nova conversa, configurações. Com isso, você usa qualquer LLM.
+
+**Warning:** <strong>"O modelo esqueceu o que conversamos!"</strong><br>Isso acontece quando você inicia uma nova conversa. Cada conversa é isolada — o modelo não tem acesso às anteriores. <strong>Solução:</strong> Ao longo do curso, veremos como contornar essa característica com técnicas de gerenciamento de contexto e memória.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "0.4",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 0.5: Configurações Personalizadas**
+
+**Module:** Módulo 0 — Preparação
+
+**Objective:** Entender os recursos de personalização e memória dos LLMs — e por que não são recomendados para uso jurídico.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que é Personalização?</h2>
+                        <p>A <strong>personalização</strong> permite definir instruções customizadas que valem para <strong>todas</strong> as suas conversas. É um texto fixo que o modelo sempre considera antes de responder.</p>
+                        <p><strong>Exemplo:</strong> "Sempre responda em português formal" ou "Sou advogado tributarista, adapte as respostas para esse contexto".</p>
+                        <img src="assets/img/screenshot-claude-personalizacao.png" alt="Tela de personalização do Claude" class="screenshot" loading="lazy">
+                        <p class="screenshot-caption">Configurações de personalização no Claude — instruções que valem para todas as conversas</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">O que é Memória?</h2>
+                        <p>A <strong>memória</strong> permite ao modelo lembrar detalhes específicos de conversas anteriores. O modelo extrai "lembranças" automaticamente e as usa para contextualizar conversas futuras.</p>
+                        <p><strong>Exemplo:</strong> Se você menciona que é juiz federal em uma conversa, o modelo pode lembrar disso em conversas futuras.</p>
+                        <img src="assets/img/screenshot-claude-memoria.png" alt="Tela de memória do Claude" class="screenshot" loading="lazy">
+                        <p class="screenshot-caption">Configurações de memória no Claude — lembranças extraídas de conversas anteriores</p>
+                    </div>
+                    <div class="callout callout-warning">
+                        <div class="callout-title">⚠️ Não Recomendado para Uso Jurídico</div>
+                        <p>Personalização e memória globais são úteis apenas para quem usa LLMs para <strong>finalidades muito específicas</strong> e <strong>tarefas homogêneas</strong>.</p>
+                        <p>Para a realidade jurídica — com demandas variadas e contextos diversos — <strong>não há vantagem</strong> em usar esses recursos globalmente.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Problemas do Uso Global</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Problema</th><th>O que acontece</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Poluição de contexto</strong></td><td>Informações irrelevantes ocupam espaço na janela de contexto, reduzindo a capacidade do modelo</td></tr>
+                                    <tr><td><strong>Contaminação de memória</strong></td><td>Detalhes de um caso "vazam" para análises de outros casos completamente diferentes</td></tr>
+                                    <tr><td><strong>Distração</strong></td><td>O modelo considera informações que não são relevantes para a tarefa atual</td></tr>
+                                    <tr><td><strong>Interferência de estilo</strong></td><td>Um estilo definido globalmente atrapalha quando você precisa de abordagem diferente (relatório neutro vs fundamentação argumentativa)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">A Alternativa: Customização por Projeto</h2>
+                        <p>Em vez de configurar globalmente, use os recursos de <strong>projeto</strong> de cada plataforma:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Plataforma</th><th>Recurso</th><th>O que faz</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Claude</strong></td><td>Projetos</td><td>Agrupa conversas com instruções específicas isoladas</td></tr>
+                                    <tr><td><strong>ChatGPT</strong></td><td>GPTs Customizados</td><td>Cria "versões" do ChatGPT com comportamento específico</td></tr>
+                                    <tr><td><strong>Gemini</strong></td><td>Gems</td><td>Assistentes personalizados para tarefas específicas</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Vantagem:</strong> Cada projeto/GPT/Gem tem seu próprio contexto isolado, sem contaminar outros.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Verificar Configurações Globais
+Prompt: undefined
+Checklist:
+- Entendo a diferença entre personalização e memória
+- Sei por que não usar configurações globais no Direito
+- Campo de personalização está em branco
+- Memória está limpa ou desativada
+- Sei que devo usar Projetos/GPTs/Gems para customização
+
+
+**Tip:** A customização <strong>por projeto</strong> é mais poderosa que a global: você define instruções específicas para cada tipo de tarefa, sem contaminação cruzada.
+
+**Warning:** <strong>"Vou configurar minha personalização global como 'Sou magistrado'."</strong><br>Parece eficiente, mas quando você quiser explorar argumentos do autor ou simular a perspectiva de um advogado, o modelo vai insistir na postura de julgador. <strong>Solução:</strong> Use Projetos com instruções específicas para cada contexto.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "0.5",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 0.6: Recursos Agênticos**
+
+**Module:** Módulo 0 — Preparação
+
+**Objective:** Entender que os assistentes de IA atuais possuem ferramentas que ativam automaticamente — e que a resposta nem sempre vem diretamente do modelo.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">Antes e Agora</h2>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0;">
+                            <div style="background:var(--bg-tertiary);border-radius:12px;padding:20px;border:1px solid var(--border-light);">
+                                <div style="font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:16px;">Antes</div>
+                                <div style="text-align:center;padding:12px 0;">
+                                    <div style="background:var(--accent-blue);color:white;padding:10px 16px;border-radius:8px;display:inline-block;font-weight:600;">Pergunta</div>
+                                    <div style="font-size:24px;color:var(--text-muted);margin:8px 0;">↓</div>
+                                    <div style="background:var(--bg-card);border:1px solid var(--border-medium);padding:10px 16px;border-radius:8px;display:inline-block;">Modelo responde</div>
+                                    <div style="font-size:24px;color:var(--text-muted);margin:8px 0;">↓</div>
+                                    <div style="background:var(--accent-gold);color:white;padding:10px 16px;border-radius:8px;display:inline-block;font-weight:600;">Resposta</div>
+                                </div>
+                                <div style="margin-top:16px;padding-top:16px;border-top:1px dashed var(--border-medium);font-size:14px;color:var(--text-secondary);">
+                                    <strong>Recursos:</strong> chat + anexo<br>
+                                    <strong>Fonte:</strong> conhecimento interno (treinamento)
+                                </div>
+                            </div>
+                            <div style="background:var(--bg-tertiary);border-radius:12px;padding:20px;border:2px solid var(--accent-blue);">
+                                <div style="font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-blue);margin-bottom:16px;">Agora</div>
+                                <div style="text-align:center;padding:12px 0;">
+                                    <div style="background:var(--accent-blue);color:white;padding:10px 16px;border-radius:8px;display:inline-block;font-weight:600;">Instrução</div>
+                                    <div style="font-size:24px;color:var(--text-muted);margin:8px 0;">↓</div>
+                                    <div style="background:var(--bg-card);border:1px solid var(--border-medium);padding:10px 16px;border-radius:8px;display:inline-block;">Modelo <strong>decide</strong></div>
+                                    <div style="font-size:24px;color:var(--text-muted);margin:8px 0;">↓</div>
+                                    <div style="background:var(--bg-card);border:2px dashed var(--accent-blue-light);padding:12px 16px;border-radius:8px;display:inline-block;">
+                                        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-blue);font-weight:700;margin-bottom:8px;">Ferramentas</div>
+                                        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+                                            <span style="background:var(--accent-blue-light);color:white;padding:4px 10px;border-radius:4px;font-size:12px;">Busca</span>
+                                            <span style="background:var(--accent-blue-light);color:white;padding:4px 10px;border-radius:4px;font-size:12px;">Pensamento</span>
+                                            <span style="background:var(--accent-blue-light);color:white;padding:4px 10px;border-radius:4px;font-size:12px;">Análise</span>
+                                            <span style="background:var(--accent-blue-light);color:white;padding:4px 10px;border-radius:4px;font-size:12px;">Artefatos</span>
+                                            <span style="background:var(--accent-blue-light);color:white;padding:4px 10px;border-radius:4px;font-size:12px;">Código</span>
+                                        </div>
+                                    </div>
+                                    <div style="font-size:24px;color:var(--text-muted);margin:8px 0;">↓</div>
+                                    <div style="background:var(--accent-gold);color:white;padding:10px 16px;border-radius:8px;display:inline-block;font-weight:600;">Resposta</div>
+                                </div>
+                                <div style="margin-top:16px;padding-top:16px;border-top:1px dashed var(--border-medium);font-size:14px;color:var(--text-secondary);">
+                                    <strong>Recursos:</strong> chat + anexo + <em>ferramentas</em><br>
+                                    <strong>Fonte:</strong> modelo + ferramentas externas
+                                </div>
+                            </div>
+                        </div>
+                        <p style="margin-top:16px;">A diferença fundamental: <strong>o modelo agora decide</strong> se precisa acionar ferramentas externas. Isso muda a origem da resposta.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">O que são Recursos Agênticos?</h2>
+                        <p>São <strong>ferramentas externas</strong> que o modelo pode acionar para complementar sua resposta:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Ferramenta</th><th>O que faz</th><th>Exemplo de uso</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Busca na web</strong></td><td>Pesquisa informações em tempo real</td><td>Jurisprudência recente, notícias, normas atualizadas</td></tr>
+                                    <tr><td><strong>Pensamento estendido</strong></td><td>Raciocínio mais profundo antes de responder</td><td>Problemas complexos, análises que exigem reflexão</td></tr>
+                                    <tr><td><strong>Análise de dados</strong></td><td>Processa planilhas e extrai padrões</td><td>Tabelas com muitos dados, cálculos estatísticos</td></tr>
+                                    <tr><td><strong>Artefatos</strong></td><td>Cria documentos estruturados</td><td>Tabelas, código, documentos formatados</td></tr>
+                                    <tr><td><strong>Execução de código</strong></td><td>Roda código para cálculos precisos</td><td>Operações matemáticas complexas</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Como as Ferramentas São Ativadas?</h2>
+                        <p>Existem três formas:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Forma</th><th>Descrição</th><th>Exemplo</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Por solicitação</strong></td><td>Você pede explicitamente</td><td>"Pesquise na web sobre..." / "Use pensamento estendido"</td></tr>
+                                    <tr><td><strong>Por autorização</strong></td><td>Você habilita a ferramenta e o modelo decide quando usar</td><td>Ativar busca web nas configurações</td></tr>
+                                    <tr><td><strong>Por iniciativa própria</strong></td><td>O modelo decide sozinho que precisa da ferramenta</td><td>Criar artefato quando você pede uma tabela</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>Esse é o conceito de <strong>agência</strong>: o modelo tem capacidade de <strong>decidir</strong> e <strong>executar ações</strong> além de simplesmente responder.</p>
+                    </div>
+                    <div class="callout callout-warning">
+                        <div class="callout-title">⚠️ A Resposta Nem Sempre Vem do Modelo</div>
+                        <p>Quando uma ferramenta é ativada, parte da resposta vem <strong>da ferramenta</strong>, não do conhecimento interno do modelo.</p>
+                        <p><strong>Exemplo:</strong> Se o modelo busca na web, a informação veio da internet — com todas as vantagens (atualização) e riscos (fontes não verificadas) que isso implica.</p>
+                    </div>
+                    <div class="callout callout-info">
+                        <div class="callout-title">💡 Vantagem do Claude: Transparência</div>
+                        <p>O Claude <strong>sempre informa</strong> quando está usando uma ferramenta. Você vê mensagens como "Buscando na web...", "Criando artefato...", "Analisando...".</p>
+                        <p>Outros modelos (ChatGPT, Gemini) também usam ferramentas, mas <strong>nem sempre informam</strong>. No Claude, você sabe a origem da informação.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Explorando Recursos Agênticos
+Prompt: undefined
+Checklist:
+- Testei busca web ativada e desativada
+- Percebi a diferença nas respostas
+- Vi o Claude criar um artefato
+- Testei cálculo com e sem ferramenta de análise
+- Entendo que ferramentas modificam a origem da resposta
+- Percebi que o Claude informa quando usa ferramentas
+- Compreendo o conceito básico de agência
+
+
+**Tip:** Preste atenção às <strong>indicações visuais</strong> do Claude: "Buscando...", "Analisando...", "Criando artefato...". Isso mostra qual ferramenta está sendo usada e de onde vem a informação.
+
+**Warning:** <strong>"Se a ferramenta está disponível, a resposta é sempre melhor."</strong><br>Nem sempre. Busca web pode trazer fontes não confiáveis. Pensamento estendido pode ser desnecessário para perguntas simples. Entenda o que cada ferramenta faz para decidir quando usá-la.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "0.6",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

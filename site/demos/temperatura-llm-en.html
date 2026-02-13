@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en-US" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature — Controlling LLM Creativity</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #FDFCFA;
+            --bg-secondary: #F7F5F2;
+            --bg-tertiary: #EFECE7;
+            --bg-card: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-muted: #7A7A7A;
+            --border-light: #E8E5E0;
+            --border-medium: #D4D0C8;
+            --accent-blue: #194A68;
+            --accent-blue-light: #2A6A8F;
+            --accent-gold: #BE9C6D;
+            --accent-gold-light: #D4B88A;
+            --accent-success: #2D8659;
+            --accent-warning: #C77D1A;
+            --accent-error: #C43D3D;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+            --font-display: 'Crimson Pro', Georgia, serif;
+            --font-body: 'Source Sans 3', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition-fast: 150ms ease;
+            --transition-base: 250ms ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0F0F0F;
+            --bg-secondary: #1A1A1A;
+            --bg-tertiary: #252525;
+            --bg-card: #1F1F1F;
+            --text-primary: #F5F5F5;
+            --text-secondary: #BEBEBE;
+            --text-muted: #888888;
+            --border-light: #2A2A2A;
+            --border-medium: #3A3A3A;
+            --accent-blue: #4A90B8;
+            --accent-blue-light: #6AAED4;
+            --accent-gold: #D4B88A;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            padding: 32px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-family: var(--font-display);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Main Container */
+        .viz-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Brain Visualization Area */
+        .brain-area {
+            position: relative;
+            height: 350px;
+            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Brain SVG */
+        .brain-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            z-index: 10;
+        }
+
+        .brain-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.1));
+            transition: filter 0.5s ease;
+        }
+
+        .brain-base {
+            fill: var(--bg-card);
+            stroke: var(--border-medium);
+            stroke-width: 2;
+            transition: all 0.5s ease;
+        }
+
+        .brain-detail {
+            fill: none;
+            stroke: var(--border-medium);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            transition: all 0.5s ease;
+        }
+
+        /* Particles Container */
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Glow effect around brain */
+        .brain-glow {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(25, 74, 104, 0.1) 0%, transparent 70%);
+            transition: all 0.5s ease;
+            z-index: 5;
+        }
+
+        /* Ideas/Thoughts floating */
+        .thought {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 15;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            padding: 32px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .temperature-display {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .temp-value {
+            font-family: var(--font-mono);
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s ease;
+        }
+
+        .temp-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* Slider */
+        .slider-container {
+            margin-bottom: 24px;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .slider-labels span {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .slider-labels .label-icon {
+            font-size: 18px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(90deg,
+                var(--accent-blue) 0%,
+                var(--accent-gold) 50%,
+                var(--accent-error) 100%
+            );
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 3px solid var(--accent-blue);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 3px solid var(--accent-blue);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* State Description */
+        .state-description {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .state-title {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .state-icon {
+            font-size: 24px;
+        }
+
+        .state-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .state-examples {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-medium);
+        }
+
+        .state-examples-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .state-examples-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .example-tag {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Output Comparison */
+        .output-comparison {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+        }
+
+        .output-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .output-text {
+            font-family: var(--font-display);
+            font-size: 16px;
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 1.6;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .output-text .highlight {
+            background: linear-gradient(120deg, rgba(190, 156, 109, 0.3) 0%, rgba(190, 156, 109, 0.3) 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Callout */
+        .callout {
+            margin-top: 24px;
+            padding: 16px 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-blue);
+            background: rgba(25, 74, 104, 0.08);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .callout p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes spark {
+            0% { transform: scale(0) translateY(0); opacity: 1; }
+            100% { transform: scale(1) translateY(-100px); opacity: 0; }
+        }
+
+        @keyframes orbit {
+            0% { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 16px; }
+            .header h1 { font-size: 24px; }
+            .brain-area { height: 280px; }
+            .brain-container { width: 150px; height: 150px; }
+            .temp-value { font-size: 36px; }
+            .control-panel { padding: 24px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-badge">Fundamental Concept</div>
+            <h1>Temperature</h1>
+            <p>The parameter that controls the model's "creativity"</p>
+        </div>
+
+        <div class="viz-container">
+            <!-- Brain Visualization -->
+            <div class="brain-area">
+                <div class="particles-container" id="particlesContainer"></div>
+
+                <div class="brain-glow" id="brainGlow"></div>
+
+                <div class="brain-container">
+                    <svg class="brain-svg" viewBox="0 0 100 100" id="brainSvg">
+                        <!-- Brain outline -->
+                        <path class="brain-base" id="brainBase" d="
+                            M50 10
+                            C30 10 15 25 15 45
+                            C15 55 20 65 25 70
+                            C20 75 20 85 30 90
+                            C35 92 45 92 50 90
+                            C55 92 65 92 70 90
+                            C80 85 80 75 75 70
+                            C80 65 85 55 85 45
+                            C85 25 70 10 50 10
+                            Z
+                        "/>
+                        <!-- Brain details/folds -->
+                        <path class="brain-detail" id="brainDetail1" d="M30 35 Q40 30 50 35 Q60 40 70 35"/>
+                        <path class="brain-detail" id="brainDetail2" d="M25 50 Q35 45 45 50 Q55 55 65 50 Q75 45 80 50"/>
+                        <path class="brain-detail" id="brainDetail3" d="M35 65 Q45 60 55 65 Q65 70 75 65"/>
+                        <path class="brain-detail" id="brainDetail4" d="M50 25 Q50 40 50 55"/>
+                        <path class="brain-detail" id="brainDetail5" d="M40 75 Q50 80 60 75"/>
+                    </svg>
+                </div>
+
+                <!-- Floating thoughts (hidden by default) -->
+                <div class="thought" id="thought1">💡</div>
+                <div class="thought" id="thought2">✨</div>
+                <div class="thought" id="thought3">🎨</div>
+                <div class="thought" id="thought4">🔮</div>
+                <div class="thought" id="thought5">🌟</div>
+                <div class="thought" id="thought6">💫</div>
+                <div class="thought" id="thought7">🎭</div>
+                <div class="thought" id="thought8">🌈</div>
+            </div>
+
+            <!-- Controls -->
+            <div class="control-panel">
+                <div class="temperature-display">
+                    <div class="temp-value" id="tempValue">0.0</div>
+                    <div class="temp-label">Temperature</div>
+                </div>
+
+                <div class="slider-container">
+                    <div class="slider-labels">
+                        <span>
+                            <span class="label-icon">🧊</span>
+                            <span>Cold</span>
+                        </span>
+                        <span>
+                            <span class="label-icon">⚖️</span>
+                            <span>Balanced</span>
+                        </span>
+                        <span>
+                            <span class="label-icon">🔥</span>
+                            <span>Hot</span>
+                        </span>
+                    </div>
+                    <input type="range" id="tempSlider" min="0" max="150" value="0" step="1">
+                </div>
+
+                <div class="state-description" id="stateDescription">
+                    <div class="state-title">
+                        <span class="state-icon" id="stateIcon">🧊</span>
+                        <span id="stateTitle">Deterministic</span>
+                    </div>
+                    <div class="state-text" id="stateText">
+                        The model always chooses the most probable word. Predictable and consistent responses.
+                    </div>
+                    <div class="state-examples">
+                        <div class="state-examples-title">Ideal for</div>
+                        <div class="state-examples-list" id="stateExamples">
+                            <span class="example-tag">Facts</span>
+                            <span class="example-tag">Precise data</span>
+                            <span class="example-tag">Calculations</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="output-comparison">
+                    <div class="output-title">See temperature in action</div>
+                    <div class="output-text" id="outputText">
+                        The king lived in a <span class="highlight" id="outputWord1">castle</span>.
+                    </div>
+                    <div class="output-text" style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border-medium);">
+                        The judge ordered <span class="highlight" id="outputWord2">pretrial detention</span>.
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">How it works</div>
+                    <p>Temperature controls the probability distribution. At temperature 0, the model always chooses the most likely token. At high temperature, less probable tokens have a greater chance of being selected, generating more varied (and sometimes incoherent) responses.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // States configuration
+        const states = [
+            {
+                range: [0, 0],
+                icon: '🧊',
+                title: 'Nearly Deterministic',
+                text: 'The model always chooses the most probable word. Predictable and reproducible responses.',
+                examples: ['Facts', 'Precise data', 'Calculations', 'Technical answers'],
+                word1: 'castle',
+                word2: 'pretrial detention',
+                colors: { brain: '#194A68', glow: 'rgba(25, 74, 104, 0.15)', particles: 0 }
+            },
+            {
+                range: [1, 30],
+                icon: '❄️',
+                title: 'Very Conservative',
+                text: 'Small variation, but still very predictable. The model rarely surprises.',
+                examples: ['Reports', 'Objective analyses', 'Summaries'],
+                word1: 'kingdom',
+                word2: 'defendant summons',
+                colors: { brain: '#2A6A8F', glow: 'rgba(42, 106, 143, 0.2)', particles: 3 }
+            },
+            {
+                range: [31, 50],
+                icon: '🌤️',
+                title: 'Slightly Creative',
+                text: 'Good balance between predictability and variation. Coherent responses with some variation.',
+                examples: ['Legal writing', 'Drafts', 'Legal opinions'],
+                word1: 'palace',
+                word2: 'case suspension',
+                colors: { brain: '#4A90B8', glow: 'rgba(74, 144, 184, 0.25)', particles: 6 }
+            },
+            {
+                range: [51, 70],
+                icon: '☀️',
+                title: 'Balanced',
+                text: 'The default for most models. Ideal balance between coherence and creativity.',
+                examples: ['Light brainstorming', 'General writing', 'Explanations'],
+                word1: 'distant county',
+                word2: 'witness hearing',
+                colors: { brain: '#BE9C6D', glow: 'rgba(190, 156, 109, 0.3)', particles: 10 }
+            },
+            {
+                range: [71, 100],
+                icon: '🔥',
+                title: 'Creative',
+                text: 'More varied and unexpected responses. Good for generating ideas, but may lose focus.',
+                examples: ['Brainstorming', 'Creative ideas', 'Alternatives'],
+                word1: 'enchanted village',
+                word2: 'secret investigation',
+                colors: { brain: '#C77D1A', glow: 'rgba(199, 125, 26, 0.35)', particles: 18 }
+            },
+            {
+                range: [101, 130],
+                icon: '🌋',
+                title: 'Very Creative',
+                text: 'High variation. Responses can be surprising, but also incoherent.',
+                examples: ['Fiction', 'Art', 'Experiments'],
+                word1: 'cheese dream',
+                word2: 'interpretive dance',
+                colors: { brain: '#C43D3D', glow: 'rgba(196, 61, 61, 0.4)', particles: 30 }
+            },
+            {
+                range: [131, 150],
+                icon: '🤯',
+                title: 'Chaotic',
+                text: 'The model is "drunk". Chooses words almost randomly. Rarely useful.',
+                examples: ['Absurd humor', 'Dadaism', 'Crazy experiments'],
+                word1: 'purple bumper',
+                word2: 'cosmic pineapple pizza',
+                colors: { brain: '#8B0000', glow: 'rgba(139, 0, 0, 0.5)', particles: 50 }
+            }
+        ];
+
+        // Particle colors for different temperatures
+        const particleColors = [
+            '#194A68', '#2A6A8F', '#4A90B8', '#6AAED4', // Blues
+            '#BE9C6D', '#D4B88A', '#E8C97A', // Golds
+            '#C77D1A', '#E89B3A', // Oranges
+            '#C43D3D', '#E85555', '#FF6B6B', // Reds
+            '#9B59B6', '#E74C3C', '#F39C12', '#1ABC9C', // Vivid
+            '#FF69B4', '#00CED1', '#FFD700', '#FF4500' // Extra vivid
+        ];
+
+        // Elements
+        const slider = document.getElementById('tempSlider');
+        const tempValue = document.getElementById('tempValue');
+        const stateIcon = document.getElementById('stateIcon');
+        const stateTitle = document.getElementById('stateTitle');
+        const stateText = document.getElementById('stateText');
+        const stateExamples = document.getElementById('stateExamples');
+        const outputText = document.getElementById('outputText');
+        const brainBase = document.getElementById('brainBase');
+        const brainGlow = document.getElementById('brainGlow');
+        const brainSvg = document.getElementById('brainSvg');
+        const particlesContainer = document.getElementById('particlesContainer');
+        const thoughts = document.querySelectorAll('.thought');
+
+        let particles = [];
+        let animationFrame;
+
+        // Get current state based on temperature
+        function getState(temp) {
+            for (const state of states) {
+                if (temp >= state.range[0] && temp <= state.range[1]) {
+                    return state;
+                }
+            }
+            return states[states.length - 1];
+        }
+
+        // Update visualization
+        function updateVisualization(temp) {
+            const state = getState(temp);
+            const normalizedTemp = temp / 150;
+
+            // Update temperature display
+            tempValue.textContent = (temp / 100).toFixed(1);
+
+            // Update state description
+            stateIcon.textContent = state.icon;
+            stateTitle.textContent = state.title;
+            stateText.textContent = state.text;
+            stateExamples.innerHTML = state.examples.map(e =>
+                `<span class="example-tag">${e}</span>`
+            ).join('');
+
+            // Update output words
+            document.getElementById('outputWord1').textContent = state.word1;
+            document.getElementById('outputWord2').textContent = state.word2;
+
+            // Update brain colors
+            brainBase.style.fill = state.colors.brain;
+            brainBase.style.stroke = state.colors.brain;
+            document.querySelectorAll('.brain-detail').forEach(d => {
+                d.style.stroke = state.colors.brain;
+            });
+
+            // Update glow
+            brainGlow.style.background = `radial-gradient(circle, ${state.colors.glow} 0%, transparent 70%)`;
+            brainGlow.style.width = `${250 + normalizedTemp * 100}px`;
+            brainGlow.style.height = `${250 + normalizedTemp * 100}px`;
+
+            // Update brain filter (glow effect)
+            const glowIntensity = normalizedTemp * 20;
+            brainSvg.style.filter = `drop-shadow(0 0 ${glowIntensity}px ${state.colors.brain})`;
+
+            // Update particles
+            updateParticles(state.colors.particles, normalizedTemp);
+
+            // Update floating thoughts
+            updateThoughts(normalizedTemp);
+
+            // Update slider thumb color
+            const hue = 210 - normalizedTemp * 180; // Blue to red
+            slider.style.setProperty('--thumb-color', `hsl(${hue}, 70%, 50%)`);
+        }
+
+        // Particle system
+        function createParticle(index, total, normalizedTemp) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+
+            // Size based on temperature
+            const size = 4 + Math.random() * (normalizedTemp * 12);
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+
+            // Color from palette based on temperature
+            const colorIndex = Math.floor(Math.random() * Math.min(particleColors.length, 4 + normalizedTemp * 16));
+            particle.style.background = particleColors[colorIndex];
+
+            // Position around brain center
+            const centerX = particlesContainer.offsetWidth / 2;
+            const centerY = particlesContainer.offsetHeight / 2;
+            const angle = (index / total) * Math.PI * 2 + Math.random() * 0.5;
+            const distance = 60 + Math.random() * (50 + normalizedTemp * 100);
+
+            particle.style.left = `${centerX + Math.cos(angle) * distance}px`;
+            particle.style.top = `${centerY + Math.sin(angle) * distance}px`;
+
+            // Animation
+            const duration = 2 + Math.random() * 3;
+            const delay = Math.random() * 2;
+            particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+            particle.style.opacity = 0.3 + Math.random() * 0.5;
+
+            return particle;
+        }
+
+        function updateParticles(count, normalizedTemp) {
+            // Clear existing particles
+            particlesContainer.innerHTML = '';
+            particles = [];
+
+            // Create new particles
+            for (let i = 0; i < count; i++) {
+                const particle = createParticle(i, count, normalizedTemp);
+                particlesContainer.appendChild(particle);
+                particles.push(particle);
+            }
+        }
+
+        // Floating thoughts
+        function updateThoughts(normalizedTemp) {
+            const visibleCount = Math.floor(normalizedTemp * 8);
+
+            thoughts.forEach((thought, index) => {
+                if (index < visibleCount) {
+                    thought.style.opacity = '1';
+
+                    // Position around brain
+                    const angle = (index / 8) * Math.PI * 2;
+                    const distance = 120 + normalizedTemp * 50;
+                    const centerX = 50; // percentage
+                    const centerY = 50;
+
+                    thought.style.left = `${centerX + Math.cos(angle) * (distance / 4)}%`;
+                    thought.style.top = `${centerY + Math.sin(angle) * (distance / 4)}%`;
+
+                    // Animation
+                    const duration = 3 + index * 0.5;
+                    thought.style.animation = `float ${duration}s ease-in-out infinite`;
+                    thought.style.animationDelay = `${index * 0.3}s`;
+                } else {
+                    thought.style.opacity = '0';
+                    thought.style.animation = 'none';
+                }
+            });
+        }
+
+        // Event listeners
+        slider.addEventListener('input', (e) => {
+            updateVisualization(parseInt(e.target.value));
+        });
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+
+            const icon = document.getElementById('theme-icon');
+            if (newTheme === 'dark') {
+                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+            } else {
+                icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+            }
+        }
+
+        // Initialize
+        updateVisualization(0);
+    </script>
+</body>
+</html>

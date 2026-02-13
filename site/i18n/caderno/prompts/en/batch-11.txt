@@ -1,0 +1,953 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.9: Prompt Relatório (Escrita Jurídica)**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Dominar o prompt de Relatório para transformar documentos processuais em relatórios jurídicos profissionais, com fidelidade documental absoluta.
+
+**Content:**
+
+                    <h2>O que é um Relatório Judicial?</h2>
+                    <p>O relatório judicial é um <strong>componente ubíquo</strong> nas peças processuais, servindo como texto base para a redação de petições, decisões e outras manifestações jurídicas. Aparece em sentenças, acórdãos, pareceres, votos e manifestações ministeriais.</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📋</div>
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">Sumarizar</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Condensar fatos e argumentos essenciais de forma objetiva e cronológica</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧭</div>
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">Orientar</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Guiar o leitor pelos pontos cruciais, facilitando compreensão e análise</p>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Análise vs. Escrita: Qual a diferença?</div>
+                        <table style="width:100%; margin-top: 0.5rem;">
+                            <tr>
+                                <td style="padding: 0.5rem;"><strong>FIRAC+ (Análise)</strong></td>
+                                <td style="padding: 0.5rem;">Extrai informações em formato estruturado (listas, seções)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem;"><strong>Relatório (Escrita)</strong></td>
+                                <td style="padding: 0.5rem;">Transforma em texto corrido no estilo jurídico tradicional</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Características do Prompt Relatório</h2>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: var(--bg-secondary); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent-gold);">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">🔄 Prompt de Transformação</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Usa o conhecimento anexado para transformar informações brutas em relatório estruturado — <strong>menor risco de alucinação</strong> porque não precisa "inventar" conteúdo.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent-gold);">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">🏗️ Prompt Pré-estruturado</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Placeholders funcionam como "palavras na boca da máquina" — instruções dentro de instruções que controlam a camada de estilo.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent-gold);">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">🛡️ Cláusula de Pureza</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Guardrails rigorosos que garantem fidelidade absoluta aos documentos fornecidos — proibição explícita de inferências externas.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent-gold);">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">📏 Verbosidade Controlada</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Equilíbrio entre completude e concisão — extensão proporcional à complexidade do documento analisado.</p>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Anatomia do Prompt Relatório</h2>
+
+                    <h3>1. PERSONA — Especialista em Escrita Jurídica</h3>
+                    <pre class="prompt-block"><code>&lt;persona&gt;
+Você é um ASSISTENTE JURÍDICO DE ALTO NÍVEL especializado
+EM ESCRITA JURÍDICA, LINGUAGEM E INTERPRETAÇÃO, com expertise
+em análise processual, teoria da decisão e estilo de escrita.
+&lt;/persona&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> Diferente do FIRAC+ (análise), aqui a ênfase está na <em>escrita</em> e no <em>estilo</em>.</p>
+
+                    <h3>2. OBJETIVO — Elaborar Relatório com Fidelidade</h3>
+                    <pre class="prompt-block"><code>&lt;objetivo&gt;
+Sua tarefa é realizar a análise abrangente e detalhada dos
+DOCUMENTOS FORNECIDOS, para elaborar o RELATÓRIO DA PETIÇÃO
+INICIAL, completo e detalhado, sintetizando exclusivamente
+os fatos, argumentos e pedidos apresentados pela parte autora.
+
+Realize leitura integral da petição inicial, baseando-se
+exclusivamente nas informações do caso apresentado, sem
+incorporar elementos externos.
+&lt;/objetivo&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> "Exclusivamente" e "sem incorporar elementos externos" são guardrails anti-alucinação.</p>
+
+                    <h3>3. ESTILO — Texto Corrido Jurídico</h3>
+                    <pre class="prompt-block"><code>&lt;estilo&gt;
+Você escreve de modo didático e preciso, com rigor metodológico,
+empregando linguagem técnico-jurídica apropriada para decisões.
+
+Comece o texto com **RELATÓRIO** (sem aspas), seguido do corpo
+iniciando com "Trata-se".
+
+O relatório deve ser redigido em **TEXTO CORRIDO**, com parágrafos
+conectados organicamente, sem bullet points ou tópicos.
+&lt;/estilo&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> "Comece com RELATÓRIO" e "Trata-se" são <em>prefills</em> que garantem formato jurídico tradicional.</p>
+
+                    <h3>4. MODELO — Estrutura com Placeholders</h3>
+                    <pre class="prompt-block"><code>&lt;formato_saida&gt;
+RELATÓRIO
+
+Trata-se de `TIPO DE AÇÃO EM MAIÚSCULAS` proposta por
+`NOME DA PARTE AUTORA EM MAIÚSCULAS` contra `NOME DA PARTE
+RÉ EM MAIÚSCULAS`, com o objetivo de `sintetizar pedido`.
+
+Alega a parte autora (`ID SE HOUVER`) que `DESCREVER FATOS
+EM ORDEM CRONOLÓGICA, COM DATAS, NOMES E EVENTOS`.
+
+Para reforçar sua alegação, argumenta que `INDICAR ARGUMENTOS
+JURÍDICOS, TESES E FUNDAMENTOS DE DIREITO`.
+
+Por fim, requer `DESCREVER PEDIDO CENTRAL`. Requer ainda
+`PEDIDOS ACESSÓRIOS: HONORÁRIOS, CUSTAS, GRATUIDADE`.
+&lt;/formato_saida&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> Placeholders em MAIÚSCULAS dentro de backticks funcionam como "instruções dentro de instruções" — o modelo sabe exatamente o que preencher em cada ponto.</p>
+
+                    <h3>5. ADICIONAIS — Guardrails de Fidelidade</h3>
+                    <pre class="prompt-block"><code>&lt;adicionais&gt;
+**Guardrails de fidelidade:**
+- Use dados estritamente referenciados na petição inicial
+- USE APENAS IDs existentes no documento fornecido
+- **NUNCA INVENTE IDs!** Se não constar, indicar "Id. (NÃO CONSTA)"
+- Em caso de dúvida, NÃO invente — use "não consta dos autos"
+
+**Qualidade da leitura:**
+- Consulte a petição inicial na íntegra
+- Extraia TODOS os fatos narrados, não apenas os principais
+- Identifique TODOS os pedidos formulados
+&lt;/adicionais&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> "NUNCA INVENTE" em maiúsculas e a instrução "não consta dos autos" são guardrails críticos contra alucinação.</p>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Prompt Completo para Copiar</h2>
+                    <p>Clique no bloco abaixo para selecionar e copiar:</p>
+
+                    <pre class="prompt-block large" onclick="window.getSelection().selectAllChildren(this)"><code># Prompt Relatório (Framework P.O.E.M.A.)
+
+&lt;persona&gt;
+Você é um ASSISTENTE JURÍDICO DE ALTO NÍVEL especializado EM ESCRITA JURÍDICA, LINGUAGEM E INTERPRETAÇÃO, com expertise em análise processual, teoria da decisão e estilo de escrita.
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Sua tarefa é realizar a análise abrangente e detalhada dos DOCUMENTOS FORNECIDOS, para ESCREVER O RELATÓRIO do caso jurídico, seguindo rigorosamente a estrutura modelo apresentada.
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Você escreve de modo didático e preciso, com rigor metodológico, empregando linguagem técnico-jurídica apropriada para decisões judiciais.
+
+Comece o texto com **RELATÓRIO** (sem aspas), seguido do corpo do relatório iniciando com "Trata-se".
+
+O relatório deve ser redigido em **TEXTO CORRIDO**, com parágrafos conectados organicamente, sem bullet points ou tópicos.
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+## **INSTRUÇÕES METODOLÓGICAS**
+
+### 1. PRINCÍPIOS DE ANÁLISE
+- **Fidelidade Documental Absoluta**: Extraia informações EXCLUSIVAMENTE dos documentos fornecidos
+- **Proibição de Inferências Externas**: NÃO adicione fatos, dados ou informações não explicitamente mencionados nos autos
+- **Precisão Identificadora**: Utilize APENAS números de identificação (IDs) presentes nos documentos. Quando ausentes, use "ID XXXX"
+- **Transcrição Literal**: Ao citar trechos, reproduza EXATAMENTE como constam nos documentos, usando aspas duplas
+
+### 2. PROTOCOLO DE LEITURA
+- Realize leitura integral de TODOS os documentos antes de iniciar a redação
+- Identifique contradições ou inconsistências entre peças processuais
+- Mapeie cronologicamente os eventos processuais
+- Catalogue todos os pedidos, argumentos e fundamentos de cada parte
+
+## **ESTRUTURA MODELO**
+
+&lt;formato_saida&gt;
+RELATÓRIO
+
+Trata-se de `TIPO DE AÇÃO EM MAIÚSCULAS SEM ASPAS` proposta por `NOME DA(S) PARTE(S) AUTORA(S) EM MAIÚSCULAS` contra `NOME DA(S) PARTE(S) REQUERIDA(S) EM MAIÚSCULAS`, com o objetivo de `SINTETIZAR O PEDIDO DA AÇÃO EM MINÚSCULAS`.
+
+Em sua inicial (ID XXXX), alega a parte autora que `DESCREVER EM DETALHES OS FATOS ALEGADOS PELA PARTE AUTORA, EM ORDEM CRONOLÓGICA, INCLUINDO DATAS, NOMES E EVENTOS CONFORME NARRADOS NA PETIÇÃO INICIAL EM TEXTO CORRIDO`. Em suas palavras, `TRANSCREVER LITERALMENTE OS TRECHOS MAIS RELEVANTES DA PETIÇÃO INICIAL, USANDO ASPAS DUPLAS E MANTENDO A REDAÇÃO ORIGINAL`.
+
+Para reforçar sua alegação, argumenta que `INDICAR OS ARGUMENTOS JURÍDICOS APRESENTADOS PELA PARTE AUTORA, MANTENDO A ORDEM LÓGICA DA PETIÇÃO`. Sustenta ainda que `INDICAR OUTRAS CONSIDERAÇÕES, FUNDAMENTOS OU ARGUMENTOS SUBSIDIÁRIOS DA PETIÇÃO INICIAL`.
+
+Por fim, requer que `DESCREVER O PEDIDO PRINCIPAL E TODOS OS PEDIDOS SUBSIDIÁRIOS OU ALTERNATIVOS, EXATAMENTE COMO FORMULADOS NA PETIÇÃO`.
+
+Em sua contestação (ID XXXXX), a parte requerida `NOME DA PARTE QUE CONTESTOU EM MAIÚSCULAS` alegou que `SE HOUVER PRELIMINARES: descrever primeiro todas as preliminares arguidas. CASO CONTRÁRIO: detalhar os fatos e argumentos de mérito apresentados na defesa`. Em reforço, argumenta que `INDICAR OS FUNDAMENTOS JURÍDICOS E ARGUMENTOS DE DIREITO APRESENTADOS NA CONTESTAÇÃO`.
+
+Por fim, requer que `DESCREVER TODOS OS PEDIDOS FORMULADOS NA CONTESTAÇÃO, INCLUINDO PEDIDOS PRINCIPAIS, SUBSIDIÁRIOS E EVENTUAIS PEDIDOS CONTRAPOSTOS`.
+
+`SE HOUVER OUTRAS PEÇAS PROCESSUAIS RELEVANTES (réplica, manifestações, decisões interlocutórias, etc.), CRIAR NOVOS PARÁGRAFOS SEGUINDO O MESMO PADRÃO ESTRUTURAL ACIMA`
+&lt;/formato_saida&gt;
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+**Guardrails de fidelidade:**
+- Use dados e informações factuais estritamente referenciados no caso em análise, sem adicionar materiais externos
+- USE APENAS IDs e dados existentes no documento fornecido
+- **NUNCA INVENTE IDs!** Caso não conste o ID, indicar "Id. (NÃO CONSTA)"
+- Em caso de dúvida sobre um dado, NÃO invente - use "não consta dos autos" ou similar
+
+**MODO INCREMENTAL**: Se apenas uma peça for anexada (ex: somente a petição inicial), elabore o relatório parcial dessa peça. Quando novas peças forem anexadas posteriormente (ex: contestação, réplica), adicione novos parágrafos mantendo a estrutura anterior, criando assim um relatório completo e encadeado.
+&lt;/adicionais&gt;</code></pre>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Dicas Práticas de Uso</h2>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: var(--bg-secondary); padding: 1.25rem; border-radius: 8px;">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">📄 Tamanho do Anexo</h4>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Processos muito grandes podem exceder o limite de contexto.</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);"><strong>Dica:</strong> Divida a análise em partes para processos volumosos.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.25rem; border-radius: 8px;">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">📑 Peça por Peça vs. Íntegra</h4>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Decisão estratégica entre analisar documentos individuais ou o processo completo.</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);"><strong>Dica:</strong> Para relatórios mais precisos, analise peça por peça e depois consolide.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.25rem; border-radius: 8px;">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">🤖 Robustez do Modelo</h4>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Modelos diferentes têm capacidades variadas de processamento.</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);"><strong>Dica:</strong> Use modelos mais avançados (Claude 3.5, GPT-4) para melhores resultados.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.25rem; border-radius: 8px;">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">📃 Tipo de PDF</h4>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">PDFs escaneados ou com baixa qualidade podem prejudicar a análise.</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);"><strong>Dica:</strong> Sempre que possível, use PDFs com texto selecionável (não escaneados).</p>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Modo Incremental</div>
+                        <p>Você pode construir o relatório <strong>progressivamente</strong>:</p>
+                        <ol style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                            <li>Anexe a petição inicial → receba relatório da inicial</li>
+                            <li>Anexe a contestação → peça para "adicionar ao relatório"</li>
+                            <li>Anexe a réplica → peça para "completar o relatório"</li>
+                        </ol>
+                        <p style="margin-top: 0.5rem;">O modelo mantém o contexto e adiciona novos parágrafos mantendo a estrutura.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Fundamentação</h2>
+
+                    <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <h4 style="margin-bottom: 1rem; color: var(--accent-blue);">Referências</h4>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem; margin-bottom: 1rem;">
+                            <strong>Art. 489 do Código de Processo Civil</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Elementos essenciais da sentença: relatório, fundamentação e dispositivo</span>
+                        </div>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem; margin-bottom: 1rem;">
+                            <strong>Context Rot: How Increasing Input Tokens Impacts LLM Performance</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Chroma Research — Pesquisa sobre análise de textos longos em LLMs</span>
+                        </div>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem;">
+                            <strong>Guia de Prompt Engineering da Anthropic</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Melhores práticas para criação de prompts eficazes</span>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Limitações do Prompt Relatório</div>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Não substitui</strong> a leitura humana — é ferramenta de auxílio</li>
+                            <li><strong>Depende da qualidade</strong> do PDF (OCR pode falhar em escaneados)</li>
+                            <li><strong>Sempre verifique</strong> se os IDs e dados conferem com os originais</li>
+                            <li><strong>Context rot</strong> — em documentos muito longos, informações do meio podem se perder</li>
+                        </ul>
+                    </div>
+                
+
+**Exercise:**
+Title: Gerando um Relatório Judicial
+Prompt: undefined
+Checklist:
+- Entendo a diferença entre prompt de Análise (FIRAC+) e Escrita (Relatório)
+- Sei como funcionam os placeholders como 'instruções dentro de instruções'
+- Compreendo a importância dos guardrails de fidelidade documental
+- Sei usar o Modo Incremental para construir relatórios progressivamente
+
+
+**Tip:** O <strong>Modo Incremental</strong> é particularmente útil quando você recebe peças processuais em momentos diferentes. Comece com a inicial, depois vá adicionando contestação, réplica — o relatório cresce organicamente.
+
+**Warning:** <strong>"O relatório gerado pode ir direto para a sentença."</strong><br>Não sem revisão! Sempre verifique se os IDs, datas e nomes conferem com os originais. O prompt inclui 'NÃO CONSTA' como marcador de lacunas — procure por ele.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.9",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.10: IA e Prova: Limites e Possibilidades**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Compreender os limites regulatórios do uso de IA na análise probatória (Resolução 615/2025 CNJ) e dominar técnicas descritivas permitidas: inventário probatório, linha do tempo e mapeamento de riscos.
+
+**Content:**
+
+                    <h2>O Marco Regulatório: Resolução 615/2025 CNJ</h2>
+                    <p>Em 11 de março de 2025, o CNJ publicou a <strong>Resolução nº 615</strong>, estabelecendo princípios, diretrizes e requisitos para o uso de IA no Poder Judiciário. A norma classifica as soluções de IA em níveis de risco e estabelece <strong>vedações expressas</strong>.</p>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">⚠️ Vedação Legal</div>
+                        <p><strong>Art. 11, AR2:</strong> Sistemas que realizem <em>valoração de provas</em> são classificados como <strong>ALTO RISCO</strong>, exigindo auditorias rigorosas e mecanismos de mitigação para prevenir vieses discriminatórios.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Art. 34:</strong> Sistemas deverão "exigir supervisão humana e permitir modificação pelo magistrado" — a decisão final é <em>sempre</em> humana.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>A Distinção Fundamental: Valoração vs. Descrição</h2>
+                    <p>A chave para o uso responsável de IA na análise probatória está em distinguir duas funções completamente diferentes:</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div style="background: rgba(196, 61, 61, 0.08); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--accent-error);">
+                            <h4 style="color: var(--accent-error); margin-bottom: 0.75rem;">❌ VALORAÇÃO (Vedado)</h4>
+                            <p style="font-size: 0.9rem; margin-bottom: 1rem;">Emitir juízo sobre a <strong>força probante</strong> — função exclusiva do magistrado.</p>
+                            <ul style="font-size: 0.85rem; color: var(--text-muted); margin-left: 1rem;">
+                                <li>"Esta prova é forte/fraca"</li>
+                                <li>"O depoimento é crível/não crível"</li>
+                                <li>"Há prova suficiente para condenação"</li>
+                                <li>"O réu provavelmente cometeu o ato"</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(45, 134, 89, 0.08); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--accent-success);">
+                            <h4 style="color: var(--accent-success); margin-bottom: 0.75rem;">✅ DESCRIÇÃO (Permitido)</h4>
+                            <p style="font-size: 0.9rem; margin-bottom: 1rem;">Organizar, catalogar e apresentar informações <strong>objetivamente</strong> — função de apoio.</p>
+                            <ul style="font-size: 0.85rem; color: var(--text-muted); margin-left: 1rem;">
+                                <li>"Existem 3 documentos e 2 testemunhos"</li>
+                                <li>"O depoente afirmou X, Y e Z"</li>
+                                <li>"Não há prova sobre o fato W nos autos"</li>
+                                <li>"Os depoimentos divergem sobre a data"</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">O Princípio Orientador</div>
+                        <p>A IA pode <strong>descrever o que existe</strong> nos autos, <strong>organizar informações</strong> e <strong>identificar lacunas ou divergências</strong> — mas <em>nunca</em> pode concluir qual versão é verdadeira ou qual prova deve prevalecer. Essa é a essência da <strong>supervisão humana efetiva</strong> exigida pelo CNJ.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>O que a IA Pode Fazer: Três Aplicações Lícitas</h2>
+
+                    <div style="display: grid; gap: 1.5rem; margin: 1.5rem 0;">
+                        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--accent-blue);">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">📋 1. Inventário Probatório</h4>
+                            <p style="font-size: 0.95rem; margin-bottom: 0.75rem;"><strong>O que faz:</strong> Cataloga todas as provas existentes nos autos, classificando por tipo (documental, testemunhal, pericial), origem, data e parte que produziu.</p>
+                            <p style="font-size: 0.95rem;"><strong>Por que é lícito:</strong> É puramente descritivo — não emite juízo sobre força probante, apenas responde "o que existe?"</p>
+                        </div>
+
+                        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--accent-blue);">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">📅 2. Linha do Tempo</h4>
+                            <p style="font-size: 0.95rem; margin-bottom: 0.75rem;"><strong>O que faz:</strong> Extrai e organiza cronologicamente todos os fatos narrados pelas partes, com datas, valores e referências às fontes.</p>
+                            <p style="font-size: 0.95rem;"><strong>Por que é lícito:</strong> É organização temporal objetiva — não decide qual versão é verdadeira, apenas apresenta "quando cada parte diz que aconteceu".</p>
+                        </div>
+
+                        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--accent-blue);">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">🎯 3. Mapeamento de Riscos Probatórios</h4>
+                            <p style="font-size: 0.95rem; margin-bottom: 0.75rem;"><strong>O que faz:</strong> Identifica lacunas (fatos sem prova), divergências (versões conflitantes), inconsistências internas e fatores que podem afetar a análise — apresentando objetivamente pontos positivos e negativos de cada elemento.</p>
+                            <p style="font-size: 0.95rem;"><strong>Por que é lícito:</strong> É análise descritiva de riscos — não conclui "a prova é fraca", mas aponta "esta prova apresenta os seguintes fatores de atenção: X, Y, Z".</p>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Prompt: Inventário Probatório</h2>
+                    <p>Este prompt cataloga todas as provas dos autos <strong>sem emitir juízo de valor</strong>. O resultado é um mapa completo do acervo probatório disponível.</p>
+
+                    <pre class="prompt-block large" onclick="window.getSelection().selectAllChildren(this)"><code># Prompt Inventário Probatório (Framework P.O.E.M.A.)
+
+&lt;persona&gt;
+Você é um ASSISTENTE JURÍDICO especializado em ORGANIZAÇÃO PROCESSUAL,
+com expertise em catalogação sistemática de provas. Você NÃO EMITE
+juízos de valor sobre força probante — apenas descreve e organiza.
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Sua tarefa é realizar o INVENTÁRIO COMPLETO de todas as provas
+constantes nos documentos fornecidos, catalogando-as de forma
+sistemática e objetiva.
+
+**IMPORTANTE:** Este é um trabalho DESCRITIVO. Você deve:
+- LISTAR todas as provas existentes
+- CLASSIFICAR por tipo e origem
+- DESCREVER o conteúdo de cada prova
+- NUNCA emitir juízo sobre credibilidade ou força probante
+- NUNCA usar termos valorativos (forte, fraco, crível, duvidoso)
+
+Leia TODOS os documentos integralmente antes de iniciar o inventário.
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Linguagem OBJETIVA e NEUTRA. Use formato tabular quando apropriado.
+Evite adjetivos valorativos. Descreva, não avalie.
+
+Comece diretamente com **INVENTÁRIO PROBATÓRIO**.
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+&lt;formato_saida&gt;
+### **INVENTÁRIO PROBATÓRIO**
+
+**Processo:** `NÚMERO`
+**Partes:** `AUTOR vs. RÉU`
+**Data do inventário:** `DATA`
+
+---
+
+### **1. PROVAS DOCUMENTAIS**
+
+| # | Documento | Origem | Data | Parte | Descrição Objetiva |
+|---|-----------|--------|------|-------|-------------------|
+| D1 | `tipo` | `fonte` | `data` | `parte` | `o que contém` |
+| D2 | ... | ... | ... | ... | ... |
+
+---
+
+### **2. PROVAS TESTEMUNHAIS**
+
+| # | Depoente | Qualificação | Data | Arrolado por | Síntese do Depoimento |
+|---|----------|--------------|------|--------------|----------------------|
+| T1 | `nome` | `relação` | `data` | `parte` | `o que disse (sem juízo)` |
+
+---
+
+### **3. PROVAS PERICIAIS**
+
+| # | Tipo | Perito | Data | Objeto | Conclusão Técnica |
+|---|------|--------|------|--------|-------------------|
+| P1 | `tipo` | `nome` | `data` | `o que examinou` | `o que concluiu` |
+
+---
+
+### **4. OUTRAS PROVAS**
+`Confissões, indícios, presunções legais, etc.`
+
+---
+
+### **5. RESUMO QUANTITATIVO**
+
+| Tipo | Autor | Réu | Total |
+|------|-------|-----|-------|
+| Documentais | X | X | X |
+| Testemunhais | X | X | X |
+| Periciais | X | X | X |
+| **TOTAL** | X | X | X |
+
+---
+
+### **6. OBSERVAÇÕES**
+`Apenas observações objetivas: documentos ilegíveis, ausências notadas, etc.`
+&lt;/formato_saida&gt;
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+## Guardrails de Neutralidade
+
+**PROIBIDO:**
+- Usar termos como: forte, fraco, crível, duvidoso, convincente, inconsistente
+- Concluir qual versão é verdadeira
+- Sugerir qual prova deve prevalecer
+- Fazer inferências sobre culpa ou inocência
+
+**OBRIGATÓRIO:**
+- Descrever objetivamente o conteúdo de cada prova
+- Citar a fonte/página quando possível
+- Usar linguagem neutra e técnica
+- Incluir TODAS as provas, sem omissões
+&lt;/adicionais&gt;</code></pre>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Prompt: Linha do Tempo Processual</h2>
+                    <p>Este prompt extrai a cronologia dos fatos narrados pelas partes, organizando-os temporalmente <strong>sem decidir qual versão é verdadeira</strong>.</p>
+
+                    <pre class="prompt-block large" onclick="window.getSelection().selectAllChildren(this)"><code># Prompt Linha do Tempo Processual (Framework P.O.E.M.A.)
+
+&lt;persona&gt;
+Você é um ASSISTENTE JURÍDICO especializado em ANÁLISE CRONOLÓGICA,
+com expertise em extração e organização temporal de fatos processuais.
+Você NÃO DECIDE qual versão é verdadeira — apenas organiza as narrativas.
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Sua tarefa é extrair TODOS os fatos com referência temporal dos
+documentos fornecidos, organizando-os em uma linha do tempo unificada.
+
+**IMPORTANTE:** Este é um trabalho de ORGANIZAÇÃO TEMPORAL. Você deve:
+- EXTRAIR todos os fatos datados ou com referência temporal
+- INDICAR a fonte de cada fato (qual parte/documento afirma)
+- IDENTIFICAR divergências de datas entre as partes
+- NUNCA decidir qual versão é a correta
+- USAR formato neutro: "Segundo o autor..." / "Conforme o réu..."
+
+Leia TODOS os documentos integralmente antes de montar a cronologia.
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Linguagem OBJETIVA e CRONOLÓGICA. Sempre indique a fonte da informação.
+Quando houver divergência, apresente AMBAS as versões lado a lado.
+
+Comece diretamente com **LINHA DO TEMPO**.
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+&lt;formato_saida&gt;
+### **LINHA DO TEMPO PROCESSUAL**
+
+**Processo:** `NÚMERO`
+**Partes:** `AUTOR vs. RÉU`
+**Período coberto:** `DATA INICIAL — DATA FINAL`
+
+---
+
+### **CRONOLOGIA DOS FATOS**
+
+| Data | Fato | Fonte | Observação |
+|------|------|-------|------------|
+| DD/MM/AAAA | `descrição objetiva` | Autor (Inicial, p. X) | — |
+| DD/MM/AAAA | `descrição objetiva` | Réu (Contestação, p. Y) | — |
+| DD/MM/AAAA | `descrição objetiva` | Testemunha Z | — |
+| ⚠️ **DIVERGÊNCIA** | | | |
+| DD/MM/AAAA | Segundo autor: `versão` | Inicial, p. X | |
+| DD/MM/AAAA | Segundo réu: `versão` | Contestação, p. Y | |
+
+---
+
+### **MARCOS TEMPORAIS RELEVANTES**
+
+| Marco | Data | Significado Jurídico |
+|-------|------|---------------------|
+| Fato gerador | DD/MM/AAAA | `descrição` |
+| Notificação | DD/MM/AAAA | `descrição` |
+| Ajuizamento | DD/MM/AAAA | `descrição` |
+| Citação | DD/MM/AAAA | `descrição` |
+
+---
+
+### **DIVERGÊNCIAS IDENTIFICADAS**
+
+| Aspecto | Versão do Autor | Versão do Réu |
+|---------|-----------------|---------------|
+| Data do evento X | DD/MM/AAAA | DD/MM/AAAA |
+| Local do fato Y | `local` | `local` |
+
+---
+
+### **FATOS SEM DATA PRECISA**
+`Liste fatos relevantes mencionados sem referência temporal exata`
+
+---
+
+### **OBSERVAÇÕES**
+`Lacunas temporais, períodos sem informação, etc.`
+&lt;/formato_saida&gt;
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+## Guardrails de Neutralidade Temporal
+
+**PROIBIDO:**
+- Decidir qual data é a correta quando há divergência
+- Usar termos como "na verdade", "o correto é", "provavelmente"
+- Omitir a versão de qualquer das partes
+- Inferir datas não mencionadas nos documentos
+
+**OBRIGATÓRIO:**
+- Sempre indicar a FONTE de cada informação temporal
+- Apresentar TODAS as versões quando houver divergência
+- Usar formato condicional: "Segundo...", "Conforme..."
+- Marcar claramente os pontos de DIVERGÊNCIA
+&lt;/adicionais&gt;</code></pre>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Mapeamento de Riscos Probatórios</h2>
+                    <p>O mapeamento de riscos é uma análise <strong>descritiva</strong> que apresenta objetivamente fatores positivos e negativos de cada elemento probatório, <strong>sem concluir</strong> qual deve prevalecer.</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px;">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">🔍 Lacunas Probatórias</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Fatos alegados que não possuem prova correspondente nos autos — identificação objetiva de "buracos" no acervo probatório.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px;">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">⚖️ Divergências entre Provas</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Pontos em que documentos, testemunhos ou perícias apresentam versões conflitantes — sem decidir qual é verdadeira.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px;">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">📊 Fatores de Atenção</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Características objetivas que podem afetar a análise: parentesco de testemunha, documento sem data, laudo inconclusivo, etc.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px;">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem;">✅ Convergências</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Pontos em que as diferentes provas apontam na mesma direção — identificação descritiva de alinhamento, sem valoração.</p>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 2rem;">Prompt: Mapeamento de Riscos Probatórios</h3>
+                    <pre class="prompt-block large" onclick="window.getSelection().selectAllChildren(this)"><code># Prompt Mapeamento de Riscos Probatórios (Framework P.O.E.M.A.)
+
+&lt;persona&gt;
+Você é um ANALISTA DE ACERVO PROBATÓRIO especializado em
+identificação de padrões, divergências e lacunas em conjuntos
+documentais. Sua função é MAPEAR OBJETIVAMENTE os elementos
+probatórios, identificando fatores de atenção SEM EMITIR
+JUÍZO DE VALOR sobre força ou credibilidade das provas.
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Realizar MAPEAMENTO DESCRITIVO do acervo probatório, identificando:
+- Lacunas probatórias (fatos sem prova correspondente)
+- Divergências entre provas (versões conflitantes)
+- Fatores de atenção (características objetivas relevantes)
+- Convergências (alinhamentos entre diferentes provas)
+
+**PROIBIÇÃO ABSOLUTA**: NÃO emita juízo de valor, NÃO use termos
+como "forte", "fraco", "crível", "duvidoso". Apenas DESCREVA.
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+- Tom: DESCRITIVO e NEUTRO
+- Linguagem: técnico-jurídica, sem valoração
+- Estrutura: tabelas e listas organizadas
+- Referências: sempre indicar folhas/documentos fonte
+&lt;/estilo&gt;
+
+&lt;formato_saida&gt;
+## MAPEAMENTO DE RISCOS PROBATÓRIOS
+
+### 1. LACUNAS PROBATÓRIAS
+| Fato Alegado | Parte | Prova Correspondente |
+|--------------|-------|---------------------|
+| [fato] | Autor/Réu | NÃO LOCALIZADA ou [ref] |
+
+### 2. DIVERGÊNCIAS ENTRE PROVAS
+| Ponto | Versão 1 (fonte) | Versão 2 (fonte) |
+|-------|------------------|------------------|
+| [tema] | [descrição] | [descrição] |
+
+### 3. FATORES DE ATENÇÃO
+| Prova | Fator Identificado | Observação Descritiva |
+|-------|-------------------|----------------------|
+| [ref] | [tipo de fator] | [descrição objetiva] |
+
+### 4. CONVERGÊNCIAS
+| Ponto | Provas Alinhadas |
+|-------|-----------------|
+| [tema] | [lista de fontes] |
+
+### 5. SÍNTESE DO MAPEAMENTO
+[Resumo descritivo dos achados, sem conclusões valorativas]
+&lt;/formato_saida&gt;
+
+&lt;adicionais&gt;
+## TIPOS DE FATORES DE ATENÇÃO (exemplos descritivos)
+- Parentesco/vínculo: "Testemunha X é cônjuge do autor (fls. Y)"
+- Temporalidade: "Documento sem data" ou "Data posterior ao fato"
+- Contradição interna: "Mesmo documento indica valores diferentes"
+- Inconclusividade: "Laudo pericial declara-se inconclusivo"
+- Parcialidade declarada: "Testemunha declara-se amigo íntimo"
+
+## REGRAS DE REDAÇÃO DESCRITIVA
+❌ NUNCA: "prova forte", "testemunha duvidosa", "documento confiável"
+✅ SEMPRE: "prova documental de fls. X", "testemunha com vínculo Y", "documento datado de Z"
+
+Leia TODOS os documentos integralmente antes de iniciar o mapeamento.
+&lt;/adicionais&gt;</code></pre>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">💡 Como Redigir de Forma Descritiva</div>
+                        <table style="width:100%; margin-top: 0.5rem; font-size: 0.9rem;">
+                            <tr style="background: rgba(196, 61, 61, 0.08);">
+                                <td style="padding: 0.5rem;"><strong>❌ Valorativo:</strong></td>
+                                <td style="padding: 0.5rem;">"A testemunha não é confiável porque é parente do autor"</td>
+                            </tr>
+                            <tr style="background: rgba(45, 134, 89, 0.08);">
+                                <td style="padding: 0.5rem;"><strong>✅ Descritivo:</strong></td>
+                                <td style="padding: 0.5rem;">"A testemunha X é irmão do autor (fls. 45) — fator de parentesco identificado"</td>
+                            </tr>
+                            <tr style="background: rgba(196, 61, 61, 0.08);">
+                                <td style="padding: 0.5rem;"><strong>❌ Valorativo:</strong></td>
+                                <td style="padding: 0.5rem;">"O documento prova claramente a fraude"</td>
+                            </tr>
+                            <tr style="background: rgba(45, 134, 89, 0.08);">
+                                <td style="padding: 0.5rem;"><strong>✅ Descritivo:</strong></td>
+                                <td style="padding: 0.5rem;">"O documento de fls. 78 registra divergência entre assinatura e data"</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Fundamentação: Por que essa Distinção é Importante?</h2>
+
+                    <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <h4 style="margin-bottom: 1rem; color: var(--accent-blue);">Referências Normativas</h4>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem; margin-bottom: 1rem;">
+                            <strong>Resolução CNJ nº 615/2025</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Art. 2º, V: Exige "participação e supervisão humana em todas as etapas"</span><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Art. 11: Classifica "valoração de provas" como ALTO RISCO</span><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Art. 34: Sistemas "deverão exigir supervisão humana e permitir modificação pelo magistrado"</span>
+                        </div>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem; margin-bottom: 1rem;">
+                            <strong>Princípio do Livre Convencimento Motivado</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Art. 371, CPC: "O juiz apreciará a prova constante dos autos, independentemente do sujeito que a tiver promovido, e indicará na decisão as razões da formação de seu convencimento."</span>
+                        </div>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem;">
+                            <strong>Garantia da Fundamentação</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Art. 93, IX, CF: Todas as decisões devem ser fundamentadas — a valoração da prova é componente essencial dessa fundamentação e não pode ser delegada à máquina.</span>
+                        </div>
+                    </div>
+                
+
+**Exercise:**
+Title: Inventário e Linha do Tempo
+Prompt: undefined
+Checklist:
+- Compreendo a distinção entre valoração (vedada) e descrição (permitida)
+- Sei identificar termos valorativos que devem ser evitados
+- Consigo usar o Inventário Probatório mantendo neutralidade
+- Consigo usar a Linha do Tempo apresentando todas as versões
+- Entendo que o mapeamento de riscos deve ser descritivo, não conclusivo
+
+
+**Tip:** Ao revisar outputs de IA sobre provas, faça o <strong>teste da perspectiva</strong>: leia o texto como advogado de cada parte. Se parecer favorecer um lado, há valoração implícita que precisa ser removida.
+
+**Warning:** <strong>"A IA pode me ajudar a decidir qual prova é mais forte."</strong><br>Não. A IA pode organizar, catalogar e identificar divergências — mas a valoração da prova é <em>função jurisdicional intransferível</em>. A Resolução 615/2025 é clara: sistemas de valoração probatória são alto risco e exigem supervisão humana efetiva.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.10",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 3.1: Projetos (Claude Projects)**
+
+**Module:** Módulo 3 — Técnicas Avançadas
+
+**Objective:** Dominar a criação de ambientes de trabalho persistentes com prompts customizados e bases de conhecimento no Claude.
+
+**Content:**
+
+                    <h2>O que são Projects?</h2>
+                    <p><strong>Projects</strong> são espaços de trabalho independentes dentro do Claude, onde você pode configurar:</p>
+                    <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                        <li><strong>Knowledge Base</strong> — documentos que o Claude consulta automaticamente</li>
+                        <li><strong>Custom Instructions</strong> — prompts persistentes que moldam o comportamento</li>
+                        <li><strong>Histórico separado</strong> — cada projeto mantém suas próprias conversas</li>
+                    </ul>
+                    <p>Pense em um Project como um <strong>assistente especializado</strong> que você configura uma vez e usa muitas vezes.</p>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Por que usar Projects?</div>
+                        <p>Em vez de repetir o mesmo prompt toda vez, você configura uma vez e o Claude <strong>sempre</strong> sabe como se comportar naquele contexto.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Anatomia de um Project</h2>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                            <h4 style="color: var(--primary); margin-bottom: 0.75rem;">1. Knowledge Base</h4>
+                            <p style="font-size: 0.95rem; margin-bottom: 0.75rem;"><strong>O que é:</strong> Biblioteca de documentos que o Claude consulta automaticamente.</p>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);"><strong>Formatos:</strong> PDF, DOCX, TXT, CSV, HTML, EPUB</p>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--gold);">
+                            <h4 style="color: var(--gold); margin-bottom: 0.75rem;">2. Custom Instructions</h4>
+                            <p style="font-size: 0.95rem; margin-bottom: 0.75rem;"><strong>O que é:</strong> Prompt de sistema persistente que define comportamento.</p>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>RAG: O Segredo da Escalabilidade</h2>
+
+                    <p><strong>RAG</strong> (Retrieval Augmented Generation) permite ao Claude trabalhar com <strong>muito mais conteúdo</strong> do que caberia na janela de contexto normal.</p>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Aspecto</th><th>Sem RAG</th><th>Com RAG</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Capacidade</strong></td><td>~200K tokens</td><td>Até 10x mais</td></tr>
+                                <tr><td><strong>Como funciona</strong></td><td>Carrega tudo</td><td>Busca o relevante</td></tr>
+                                <tr><td><strong>Disponibilidade</strong></td><td>Todos os planos</td><td>Planos pagos</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Ativação Automática</div>
+                        <p>O RAG <strong>ativa automaticamente</strong> quando seu projeto se aproxima dos limites de contexto.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Comparativo: Chat vs. Project vs. API</h2>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Recurso</th><th>Chat Simples</th><th>Project</th><th>API</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Persistência</strong></td><td>Não</td><td>Sim</td><td>Sim (via código)</td></tr>
+                                <tr><td><strong>Knowledge Base</strong></td><td>Anexos/conversa</td><td>Permanente</td><td>Via RAG externo</td></tr>
+                                <tr><td><strong>RAG automático</strong></td><td>Não</td><td>Sim</td><td>Manual</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Como Criar um Project Jurídico</h2>
+
+                    <h3>Passo 1: Criar o Project</h3>
+                    <ol style="margin:12px 0 12px 24px;">
+                        <li>Acesse <strong>claude.ai</strong> e localize "Projects"</li>
+                        <li>Clique em <strong>"Create Project"</strong></li>
+                        <li>Dê um nome descritivo</li>
+                    </ol>
+
+                    <h3>Passo 2: Custom Instructions</h3>
+                    <pre style="background: #1a1a2e; color: #eee; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.9rem;"><code>## IDENTIDADE
+Você é um assistente jurídico especializado em DIREITO PREVIDENCIÁRIO.
+
+## COMPORTAMENTO
+- Cite SEMPRE a legislação aplicável
+- Quando não souber, diga claramente
+- NÃO invente jurisprudência
+
+## LIMITAÇÕES
+- Sempre sugira consultar advogado para casos específicos</code></pre>
+
+                    <h3>Passo 3: Knowledge Base</h3>
+                    <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                        <li><strong>Legislação:</strong> Lei 8.213/91, Decreto 3.048/99</li>
+                        <li><strong>Jurisprudência:</strong> Súmulas, precedentes</li>
+                        <li><strong>Templates:</strong> Modelos de petições</li>
+                    </ul>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Boas Práticas</div>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Nomeie bem os arquivos</strong></li>
+                            <li><strong>Agrupe por tema</strong></li>
+                            <li><strong>Prefira texto selecionável</strong></li>
+                        </ul>
+                    </div>
+                
+
+**Exercise:**
+Title: Criando seu Primeiro Project Jurídico
+Prompt: undefined
+Checklist:
+- Entendo a diferença entre Chat simples e Project
+- Sei o que é RAG e quando ele é ativado
+- Criei um Project com Custom Instructions
+- Adicionei documentos à Knowledge Base
+- Testei o Project
+
+
+**Tip:** Comece com um Project <strong>pequeno e específico</strong>. É melhor ter um assistente excelente em uma área do que um medíocre em várias.
+
+**Warning:** <strong>"Vou colocar todos os meus documentos em um único Project."</strong><br>Cuidado! Projects muito grandes podem ter respostas menos precisas. Separe por área temática.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "3.1",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

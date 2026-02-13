@@ -1,0 +1,909 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.6: Prompt de Sistema**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Compreender a hierarquia de prompts e como o prompt de sistema molda o comportamento do LLM.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">A Hierarquia de Prompts</h2>
+                        <p>Existem <strong>três níveis</strong> de instrução que chegam ao LLM:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Nível</th><th>Quem Define</th><th>O que Faz</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>1. Prompt de Sistema</strong></td><td>Desenvolvedor (Anthropic, OpenAI)</td><td>Identidade, capacidades, limites fundamentais</td></tr>
+                                    <tr><td><strong>2. Prompt de Customização</strong></td><td>Operador (empresa, integrador)</td><td>Comportamentos específicos do produto</td></tr>
+                                    <tr><td><strong>3. Prompt do Usuário</strong></td><td>Você</td><td>Sua mensagem direta na conversa</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">O Que é o Prompt de Sistema?</h2>
+                        <p>O <strong>Prompt de Sistema</strong> é um conjunto de instruções que:</p>
+                        <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                            <li>Define a <strong>identidade</strong> do modelo (quem ele é)</li>
+                            <li>Estabelece <strong>capacidades</strong> (o que pode fazer)</li>
+                            <li>Delimita <strong>limites</strong> (o que não pode fazer)</li>
+                            <li>Configura <strong>comportamentos padrão</strong></li>
+                            <li>É <strong>invisível</strong> ao usuário comum</li>
+                            <li>Opera como um <strong>"diretor de cena"</strong> nos bastidores</li>
+                        </ul>
+                    </div>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Contrato de Comportamento</div>
+                        <p>Pense no prompt de sistema como um <strong>contrato</strong> que define:</p>
+                        <ul style="margin:12px 0;padding-left:24px;">
+                            <li><strong>Quem</strong> o modelo é antes de qualquer interação</li>
+                            <li><strong>Como</strong> deve se comportar em diferentes situações</li>
+                            <li><strong>O que</strong> pode e não pode fazer</li>
+                            <li><strong>Quais</strong> ferramentas tem disponíveis</li>
+                        </ul>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Dentro do Prompt de Sistema do Claude</h2>
+                        <p>O prompt de sistema do Claude contém instruções sobre:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Categoria</th><th>Exemplos de Instruções</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Identidade</strong></td><td>Nome, versão, criador (Anthropic)</td></tr>
+                                    <tr><td><strong>Capacidades</strong></td><td>Análise de texto, código, matemática, idiomas</td></tr>
+                                    <tr><td><strong>Conhecimento</strong></td><td>Data de corte, limitações de informação</td></tr>
+                                    <tr><td><strong>Ética</strong></td><td>Recusar conteúdo prejudicial, ser honesto</td></tr>
+                                    <tr><td><strong>Formato</strong></td><td>Usar markdown, ser conciso ou detalhado</td></tr>
+                                    <tr><td><strong>Ferramentas</strong></td><td>Quando usar busca, código, análise</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Como Isso Afeta Você?</h2>
+                        <p>Entender a hierarquia de prompts ajuda você a:</p>
+                        <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                            <li><strong>Não lutar contra o sistema</strong> — trabalhe com ele, não contra</li>
+                            <li><strong>Entender limitações</strong> — algumas coisas o modelo não pode fazer por design</li>
+                            <li><strong>Usar o prompt de customização</strong> — em APIs, você pode adicionar sua camada</li>
+                            <li><strong>Criar seus próprios "system prompts"</strong> — no início da conversa</li>
+                        </ul>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Criando Seu Próprio "System Prompt"</h2>
+                        <p>Você pode simular um prompt de sistema no <strong>início da conversa</strong>:</p>
+                        <div class="code-block">## INSTRUÇÕES DE SISTEMA
+
+Você é um assistente jurídico especializado em direito previdenciário.
+
+### Comportamento:
+- Sempre cite a legislação aplicável
+- Use linguagem técnica, mas acessível
+- Se não souber algo, diga claramente
+- Não invente jurisprudência
+
+### Formato padrão:
+- Use tópicos e subtópicos
+- Destaque artigos de lei em negrito
+- Inclua referências ao final
+
+### Limitações:
+- Não dê conselhos definitivos
+- Sempre sugira consultar advogado
+- Não faça cálculos previdenciários complexos
+
+---
+
+A partir de agora, siga estas instruções em todas as respostas.</div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">System Prompt vs. Primeira Mensagem</div>
+                        <p>Em interfaces como Claude.ai, você não tem acesso ao verdadeiro prompt de sistema. Mas pode usar a <strong>primeira mensagem</strong> como um "pseudo system prompt" para configurar comportamentos.</p>
+                        <p>Em <strong>APIs</strong> (para desenvolvedores), você tem acesso real ao campo <code>system</code>.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Criando um System Prompt
+Prompt: undefined
+Checklist:
+- Entendo a hierarquia: Sistema > Customização > Usuário
+- Sei o que o prompt de sistema faz (contrato de comportamento)
+- Consigo criar um 'pseudo system prompt' para minhas tarefas
+- Entendo a diferença entre interface e API
+
+
+**Tip:** Crie um <strong>system prompt padrão</strong> para cada área que você atua. Salve em um arquivo e cole no início de cada nova conversa. Com o tempo, você terá uma biblioteca de configurações prontas.
+
+**Warning:** <strong>"Posso fazer o Claude ignorar o system prompt da Anthropic."</strong><br>Não. O prompt de sistema da Anthropic tem prioridade sobre suas instruções. Você pode customizar comportamentos, mas não pode violar os limites éticos e de segurança do modelo.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.6",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.7: Técnicas de Prompt Estruturado**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Dominar as técnicas de formatação e estruturação de prompts para obter respostas mais precisas, consistentes e confiáveis.
+
+**Content:**
+
+                    <h2>Por que Estruturar Prompts?</h2>
+                    <p>Prompts estruturados são mais <strong>previsíveis</strong>, <strong>consistentes</strong> e <strong>auditáveis</strong>. Em vez de depender da interpretação livre do modelo, você define exatamente o que quer, como quer e em que formato.</p>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Vibe Prompting vs Prompt Estruturado</div>
+                        <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                            <tr style="background: var(--accent-blue); color: white;">
+                                <th style="padding: 0.75rem; text-align: left;">Aspecto</th>
+                                <th style="padding: 0.75rem; text-align: left;">Vibe Prompting</th>
+                                <th style="padding: 0.75rem; text-align: left;">Prompt Estruturado</th>
+                            </tr>
+                            <tr style="background: var(--bg-secondary);">
+                                <td style="padding: 0.75rem;"><strong>Formato</strong></td>
+                                <td style="padding: 0.75rem;">Linguagem natural livre</td>
+                                <td style="padding: 0.75rem;">Markdown + delimitadores XML</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem;"><strong>Previsibilidade</strong></td>
+                                <td style="padding: 0.75rem;">Baixa</td>
+                                <td style="padding: 0.75rem;">Alta</td>
+                            </tr>
+                            <tr style="background: var(--bg-secondary);">
+                                <td style="padding: 0.75rem;"><strong>Reutilização</strong></td>
+                                <td style="padding: 0.75rem;">Difícil</td>
+                                <td style="padding: 0.75rem;">Fácil (templates)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem;"><strong>Uso ideal</strong></td>
+                                <td style="padding: 0.75rem;">Brainstorming, exploração</td>
+                                <td style="padding: 0.75rem;">Documentos, análises, produção</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>1. Formatação Markdown</h2>
+                    <p>O Markdown é a linguagem universal para estruturar prompts. Os LLMs foram treinados com milhões de documentos em Markdown e respondem muito bem a essa formatação.</p>
+
+                    <h3>Elementos Essenciais</h3>
+                    <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                        <tr style="background: var(--accent-blue); color: white;">
+                            <th style="padding: 0.75rem;">Elemento</th>
+                            <th style="padding: 0.75rem;">Sintaxe</th>
+                            <th style="padding: 0.75rem;">Uso</th>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>Headers</strong></td>
+                            <td style="padding: 0.75rem; font-family: monospace;"># ## ###</td>
+                            <td style="padding: 0.75rem;">Hierarquia de seções</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Negrito</strong></td>
+                            <td style="padding: 0.75rem; font-family: monospace;">**texto**</td>
+                            <td style="padding: 0.75rem;">Ênfase em termos-chave</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>Listas</strong></td>
+                            <td style="padding: 0.75rem; font-family: monospace;">- item ou 1. item</td>
+                            <td style="padding: 0.75rem;">Passos, critérios, opções</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Código</strong></td>
+                            <td style="padding: 0.75rem; font-family: monospace;">`texto`</td>
+                            <td style="padding: 0.75rem;">Placeholders, valores literais</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>Tabelas</strong></td>
+                            <td style="padding: 0.75rem; font-family: monospace;">| col1 | col2 |</td>
+                            <td style="padding: 0.75rem;">Comparações, critérios estruturados</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Citação</strong></td>
+                            <td style="padding: 0.75rem; font-family: monospace;">&gt; texto</td>
+                            <td style="padding: 0.75rem;">Instruções destacadas, princípios</td>
+                        </tr>
+                    </table>
+
+                    <pre class="prompt-block"><code># Título Principal
+
+## Seção
+**Termo importante** com explicação.
+
+### Subseção
+- Item 1
+- Item 2 com `placeholder`
+
+| Critério | Valor |
+|----------|-------|
+| A        | X     |
+| B        | Y     |
+
+> Instrução destacada que não pode ser ignorada.</code></pre>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>2. Delimitadores XML</h2>
+                    <p>Tags XML criam <strong>fronteiras claras</strong> entre seções do prompt. O modelo sabe exatamente onde começa e termina cada instrução.</p>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Por que XML funciona tão bem?</div>
+                        <p>LLMs foram treinados com enormes quantidades de código e documentação técnica. Tags XML são universalmente reconhecidas como delimitadores de conteúdo estruturado. O modelo <strong>nunca confunde</strong> o conteúdo de uma tag com outra.</p>
+                    </div>
+
+                    <h3>Tags Principais (Framework P.O.E.M.A.)</h3>
+                    <pre class="prompt-block"><code>&lt;persona&gt;
+Quem o modelo deve ser (papel + expertise)
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+O que fazer + como processar o input
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Como escrever + tom + comportamento
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+Metodologia + formato de saída
+&lt;formato_saida&gt;
+Template estruturado aqui
+&lt;/formato_saida&gt;
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+Guardrails + critérios de qualidade
+&lt;/adicionais&gt;</code></pre>
+
+                    <h3>Tags Auxiliares Úteis</h3>
+                    <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                        <tr style="background: var(--accent-blue); color: white;">
+                            <th style="padding: 0.75rem;">Tag</th>
+                            <th style="padding: 0.75rem;">Uso</th>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem; font-family: monospace;">&lt;exemplo&gt;</td>
+                            <td style="padding: 0.75rem;">Few-shot learning - mostrar o formato desejado</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; font-family: monospace;">&lt;documento&gt;</td>
+                            <td style="padding: 0.75rem;">Delimitar o texto a ser analisado</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem; font-family: monospace;">&lt;regras&gt;</td>
+                            <td style="padding: 0.75rem;">Restrições e proibições</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; font-family: monospace;">&lt;contexto&gt;</td>
+                            <td style="padding: 0.75rem;">Informações de background</td>
+                        </tr>
+                    </table>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>3. Técnicas para Chamar Atenção</h2>
+                    <p>Algumas instruções são <strong>críticas</strong> e não podem ser ignoradas. Use técnicas de ênfase para garantir que o modelo preste atenção.</p>
+
+                    <h3>Hierarquia de Ênfase</h3>
+                    <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                        <tr style="background: var(--accent-blue); color: white;">
+                            <th style="padding: 0.75rem;">Técnica</th>
+                            <th style="padding: 0.75rem;">Exemplo</th>
+                            <th style="padding: 0.75rem;">Quando Usar</th>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>MAIÚSCULAS</strong></td>
+                            <td style="padding: 0.75rem; font-family: monospace;">NUNCA invente dados</td>
+                            <td style="padding: 0.75rem;">Proibições absolutas</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Negrito</strong></td>
+                            <td style="padding: 0.75rem; font-family: monospace;">**USE EXCLUSIVAMENTE**</td>
+                            <td style="padding: 0.75rem;">Termos-chave, restrições</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>Prefixos</strong></td>
+                            <td style="padding: 0.75rem; font-family: monospace;">IMPORTANTE: / ATENÇÃO:</td>
+                            <td style="padding: 0.75rem;">Alertas, instruções críticas</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Repetição</strong></td>
+                            <td style="padding: 0.75rem;">Repetir regra no início e fim</td>
+                            <td style="padding: 0.75rem;">Regras que não podem falhar</td>
+                        </tr>
+                    </table>
+
+                    <pre class="prompt-block"><code>**PROIBIÇÃO ABSOLUTA**: NUNCA invente dados, nomes ou números.
+
+IMPORTANTE: Use EXCLUSIVAMENTE informações do documento fornecido.
+
+ATENÇÃO: Se uma informação não constar dos autos, indique:
+`[NÃO CONSTA NOS AUTOS]`
+
+**Lembre-se**: NUNCA invente dados, nomes ou números.</code></pre>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>4. Técnicas Avançadas</h2>
+
+                    <h3>A. Técnica do Nome Único</h3>
+                    <p>Quando você usa um nome genérico como "FIRAC", o modelo pode assumir que já "sabe" o que fazer e <strong>ignorar suas instruções</strong>. Com um nome único, ele é forçado a ler suas regras.</p>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Por que isso importa?</div>
+                        <p><strong>Nome genérico:</strong> "Use a metodologia FIRAC" → Modelo usa seu conhecimento prévio<br>
+                        <strong>Nome único:</strong> "Use a metodologia FIRAC+" → Modelo lê suas instruções específicas</p>
+                    </div>
+
+                    <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                        <tr style="background: var(--accent-blue); color: white;">
+                            <th style="padding: 0.75rem;">Estratégia</th>
+                            <th style="padding: 0.75rem;">Padrão</th>
+                            <th style="padding: 0.75rem;">Exemplo</th>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>Intensificador</strong></td>
+                            <td style="padding: 0.75rem;">PREFIXO + Base ou Base + SUFIXO</td>
+                            <td style="padding: 0.75rem;">SUPER FIRAC, FIRAC+, FIRAC 2.0</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Ancoragem teórica</strong></td>
+                            <td style="padding: 0.75rem;">Método (Autor)</td>
+                            <td style="padding: 0.75rem;">Análise Causal (Pearl)</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>Metáfora</strong></td>
+                            <td style="padding: 0.75rem;">Nome expressivo</td>
+                            <td style="padding: 0.75rem;">Crítica Matadora, Smart Brevity</td>
+                        </tr>
+                    </table>
+
+                    <h3>B. Técnica M&amp;M Marrom (Van Halen)</h3>
+                    <p>Insira <strong>detalhes verificáveis</strong> que permitem checar rapidamente se as regras foram seguidas.</p>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">A História do Van Halen</div>
+                        <p>A banda Van Halen incluía em seus contratos: "Tigela de M&amp;Ms no camarim, <strong>sem os marrons</strong>". Não era capricho — era um teste. Se houvesse M&amp;Ms marrons, significava que o promotor não leu o contrato com cuidado, e havia risco de problemas técnicos no show.</p>
+                    </div>
+
+                    <pre class="prompt-block"><code># Exemplos de "M&amp;M Marrom" em prompts:
+
+"Use ✅ para requisitos presentes e ❌ para ausentes"
+→ Verificação visual instantânea
+
+"Sempre inicie a conclusão com 'Em síntese'"
+→ Busca textual simples
+
+"Cada item deve ter: Nome | Status | Fundamentação"
+→ Estrutura verificável
+
+"Numere todos os fatos de 1 a N"
+→ Contagem rápida</code></pre>
+
+                    <h3>C. Prefill (Instrução de Início)</h3>
+                    <p>Diga ao modelo <strong>como começar</strong> a resposta. Isso elimina preâmbulos e garante que ele entre direto no formato desejado.</p>
+
+                    <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                        <tr style="background: var(--accent-blue); color: white;">
+                            <th style="padding: 0.75rem;">Tipo de Documento</th>
+                            <th style="padding: 0.75rem;">Instrução de Início</th>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;">Análise FIRAC+</td>
+                            <td style="padding: 0.75rem; font-family: monospace;">"Vá direto, começando com **DADOS DO PROCESSO**"</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;">Relatório judicial</td>
+                            <td style="padding: 0.75rem; font-family: monospace;">"Comece o texto com 'RELATÓRIO'"</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;">Ementa CNJ</td>
+                            <td style="padding: 0.75rem; font-family: monospace;">"Comece com '***Ementa***:'"</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;">Parecer</td>
+                            <td style="padding: 0.75rem; font-family: monospace;">"Inicie diretamente com 'I. SÍNTESE DO CASO'"</td>
+                        </tr>
+                    </table>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>5. Dicas Poderosas</h2>
+
+                    <h3>A. Guardrails Anti-Alucinação</h3>
+                    <p>Para tarefas jurídicas, a <strong>fidelidade documental</strong> é crítica. Use guardrails explícitos:</p>
+
+                    <pre class="prompt-block"><code>**USE EXCLUSIVAMENTE** as evidências, fatos e informações
+contidos no documento fornecido.
+
+**PROIBIÇÃO ABSOLUTA** de incorporar elementos de fontes externas.
+
+**JAMAIS ACRESCENTE** fatos, precedentes ou normas que não
+estejam no documento anexado.
+
+Se uma informação não constar: `[NÃO CONSTA NOS AUTOS]`</code></pre>
+
+                    <h3>B. Instruções Anti-Viés</h3>
+                    <p>LLMs podem ser influenciados pela <strong>posição</strong> da informação (início vs fim) ou pelo <strong>tom</strong> do texto (assertivo vs neutro). Neutralize isso:</p>
+
+                    <pre class="prompt-block"><code>Sua análise é objetiva, imparcial e multifacetada.
+
+Você NÃO é influenciado por vieses de posição — informações
+valiosas podem estar em qualquer parte do documento.
+
+Dê IGUAL PESO para todos os argumentos, independentemente de:
+- Posição no documento (início, meio, fim)
+- Estilo do texto (assertivo ou neutro)
+- Adjetivos utilizados</code></pre>
+
+                    <h3>C. Plain Language (Eliminar Juridiquês)</h3>
+                    <p>Para prompts de escrita, exija clareza:</p>
+
+                    <pre class="prompt-block"><code>**Regras de estilo:**
+- Use plain language — livre de juridiquês, jargões e latinismos
+- Priorize clareza e qualidade da escrita
+- ELIMINE clichês de IA: "é importante notar", "vale ressaltar",
+  "em suma", "é crucial" e outras introduções vazias
+- Conecte ideias de modo orgânico, sem rodeios</code></pre>
+
+                    <h3>D. Placeholders Claros</h3>
+                    <p>Use backticks e MAIÚSCULAS para indicar o que deve ser preenchido:</p>
+
+                    <pre class="prompt-block"><code>`NOME DA PARTE AUTORA EM MAIÚSCULAS` propôs a presente ação
+`TIPO DE AÇÃO` contra `NOME DA PARTE RÉ EM MAIÚSCULAS`,
+alegando que `RESUMIR OS FATOS EM ORDEM CRONOLÓGICA`.</code></pre>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Super Prompts e Prompts Encadeados</h2>
+                    <p>Tarefas complexas exigem prompts proporcionalmente robustos:</p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Tipo</th><th>Tamanho</th><th>Quando Usar</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Task Prompt</strong></td><td>1-5 linhas</td><td>Tarefas simples e diretas</td></tr>
+                                <tr><td><strong>Prompt Estruturado</strong></td><td>1-3 páginas</td><td>Tarefas profissionais recorrentes</td></tr>
+                                <tr><td><strong>Super Prompt</strong></td><td>10-20 páginas</td><td>Metodologias completas de análise</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p><strong>Prompts encadeados:</strong> Sequência de prompts onde o output de um alimenta o próximo. Exemplo: Prompt 1 (linha do tempo) → Prompt 2 (análise jurídica) → Prompt 3 (redação da sentença).</p>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Como Acessar os Prompts Completos</h2>
+                    <p>Todos os 44 prompts estão disponíveis na íntegra no repositório do curso:</p>
+                    <pre class="prompt-block">docs/prompt-juridico/prompts/
+├── analise/     (17 prompts)
+├── escrita/     (16 prompts)
+└── criacao/     (11 prompts)</pre>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">⚠️ Guardrails de Fidelidade</div>
+                        <p>Todos os prompts de <strong>análise</strong> e <strong>escrita</strong> incluem guardrails rigorosos:</p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>NUNCA</strong> inventar IDs, datas, valores ou nomes</li>
+                            <li>Usar <strong>EXCLUSIVAMENTE</strong> dados dos documentos fornecidos</li>
+                            <li>Lacunas devem ser marcadas: <code>[NÃO CONSTA NOS AUTOS]</code></li>
+                            <li><strong>PROIBIDO</strong> incorporar elementos de fontes externas</li>
+                        </ul>
+                    </div>
+                
+
+**Exercise:**
+Title: Estruturando seu Primeiro Prompt
+Prompt: undefined
+Checklist:
+- Sei usar Markdown básico para organizar prompts (headers, listas, negrito)
+- Entendo como delimitadores XML separam seções do prompt
+- Conheço técnicas de ênfase (MAIÚSCULAS, negrito, prefixos)
+- Sei aplicar guardrails anti-alucinação em prompts jurídicos
+
+
+**Tip:** A <strong>técnica do Nome Único</strong> (FIRAC+ em vez de FIRAC) ajuda o modelo a reconhecer seu formato específico e não confundir com padrões genéricos de treinamento.
+
+**Warning:** <strong>"Mais estrutura é sempre melhor."</strong><br>Não necessariamente. Para tarefas simples, estrutura excessiva pode ser contraproducente. Use o nível de estrutura adequado à complexidade da tarefa.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.7",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.8: Prompt FIRAC+ (Análise Jurídica)**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Dominar o prompt FIRAC+ para realizar análises jurídicas completas, estruturadas e imparciais de casos processuais.
+
+**Content:**
+
+                    <h2>O que é FIRAC?</h2>
+                    <p>FIRAC é uma metodologia clássica de análise jurídica usada em faculdades de Direito ao redor do mundo. O acrônimo significa:</p>
+
+                    <table style="width:100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <tr style="background: var(--accent-blue); color: white;">
+                            <th style="padding: 0.75rem; text-align: center; width: 100px;">Letra</th>
+                            <th style="padding: 0.75rem; text-align: left;">Componente</th>
+                            <th style="padding: 0.75rem; text-align: left;">O que responde</th>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem; text-align: center; font-weight: bold; font-size: 1.2rem;">F</td>
+                            <td style="padding: 0.75rem;"><strong>Facts</strong> (Fatos)</td>
+                            <td style="padding: 0.75rem;">O que aconteceu? Quem são as partes?</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; text-align: center; font-weight: bold; font-size: 1.2rem;">I</td>
+                            <td style="padding: 0.75rem;"><strong>Issue</strong> (Questão)</td>
+                            <td style="padding: 0.75rem;">Qual é o problema jurídico central?</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem; text-align: center; font-weight: bold; font-size: 1.2rem;">R</td>
+                            <td style="padding: 0.75rem;"><strong>Rule</strong> (Regra)</td>
+                            <td style="padding: 0.75rem;">Quais normas se aplicam ao caso?</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; text-align: center; font-weight: bold; font-size: 1.2rem;">A</td>
+                            <td style="padding: 0.75rem;"><strong>Application</strong> (Aplicação)</td>
+                            <td style="padding: 0.75rem;">Como as regras se aplicam aos fatos?</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem; text-align: center; font-weight: bold; font-size: 1.2rem;">C</td>
+                            <td style="padding: 0.75rem;"><strong>Conclusion</strong> (Conclusão)</td>
+                            <td style="padding: 0.75rem;">Qual é o resultado da análise?</td>
+                        </tr>
+                    </table>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Por que FIRAC+ (com o "+")?</div>
+                        <p>Usamos <strong>FIRAC+</strong> em vez de apenas "FIRAC" por causa da <strong>técnica do Nome Único</strong>. O modelo foi treinado com milhares de exemplos genéricos de FIRAC. Ao usar um nome ligeiramente diferente, sinalizamos que queremos <em>nosso</em> formato específico, não uma versão genérica.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Anatomia do Prompt FIRAC+</h2>
+                    <p>O prompt segue a estrutura P.O.E.M.A. Veja o papel de cada seção:</p>
+
+                    <h3>1. PERSONA — Quem o modelo deve ser</h3>
+                    <pre class="prompt-block"><code>&lt;persona&gt;
+Você é um ASSISTENTE JURÍDICO DE ALTO NÍVEL especializado
+EM DIREITO, LINGUAGEM E INTERPRETAÇÃO, com expertise em
+análise processual, teoria da decisão e pensamento crítico.
+&lt;/persona&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> Define expertise específica (não genérica) e ativa vocabulário técnico-jurídico.</p>
+
+                    <h3>2. OBJETIVO — O que deve fazer</h3>
+                    <pre class="prompt-block"><code>&lt;objetivo&gt;
+Sua tarefa é realizar a análise abrangente, completa e estruturada
+do CASO JURÍDICO FORNECIDO, visando a **realizar análise detalhada
+e profunda seguindo a metodologia FIRAC+** para compreensão holística
+do caso e identificação de todos os pontos controvertidos.
+
+Consulte todos os documentos fornecidos na íntegra. Eles podem ter
+informações contraditórias. Por isso, faça uma leitura holística.
+
+Para PDFs digitalizados, ative ferramentas adequadas de OCR...
+&lt;/objetivo&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> Instrução clara de "leitura holística" evita que o modelo dê mais peso ao início do documento. Instrução de OCR ativa capacidades multimodais.</p>
+
+                    <h3>3. ESTILO — Como deve escrever</h3>
+                    <pre class="prompt-block"><code>&lt;estilo&gt;
+Tom **PROFISSIONAL** e **AUTORITATIVO**, sem jargões desnecessários.
+Modo **CONCISO**, mas completo. Vá direto para a resposta, começando
+o texto com **DADOS DO PROCESSO**.
+
+Sua ANÁLISE é objetiva, imparcial e multifacetada. Você não é
+influenciado por vieses de posição. Você dá igual peso para todos
+os componentes do caso, independentemente de estarem no início,
+no meio ou no fim do documento.
+&lt;/estilo&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> Instruções anti-viés explícitas. "Começando com DADOS DO PROCESSO" é um <em>prefill</em> que evita introduções desnecessárias.</p>
+
+                    <h3>4. MODELO — Estrutura de saída</h3>
+                    <pre class="prompt-block"><code>&lt;modelo&gt;
+Use a metodologia e o formato de análise **FIRAC+**:
+
+&lt;formato_saida&gt;
+### **DADOS DO PROCESSO**
+`TRIBUNAL - TIPO - NÚMERO - RELATOR - DATA - PARTES - ADVOGADOS`
+
+### **FATOS**
+`LISTA NUMERADA com todos os fatos, em ordem cronológica,
+com PROFUNDIDADE, DETALHES e MINÚCIAS`
+
+### **PROBLEMA JURÍDICO**
+#### **QUESTÃO CENTRAL**
+`Estabeleça COM PROFUNDIDADE a questão central`
+
+#### **PONTOS CONTROVERTIDOS**
+`LISTA NUMERADA delimitando os pontos controvertidos`
+
+### **DIREITO APLICÁVEL**
+`LISTE as normas relevantes, referenciadas nos documentos`
+
+### **ANÁLISE E APLICAÇÃO**
+#### **ARGUMENTOS E PROVAS DO AUTOR**
+`LISTA NUMERADA com argumentos e provas COM INFERÊNCIA LÓGICA`
+
+#### **ARGUMENTOS E PROVAS DO RÉU**
+`LISTA NUMERADA com argumentos e provas COM INFERÊNCIA LÓGICA`
+
+### **CONCLUSÃO**
+`Se já há decisão, DESCREVA a solução e RATIO DECIDENDI.
+Se não há decisão, mantenha-se IMPARCIAL e sugira direcionamentos`
+&lt;/formato_saida&gt;
+&lt;/modelo&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> Formato rígido garante consistência. Placeholders em MAIÚSCULAS indicam claramente o que preencher.</p>
+
+                    <h3>5. ADICIONAIS — Guardrails e critérios</h3>
+                    <pre class="prompt-block"><code>&lt;adicionais&gt;
+**USE EXCLUSIVAMENTE** as evidências dos documentos fornecidos.
+**PROIBIÇÃO ABSOLUTA** de incorporar elementos de fontes externas.
+**JAMAIS ACRESCENTE** fatos, precedentes ou normas que não estejam
+no documento anexado.
+
+**Critérios de qualidade:**
+1. **Completude**: Analise INTEGRALMENTE todos os documentos
+2. **Imparcialidade**: Não demonstre preferência por qualquer parte
+3. **Profundidade**: Capte nuances e sutilezas
+4. **Sistematicidade**: Siga rigorosamente a estrutura FIRAC+
+5. **Precisão**: Use terminologia jurídica adequada
+6. **Objetividade**: Baseie-se exclusivamente nos documentos
+7. **Integridade**: Cite dados estritamente referenciados no caso
+8. **Detalhamento**: Proveja riqueza de detalhes nos FATOS
+&lt;/adicionais&gt;</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;"><strong>Por que funciona:</strong> Guardrails anti-alucinação em MAIÚSCULAS. Checklist de qualidade orienta a auto-avaliação do modelo.</p>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Prompt Completo para Copiar</h2>
+                    <p>Clique no bloco abaixo para selecionar e copiar o prompt completo:</p>
+
+                    <pre class="prompt-block large" onclick="window.getSelection().selectAllChildren(this)"><code># Prompt FIRAC+ (v3 - Framework P.O.E.M.A.)
+
+&lt;persona&gt;
+Você é um ASSISTENTE JURÍDICO DE ALTO NÍVEL especializado EM DIREITO, LINGUAGEM E INTERPRETAÇÃO, com expertise em análise processual, teoria da decisão e pensamento crítico.
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Sua tarefa é realizar a análise abrangente, completa e estruturada do CASO JURÍDICO FORNECIDO, para fornecer subsídios técnico-jurídicos completos que auxiliem na fundamentação de decisões judiciais, visando a **realizar análise detalhada e profunda seguindo a metodologia FIRAC+ para compreensão holística do caso e identificação de todos os pontos controvertidos e questões jurídicas**.
+
+Consulte todos os documentos fornecidos na íntegra. Eles podem ter informações contraditórias. Por isso, faça uma leitura holística para captar todos os pontos controvertidos e todas as questões jurídicas na sua profundidade e totalidade.
+
+Para PDFs digitalizados, ative ferramentas adequadas de Reconhecimento Óptico de Caracteres (OCR), garantindo a extração completa e precisa do conteúdo textual. Se o documento apresentar layout complexo (com tabelas, gráficos ou elementos visuais relevantes), utilize análise visual multimodal para interpretar corretamente todos os componentes. Empregue os recursos necessários para compreender e extrair o texto presente em imagens ou conteúdos embutidos visualmente. O objetivo é assegurar uma interpretação jurídica rigorosa, lógica e completa de todo o material fornecido. Se análise ficar prejudicada pela impossibilidade de leitura de todo o documento, informe isso em sua resposta.
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Adote um tom **PROFISSIONAL** e **AUTORITATIVO**, sem jargões desnecessários. Escreva de modo **CONCISO**, mas completo e abrangente, sem redundância. Seja econômico, usando apenas expressões necessárias para a clareza. Você escreve de modo didático e preciso, com rigor metodológico. Vá direto para a resposta, começando o texto com **DADOS DO PROCESSO**.
+
+Sua ANÁLISE é objetiva, imparcial e multifacetada, captando as sutilezas e elementos para além do óbvio. Você não é influenciado por vieses de posição, pois sabe que podem existir informações valiosas em todas as partes do documento. Você dá igual peso para todos os componentes do caso, independentemente de estarem no início, no meio ou no fim do documento. Você é capaz de perceber que a análise objetiva não pode ser influenciada por fatores irrelevantes como estrutura do documento, estilo do texto, assertividade do estilo ou adjetivos usados nos documentos.
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+Use a metodologia e o formato de análise **FIRAC+**, conforme instruções a seguir:
+
+&lt;formato_saida&gt;
+### **DADOS DO PROCESSO**
+`TRIBUNAL - TIPO DE RECURSO OU AÇÃO - NÚMERO DO PROCESSO - RELATOR - DATA DE JULGAMENTO - NOME DAS PARTES - NOME DOS ADVOGADOS POR PARTES`
+
+### **FATOS**
+`ESCREVA UMA LISTA NUMERADA com todos os fatos, em ordem cronológica, com PROFUNDIDADE, DETALHES e MINÚCIAS, descrevendo os eventos, as datas e os nomes para a compreensão holística do caso. Esse é o componente mais importante da análise. Então extraia todos os fatos em detalhes para a máxima compreensão`
+
+### **PROBLEMA JURÍDICO**
+#### **QUESTÃO CENTRAL**
+`ESTABELEÇA COM PROFUNDIDADE a questão central, enriquecendo a pergunta para respostas mais profundas`
+
+#### **PONTOS CONTROVERTIDOS**
+`ESCREVA UMA LISTA NUMERADA delimitando os pontos controvertidos com base nas nuances do caso`
+
+### **DIREITO APLICÁVEL**
+`LISTE as normas relevantes, referenciadas nos documentos, de modo sumarizado`
+
+### **ANÁLISE E APLICAÇÃO**
+#### **ARGUMENTOS E PROVAS DO AUTOR**
+`ESCREVA UMA LISTA NUMERADA com todos os argumentos e provas do autor COM INFERÊNCIA LÓGICA`
+
+#### **ARGUMENTOS E PROVAS DO RÉU**
+`ESCREVA UMA LISTA NUMERADA com todos os argumentos e provas do réu COM INFERÊNCIA LÓGICA`
+
+### **CONCLUSÃO**
+`INFORME se o caso já possui decisão proferida. Em caso AFIRMATIVO, DESCREVA detalhadamente a solução adotada, indicando a RATIO DECIDENDI e as JUSTIFICATIVAS utilizadas pelo julgador. Quando NÃO houver decisão estabelecida, mantenha-se IMPARCIAL e apenas sugira possíveis direcionamentos técnico-jurídicos, apresentando os prós e contras de cada alternativa decisória em sua melhor luz`
+&lt;/formato_saida&gt;
+
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+Sua análise deve se basear exclusivamente nos documentos fornecidos. **USE EXCLUSIVAMENTE** as evidências, fatos e informações contidos no documento fornecido. **PROIBIÇÃO ABSOLUTA** de incorporar elementos probatórios ou factuais de fontes externas. SOMENTE USE OS ELEMENTOS PROBATÓRIOS DO CASO FORNECIDO. **JAMAIS ACRESCENTE FATOS, PRECEDENTES OU NORMAS QUE NÃO ESTEJAM NO DOCUMENTO ANEXADO PELO USUÁRIO.**
+
+**Critérios de qualidade:**
+1. **Completude**: Analise INTEGRALMENTE todos os documentos fornecidos
+2. **Imparcialidade**: Não demonstre preferência por qualquer das partes
+3. **Profundidade**: Vá além da superfície, captando nuances e sutilezas
+4. **Sistematicidade**: Siga rigorosamente a estrutura FIRAC+ estabelecida
+5. **Precisão**: Use terminologia jurídica adequada e precisa
+6. **Objetividade**: Baseie-se exclusivamente nos elementos constantes dos documentos
+7. **Integridade**: Cite dados e informações estritamente referenciados no caso em análise
+8. **Detalhamento**: Ao detalhar os FATOS, assegure-se de prover uma riqueza de detalhes. A QUESTÃO JURÍDICA deve ser claramente delineada como uma questão principal, seguida de pontos controvertidos
+&lt;/adicionais&gt;</code></pre>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Fundamentação Científica</h2>
+                    <p>O método FIRAC não é uma invenção da era da IA. É uma metodologia clássica de análise jurídica ensinada em faculdades de Direito há décadas, especialmente no sistema common law. A adaptação para LLMs (FIRAC+) está fundamentada em pesquisas recentes:</p>
+
+                    <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <h4 style="margin-bottom: 1rem; color: var(--accent-blue);">Referências Acadêmicas</h4>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem; margin-bottom: 1rem;">
+                            <strong>Can ChatGPT Perform Reasoning Using the IRAC Method in Analyzing Legal Scenarios Like a Lawyer?</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">KANG, Xiaoxi et al. (2023) — arXiv:2310.14880</span>
+                        </div>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem; margin-bottom: 1rem;">
+                            <strong>Cracking the Code to Writing Legal Arguments: From IRAC to CRARC to Combinations in Between</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">LEBOVITS, Gerald (2010) — NY State Bar Association Journal, v. 82, n. 6</span>
+                        </div>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem; margin-bottom: 1rem;">
+                            <strong>Exploring the Effectiveness of Prompt Engineering for Legal Reasoning Tasks</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">YU, QUARTEY & SCHILDER (2023) — ACL Findings, p. 13582-13596</span>
+                        </div>
+
+                        <div style="border-left: 3px solid var(--accent-gold); padding-left: 1rem;">
+                            <strong>Artificial Intelligence and Legal Analysis: Implications for Legal Education</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">PEOPLES, Lee F. (2025) — Law Library Journal, v. 117, p. 52</span>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Variações do Método</div>
+                        <p>Existem variações do FIRAC como <strong>IRAC</strong> (sem Facts separados), <strong>CREAC</strong> (Conclusion-Rule-Explanation-Application-Conclusion), e <strong>CRAC</strong>. O FIRAC+ adapta a estrutura clássica para maximizar a extração de informações por LLMs, com ênfase em fatos detalhados e pontos controvertidos explícitos.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--accent-gold);">
+
+                    <h2>Casos de Uso do FIRAC+</h2>
+
+                    <table style="width:100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <tr style="background: var(--accent-blue); color: white;">
+                            <th style="padding: 0.75rem; text-align: left;">Caso de Uso</th>
+                            <th style="padding: 0.75rem; text-align: left;">Por que FIRAC+ é ideal</th>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>Preparar decisão judicial</strong></td>
+                            <td style="padding: 0.75rem;">Visão completa e imparcial dos argumentos de ambas as partes</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Estudar processo novo</strong></td>
+                            <td style="padding: 0.75rem;">Extração sistemática de fatos, questões e normas</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>Preparar sustentação oral</strong></td>
+                            <td style="padding: 0.75rem;">Identificação clara dos pontos controvertidos</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Revisar trabalho de estagiário</strong></td>
+                            <td style="padding: 0.75rem;">Análise estruturada facilita verificação</td>
+                        </tr>
+                        <tr style="background: var(--bg-secondary);">
+                            <td style="padding: 0.75rem;"><strong>Segunda opinião</strong></td>
+                            <td style="padding: 0.75rem;">Análise independente para contrastar com a própria</td>
+                        </tr>
+                    </table>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Limitações do FIRAC+</div>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Não substitui</strong> a análise humana — é subsídio, não decisão</li>
+                            <li><strong>Depende da qualidade</strong> do documento anexado (OCR pode falhar)</li>
+                            <li><strong>Casos muito extensos</strong> podem exceder a janela de contexto</li>
+                            <li><strong>Sempre verifique</strong> se os dados extraídos conferem com o original</li>
+                        </ul>
+                    </div>
+                
+
+**Exercise:**
+Title: Análise FIRAC+ de Caso Real
+Prompt: undefined
+Checklist:
+- Entendo o significado de cada letra do FIRAC (Fatos, Issue, Regra, Aplicação, Conclusão)
+- Sei por que usamos FIRAC+ (nome único) em vez de apenas FIRAC
+- Compreendo o papel dos guardrails anti-alucinação na seção <adicionais>
+- Sei verificar se a análise contém informações inventadas
+
+
+**Tip:** Para casos muito extensos, divida em partes: primeiro anexe a petição inicial e peça análise; depois anexe a contestação e peça para complementar. O modelo mantém o contexto da conversa.
+
+**Warning:** <strong>"O FIRAC+ pode decidir o caso por mim."</strong><br>Não. O prompt foi projetado para manter-se <em>imparcial</em> quando não há decisão. Ele apresenta prós e contras de cada lado, mas a decisão é sempre humana.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.8",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

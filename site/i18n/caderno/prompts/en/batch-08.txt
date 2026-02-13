@@ -1,0 +1,381 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.16: Os 10 Mandamentos**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Síntese final do Módulo 1: princípios fundamentais para dominar os LLMs.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">Síntese do Módulo</h2>
+                        <p>Os <strong>10 Mandamentos</strong> condensam tudo que aprendemos sobre LLMs em princípios práticos:</p>
+                    </div>
+                    <div class="block">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>#</th><th>Mandamento</th><th>Lição</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>1</strong></td><td><strong>Trate o LLM como uma calculadora de textos</strong></td><td>Parâmetros são números, não textos. Não há "banco de textos" — há padrões estatísticos.</td></tr>
+                                    <tr><td><strong>2</strong></td><td><strong>A janela de contexto é seu superpoder e kriptonita</strong></td><td>Pouco contexto = resposta genérica. Excesso = degradação. Trate como mesa de trabalho.</td></tr>
+                                    <tr><td><strong>3</strong></td><td><strong>LLMs pensam através de tokens: inputs nobres = outputs nobres</strong></td><td>Instruções de qualidade geram respostas de qualidade. Lixo entra, lixo sai.</td></tr>
+                                    <tr><td><strong>4</strong></td><td><strong>Alucinações são inerentes — e não necessariamente ruins</strong></td><td>Toda informação factual do conhecimento paramétrico é falsa até prova em contrário.</td></tr>
+                                    <tr><td><strong>5</strong></td><td><strong>Anexo é diferente de contexto</strong></td><td>Nem todo anexo entra inteiro na janela. Quanto mais longo, mais detalhes se perdem.</td></tr>
+                                    <tr><td><strong>6</strong></td><td><strong>LLMs são máquinas obedientes, treinadas para agradar</strong></td><td>Não acredite em elogios. Use a bajulação a seu favor: ensine-o a criticar.</td></tr>
+                                    <tr><td><strong>7</strong></td><td><strong>LLMs não têm compromisso com verdade, justiça ou sabedoria</strong></td><td>Seja você o curador de valores e julgamento. Não permita que a máquina decida por você.</td></tr>
+                                    <tr><td><strong>8</strong></td><td><strong>Não foque em automação — foque em aumentação</strong></td><td>O poder dos LLMs é traduzir e condensar complexidades, não substituir seu pensamento.</td></tr>
+                                    <tr><td><strong>9</strong></td><td><strong>No modo agêntico, seja regente da orquestra, não plateia</strong></td><td>Você é o arquiteto cognitivo: controla prompt, skills e resources.</td></tr>
+                                    <tr><td><strong>10</strong></td><td><strong>Continue pensando!</strong></td><td>SER HUMANO + IA > SER HUMANO - IA. Use a IA como asa, não como muleta.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="callout callout-tip">
+                        <div class="callout-title">A Equação Fundamental</div>
+                        <p style="font-size:18px;text-align:center;margin:12px 0;"><strong>SER HUMANO + IA > SER HUMANO - IA</strong></p>
+                        <p>Não devemos usar a IA como muleta, mas como asa para ir mais rápido, mais alto e mais longe. A história de Kasparov vs. Deep Blue nos ensina: humanos + máquinas superam humanos ou máquinas sozinhos.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">5 Perguntas que Você Deve Saber Responder</h2>
+                        <ol style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li><strong>O que se passa dentro do LLM?</strong> Como ele produz texto?</li>
+                            <li><strong>De onde o LLM tira informação?</strong> Qual a fonte de conhecimento?</li>
+                            <li><strong>O que é janela de contexto?</strong> Por que é tão importante?</li>
+                            <li><strong>O que são alucinações?</strong> Por que ocorrem? Como mitigar?</li>
+                            <li><strong>Como conseguir respostas confiáveis?</strong> Quais técnicas usar?</li>
+                        </ol>
+                        <p>Se você consegue responder essas perguntas, dominou os fundamentos.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Checklist de Revisão do Módulo 1
+Prompt: undefined
+Checklist:
+- Sei que LLMs são calculadoras de texto (parâmetros são números)
+- Entendo a janela de contexto e seus trade-offs
+- Sei que inputs nobres geram outputs nobres
+- Assumo que toda informação factual pode ser alucinação
+- Sei a diferença entre anexo e contexto
+- Reconheço o viés de bajulação e sei usar a meu favor
+- Sou o curador de valores — não delego julgamento à máquina
+- Uso IA para aumentação, não apenas automação
+- No modo agêntico, sou o regente, não a plateia
+- Continuo pensando — IA é asa, não muleta
+
+
+**Tip:** Imprima ou salve esta página como referência rápida. Os <strong>10 Mandamentos</strong> são princípios que você deve ter sempre em mente ao usar LLMs no trabalho jurídico.
+
+**Warning:** <strong>"Já sei tudo, não preciso revisar."</strong><br>Cuidado com a confiança excessiva. Mesmo usuários experientes cometem erros básicos. Revisite os mandamentos periodicamente — especialmente o 4 (alucinações) e o 7 (curadoria de valores).
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.16",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.1: Introdução à Engenharia de Prompt**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Compreender o que é engenharia de prompt e conhecer as três modalidades de comunicação com LLMs.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O Que é Engenharia de Prompt?</h2>
+                        <p><strong>Engenharia de Prompt</strong> é a disciplina que estuda como estruturar entradas (prompts) para LLMs de forma a obter saídas desejadas de maneira <strong>confiável</strong> e <strong>eficiente</strong>.</p>
+                        <p>É a arte e a ciência de <strong>conversar com máquinas</strong> de forma produtiva.</p>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Citação: Kevin Kelly</div>
+                        <p style="font-size:1.1em;font-style:italic;margin:12px 0;">"Seres humanos são para perguntas; máquinas, para respostas."</p>
+                        <p style="text-align:right;font-size:0.9em;">— Kevin Kelly</p>
+                    </div>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Citação: Andrej Karpathy</div>
+                        <p style="font-size:1.1em;font-style:italic;margin:12px 0;">"A linguagem de programação mais nova e mais quente do momento é o inglês (ou o português ou qualquer outra linguagem natural)."</p>
+                        <p style="text-align:right;font-size:0.9em;">— Andrej Karpathy, ex-diretor de IA da Tesla</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">As Três Modalidades de Prompt</h2>
+                        <p>Existem <strong>três formas diferentes</strong> de conversar com LLMs, cada uma com características próprias:</p>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-success);">
+                        <h2 class="block-title" style="color:var(--accent-success);">1. Vibe Prompting</h2>
+                        <p><strong>Comunicação em linguagem natural pura</strong> — como você falaria com um colega.</p>
+                        <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                            <li><strong>Conversacional</strong> — tom natural, sem formatação especial</li>
+                            <li><strong>Direto e simples</strong> — vai direto ao ponto</li>
+                            <li><strong>Fluxo de pensamento</strong> — escreve como pensa</li>
+                            <li><strong>Aprimorável</strong> — pode usar reflexão, pensamento estendido, meta prompts</li>
+                        </ul>
+                        <div class="code-block">Exemplo: "Resuma esse contrato em 3 parágrafos, destacando as cláusulas mais importantes para o locatário."</div>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-gold);">
+                        <h2 class="block-title" style="color:var(--accent-gold);">2. Prompt Estruturado</h2>
+                        <p><strong>Comunicação em linguagem estruturada</strong> — como você escreveria um documento técnico.</p>
+                        <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                            <li><strong>Marcadores</strong> — uso de markdown (##, -, **)</li>
+                            <li><strong>Delimitadores</strong> — tags XML (&lt;persona&gt;, &lt;objetivo&gt;)</li>
+                            <li><strong>Separação modular</strong> — cada parte do prompt tem função clara</li>
+                            <li><strong>Frameworks</strong> — metodologias como P.O.E.M.A.</li>
+                            <li><strong>Controle de output</strong> — define formato da resposta</li>
+                        </ul>
+                        <div class="code-block">&lt;persona&gt;
+Você é um advogado especialista em direito imobiliário.
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Analise o contrato anexado e identifique cláusulas abusivas.
+&lt;/objetivo&gt;
+
+&lt;formato_saida&gt;
+Para cada cláusula abusiva encontrada:
+- Número da cláusula
+- Texto da cláusula
+- Por que é abusiva
+- Sugestão de correção
+&lt;/formato_saida&gt;</div>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-blue-light);">
+                        <h2 class="block-title" style="color:var(--accent-blue-light);">3. Prompt Agêntico</h2>
+                        <p><strong>Comunicação com agentes</strong> — como você delegaria a um assistente autônomo.</p>
+                        <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                            <li><strong>Orquestração</strong> — tarefas encadeadas automaticamente</li>
+                            <li><strong>Tools e Skills</strong> — ativação de ferramentas (busca, cálculo, código)</li>
+                            <li><strong>Resources</strong> — acesso a bases de conhecimento</li>
+                            <li><strong>Workflows complexos</strong> — fluxos adaptativos</li>
+                            <li><strong>Artefatos</strong> — outputs sofisticados (documentos, código, análises)</li>
+                        </ul>
+                        <div class="code-block">Exemplo (Claude Code):
+"Pesquise jurisprudência sobre dano moral em atraso de voo,
+analise os 5 casos mais relevantes,
+gere uma tabela comparativa com valores de indenização,
+e redija uma petição inicial baseada nesses precedentes."</div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Comparativo das Modalidades</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Aspecto</th><th>Vibe</th><th>Estruturado</th><th>Agêntico</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Complexidade</strong></td><td>Baixa</td><td>Média</td><td>Alta</td></tr>
+                                    <tr><td><strong>Controle</strong></td><td>Pouco</td><td>Alto</td><td>Muito alto</td></tr>
+                                    <tr><td><strong>Reusabilidade</strong></td><td>Baixa</td><td>Alta</td><td>Muito alta</td></tr>
+                                    <tr><td><strong>Curva de aprendizado</strong></td><td>Imediata</td><td>Moderada</td><td>Íngreme</td></tr>
+                                    <tr><td><strong>Ideal para</strong></td><td>Tarefas simples</td><td>Tarefas repetitivas</td><td>Workflows complexos</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Quando Usar Cada Modalidade?</div>
+                        <p><strong>Vibe:</strong> Perguntas rápidas, brainstorming, exploração inicial.</p>
+                        <p><strong>Estruturado:</strong> Documentos jurídicos, análises padronizadas, tarefas que se repetem.</p>
+                        <p><strong>Agêntico:</strong> Pesquisas complexas, geração de múltiplos documentos, automação de fluxos.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Experimentando as Três Modalidades
+Prompt: undefined
+Checklist:
+- Entendo que engenharia de prompt é a arte de conversar com máquinas
+- Conheço as três modalidades: Vibe, Estruturado e Agêntico
+- Sei quando usar cada modalidade
+- Experimentei na prática a diferença entre Vibe e Estruturado
+
+
+**Tip:** Comece com <strong>Vibe Prompting</strong> para entender o problema, evolua para <strong>Estruturado</strong> quando precisar de consistência, e use <strong>Agêntico</strong> quando tiver fluxos complexos. A maioria das tarefas jurídicas se beneficia do prompt estruturado.
+
+**Warning:** <strong>"Vou sempre usar Vibe porque é mais fácil."</strong><br>Vibe funciona para tarefas simples, mas você perde controle sobre o formato e a consistência. Para documentos jurídicos, o prompt estruturado é quase sempre a melhor escolha.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.1",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.2: Fundamentos**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Compreender os dois modelos mentais essenciais para engenharia de prompt: LLM como calculadora de textos e como máquina obediente.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O LLM como Máquina de Calcular Textos</h2>
+                        <p>Para dominar a engenharia de prompt, você precisa entender <strong>como o LLM funciona por dentro</strong>:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Característica</th><th>Implicação Prática</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>INPUT → CÁLCULOS → OUTPUT</strong></td><td>Processo não-determinístico: mesma entrada pode gerar saídas diferentes</td></tr>
+                                    <tr><td><strong>Processo Auto-regressivo</strong></td><td>Gera uma palavra de cada vez, baseado nas anteriores</td></tr>
+                                    <tr><td><strong>Padrões Linguísticos</strong></td><td>Opera por probabilidade semântica, não por "entendimento"</td></tr>
+                                    <tr><td><strong>Sem Aprendizado Contínuo</strong></td><td>Cada conversa começa do zero (reset de contexto)</td></tr>
+                                    <tr><td><strong>Aprendizado pelo Contexto</strong></td><td>Aprende dentro da janela, mas não persiste</td></tr>
+                                    <tr><td><strong>Limitado pela Janela</strong></td><td>Só "vê" o que está na janela de contexto</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Citação: Umberto Eco</div>
+                        <p style="font-size:1.1em;font-style:italic;margin:12px 0;">"O computador não é uma máquina inteligente que ajuda pessoas burras, mas sim uma máquina burra que só funciona nas mãos de pessoas inteligentes."</p>
+                        <p style="text-align:right;font-size:0.9em;">— Umberto Eco</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">O LLM como Máquina Obediente</h2>
+                        <p>Além de calcular textos, o LLM foi <strong>treinado para obedecer</strong>:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Característica</th><th>O que significa</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Pré-treino + Fine-tuning</strong></td><td>Ajustado com feedback humano (RLHF) para ser útil</td></tr>
+                                    <tr><td><strong>Alinhamento Ético (HHH)</strong></td><td>Treinado para ser Helpful, Harmless, Honest</td></tr>
+                                    <tr><td><strong>Dirigibilidade (Steerability)</strong></td><td>Responde às instruções — quanto mais claras, melhor</td></tr>
+                                    <tr><td><strong>Bajulação (Sycophancy)</strong></td><td>Tende a concordar com você, mesmo quando você está errado</td></tr>
+                                    <tr><td><strong>Espelhamento de Inteligência</strong></td><td>Qualidade da resposta reflete qualidade da pergunta</td></tr>
+                                    <tr><td><strong>Sem Sabedoria Intrínseca</strong></td><td>Não tem senso de justiça ou valores próprios</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">O Efeito Bajulação (Sycophancy)</div>
+                        <p>LLMs foram treinados para <strong>agradar o usuário</strong>. Isso significa que:</p>
+                        <ul style="margin:12px 0;padding-left:24px;">
+                            <li>Tendem a <strong>concordar</strong> com suas opiniões, mesmo erradas</li>
+                            <li>Podem <strong>mudar de posição</strong> se você pressionar</li>
+                            <li><strong>Elogiam</strong> seu trabalho mesmo quando tem problemas</li>
+                        </ul>
+                        <p><strong>Solução:</strong> Peça explicitamente críticas. Use "advogado do diabo". Desconfie de elogios.</p>
+                    </div>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Citação: Ted Nelson</div>
+                        <p style="font-size:1.1em;font-style:italic;margin:12px 0;">"A boa notícia sobre os computadores é que eles fazem o que você manda. A má notícia é que eles fazem o que você manda."</p>
+                        <p style="text-align:right;font-size:0.9em;">— Ted Nelson</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Espelhamento de Inteligência</h2>
+                        <p>A <strong>inteligência do LLM está correlacionada à inteligência do usuário</strong>:</p>
+                        <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                            <li>Perguntas vagas → respostas genéricas</li>
+                            <li>Perguntas específicas → respostas detalhadas</li>
+                            <li>Contexto pobre → resultado pobre</li>
+                            <li>Contexto rico → resultado rico</li>
+                        </ul>
+                        <p>O LLM é um <strong>espelho</strong>: reflete a qualidade do que você coloca nele.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Testando Dirigibilidade e Bajulação
+Prompt: undefined
+Checklist:
+- Entendo que o LLM é uma calculadora de textos (não 'pensa' como humano)
+- Sei que o LLM foi treinado para obedecer (dirigibilidade)
+- Reconheço o efeito bajulação e sei como mitigá-lo
+- Compreendo o espelhamento: perguntas melhores = respostas melhores
+
+
+**Tip:** Sempre que receber uma resposta do LLM que parece <strong>boa demais</strong> ou <strong>concordante demais</strong>, desconfie. Peça explicitamente: <em>'Aponte problemas nessa análise'</em> ou <em>'Faça o papel de advogado da parte contrária'</em>.
+
+**Warning:** <strong>"O Claude disse que minha petição está perfeita!"</strong><br>Cuidado com a bajulação. LLMs tendem a elogiar seu trabalho por padrão. Sempre peça críticas explícitas e use a técnica do advogado do diabo.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.2",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

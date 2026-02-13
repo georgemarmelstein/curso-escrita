@@ -1,0 +1,80 @@
+{
+  "name": "AI Training Applied to Law - Exercise Workbook",
+  "short_name": "AI Law",
+  "description": "Exercise workbook for the AI applied to Law course",
+  "start_url": "./index.html?lang=en",
+  "display": "standalone",
+  "background_color": "#FDFCFA",
+  "theme_color": "#194A68",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "assets/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Module 1 - Fundamentals",
+      "url": "./index.html?lang=en#aula-1.1",
+      "description": "Go to Module 1"
+    },
+    {
+      "name": "Module 2 - Prompt Engineering",
+      "url": "./index.html?lang=en#aula-2.1",
+      "description": "Go to Module 2"
+    },
+    {
+      "name": "Module 3 - Advanced Practice",
+      "url": "./index.html?lang=en#aula-3.1",
+      "description": "Go to Module 3"
+    }
+  ]
+}

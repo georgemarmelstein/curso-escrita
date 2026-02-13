@@ -1,0 +1,209 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 3.5: Consolidação e Boas Práticas**
+
+**Module:** Módulo 3 — Técnicas Avançadas
+
+**Objective:** Consolidar o aprendizado através dos Três Desafios da Engenharia de Prompt e estabelecer boas práticas fundamentadas.
+
+**Content:**
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Princípio Fundamental</div>
+                        <p style="font-size:1.1em;font-style:italic;margin:12px 0;">"O computador não é uma máquina inteligente que ajuda pessoas burras, mas sim uma máquina burra que só funciona nas mãos de pessoas inteligentes."</p>
+                        <p style="text-align:right;font-size:0.9em;">— Umberto Eco</p>
+                    </div>
+
+                    <h2>Os Três Desafios da Engenharia de Prompt</h2>
+                    <p>Todo prompt enfrenta três desafios fundamentais. Dominar esses desafios é dominar a engenharia de prompt.</p>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>1. Dirigibilidade (Steerability)</h2>
+                    <p><strong>O desafio:</strong> Como fazer o modelo seguir exatamente o que você quer?</p>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Técnica</th><th>Quando Usar</th><th>Exemplo</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Clareza</strong></td><td>Sempre</td><td>Seja específico sobre o que quer</td></tr>
+                                <tr><td><strong>P.O.E.M.A.</strong></td><td>Tarefas estruturadas</td><td>Persona + Objetivo + Estilo + Modelo + Adicionais</td></tr>
+                                <tr><td><strong>CoT explícito</strong></td><td>Raciocínio complexo</td><td>"Pense passo a passo antes de responder"</td></tr>
+                                <tr><td><strong>Placeholders</strong></td><td>Templates</td><td>`NOME DA PARTE EM MAIÚSCULAS`</td></tr>
+                                <tr><td><strong>Prefill</strong></td><td>Controle de início</td><td>"Comece diretamente com RELATÓRIO"</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Armadilha: Bajulação (Sycophancy)</div>
+                        <p>O modelo tende a concordar com você. Se perguntar "você tem certeza?", ele pode mudar a resposta para agradar. <strong>Em vez disso:</strong> peça fundamentação ou apresente contra-argumentos.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>2. Qualidade do Conhecimento</h2>
+                    <p><strong>O desafio:</strong> Como garantir que o modelo responda com informações corretas e bem fundamentadas?</p>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Técnica</th><th>Quando Usar</th><th>Exemplo</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Controle de fonte</strong></td><td>Dados específicos</td><td>Anexar documentos, usar RAG</td></tr>
+                                <tr><td><strong>Ativar humildade</strong></td><td>Evitar alucinação</td><td>"Se não souber, diga que não sabe"</td></tr>
+                                <tr><td><strong>Chain of Thought</strong></td><td>Raciocínio complexo</td><td>Forçar exposição do raciocínio</td></tr>
+                                <tr><td><strong>Curadoria</strong></td><td>Base de conhecimento</td><td>Selecionar fontes confiáveis para KB</td></tr>
+                                <tr><td><strong>Verificação cruzada</strong></td><td>Informações críticas</td><td>Pedir fontes, confirmar dados</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Armadilha: Confiar Cegamente</div>
+                        <p>O modelo não tem sabedoria intrínseca nem senso de justiça. Ele calcula probabilidades de tokens. <strong>Sempre:</strong> verifique informações críticas e inclua guardrails anti-alucinação.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>3. Qualidade do Estilo</h2>
+                    <p><strong>O desafio:</strong> Como controlar o tom, formato e extensão da resposta?</p>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Técnica</th><th>Quando Usar</th><th>Exemplo</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Persona</strong></td><td>Vocabulário específico</td><td>"Você é um advogado previdenciarista"</td></tr>
+                                <tr><td><strong>Few-shot</strong></td><td>Formato específico</td><td>Dar 2-3 exemplos do formato desejado</td></tr>
+                                <tr><td><strong>Público-alvo</strong></td><td>Tom adequado</td><td>"Escreva para um leigo" vs "para especialistas"</td></tr>
+                                <tr><td><strong>Priming</strong></td><td>Direcionar estilo</td><td>Contexto anterior influencia resposta</td></tr>
+                                <tr><td><strong>formato_saida</strong></td><td>Estrutura rígida</td><td>Template com seções definidas</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Inputs Nobres = Outputs Nobres</h2>
+
+                    <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <p style="font-size: 1.1rem; text-align: center; margin-bottom: 1rem;"><strong>A qualidade do input determina a qualidade do output.</strong></p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div style="text-align: center; padding: 1rem;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📝</div>
+                                <strong>Tokens de qualidade</strong>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Vocabulário preciso ativa áreas nobres da rede neural</p>
+                            </div>
+                            <div style="text-align: center; padding: 1rem;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚</div>
+                                <strong>Exemplos (Few-shot)</strong>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Demonstrar o padrão esperado</p>
+                            </div>
+                            <div style="text-align: center; padding: 1rem;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧠</div>
+                                <strong>Chain of Thought</strong>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Forçar raciocínio passo a passo</p>
+                            </div>
+                            <div style="text-align: center; padding: 1rem;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎯</div>
+                                <strong>Contexto Rico</strong>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Priming com informação relevante</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Checklist por Tipo de Prompt</h2>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 8px; border-left: 4px solid #16a34a;">
+                            <h4 style="color: #16a34a; margin-bottom: 0.75rem;">Prompts de Análise</h4>
+                            <ul style="font-size: 0.9rem; color: #333; margin-left: 1rem;">
+                                <li>☐ Objetivo claro (FIRAC+, Relatório...)</li>
+                                <li>☐ Formato de saída definido</li>
+                                <li>☐ Guardrails anti-alucinação</li>
+                                <li>☐ Documento anexado</li>
+                            </ul>
+                        </div>
+                        <div style="background: #eff6ff; padding: 1.25rem; border-radius: 8px; border-left: 4px solid #2563eb;">
+                            <h4 style="color: #2563eb; margin-bottom: 0.75rem;">Prompts de Escrita</h4>
+                            <ul style="font-size: 0.9rem; color: #333; margin-left: 1rem;">
+                                <li>☐ Placeholders estruturados</li>
+                                <li>☐ Prefill (instrução de início)</li>
+                                <li>☐ Guardrails de fidelidade</li>
+                                <li>☐ Estilo/tom definido</li>
+                            </ul>
+                        </div>
+                        <div style="background: #fdf4ff; padding: 1.25rem; border-radius: 8px; border-left: 4px solid #9333ea;">
+                            <h4 style="color: #9333ea; margin-bottom: 0.75rem;">Prompts de Pesquisa</h4>
+                            <ul style="font-size: 0.9rem; color: #333; margin-left: 1rem;">
+                                <li>☐ Pergunta decomponível</li>
+                                <li>☐ Instrução para citar fontes</li>
+                                <li>☐ Grau de confiança solicitado</li>
+                                <li>☐ Verificação humana prevista</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Hierarquia de Técnicas</h2>
+
+                    <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <pre style="margin: 0; font-family: monospace; font-size: 0.9rem; line-height: 1.6;">
+Avançado:    Tree-of-Thoughts, Graph of Thoughts, Reflexion
+                ↑
+Estruturado: Chain-of-Thought, Self-Consistency, P.O.E.M.A.
+                ↑
+Básico:      Few-shot, Zero-shot, Vibe Prompting
+                        </pre>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Citação Final</div>
+                        <p style="font-size:1.1em;font-style:italic;margin:12px 0;">"A boa notícia sobre os computadores é que eles fazem o que você manda. A má notícia é que eles fazem o que você manda."</p>
+                        <p style="text-align:right;font-size:0.9em;">— Ted Nelson</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Diagnóstico pelos Três Desafios
+Prompt: undefined
+Checklist:
+- Sei identificar os três desafios da engenharia de prompt
+- Conheço técnicas para cada desafio
+- Entendo o princípio 'Inputs Nobres = Outputs Nobres'
+- Apliquei o checklist adequado ao tipo de prompt
+
+
+**Tip:** <strong>Seres humanos são para perguntas; máquinas, para respostas.</strong> (Kevin Kelly) — Você faz as perguntas inteligentes; o modelo calcula as respostas.
+
+**Warning:** <strong>"O modelo é inteligente, então não preciso ser."</strong><br>Errado. A inteligência do output está correlacionada à inteligência do input. Você é o fator limitante.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "3.5",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

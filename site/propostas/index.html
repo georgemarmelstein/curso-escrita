@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5 Propostas - Privacidade e Proteção de Dados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #194A68;
+      --color-accent: #BE9C6D;
+      --color-background: #FFF4E4;
+      --color-surface: #FFFFFF;
+      --color-ink: #0f172a;
+      --color-ink-muted: #64748b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--color-background);
+      color: var(--color-ink);
+      line-height: 1.6;
+      padding: 3rem 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--color-ink-muted);
+      font-size: 1.1rem;
+    }
+
+    .proposals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .proposal-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      text-decoration: none;
+      display: block;
+    }
+
+    .proposal-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    .proposal-header {
+      padding: 1.5rem;
+      color: white;
+    }
+
+    .proposal-card:nth-child(1) .proposal-header {
+      background: linear-gradient(135deg, #194A68 0%, #2a6a8f 100%);
+    }
+
+    .proposal-card:nth-child(2) .proposal-header {
+      background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+    }
+
+    .proposal-card:nth-child(3) .proposal-header {
+      background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    }
+
+    .proposal-card:nth-child(4) .proposal-header {
+      background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+    }
+
+    .proposal-card:nth-child(5) .proposal-header {
+      background: linear-gradient(135deg, #be185d 0%, #ec4899 100%);
+    }
+
+    .proposal-number {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+      margin-bottom: 0.25rem;
+    }
+
+    .proposal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    .proposal-body {
+      padding: 1.5rem;
+    }
+
+    .proposal-description {
+      color: var(--color-ink-muted);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .proposal-features {
+      list-style: none;
+    }
+
+    .proposal-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0;
+      font-size: 0.85rem;
+      color: var(--color-ink);
+    }
+
+    .feature-icon {
+      color: var(--color-accent);
+    }
+
+    .proposal-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .proposal-card:hover .proposal-cta {
+      background: #2a6a8f;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 2px solid rgba(25, 74, 104, 0.1);
+      color: var(--color-ink-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>5 Propostas de Design</h1>
+      <p class="subtitle">Seção "Privacidade e Proteção de Dados" — Ambiente de Exercícios Práticos</p>
+    </header>
+
+    <div class="proposals-grid">
+      <!-- Proposta 1 -->
+      <a href="proposta-1-gamificada.html" class="proposal-card">
+        <div class="proposal-header">
+          <div class="proposal-number">Proposta 1</div>
+          <h2 class="proposal-title">Gamificada (Missão/Quest)</h2>
+        </div>
+        <div class="proposal-body">
+          <p class="proposal-description">
+            Visual de jogo com missões, etapas desbloqueáveis, badges e recompensas.
+          </p>
+          <ul class="proposal-features">
+            <li class="proposal-feature"><span class="feature-icon">→</span> Barra de progresso proeminente</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Etapas sequenciais bloqueadas</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Sistema de conquistas</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Visual de "missão em andamento"</li>
+          </ul>
+          <div class="proposal-cta">
+            Ver proposta <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Proposta 2 -->
+      <a href="proposta-2-lab-workshop.html" class="proposal-card">
+        <div class="proposal-header">
+          <div class="proposal-number">Proposta 2</div>
+          <h2 class="proposal-title">Lab/Workshop (Estações)</h2>
+        </div>
+        <div class="proposal-body">
+          <p class="proposal-description">
+            Visual de laboratório prático com estações de trabalho e ferramentas.
+          </p>
+          <ul class="proposal-features">
+            <li class="proposal-feature"><span class="feature-icon">→</span> Painel lateral de ferramentas</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> "Bancadas" de experimento</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Comparadores lado a lado</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Output estilo terminal</li>
+          </ul>
+          <div class="proposal-cta">
+            Ver proposta <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Proposta 3 -->
+      <a href="proposta-3-step-by-step.html" class="proposal-card">
+        <div class="proposal-header">
+          <div class="proposal-number">Proposta 3</div>
+          <h2 class="proposal-title">Step-by-Step (Tutorial)</h2>
+        </div>
+        <div class="proposal-body">
+          <p class="proposal-description">
+            Visual de tutorial guiado com timeline vertical e passos numerados.
+          </p>
+          <ul class="proposal-features">
+            <li class="proposal-feature"><span class="feature-icon">→</span> Timeline lateral colorida</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Blocos "Faça Agora"</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Passos com marcadores grandes</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Animação de progresso</li>
+          </ul>
+          <div class="proposal-cta">
+            Ver proposta <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Proposta 4 -->
+      <a href="proposta-4-case-study.html" class="proposal-card">
+        <div class="proposal-header">
+          <div class="proposal-number">Proposta 4</div>
+          <h2 class="proposal-title">Case Study (Simulação)</h2>
+        </div>
+        <div class="proposal-body">
+          <p class="proposal-description">
+            Visual de estudo de caso com cenários reais e decisões interativas.
+          </p>
+          <ul class="proposal-features">
+            <li class="proposal-feature"><span class="feature-icon">→</span> Briefing da situação</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Cenários com perguntas</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Feedback imediato</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Vereditos visuais (PODE/NÃO PODE)</li>
+          </ul>
+          <div class="proposal-cta">
+            Ver proposta <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Proposta 5 -->
+      <a href="proposta-5-cards-interativos.html" class="proposal-card">
+        <div class="proposal-header">
+          <div class="proposal-number">Proposta 5</div>
+          <h2 class="proposal-title">Cards Interativos (Micro-Atividades)</h2>
+        </div>
+        <div class="proposal-body">
+          <p class="proposal-description">
+            Grid de cards com micro-atividades independentes e progresso circular.
+          </p>
+          <ul class="proposal-features">
+            <li class="proposal-feature"><span class="feature-icon">→</span> Grid de atividades</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Progresso circular (ring)</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Tipos: Aprender, Praticar, Aplicar</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Cards com hover interativo</li>
+          </ul>
+          <div class="proposal-cta">
+            Ver proposta <span>→</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <h2 style="font-family: var(--font-serif); font-size: 1.8rem; margin: 3rem 0 1.5rem; color: var(--color-ink); text-align: center;">
+      Propostas Híbridas (Sidebar + Elegância)
+    </h2>
+    <p style="text-align: center; color: var(--color-ink-muted); margin-bottom: 2rem;">
+      Mesclam a navegação lateral da Proposta 2 com a elegância da Proposta 1 — sem fases bloqueadas
+    </p>
+
+    <div class="proposals-grid">
+      <!-- Proposta 6 -->
+      <a href="proposta-6-hibrida-classica.html" class="proposal-card">
+        <div class="proposal-header" style="background: linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%);">
+          <div class="proposal-number">Proposta 6</div>
+          <h2 class="proposal-title">Híbrida Clássica</h2>
+        </div>
+        <div class="proposal-body">
+          <p class="proposal-description">
+            Paleta azul jurídico + dourado. Fontes: Crimson Pro + Spectral.
+          </p>
+          <ul class="proposal-features">
+            <li class="proposal-feature"><span class="feature-icon">→</span> Sidebar com navegação livre</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Barra de progresso elegante</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Cards com borda dourada</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Tom acadêmico/clássico</li>
+          </ul>
+          <div class="proposal-cta">
+            Ver proposta <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Proposta 7 -->
+      <a href="proposta-7-hibrida-esmeralda.html" class="proposal-card">
+        <div class="proposal-header" style="background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);">
+          <div class="proposal-number">Proposta 7</div>
+          <h2 class="proposal-title">Híbrida Esmeralda</h2>
+        </div>
+        <div class="proposal-body">
+          <p class="proposal-description">
+            Paleta verde profundo + dourado envelhecido. Fontes: Libre Baskerville + Lora.
+          </p>
+          <ul class="proposal-features">
+            <li class="proposal-feature"><span class="feature-icon">→</span> Progresso circular (ring)</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Divisores com gradiente</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Visual sofisticado/natural</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Seções numeradas</li>
+          </ul>
+          <div class="proposal-cta">
+            Ver proposta <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Proposta 8 -->
+      <a href="proposta-8-hibrida-terracota.html" class="proposal-card">
+        <div class="proposal-header" style="background: linear-gradient(135deg, #5c4033 0%, #8b6914 100%);">
+          <div class="proposal-number">Proposta 8</div>
+          <h2 class="proposal-title">Híbrida Terracota</h2>
+        </div>
+        <div class="proposal-body">
+          <p class="proposal-description">
+            Paleta marrom quente + creme. Fontes: Playfair Display + Source Serif.
+          </p>
+          <ul class="proposal-features">
+            <li class="proposal-feature"><span class="feature-icon">→</span> Sidebar escura imersiva</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Bullets de navegação</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Objetivos em grid 2x2</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Visual acolhedor/rústico</li>
+          </ul>
+          <div class="proposal-cta">
+            Ver proposta <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Proposta 9 -->
+      <a href="proposta-9-hibrida-burgundy.html" class="proposal-card">
+        <div class="proposal-header" style="background: linear-gradient(135deg, #4a1942 0%, #6b2c5f 100%);">
+          <div class="proposal-number">Proposta 9</div>
+          <h2 class="proposal-title">Híbrida Burgundy</h2>
+        </div>
+        <div class="proposal-body">
+          <p class="proposal-description">
+            Paleta vinho sofisticado + dourado. Fontes: Cormorant + EB Garamond.
+          </p>
+          <ul class="proposal-features">
+            <li class="proposal-feature"><span class="feature-icon">→</span> Emblema circular central</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Ornamentos decorativos</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Indicadores de navegação</li>
+            <li class="proposal-feature"><span class="feature-icon">→</span> Visual premium/luxuoso</li>
+          </ul>
+          <div class="proposal-cta">
+            Ver proposta <span>→</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <footer>
+      <p>Clique em cada proposta para visualizar o design completo</p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,468 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.7: O Conhecimento da Máquina**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Entender de onde os LLMs tiram conhecimento e saber quando usar cada fonte.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">As Quatro Fontes de Conhecimento</h2>
+                        <p>Os LLMs podem acessar conhecimento de <strong>quatro fontes diferentes</strong>:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Fonte</th><th>O que é</th><th>Como funciona</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Paramétrico</strong></td><td>Pesos e conexões da rede neural</td><td>Aprendido durante o treinamento</td></tr>
+                                    <tr><td><strong>Do Usuário</strong></td><td>Via prompt ou anexos</td><td>Você fornece no momento da conversa</td></tr>
+                                    <tr><td><strong>De Sistema</strong></td><td>Prompt de sistema, configurações</td><td>Definido pelo desenvolvedor</td></tr>
+                                    <tr><td><strong>Buscado</strong></td><td>Internet, APIs, ferramentas</td><td>Recuperado em tempo real</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>O segredo para usar bem os LLMs é <strong>saber quando usar cada fonte</strong>.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Conhecimento Paramétrico: O "Cérebro"</h2>
+                        <p>É o que está "na cabeça" do LLM — armazenado nos bilhões de parâmetros durante o treinamento.</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Característica</th><th>Implicação</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Probabilístico</strong></td><td>Baseado em frequência estatística, não em certeza</td></tr>
+                                    <tr><td><strong>Frequentista</strong></td><td>O que apareceu mais no treino tem mais peso</td></tr>
+                                    <tr><td><strong>Estático/Congelado</strong></td><td>Não muda após o treinamento</td></tr>
+                                    <tr><td><strong>Datado (Cutoff)</strong></td><td>Tem uma data limite — não sabe eventos posteriores</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">📅 Data de Corte (Knowledge Cutoff)</div>
+                        <p>Todo modelo tem uma <strong>data limite</strong> de conhecimento. Pergunte: <code>Qual sua data de corte?</code></p>
+                        <p>Eventos após essa data: o modelo <strong>não sabe</strong> (mas pode inventar com confiança).</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Quando Usar Cada Fonte?</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Use o Paramétrico para...</th><th>Use Conhecimento do Usuário para...</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Explicar conceitos (ex: "O que é mandado de segurança?")</td><td>Analisar documentos específicos</td></tr>
+                                    <tr><td>Conhecimento estável (gramática, lógica, definições)</td><td>Fatos que mudam (leis recentes, preços)</td></tr>
+                                    <tr><td>Criatividade e cenários hipotéticos</td><td>Dados específicos (números de processo, citações)</td></tr>
+                                    <tr><td>Informações amplamente documentadas</td><td>Casos concretos e análises precisas</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Conhecimento do Usuário: Via Prompt vs Via Anexo</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Método</th><th>Quando usar</th><th>Limite prático</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Via Prompt</strong></td><td>Textos curtos, trechos específicos</td><td>Até ~10-20 páginas coladas</td></tr>
+                                    <tr><td><strong>Via Anexo</strong></td><td>Documentos completos (PDFs, Word)</td><td>Até ~150-200 páginas (com degradação)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout callout-info">
+                            <div class="callout-title">💡 Contexto Sobrescreve Parâmetros</div>
+                            <p>Se você fornecer informação que contradiz o conhecimento paramétrico, o modelo tende a <strong>priorizar o que você forneceu</strong>.</p>
+                            <p>Isso é poderoso: você pode "ancorar" o modelo em documentos específicos para reduzir alucinações.</p>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">A Regra de Ouro</h2>
+                        <p>O conhecimento paramétrico é excelente para <strong>conceitos e criatividade</strong>, mas falha em <strong>dados factuais específicos</strong>.</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th style="color:var(--accent-success);">✓ Confiável</th><th style="color:var(--accent-warning);">⚠️ Verificar Sempre</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Explicações conceituais</td><td>Números de processo, REsp, RE</td></tr>
+                                    <tr><td>Comparações e analogias</td><td>Datas de julgamento</td></tr>
+                                    <tr><td>Cenários hipotéticos</td><td>Citações literais</td></tr>
+                                    <tr><td>Estruturas e frameworks</td><td>URLs e links</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+
+**Exercise:**
+Title: Explorando as Fontes de Conhecimento
+Prompt: undefined
+Checklist:
+- Entendo as 4 fontes de conhecimento dos LLMs
+- Sei que conhecimento paramétrico é bom para conceitos, ruim para fatos
+- Sei inserir conhecimento via prompt (colar texto)
+- Sei inserir conhecimento via anexo (upload de arquivo)
+- Entendo que contexto fornecido pode sobrescrever parâmetros
+
+
+**Tip:** Para <strong>tarefas conceituais</strong> (explicar, comparar, criar cenários), use o conhecimento paramétrico. Para <strong>tarefas factuais</strong> (analisar documentos, verificar dados), forneça o material via prompt ou anexo.
+
+**Warning:** <strong>"O modelo disse com confiança, então deve estar certo."</strong><br>LLMs não calibram confiança com precisão. Um modelo pode afirmar um número de processo falso com a mesma fluência de um verdadeiro. <strong>Confiança aparente não indica veracidade.</strong>
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.7",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.8: Como Treinar um LLM**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Entender as três fases de treinamento e como cada uma molda o comportamento do modelo.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O Pipeline de Treinamento</h2>
+                        <p>Criar um LLM moderno envolve <strong>três fases</strong> distintas, cada uma com propósito específico:</p>
+                        <div class="code-block">FASE 1: PRÉ-TREINAMENTO
+Internet (trilhões de tokens) → [Predizer próximo token] → Modelo Base
+                                                              ↓
+FASE 2: FINE-TUNING (SFT)
+Exemplos de alta qualidade → [Ajuste supervisionado] → Modelo Instrução
+                                                              ↓
+FASE 3: ALINHAMENTO (RLHF)
+Feedback humano → [Reinforcement Learning] → Modelo Alinhado</div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Fase 1: Pré-Treinamento</h2>
+                        <p>O modelo aprende a <strong>prever o próximo token</strong> em um corpus massivo da internet.</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Aspecto</th><th>Detalhes</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Dados</strong></td><td>Trilhões de tokens (internet, livros, código, artigos)</td></tr>
+                                    <tr><td><strong>Objetivo</strong></td><td>Minimizar erro de predição do próximo token</td></tr>
+                                    <tr><td><strong>Custo</strong></td><td>Milhões de dólares, meses de computação em GPUs</td></tr>
+                                    <tr><td><strong>Resultado</strong></td><td>Modelo "base" — sabe muito, mas não segue instruções bem</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>O modelo base é como um <strong>erudito sem habilidades sociais</strong>: conhecimento vasto, mas não sabe conversar.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Fase 2: Fine-Tuning Supervisionado (SFT)</h2>
+                        <p>O modelo aprende o <strong>formato de diálogo</strong> com exemplos humanos de alta qualidade.</p>
+                        <div class="code-block">Exemplo de dado SFT:
+
+Usuário: "Explique o que é habeas corpus em termos simples."
+Assistente: "Habeas corpus é uma ação judicial que protege
+a liberdade de ir e vir. Quando alguém é preso ilegalmente,
+pode usar esse recurso para ser libertado..."</div>
+                        <p>Milhares de exemplos assim ensinam o modelo a:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li>Responder em formato de conversa</li>
+                            <li>Seguir instruções</li>
+                            <li>Manter tom apropriado</li>
+                            <li>Estruturar respostas de forma clara</li>
+                        </ul>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Fase 3: RLHF (Reinforcement Learning from Human Feedback)</h2>
+                        <p>Humanos <strong>comparam respostas</strong> e indicam qual é melhor. Isso treina o modelo para gerar respostas preferidas.</p>
+                        <div class="code-block">Processo RLHF:
+
+1. Modelo gera duas respostas para mesma pergunta
+2. Humano escolhe qual é melhor (A ou B)
+3. Treina um "modelo de recompensa" com essas preferências
+4. Usa RL para otimizar o modelo principal</div>
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎯 Por que RLHF importa?</div>
+                            <p>RLHF é o que torna modelos <strong>úteis e seguros</strong>. Sem ele, modelos base podem gerar conteúdo problemático, não seguir instruções, ou dar respostas inúteis.</p>
+                            <p>É o RLHF que faz Claude recusar pedidos perigosos e tentar ser genuinamente útil.</p>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Constitutional AI: A Abordagem da Anthropic</h2>
+                        <p>O Claude usa uma variação chamada <strong>Constitutional AI (CAI)</strong>:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li>Em vez de apenas feedback humano, usa <strong>princípios éticos escritos</strong> (a "constituição")</li>
+                            <li>O próprio modelo avalia e melhora suas respostas seguindo esses princípios</li>
+                            <li>Reduz dependência de anotadores humanos</li>
+                            <li>Permite treinamento mais escalável e consistente</li>
+                        </ul>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Vieses de Treino</h2>
+                        <p>O treinamento produz comportamentos úteis, mas também <strong>vieses sistemáticos</strong>:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Viés</th><th>O que é</th><th>Exemplo</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Bajulador</strong><br>(Sycophancy)</td><td>Tendência a concordar com o usuário, mesmo quando está errado</td><td>Você diz "acho que 2+2=5" e o modelo concorda ou hesita em corrigir</td></tr>
+                                    <tr><td><strong>Previsível</strong></td><td>Gravita para respostas comuns e esperadas</td><td>Pede uma fruta → banana/maçã; pede um número → 7 ou 42</td></tr>
+                                    <tr><td><strong>Pasteurizado</strong></td><td>Respostas "seguras", genéricas, evitando controvérsias</td><td>Perguntas polêmicas geram "há diversos pontos de vista..."</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout callout-warning">
+                            <div class="callout-title">🎯 A Síntese</div>
+                            <p>Um LLM é um <strong>preditor de padrões linguísticos</strong> refinado por feedback humano — por isso escreve fluentemente e segue instruções, mas <strong>não tem sabedoria nem senso de realidade</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Scaling Laws: Mais é Melhor</h2>
+                        <p>Descoberta importante: performance melhora <strong>previsivelmente</strong> com escala.</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Fator</th><th>Efeito</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Mais parâmetros</strong></td><td>Modelo maior → melhor performance</td></tr>
+                                    <tr><td><strong>Mais dados</strong></td><td>Mais texto de treino → melhor generalização</td></tr>
+                                    <tr><td><strong>Mais computação</strong></td><td>Mais treino → resultados melhores</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>Isso explica a corrida por modelos cada vez maiores — e por que treinamento custa centenas de milhões de dólares.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Observando os Efeitos do Treinamento
+Prompt: undefined
+Checklist:
+- Entendo as 3 fases: pré-treino, SFT, RLHF
+- Sei que pré-treino cria conhecimento, SFT ensina formato
+- Compreendo que RLHF/CAI torna o modelo útil e seguro
+- Entendo o conceito de Constitutional AI da Anthropic
+- Reconheço os vieses de treino: bajulador, previsível, pasteurizado
+
+
+**Tip:** Quando o modelo recusa algo ou responde de forma inesperada, lembre-se: isso é <strong>comportamento treinado</strong>. O modelo foi otimizado para ser útil E seguro — às vezes esses objetivos conflitam.
+
+**Warning:** <strong>"Posso 'destreinar' o modelo com meus prompts."</strong><br>Não. Seus prompts não modificam os pesos do modelo. Você pode influenciar o comportamento na conversa atual, mas o treinamento é fixo. Na próxima conversa, o modelo volta ao comportamento padrão.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.8",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.9: Alucinações**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Entender que alucinações são inerentes aos LLMs — não um bug, mas uma condição essencial para sua eficiência.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que é Alucinação?</h2>
+                        <p>A <strong>alucinação</strong> (ou <em>confabulação</em>) ocorre quando o modelo produz respostas desconectadas com a realidade, muitas vezes com confiança e aparência de veracidade.</p>
+                        <div class="callout callout-error">
+                            <div class="callout-title">⚠️ Não é Bug — É Característica</div>
+                            <p>O LLM <strong>não possui intenção de mentir</strong> nem senso de realidade. Ele simplesmente não tem um mecanismo intrínseco para distinguir fato de ficção.</p>
+                            <p>Isso não é um defeito temporário, mas uma <strong>característica matematicamente inevitável</strong> de um modelo que preenche lacunas com palpites estatísticos.</p>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Por que LLMs Alucinam?</h2>
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎓 Metáfora do Concurseiro</div>
+                            <p>Imagine um concurseiro que estudou muito, mas não sabe tudo. Na prova, ele <strong>prefere chutar com confiança</strong> a deixar em branco — porque foi treinado assim.</p>
+                        </div>
+                        <h3 style="margin-top:20px;color:var(--text-primary);">Problemas nos Dados de Treinamento</h3>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Lacunas de Conhecimento</th><th>Dados Problemáticos</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Dados ausentes ou raros</td><td>Dados incorretos ou enviesados</td></tr>
+                                    <tr><td>Corte temporal (não sabe eventos recentes)</td><td>Conflitos de informação</td></tr>
+                                    <tr><td>Nichos não-representados</td><td>Ambiguidades sem resolução</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h3 style="margin-top:20px;color:var(--text-primary);">Problemas do Fine-tuning (RLHF)</h3>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Incentivo Perverso</th><th>Consequência</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Penalização da abstinência</strong></td><td>Modelo aprende que "não sei" é ruim</td></tr>
+                                    <tr><td><strong>Recompensa por confiança</strong></td><td>Respostas assertivas ganham mais pontos</td></tr>
+                                    <tr><td><strong>Recompensa por verbosidade</strong></td><td>Respostas longas parecem melhores</td></tr>
+                                    <tr><td><strong>Imitação de padrões</strong></td><td>No afã de ser útil, inventa dados por semelhança</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Taxonomia das Alucinações</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Tipo</th><th>O que é</th><th>Exemplo</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Falhas de Dirigibilidade</strong></td><td>Desobediência ao prompt</td><td>Você pede tabela, ele dá texto corrido</td></tr>
+                                    <tr><td><strong>Resposta Non Sense</strong></td><td>Quebra de coerência</td><td>Texto que começa bem e vira nonsense</td></tr>
+                                    <tr><td><strong>Falhas de Factualidade</strong></td><td>Confabulações</td><td>Citar jurisprudência que não existe</td></tr>
+                                    <tr><td><strong>Misturas Linguísticas</strong></td><td>Trocas inesperadas de idioma</td><td>Resposta em português vira inglês</td></tr>
+                                    <tr><td><strong>Falhas Matemáticas</strong></td><td>Erros de cálculo e lógica</td><td>2+2=5 ou silogismos inválidos</td></tr>
+                                    <tr><td><strong>Falhas de Ferramentas</strong></td><td>Erro ao ativar ferramentas</td><td>Diz que buscou mas não buscou</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">O Problema dos Benchmarks</h2>
+                        <p>Segundo <a href="https://openai.com/index/why-language-models-hallucinate/" target="_blank" style="color:var(--accent-primary);">pesquisa da OpenAI</a>, as alucinações persistem porque os <strong>métodos de avaliação incentivam chutar</strong>:</p>
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎯 A Matemática do Chute</div>
+                            <p>Se um modelo chuta "10 de setembro" como aniversário de alguém, tem <strong>1 chance em 365</strong> de acertar.</p>
+                            <p>Se responde "não sei", tem <strong>0% de chance</strong> de pontuar.</p>
+                            <p>Ao longo de milhares de perguntas, o modelo que chuta <strong>parece melhor nos rankings</strong> — mesmo errando muito.</p>
+                        </div>
+                        <p><strong>Solução proposta:</strong> Penalizar erros confiantes mais do que incerteza, e dar crédito parcial para expressões apropriadas de dúvida.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Alucinação é Essencial</h2>
+                        <div class="callout callout-warning">
+                            <div class="callout-title">💡 O Paradoxo</div>
+                            <p>As alucinações <strong>não são falhas do modelo</strong>, mas uma <strong>condição essencial para sua eficiência</strong>.</p>
+                            <p>É a capacidade de "preencher lacunas criativamente" que torna os LLMs ferramentas poderosas para resolver problemas novos.</p>
+                        </div>
+                        <p>O mesmo mecanismo que permite ao LLM:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li>Escrever textos criativos</li>
+                            <li>Resolver problemas inéditos</li>
+                            <li>Fazer analogias inesperadas</li>
+                        </ul>
+                        <p>...também o faz inventar fatos com confiança.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Técnicas de Mitigação</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Técnica</th><th>Como funciona</th><th>Eficácia</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>RAG / Anexos</strong></td><td>Ancora respostas em documentos fornecidos</td><td style="color:var(--accent-success);">Alta</td></tr>
+                                    <tr><td><strong>Busca web</strong></td><td>Verifica em fontes externas</td><td style="color:var(--accent-success);">Alta</td></tr>
+                                    <tr><td><strong>"Se não sabe, diga"</strong></td><td>Instrui explicitamente a admitir ignorância</td><td style="color:var(--accent-warning);">Moderada</td></tr>
+                                    <tr><td><strong>Pedir fontes</strong></td><td>Exigir citações permite verificação</td><td style="color:var(--accent-warning);">Moderada</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">A Regra de Ouro</h2>
+                        <div class="callout callout-error">
+                            <div class="callout-title">🎯 Pressuposição de Falsidade</div>
+                            <p><strong>TODAS</strong> as respostas factuais extraídas do conhecimento paramétrico são "palpites" probabilísticos.</p>
+                            <p><strong>Parta do pressuposto que são falsos, até prova em contrário.</strong></p>
+                        </div>
+                        <p>Por isso a Resolução 615/2025 do CNJ exige verificação: nunca use output de IA sem conferir em fonte oficial.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Identificando Alucinações
+Prompt: undefined
+Checklist:
+- Entendo que alucinação é característica essencial, não bug
+- Conheço as causas: lacunas de dados + incentivos perversos do RLHF
+- Sei identificar os 6 tipos de alucinação
+- Entendo o paradoxo: alucinação é o que torna LLMs úteis
+- Aplico a regra: presumir falso até provar verdadeiro
+
+
+**Tip:** <strong>Pressuponha falsidade.</strong> Toda resposta factual do conhecimento paramétrico é um palpite probabilístico. Trate como suspeito até verificar — especialmente números de processos, datas e citações.
+
+**Warning:** <strong>"O modelo citou jurisprudência com confiança, então deve existir."</strong><br><strong>NUNCA.</strong> A confiança aparente não indica veracidade. Um modelo pode inventar um REsp 1.234.567/SP com a mesma fluência de um que existe. Sempre verifique.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.9",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

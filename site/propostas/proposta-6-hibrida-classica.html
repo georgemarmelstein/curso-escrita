@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposta 6 - Híbrida Clássica (Azul/Dourado)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Paleta Clássica - Azul Jurídico + Dourado */
+      --color-primary: #1a3a52;
+      --color-primary-light: #2d5a7b;
+      --color-accent: #c9a959;
+      --color-accent-light: #e8d5a3;
+      --color-background: #f8f6f1;
+      --color-surface: #ffffff;
+      --color-surface-warm: #fdfbf7;
+      --color-ink: #1a1a1a;
+      --color-ink-muted: #5a6670;
+      --color-success: #2d6a4f;
+      --color-warning: #b8860b;
+      --color-error: #9b2c2c;
+      --color-border: #e8e4dc;
+
+      /* Fontes Serifadas Elegantes */
+      --font-display: 'Crimson Pro', 'Georgia', serif;
+      --font-body: 'Spectral', 'Georgia', serif;
+      --font-ui: 'Source Sans 3', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--color-background);
+      color: var(--color-ink);
+      line-height: 1.7;
+    }
+
+    /* ===== LAYOUT PRINCIPAL ===== */
+    .app {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      background: var(--color-surface-warm);
+      border-right: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 2rem 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+      color: white;
+    }
+
+    .sidebar-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      padding: 0.3rem 0.7rem;
+      border-radius: 4px;
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    .sidebar-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .sidebar-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      margin-top: 0.25rem;
+    }
+
+    /* Progress in sidebar */
+    .sidebar-progress {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      background: white;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-label {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .progress-value {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--color-border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    /* Navigation */
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem 0;
+    }
+
+    .nav-section-title {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-ink-muted);
+      padding: 0.75rem 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: rgba(26, 58, 82, 0.04);
+    }
+
+    .nav-item.active {
+      background: rgba(26, 58, 82, 0.08);
+      border-left-color: var(--color-accent);
+    }
+
+    .nav-item.completed {
+      opacity: 0.7;
+    }
+
+    .nav-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      background: var(--color-border);
+      color: var(--color-ink-muted);
+    }
+
+    .nav-item.active .nav-icon {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .nav-item.completed .nav-icon {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .nav-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .nav-title {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--color-ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-meta {
+      font-family: var(--font-ui);
+      font-size: 0.75rem;
+      color: var(--color-ink-muted);
+      margin-top: 0.1rem;
+    }
+
+    .nav-status {
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-status.done {
+      background: rgba(45, 106, 79, 0.1);
+      color: var(--color-success);
+    }
+
+    .nav-status.current {
+      background: rgba(26, 58, 82, 0.1);
+      color: var(--color-primary);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      padding: 2.5rem 3rem;
+      max-width: 900px;
+    }
+
+    /* Exercise Header */
+    .exercise-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .exercise-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .exercise-number {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--color-accent);
+      line-height: 1;
+    }
+
+    .exercise-info {
+      flex: 1;
+    }
+
+    .exercise-tag {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .exercise-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      line-height: 1.2;
+    }
+
+    .exercise-description {
+      color: var(--color-ink-muted);
+      font-size: 1.05rem;
+      margin-top: 1rem;
+      max-width: 600px;
+    }
+
+    /* ===== OBJETIVOS ===== */
+    .objectives-card {
+      background: linear-gradient(135deg, rgba(201, 169, 89, 0.08) 0%, rgba(201, 169, 89, 0.15) 100%);
+      border: 1px solid rgba(201, 169, 89, 0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .objectives-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .objectives-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--color-accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .objectives-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    .objectives-list {
+      list-style: none;
+    }
+
+    .objectives-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+
+    .objectives-check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--color-accent);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .objectives-check:hover {
+      background: rgba(201, 169, 89, 0.2);
+    }
+
+    .objectives-check.checked {
+      background: var(--color-accent);
+    }
+
+    .objectives-check.checked::after {
+      content: '✓';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: bold;
+      height: 100%;
+    }
+
+    .objectives-text {
+      color: var(--color-ink);
+      font-size: 0.95rem;
+    }
+
+    /* ===== SEÇÕES DE CONTEÚDO ===== */
+    .content-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-number {
+      width: 36px;
+      height: 36px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    /* Concept Card */
+    .concept-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .concept-header {
+      background: linear-gradient(to right, rgba(26, 58, 82, 0.05), transparent);
+      border-left: 4px solid var(--color-primary);
+      padding: 1rem 1.25rem;
+    }
+
+    .concept-label {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .concept-body {
+      padding: 1.5rem;
+    }
+
+    .concept-text {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--color-ink);
+    }
+
+    .highlight {
+      background: linear-gradient(to bottom, transparent 50%, rgba(201, 169, 89, 0.35) 50%);
+      padding: 0 3px;
+      font-weight: 600;
+    }
+
+    /* Comparison Grid */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .comparison-card {
+      background: var(--color-surface);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid;
+    }
+
+    .comparison-card.allow {
+      border-color: var(--color-success);
+    }
+
+    .comparison-card.deny {
+      border-color: var(--color-error);
+    }
+
+    .comparison-header {
+      padding: 0.75rem 1rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .comparison-card.allow .comparison-header {
+      background: rgba(45, 106, 79, 0.1);
+      color: var(--color-success);
+    }
+
+    .comparison-card.deny .comparison-header {
+      background: rgba(155, 44, 44, 0.1);
+      color: var(--color-error);
+    }
+
+    .comparison-body {
+      padding: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .comparison-example {
+      background: var(--color-background);
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--color-ink-muted);
+    }
+
+    /* Practice Card */
+    .practice-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .practice-header {
+      background: var(--color-primary);
+      color: white;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .practice-icon {
+      font-size: 1.2rem;
+    }
+
+    .practice-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .practice-body {
+      padding: 1.5rem;
+    }
+
+    .practice-intro {
+      color: var(--color-ink-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .practice-steps {
+      list-style: none;
+    }
+
+    .practice-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .practice-step:last-child {
+      border-bottom: none;
+    }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      background: var(--color-accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-action {
+      font-weight: 500;
+      color: var(--color-ink);
+    }
+
+    .step-detail {
+      font-size: 0.85rem;
+      color: var(--color-ink-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Images */
+    .images-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .image-card {
+      background: var(--color-surface);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+    }
+
+    .image-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .image-caption {
+      padding: 0.75rem;
+      text-align: center;
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      color: var(--color-ink-muted);
+      background: var(--color-background);
+    }
+
+    /* Action Button */
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: var(--color-primary-light);
+      transform: translateY(-1px);
+    }
+
+    .action-btn.completed {
+      background: var(--color-success);
+    }
+
+    /* Checklist */
+    .checklist-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .checklist-header {
+      background: linear-gradient(135deg, var(--color-accent) 0%, #d4b88a 100%);
+      color: white;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .checklist-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .checklist-count {
+      background: rgba(255,255,255,0.25);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+    }
+
+    .checklist-body {
+      padding: 0.5rem;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .checklist-item:hover {
+      background: var(--color-background);
+    }
+
+    .check-box {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--color-border);
+      border-radius: 5px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .checklist-item.done .check-box {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: white;
+      font-size: 0.75rem;
+    }
+
+    .check-label {
+      font-size: 0.9rem;
+      color: var(--color-ink);
+    }
+
+    .checklist-item.done .check-label {
+      color: var(--color-ink-muted);
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-badge">Exercício 0.1</div>
+        <h1 class="sidebar-title">Privacidade e Proteção de Dados</h1>
+        <p class="sidebar-subtitle">Módulo Preparatório</p>
+      </div>
+
+      <div class="sidebar-progress">
+        <div class="progress-header">
+          <span class="progress-label">Progresso</span>
+          <span class="progress-value">2/5</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Conteúdo do Exercício</div>
+
+        <div class="nav-item completed" onclick="scrollToSection('objetivos')">
+          <div class="nav-icon">✓</div>
+          <div class="nav-content">
+            <div class="nav-title">Objetivos</div>
+            <div class="nav-meta">O que você vai aprender</div>
+          </div>
+          <span class="nav-status done">Lido</span>
+        </div>
+
+        <div class="nav-item completed" onclick="scrollToSection('conceito')">
+          <div class="nav-icon">✓</div>
+          <div class="nav-content">
+            <div class="nav-title">Conceito Fundamental</div>
+            <div class="nav-meta">LGPD vs Segredo de Justiça</div>
+          </div>
+          <span class="nav-status done">Lido</span>
+        </div>
+
+        <div class="nav-item active" onclick="scrollToSection('configuracao')">
+          <div class="nav-icon">⚙</div>
+          <div class="nav-content">
+            <div class="nav-title">Configuração Prática</div>
+            <div class="nav-meta">Modo de privacidade</div>
+          </div>
+          <span class="nav-status current">Atual</span>
+        </div>
+
+        <div class="nav-item" onclick="scrollToSection('alternativas')">
+          <div class="nav-icon">🔐</div>
+          <div class="nav-content">
+            <div class="nav-title">Alternativas Seguras</div>
+            <div class="nav-meta">Opções para sigilosos</div>
+          </div>
+        </div>
+
+        <div class="nav-item" onclick="scrollToSection('checklist')">
+          <div class="nav-icon">✅</div>
+          <div class="nav-content">
+            <div class="nav-title">Checklist Final</div>
+            <div class="nav-meta">Valide seu aprendizado</div>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+      <!-- Header -->
+      <header class="exercise-header">
+        <div class="exercise-meta">
+          <div class="exercise-number">01</div>
+          <div class="exercise-info">
+            <div class="exercise-tag">Módulo Preparatório</div>
+            <h1 class="exercise-title">Privacidade e Proteção de Dados</h1>
+          </div>
+        </div>
+        <p class="exercise-description">
+          Antes de usar ferramentas de IA no trabalho jurídico, é essencial compreender
+          as regras de segurança e privacidade que governam o uso de dados processuais.
+        </p>
+      </header>
+
+      <!-- Objetivos -->
+      <section id="objetivos" class="content-section">
+        <div class="objectives-card">
+          <div class="objectives-header">
+            <div class="objectives-icon">🎯</div>
+            <h2 class="objectives-title">Objetivos deste Exercício</h2>
+          </div>
+          <ul class="objectives-list">
+            <li class="objectives-item">
+              <div class="objectives-check checked" onclick="this.classList.toggle('checked')"></div>
+              <span class="objectives-text">Distinguir dados sensíveis (LGPD) de dados sigilosos (segredo de justiça)</span>
+            </li>
+            <li class="objectives-item">
+              <div class="objectives-check checked" onclick="this.classList.toggle('checked')"></div>
+              <span class="objectives-text">Identificar quando um processo pode ou não ser usado em LLMs externos</span>
+            </li>
+            <li class="objectives-item">
+              <div class="objectives-check" onclick="this.classList.toggle('checked')"></div>
+              <span class="objectives-text">Configurar o modo de privacidade do Claude e ChatGPT</span>
+            </li>
+            <li class="objectives-item">
+              <div class="objectives-check" onclick="this.classList.toggle('checked')"></div>
+              <span class="objectives-text">Conhecer as alternativas para processos sigilosos</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Conceito -->
+      <section id="conceito" class="content-section">
+        <div class="section-header">
+          <div class="section-number">1</div>
+          <h2 class="section-title">Conceito Fundamental</h2>
+        </div>
+
+        <div class="concept-card">
+          <div class="concept-header">
+            <div class="concept-label">Distinção Essencial</div>
+          </div>
+          <div class="concept-body">
+            <p class="concept-text">
+              <span class="highlight">Dado sensível (LGPD)</span> é diferente de
+              <span class="highlight">Dado sigiloso (Segredo de Justiça)</span>
+            </p>
+            <p class="concept-text" style="margin-top: 1rem;">
+              A LGPD protege dados pessoais sensíveis (saúde, religião, orientação sexual),
+              mas isso <strong>não impede</strong> seu uso em LLMs. O que impede é o
+              <strong>segredo de justiça</strong> — processos que tramitam em sigilo por
+              determinação legal ou judicial.
+            </p>
+
+            <div class="comparison-grid">
+              <div class="comparison-card allow">
+                <div class="comparison-header">
+                  <span>✓</span> Dados Sensíveis (LGPD)
+                </div>
+                <div class="comparison-body">
+                  <strong>PODE</strong> usar em LLMs externos
+                  <div class="comparison-example">
+                    Exemplo: Ação de cobrança entre empresas, mesmo contendo dados de saúde em processo público.
+                  </div>
+                </div>
+              </div>
+              <div class="comparison-card deny">
+                <div class="comparison-header">
+                  <span>✗</span> Dados Sigilosos
+                </div>
+                <div class="comparison-body">
+                  <strong>NÃO PODE</strong> usar em LLMs externos
+                  <div class="comparison-example">
+                    Exemplo: Ação de guarda de menor, violência doméstica, processos em segredo de justiça.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Configuração -->
+      <section id="configuracao" class="content-section">
+        <div class="section-header">
+          <div class="section-number">2</div>
+          <h2 class="section-title">Configuração Prática</h2>
+        </div>
+
+        <div class="practice-card">
+          <div class="practice-header">
+            <span class="practice-icon">⚙️</span>
+            <span class="practice-title">Configure o Modo de Privacidade</span>
+          </div>
+          <div class="practice-body">
+            <p class="practice-intro">
+              Mesmo para processos públicos, é boa prática ativar o modo de privacidade.
+              Isso impede que seus dados sejam usados para treinar os modelos.
+            </p>
+
+            <ol class="practice-steps">
+              <li class="practice-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <div class="step-action">Abra o Claude em outra aba</div>
+                  <div class="step-detail">Acesse claude.ai e faça login na sua conta</div>
+                </div>
+              </li>
+              <li class="practice-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <div class="step-action">Acesse Settings → Privacy</div>
+                  <div class="step-detail">No menu lateral ou no ícone de configurações</div>
+                </div>
+              </li>
+              <li class="practice-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <div class="step-action">Desative "Improve Claude"</div>
+                  <div class="step-detail">Isso impede que seus dados sejam usados para treinamento</div>
+                </div>
+              </li>
+            </ol>
+
+            <div class="images-row">
+              <div class="image-card">
+                <img src="../assets/img/claude-privacidade.png" alt="Claude Privacy">
+                <div class="image-caption">Claude — Configuração de Privacidade</div>
+              </div>
+              <div class="image-card">
+                <img src="../assets/img/chatgpt-privacidade.png" alt="ChatGPT Privacy">
+                <div class="image-caption">ChatGPT — Configuração de Privacidade</div>
+              </div>
+            </div>
+
+            <button class="action-btn">
+              <span>✓</span> Configurei minhas ferramentas
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alternativas -->
+      <section id="alternativas" class="content-section">
+        <div class="section-header">
+          <div class="section-number">3</div>
+          <h2 class="section-title">Alternativas Seguras</h2>
+        </div>
+
+        <div class="concept-card">
+          <div class="concept-header">
+            <div class="concept-label">Para Processos Sigilosos</div>
+          </div>
+          <div class="concept-body">
+            <p class="concept-text">
+              Quando o processo tramita em segredo de justiça, você tem três alternativas:
+            </p>
+            <ol style="margin-top: 1rem; padding-left: 1.5rem;">
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Anonimização manual</strong> — Remova nomes, CPFs e dados identificadores
+                antes de usar qualquer ferramenta de IA
+              </li>
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Modelos locais</strong> — Use LLMs que rodam offline no seu computador,
+                sem enviar dados para servidores externos
+              </li>
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Ferramentas do tribunal</strong> — Prefira soluções institucionais
+                quando disponíveis, pois são homologadas para uso com dados sigilosos
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- Checklist -->
+      <section id="checklist" class="content-section">
+        <div class="section-header">
+          <div class="section-number">4</div>
+          <h2 class="section-title">Checklist Final</h2>
+        </div>
+
+        <div class="checklist-card">
+          <div class="checklist-header">
+            <div class="checklist-title">
+              <span>✅</span> Valide seu Aprendizado
+            </div>
+            <div class="checklist-count">2/5</div>
+          </div>
+          <div class="checklist-body">
+            <div class="checklist-item done" onclick="this.classList.toggle('done')">
+              <div class="check-box">✓</div>
+              <span class="check-label">Configurei o modo de privacidade no Claude e/ou ChatGPT</span>
+            </div>
+            <div class="checklist-item done" onclick="this.classList.toggle('done')">
+              <div class="check-box">✓</div>
+              <span class="check-label">Entendi a diferença entre dados sensíveis (LGPD) e sigilosos (segredo)</span>
+            </div>
+            <div class="checklist-item" onclick="this.classList.toggle('done')">
+              <div class="check-box"></div>
+              <span class="check-label">Sei que dados sensíveis PODEM ser usados em LLMs</span>
+            </div>
+            <div class="checklist-item" onclick="this.classList.toggle('done')">
+              <div class="check-box"></div>
+              <span class="check-label">Sei que processos sigilosos NÃO podem ser usados em LLMs externos</span>
+            </div>
+            <div class="checklist-item" onclick="this.classList.toggle('done')">
+              <div class="check-box"></div>
+              <span class="check-label">Conheço as alternativas: anonimização manual, modelos locais, tribunal</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

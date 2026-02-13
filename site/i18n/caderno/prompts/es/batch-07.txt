@@ -1,0 +1,486 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.13: Modos de Uso**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Distinguir os três modos fundamentais: Recall (paramétrico), Transformativo (documentos/web) e Interativo.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">Os Três Modos de Uso</h2>
+                        <p>LLMs podem ser usados de três formas fundamentalmente diferentes:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Modo</th><th>Fonte do Conhecimento</th><th>Exemplo</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Recall</strong></td><td>Conhecimento paramétrico (treino)</td><td>"Explique o que é habeas corpus"</td></tr>
+                                    <tr><td><strong>Transformativo</strong></td><td>Documento/contexto fornecido</td><td>"Resuma este contrato" [anexo]</td></tr>
+                                    <tr><td><strong>Interativo</strong></td><td>Diálogo iterativo</td><td>"Vamos criar uma petição juntos"</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Modo Recall (Paramétrico)</h2>
+                        <p>O modelo responde usando <strong>conhecimento armazenado no treinamento</strong>.</p>
+                        <div class="code-block">MODO RECALL
+
+Pergunta: "Qual a diferença entre dolo e culpa?"
+    ↓
+[Modelo acessa conhecimento paramétrico]
+    ↓
+Resposta: explicação baseada no treinamento</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Vantagens</th><th>Riscos</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Rápido, sem necessidade de anexos</td><td>Pode estar desatualizado</td></tr>
+                                    <tr><td>Bom para conceitos gerais</td><td>Risco de alucinação</td></tr>
+                                    <tr><td>Funciona para conhecimento estável</td><td>Detalhes específicos podem estar errados</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Modo Transformativo (RAG)</h2>
+                        <p>O modelo <strong>transforma informação fornecida</strong> — você dá o documento, ele processa.</p>
+                        <div class="code-block">MODO TRANSFORMATIVO
+
+Entrada: [Documento anexado] + "Resuma os principais pontos"
+    ↓
+[Modelo processa documento no contexto]
+    ↓
+Saída: Resumo baseado NO DOCUMENTO, não no treino</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Vantagens</th><th>Riscos</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Informação atualizada e verificável</td><td>Limitado à janela de contexto</td></tr>
+                                    <tr><td>Menor risco de alucinação factual</td><td>Pode "extrapolar" além do documento</td></tr>
+                                    <tr><td>Controlável (você escolhe a fonte)</td><td>Qualidade depende do documento</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Este é o modo mais seguro para trabalho jurídico</strong> — você ancora o modelo em documentos específicos.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Modo Interativo (Diálogo)</h2>
+                        <p><strong>Colaboração iterativa</strong> — você e o modelo constroem juntos através de múltiplas trocas. Nesse modo, o LLM funciona como <strong>extensão da mente</strong>: você permanece no controle, "surfando no contexto" e organizando ideias com ajuda da máquina.</p>
+                        <div class="code-block">MODO INTERATIVO
+
+Você: "Quero criar uma petição de danos morais"
+Claude: "Qual o fato gerador?"
+Você: "Negativação indevida no SPC"
+Claude: "Entendi. Você tem os documentos?"
+[... iterações ...]
+Claude: "Com base no que discutimos, aqui está o esboço..."</div>
+                        <p><strong>Quando usar:</strong> Tarefas criativas, exploratórias, ou que precisam de refinamento progressivo.</p>
+                        <p><strong>Limitação:</strong> Em conversas muito longas, a memória "desliza" — o modelo pode perder coerência com o início da conversa.</p>
+                    </div>
+                    <div class="callout callout-tip">
+                        <div class="callout-title">A Evolução do Uso dos LLMs</div>
+                        <p>O uso evoluiu de uma era em que se buscava um <em>oráculo com todas as respostas</em> (modo recall) para um paradigma em que <strong>o usuário é o curador do conhecimento</strong> (modo transformativo). A curadoria — saber o que fornecer ao modelo — continua sendo a habilidade mais importante.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Qual Modo Usar?</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Tarefa</th><th>Modo Recomendado</th><th>Por quê</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Explicar conceito jurídico geral</td><td><strong>Recall</strong></td><td>Conhecimento estável</td></tr>
+                                    <tr><td>Analisar petição específica</td><td><strong>Transformativo</strong></td><td>Informação no documento</td></tr>
+                                    <tr><td>Pesquisar jurisprudência atual</td><td><strong>Transformativo + Busca</strong></td><td>Precisa de dados atualizados</td></tr>
+                                    <tr><td>Criar texto novo colaborativamente</td><td><strong>Interativo</strong></td><td>Refinamento iterativo</td></tr>
+                                    <tr><td>Revisar minuta de sentença</td><td><strong>Transformativo</strong></td><td>Análise de documento específico</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+
+**Exercise:**
+Title: Praticando os Três Modos
+Prompt: undefined
+Checklist:
+- Entendo os 3 modos: Recall, Transformativo, Interativo
+- Sei quando usar cada modo
+- Compreendo que modo Transformativo é mais seguro para dados específicos
+- Testei os três modos na prática
+- Sei escolher o modo apropriado para cada tarefa
+
+
+**Tip:** Para trabalho jurídico que envolve <strong>fatos específicos</strong> (processos, jurisprudência, dados), prefira sempre o <strong>modo Transformativo</strong> — anexe o documento e peça análise. O modo Recall serve para conceitos gerais, não para detalhes.
+
+**Warning:** <strong>"Vou perguntar direto ao modelo sobre a jurisprudência atual."</strong><br>Cuidado. No modo Recall puro, o modelo pode inventar jurisprudência. Use <strong>modo Transformativo</strong>: anexe o acórdão real ou ative busca web para informações atualizadas.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.13",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.14: RAG e Anexos**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Compreender Retrieval-Augmented Generation e a lógica de fornecer conhecimento externo ao modelo.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que é RAG?</h2>
+                        <p><strong>RAG (Retrieval-Augmented Generation)</strong> é a técnica de fornecer documentos externos ao modelo para que ele baseie suas respostas nesse material — em vez de depender apenas do conhecimento paramétrico.</p>
+                        <div class="code-block">SEM RAG (Recall puro):
+Pergunta → [Conhecimento do treino] → Resposta (pode alucinar)
+
+COM RAG:
+Documentos + Pergunta → [Modelo lê documentos] → Resposta (ancorada)</div>
+                        <p>No Claude, você faz RAG simplesmente <strong>anexando arquivos</strong> à conversa ou projeto.</p>
+                    </div>
+                    <div class="callout callout-info">
+                        <div class="callout-title">💡 Por que RAG é Importante?</div>
+                        <p><strong>Resolve o problema de alucinação</strong> — o modelo responde com base em documentos que você controla, não inventando.</p>
+                        <p><strong>Atualização instantânea</strong> — sem retreinar o modelo, você fornece informações novas via documentos.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Duas Técnicas de Processamento</h2>
+                        <p>O modelo usa diferentes estratégias dependendo do tamanho do documento:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Técnica</th><th>Como funciona</th><th>Vantagem</th><th>Desvantagem</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Just-in-time</strong></td><td>Todas as "cartas abertas" — documento inteiro na janela</td><td>Análise completa com perda mínima</td><td>Limitado à janela de contexto</td></tr>
+                                    <tr><td><strong>Just-in-case</strong></td><td>"Cartas fechadas" — consulta sob demanda</td><td>Processa textos maiores que a janela</td><td>Pode perder detalhes</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Regra geral:</strong> Documentos pequenos → Just-in-time (automático). Documentos grandes → Just-in-case (automático).</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Fontes de Conhecimento Externo</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Fonte</th><th>Descrição</th><th>Dica</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Anexo do Usuário</strong></td><td>Arquivos enviados diretamente</td><td>TXT ou MD é o "padrão ouro" — melhor precisão</td></tr>
+                                    <tr><td><strong>Busca na Web</strong></td><td>Busca simples ou deep research</td><td>Desative para análise de processos (evita contaminação)</td></tr>
+                                    <tr><td><strong>Resources (MCP)</strong></td><td>Bases externas via Model Context Protocol</td><td>APIs, bases de dados, serviços de nuvem conectados</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Tipos de Anexos no Claude</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Formato</th><th>Processamento</th><th>Limitações</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>PDF</strong></td><td>Texto extraído automaticamente</td><td>PDFs escaneados podem ter erros de OCR</td></tr>
+                                    <tr><td><strong>DOCX/TXT</strong></td><td>Texto direto</td><td>Formatação complexa pode se perder</td></tr>
+                                    <tr><td><strong>Imagens</strong></td><td>Visão (OCR integrado)</td><td>Texto pequeno/borrado pode falhar</td></tr>
+                                    <tr><td><strong>Planilhas</strong></td><td>Dados estruturados</td><td>Planilhas muito grandes são truncadas</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Boas Práticas de Anexos</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Faça</th><th>Evite</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Use PDFs com texto selecionável</td><td>PDFs escaneados de baixa qualidade</td></tr>
+                                    <tr><td>Documente questões sobre o documento</td><td>Perguntas vagas sobre "o documento"</td></tr>
+                                    <tr><td>Divida documentos muito longos</td><td>Anexar processo inteiro de 500 páginas</td></tr>
+                                    <tr><td>Especifique seções de interesse</td><td>Esperar que o modelo "encontre tudo"</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">RAG em Projetos</h2>
+                        <p>Projetos permitem <strong>RAG persistente</strong> — documentos disponíveis em todas as conversas:</p>
+                        <div class="code-block">PROJETO "Análise de Contratos"
+├── Documentos de Referência:
+│   ├── template-analise.pdf
+│   ├── checklist-clausulas.docx
+│   └── legislacao-relevante.txt
+│
+└── Conversas:
+    ├── Conversa 1: Contrato Cliente A → usa documentos do projeto
+    ├── Conversa 2: Contrato Cliente B → usa documentos do projeto
+    └── ... todas herdam os mesmos documentos</div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Limitações do RAG via Anexos</h2>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li><strong>Janela de contexto:</strong> Documentos muito longos são truncados</li>
+                            <li><strong>Lost in the Middle:</strong> Informações no meio de documentos longos podem ser "esquecidas"</li>
+                            <li><strong>Sem busca semântica:</strong> Anexos simples não têm busca inteligente — tudo vai no contexto</li>
+                            <li><strong>OCR imperfeito:</strong> Documentos escaneados podem ter erros de leitura</li>
+                            <li><strong>Interpretação equivocada:</strong> O LLM pode ativar busca inadequadamente ou extrapolar</li>
+                        </ul>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Prompt Modelo para Análise de Documentos</h2>
+                        <p>Um prompt robusto para análise de documentos jurídicos:</p>
+                        <div class="code-block" style="font-size:12px;">Consulte todos os documentos fornecidos na íntegra. Eles podem ter informações contraditórias. Por isso, faça uma leitura holística para captar todos os pontos controvertidos e todas as questões jurídicas na sua profundidade e totalidade.
+
+Sua análise deve se basear EXCLUSIVAMENTE nos documentos fornecidos. USE EXCLUSIVAMENTE as evidências, fatos e informações contidos no documento fornecido. PROIBIÇÃO ABSOLUTA de incorporar elementos probatórios ou factuais de fontes externas.
+
+Para PDFs digitalizados, ative ferramentas adequadas de OCR, garantindo a extração completa e precisa do conteúdo textual. Se o documento apresentar layout complexo (tabelas, gráficos), utilize análise visual multimodal. Se a análise ficar prejudicada pela impossibilidade de leitura, informe isso em sua resposta.</div>
+                    </div>
+                
+
+**Exercise:**
+Title: Praticando RAG com Anexos
+Prompt: undefined
+Checklist:
+- Entendo o conceito de RAG (Retrieval-Augmented Generation)
+- Sei anexar documentos ao Claude
+- Compreendo as limitações (janela, Lost in Middle, OCR)
+- Testei RAG com documento jurídico real
+- Sei usar Projetos para RAG persistente
+
+
+**Tip:** Para documentos jurídicos longos, <strong>divida em partes</strong> ou peça primeiro um índice/resumo, depois faça perguntas específicas sobre seções. Isso contorna o problema de Lost in the Middle.
+
+**Warning:** <strong>"Anexei o documento, então a resposta está garantidamente correta."</strong><br>Não exatamente. O modelo pode <strong>extrapolar</strong> além do documento ou misturar com conhecimento paramétrico. Sempre pergunte: 'Isso está no documento ou você está inferindo?'
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.14",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.15: Introdução aos Agentes**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Conhecer o conceito de agentes de LLM — sistemas que planejam, usam ferramentas e executam tarefas.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que é um Agente de LLM?</h2>
+                        <p>Um <strong>agente</strong> é um LLM que pode <strong>planejar, usar ferramentas e executar ações</strong> no mundo — não apenas gerar texto.</p>
+                        <div class="code-block">LLM TRADICIONAL:
+Entrada → [Modelo] → Texto de saída
+
+AGENTE:
+Objetivo → [Modelo PLANEJA] → [USA FERRAMENTAS] → [EXECUTA AÇÕES] → Resultado</div>
+                        <p>A diferença fundamental: o agente tem <strong>autonomia</strong> para decidir quais ações tomar.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">O Loop Agêntico</h2>
+                        <p>Agentes operam em um ciclo de <strong>observação → decisão → ação</strong>:</p>
+                        <div class="code-block">LOOP AGÊNTICO:
+
+┌─────────────────────────────────────────────┐
+│                                             │
+│  OBSERVAR → PENSAR → DECIDIR → AGIR ───┐   │
+│      ↑                                  │   │
+│      └──────── LOOP ────────────────────┘   │
+│                                             │
+│  Até: objetivo alcançado OU limite de ações │
+└─────────────────────────────────────────────┘</div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Ferramentas dos Agentes</h2>
+                        <p>Agentes têm acesso a <strong>ferramentas</strong> que estendem suas capacidades:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Ferramenta</th><th>O que faz</th><th>Exemplo de uso</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Busca web</strong></td><td>Pesquisa informações online</td><td>Encontrar jurisprudência recente</td></tr>
+                                    <tr><td><strong>Código</strong></td><td>Executa cálculos, processa dados</td><td>Calcular correção monetária</td></tr>
+                                    <tr><td><strong>Artefatos</strong></td><td>Cria documentos estruturados</td><td>Gerar tabela, documento</td></tr>
+                                    <tr><td><strong>Pensamento estendido</strong></td><td>Raciocínio mais profundo</td><td>Análise complexa de caso</td></tr>
+                                    <tr><td><strong>Análise de dados</strong></td><td>Processa planilhas</td><td>Analisar movimentação financeira</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Padrões de Agentes</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Padrão</th><th>Como funciona</th><th>Exemplo</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Tool Use</strong></td><td>Modelo decide qual ferramenta usar</td><td>Buscar jurisprudência quando perguntado</td></tr>
+                                    <tr><td><strong>Chain</strong></td><td>Sequência de passos predefinidos</td><td>Ler documento → Extrair dados → Formatar</td></tr>
+                                    <tr><td><strong>ReAct</strong></td><td>Reasoning + Acting em loop</td><td>Pensar → Buscar → Pensar → Responder</td></tr>
+                                    <tr><td><strong>Multi-Agent</strong></td><td>Vários agentes colaborando</td><td>Pesquisador + Redator + Revisor</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="callout callout-warning">
+                        <div class="callout-title">⚠️ Riscos de Agentes</div>
+                        <p><strong>Autonomia traz riscos:</strong></p>
+                        <ul style="margin:8px 0 0 20px;">
+                            <li>Ações irreversíveis (deletar, enviar, publicar)</li>
+                            <li>Loop infinito (agente não para)</li>
+                            <li>Decisões erradas com consequências reais</li>
+                            <li>Custo descontrolado (muitas chamadas de API)</li>
+                        </ul>
+                        <p style="margin-top:12px;"><strong>Princípio:</strong> Humano deve aprovar ações críticas.</p>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Agentes no Claude</h2>
+                        <p>O Claude já tem capacidades agênticas integradas:</p>
+                        <ul style="margin:16px 0 16px 24px;color:var(--text-secondary);">
+                            <li><strong>Tool use automático:</strong> Decide sozinho quando buscar, calcular, criar artefato</li>
+                            <li><strong>Pensamento estendido:</strong> Raciocina por mais tempo em problemas complexos</li>
+                            <li><strong>Computer use:</strong> Pode controlar computador (experimental)</li>
+                            <li><strong>MCP (Model Context Protocol):</strong> Conecta a sistemas externos</li>
+                        </ul>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Assistentes vs Multi-agentes</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Característica</th><th>Assistente Simples</th><th>Multi-agentes</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Tarefas</strong></td><td>Uma de cada vez</td><td>Paralelas e em sequência</td></tr>
+                                    <tr><td><strong>Ferramentas</strong></td><td>Uma por solicitação</td><td>Várias orquestradas</td></tr>
+                                    <tr><td><strong>Modelos</strong></td><td>Um único trabalhando</td><td>Múltiplos coordenados</td></tr>
+                                    <tr><td><strong>Comportamento</strong></td><td>Reativo</td><td>Proativo</td></tr>
+                                    <tr><td><strong>Autonomia</strong></td><td>Segue instruções</td><td>Planeja e age</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">O Papel do Jurista na Justiça Aumentada</h2>
+                        <p>Com a evolução dos agentes, o papel do profissional jurídico se transforma:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Papel</th><th>O que significa</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Engenharia de Prompt</strong></td><td>Conversar com a máquina de forma eficaz</td></tr>
+                                    <tr><td><strong>Engenharia de Contexto</strong></td><td>Curadoria de conhecimento — o que fornecer ao modelo</td></tr>
+                                    <tr><td><strong>Engenharia de Workflow</strong></td><td>Design de sistemas decisórios com IA</td></tr>
+                                    <tr><td><strong>Metacognição</strong></td><td>Modelagem cognitiva — entender como a máquina pensa</td></tr>
+                                    <tr><td><strong>Curadoria de Valores</strong></td><td>Modelagem ética — garantir alinhamento com justiça</td></tr>
+                                    <tr><td><strong>Auditoria Epistêmica</strong></td><td>Verificação e melhoria contínua dos outputs</td></tr>
+                                    <tr><td><strong>Decisor Estratégico</strong></td><td>Reserva de humanidade — o humano decide</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <h2 class="block-title">Aplicações Jurídicas</h2>
+                        <p>Status atual das aplicações agênticas no Direito:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Aplicação</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Pesquisa jurisprudencial automatizada</td><td style="color:var(--accent-success);">Já existe</td></tr>
+                                    <tr><td>Análise de contratos com checklist</td><td style="color:var(--accent-success);">Já existe</td></tr>
+                                    <tr><td>Geração de minutas com revisão</td><td style="color:var(--accent-success);">Já existe</td></tr>
+                                    <tr><td>Deep Research jurídico</td><td style="color:var(--accent-success);">Já existe</td></tr>
+                                    <tr><td>Agente que protocola petições</td><td style="color:var(--accent-warning);">Experimental</td></tr>
+                                    <tr><td>Robô que gerencia prazos e ações</td><td style="color:var(--accent-warning);">Experimental</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+
+**Exercise:**
+Title: Experimentando Capacidades Agênticas
+Prompt: undefined
+Checklist:
+- Entendo o conceito de agente de LLM
+- Sei que agentes usam ferramentas para agir no mundo
+- Compreendo o loop agêntico (observar-pensar-agir)
+- Observei o Claude usando ferramentas automaticamente
+- Entendo os riscos de autonomia em agentes
+
+
+**Tip:** Quando usar capacidades agênticas do Claude, <strong>especifique claramente os limites</strong>: 'Busque informações mas não tome decisões', 'Analise mas não execute', 'Sugira mas peça confirmação'. Humano deve validar ações críticas.
+
+**Warning:** <strong>"Vou deixar o agente fazer tudo sozinho."</strong><br>Cuidado. Agentes com autonomia total podem tomar ações indesejadas. No contexto jurídico, <strong>sempre revise antes de usar</strong> qualquer output em documento oficial. O humano é responsável pelo resultado final.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.15",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

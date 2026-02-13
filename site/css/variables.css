@@ -1,0 +1,284 @@
+/**
+ * Design Tokens - Escrita Jurídica com IA
+ * Sistema de design baseado na identidade visual do curso
+ * Inspiração: Site P.O.E.M.A. + Estética Jurídica Clássica Refinada
+ */
+
+:root {
+  /* ========================================
+     PALETA DE CORES PRINCIPAL
+     ======================================== */
+
+  /* Cores Primárias - Identidade do Curso */
+  --color-primary: #194A68;           /* Azul jurídico profundo */
+  --color-primary-light: #2a6a8f;     /* Azul claro para hover */
+  --color-primary-dark: #0f3247;      /* Azul escuro para contraste */
+  --color-primary-rgb: 25, 74, 104;   /* Para uso com rgba() */
+
+  /* Cores de Destaque - Dourado Elegante */
+  --color-accent: #BE9C6D;            /* Dourado principal */
+  --color-accent-light: #d4b88a;      /* Dourado claro */
+  --color-accent-dark: #9a7d52;       /* Dourado escuro */
+  --color-accent-rgb: 190, 156, 109;  /* Para uso com rgba() */
+
+  /* Cores de Fundo - Tons de Papel */
+  --color-background: #FFF4E4;        /* Creme clássico */
+  --color-surface: #FAF9F7;           /* Paper claro (área principal) */
+  --color-surface-warm: #FFF8EE;      /* Paper quente (sidebar) */
+  --color-surface-elevated: #FFFFFF;  /* Superfície elevada (cards) */
+
+  /* Cores de Texto */
+  --color-ink: #0f172a;               /* Texto principal (ink escuro) */
+  --color-ink-secondary: #3A3A3A;     /* Texto secundário */
+  --color-ink-muted: #64748b;         /* Texto suave */
+  --color-ink-subtle: #94a3b8;        /* Texto muito suave */
+  --color-ink-inverse: #FFFFFF;       /* Texto sobre fundo escuro */
+
+  /* Cores Semânticas */
+  --color-success: #16a34a;           /* Verde sucesso */
+  --color-success-light: #dcfce7;     /* Background sucesso */
+  --color-warning: #ca8a04;           /* Amarelo aviso */
+  --color-warning-light: #fef9c3;     /* Background aviso */
+  --color-error: #dc2626;             /* Vermelho erro */
+  --color-error-light: #fee2e2;       /* Background erro */
+  --color-info: #0284c7;              /* Azul info */
+  --color-info-light: #e0f2fe;        /* Background info */
+
+  /* Cores de Componentes Específicos */
+  --color-code-bg: #0f172a;           /* Background de blocos de código */
+  --color-code-border: #1e293b;       /* Borda de código */
+  --color-border: #e2e8f0;            /* Bordas gerais */
+  --color-border-subtle: #f1f5f9;     /* Bordas sutis */
+  --color-divider: #cbd5e1;           /* Divisores */
+
+  /* ========================================
+     TIPOGRAFIA
+     ======================================== */
+
+  /* Famílias de Fonte */
+  --font-serif: 'Cormorant Garamond', 'EB Garamond', 'Crimson Pro', 'Libre Baskerville', Georgia, serif;
+  --font-sans: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+
+  /* Tamanhos de Fonte - Escala Modular (ratio 1.25) */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+  --text-5xl: 3rem;        /* 48px */
+  --text-6xl: 3.75rem;     /* 60px */
+
+  /* Pesos de Fonte */
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Altura de Linha */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Espaçamento entre Letras */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* ========================================
+     ESPAÇAMENTO
+     ======================================== */
+
+  /* Escala de Espaçamento */
+  --space-0: 0;
+  --space-1: 0.25rem;      /* 4px */
+  --space-2: 0.5rem;       /* 8px */
+  --space-3: 0.75rem;      /* 12px */
+  --space-4: 1rem;         /* 16px */
+  --space-5: 1.25rem;      /* 20px */
+  --space-6: 1.5rem;       /* 24px */
+  --space-8: 2rem;         /* 32px */
+  --space-10: 2.5rem;      /* 40px */
+  --space-12: 3rem;        /* 48px */
+  --space-16: 4rem;        /* 64px */
+  --space-20: 5rem;        /* 80px */
+  --space-24: 6rem;        /* 96px */
+
+  /* ========================================
+     LAYOUT
+     ======================================== */
+
+  /* Larguras */
+  --width-sidebar: 280px;
+  --width-content-max: 800px;
+  --width-page-max: 1400px;
+
+  /* Alturas */
+  --height-header: 72px;
+
+  /* Z-Index Scale */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+
+  /* ========================================
+     BORDAS E CANTOS
+     ======================================== */
+
+  --radius-none: 0;
+  --radius-sm: 0.125rem;   /* 2px */
+  --radius-md: 0.375rem;   /* 6px */
+  --radius-lg: 0.5rem;     /* 8px */
+  --radius-xl: 0.75rem;    /* 12px */
+  --radius-2xl: 1rem;      /* 16px */
+  --radius-full: 9999px;   /* Circular */
+
+  /* Bordas */
+  --border-width: 1px;
+  --border-width-thick: 2px;
+  --border-width-thicker: 3px;
+
+  /* ========================================
+     SOMBRAS
+     ======================================== */
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+  /* Sombras Coloridas (para cards destacados) */
+  --shadow-primary: 0 4px 14px 0 rgba(25, 74, 104, 0.15);
+  --shadow-accent: 0 4px 14px 0 rgba(190, 156, 109, 0.2);
+
+  /* ========================================
+     TRANSIÇÕES E ANIMAÇÕES
+     ======================================== */
+
+  /* Durações */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
+
+  /* Easing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Transições Padrão */
+  --transition-colors: color var(--duration-fast) var(--ease-in-out),
+                       background-color var(--duration-fast) var(--ease-in-out),
+                       border-color var(--duration-fast) var(--ease-in-out);
+  --transition-opacity: opacity var(--duration-normal) var(--ease-in-out);
+  --transition-transform: transform var(--duration-normal) var(--ease-out);
+  --transition-all: all var(--duration-normal) var(--ease-in-out);
+
+  /* ========================================
+     BREAKPOINTS (para referência)
+     ======================================== */
+
+  /* Mobile: < 640px */
+  /* Tablet: 640px - 1023px */
+  /* Desktop: >= 1024px */
+  /* Wide: >= 1280px */
+
+  /* ========================================
+     COMPONENTES ESPECÍFICOS
+     ======================================== */
+
+  /* Header */
+  --header-bg: var(--color-surface-elevated);
+  --header-border: var(--color-border);
+
+  /* Sidebar */
+  --sidebar-bg: var(--color-surface-warm);
+  --sidebar-border: var(--color-border-subtle);
+  --sidebar-item-hover: rgba(25, 74, 104, 0.05);
+  --sidebar-item-active: rgba(25, 74, 104, 0.1);
+  --sidebar-accent-border: var(--color-accent);
+
+  /* Cards */
+  --card-bg: var(--color-surface-elevated);
+  --card-border: var(--color-border);
+  --card-shadow: var(--shadow-sm);
+  --card-shadow-hover: var(--shadow-md);
+
+  /* Botões */
+  --button-primary-bg: var(--color-primary);
+  --button-primary-text: var(--color-ink-inverse);
+  --button-primary-hover: var(--color-primary-light);
+  --button-secondary-bg: transparent;
+  --button-secondary-text: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+
+  /* Blocos de Código */
+  --code-bg: var(--color-code-bg);
+  --code-text: #e2e8f0;
+  --code-comment: #64748b;
+  --code-keyword: #f472b6;
+  --code-string: #a5d6a7;
+  --code-tag: #93c5fd;
+  --code-placeholder: var(--color-accent);
+  --code-header: #60a5fa;
+  --code-checkbox: #fbbf24;
+  --code-table: #c4b5fd;
+
+  /* Progresso */
+  --progress-bg: var(--color-border);
+  --progress-fill: var(--color-primary);
+  --progress-complete: var(--color-success);
+
+  /* Checklist */
+  --check-unchecked-bg: var(--color-surface-elevated);
+  --check-unchecked-border: var(--color-border);
+  --check-checked-bg: var(--color-primary);
+  --check-checked-border: var(--color-primary);
+  --check-partial-bg: var(--color-accent);
+}
+
+/* ========================================
+   MODO ESCURO (preparado para futuro)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Descomentariar quando implementar modo escuro */
+    /* --color-background: #0f172a; */
+    /* --color-surface: #1e293b; */
+    /* --color-ink: #f1f5f9; */
+  }
+}
+
+/* ========================================
+   PREFERÊNCIAS DE ACESSIBILIDADE
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+    --duration-slower: 0ms;
+  }
+}

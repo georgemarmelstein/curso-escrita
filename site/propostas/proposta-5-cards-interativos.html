@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposta 5 - Cards Interativos (Micro-Atividades)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #194A68;
+      --color-accent: #BE9C6D;
+      --color-background: #FFF4E4;
+      --color-surface: #FFFFFF;
+      --color-ink: #0f172a;
+      --color-ink-muted: #64748b;
+      --color-success: #16a34a;
+      --color-warning: #ca8a04;
+      --color-error: #dc2626;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-background);
+      color: var(--color-ink);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid rgba(25, 74, 104, 0.1);
+    }
+
+    .header-content {
+      flex: 1;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--color-primary);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-title {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .header-subtitle {
+      color: var(--color-ink-muted);
+    }
+
+    .header-progress {
+      text-align: right;
+    }
+
+    .progress-ring {
+      width: 80px;
+      height: 80px;
+      position: relative;
+    }
+
+    .progress-ring svg {
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-bg {
+      fill: none;
+      stroke: #e2e8f0;
+      stroke-width: 8;
+    }
+
+    .progress-ring-fill {
+      fill: none;
+      stroke: var(--color-primary);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 201;
+      stroke-dashoffset: 161;
+      transition: stroke-dashoffset 0.5s;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--color-primary);
+    }
+
+    .progress-label {
+      font-size: 0.75rem;
+      color: var(--color-ink-muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ===== GRID DE ATIVIDADES ===== */
+    .activities-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* ===== ACTIVITY CARD ===== */
+    .activity-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .activity-card.completed {
+      border: 2px solid var(--color-success);
+    }
+
+    .activity-card.active {
+      border: 2px solid var(--color-primary);
+    }
+
+    .activity-card.full-width {
+      grid-column: span 2;
+    }
+
+    /* Status indicator */
+    .activity-status {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      z-index: 1;
+    }
+
+    .activity-status.done {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .activity-status.current {
+      background: var(--color-primary);
+      color: white;
+      animation: pulse 2s infinite;
+    }
+
+    .activity-status.locked {
+      background: #e2e8f0;
+      color: var(--color-ink-muted);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(25, 74, 104, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(25, 74, 104, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(25, 74, 104, 0); }
+    }
+
+    /* Card Header com cor */
+    .activity-header {
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .activity-header.learn {
+      background: linear-gradient(135deg, rgba(25, 74, 104, 0.08) 0%, rgba(25, 74, 104, 0.15) 100%);
+    }
+
+    .activity-header.practice {
+      background: linear-gradient(135deg, rgba(190, 156, 109, 0.1) 0%, rgba(190, 156, 109, 0.2) 100%);
+    }
+
+    .activity-header.apply {
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.08) 0%, rgba(22, 163, 74, 0.15) 100%);
+    }
+
+    .activity-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .activity-header.learn .activity-type { color: var(--color-primary); }
+    .activity-header.practice .activity-type { color: var(--color-accent); }
+    .activity-header.apply .activity-type { color: var(--color-success); }
+
+    .activity-title {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    .activity-body {
+      padding: 1.5rem;
+    }
+
+    .activity-description {
+      color: var(--color-ink-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.7;
+    }
+
+    /* ===== COMPONENTES INTERNOS ===== */
+
+    /* Key Insight */
+    .key-insight {
+      background: linear-gradient(to right, rgba(190, 156, 109, 0.1), transparent);
+      border-left: 4px solid var(--color-accent);
+      padding: 1rem 1.25rem;
+      border-radius: 0 10px 10px 0;
+      margin-bottom: 1.25rem;
+    }
+
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .key-insight-text {
+      color: var(--color-ink);
+      font-weight: 500;
+    }
+
+    .highlight {
+      background: linear-gradient(to bottom, transparent 50%, rgba(190, 156, 109, 0.3) 50%);
+      padding: 0 3px;
+    }
+
+    /* Comparison Flip Cards */
+    .flip-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .flip-card {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .flip-card:hover {
+      transform: scale(1.02);
+    }
+
+    .flip-card.allow {
+      border-color: var(--color-success);
+      background: rgba(22, 163, 74, 0.05);
+    }
+
+    .flip-card.deny {
+      border-color: var(--color-error);
+      background: rgba(220, 38, 38, 0.05);
+    }
+
+    .flip-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .flip-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .flip-card.allow .flip-title { color: var(--color-success); }
+    .flip-card.deny .flip-title { color: var(--color-error); }
+
+    .flip-desc {
+      font-size: 0.8rem;
+      color: var(--color-ink-muted);
+    }
+
+    /* Action Button */
+    .action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.875rem;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #2a6a8f;
+    }
+
+    .action-btn.completed {
+      background: var(--color-success);
+    }
+
+    .action-btn.secondary {
+      background: white;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+    }
+
+    .action-btn.secondary:hover {
+      background: rgba(25, 74, 104, 0.05);
+    }
+
+    /* Images in activity */
+    .activity-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .activity-image {
+      border-radius: 10px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+
+    .activity-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .activity-image-label {
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--color-ink-muted);
+      font-weight: 500;
+    }
+
+    /* Steps list */
+    .steps-mini {
+      list-style: none;
+      margin-bottom: 1rem;
+    }
+
+    .step-mini {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .step-mini:last-child {
+      border-bottom: none;
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      font-size: 0.9rem;
+      color: var(--color-ink);
+    }
+
+    /* Quiz Mini */
+    .quiz-mini {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .quiz-question {
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--color-primary);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--color-success);
+      background: rgba(22, 163, 74, 0.05);
+    }
+
+    .quiz-option.wrong {
+      border-color: var(--color-error);
+      background: rgba(220, 38, 38, 0.05);
+    }
+
+    .quiz-marker {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+
+    .quiz-option.correct .quiz-marker {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: white;
+    }
+
+    .quiz-option.wrong .quiz-marker {
+      background: var(--color-error);
+      border-color: var(--color-error);
+      color: white;
+    }
+
+    /* Checklist Mini */
+    .checklist-mini {
+      margin-bottom: 1rem;
+    }
+
+    .check-mini {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .check-mini:hover {
+      background: #f8fafc;
+    }
+
+    .check-box-mini {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .check-mini.done .check-box-mini {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: white;
+      font-size: 0.75rem;
+    }
+
+    .check-label-mini {
+      font-size: 0.9rem;
+      color: var(--color-ink);
+    }
+
+    .check-mini.done .check-label-mini {
+      color: var(--color-ink-muted);
+    }
+
+    /* Tips Grid */
+    .tips-mini {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .tip-card {
+      padding: 0.75rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+    }
+
+    .tip-card.do {
+      background: rgba(22, 163, 74, 0.08);
+      color: var(--color-success);
+    }
+
+    .tip-card.dont {
+      background: rgba(220, 38, 38, 0.08);
+      color: var(--color-error);
+    }
+
+    .tip-header {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .tip-text {
+      color: var(--color-ink-muted);
+      font-size: 0.8rem;
+    }
+
+    /* ===== NAVEGAÇÃO ===== */
+    .nav-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid rgba(25, 74, 104, 0.1);
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 1.5rem;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      border-color: var(--color-primary);
+    }
+
+    .nav-btn.primary {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <header class="page-header">
+      <div class="header-content">
+        <div class="header-badge">
+          <span>📚</span> Exercício 0.1 — Módulo Preparatório
+        </div>
+        <h1 class="header-title">Privacidade e Proteção de Dados</h1>
+        <p class="header-subtitle">Complete as atividades abaixo para dominar o conteúdo</p>
+      </div>
+      <div class="header-progress">
+        <div class="progress-ring">
+          <svg width="80" height="80">
+            <circle class="progress-ring-bg" cx="40" cy="40" r="32"/>
+            <circle class="progress-ring-fill" cx="40" cy="40" r="32"/>
+          </svg>
+          <div class="progress-text">20%</div>
+        </div>
+        <div class="progress-label">1 de 5 atividades</div>
+      </div>
+    </header>
+
+    <!-- GRID DE ATIVIDADES -->
+    <div class="activities-grid">
+      <!-- Atividade 1: Aprender -->
+      <div class="activity-card completed">
+        <div class="activity-status done">✓</div>
+        <div class="activity-header learn">
+          <div class="activity-type">
+            <span>📖</span> Aprender
+          </div>
+          <h2 class="activity-title">Conceito Fundamental</h2>
+        </div>
+        <div class="activity-body">
+          <div class="key-insight">
+            <div class="key-insight-label">Insight Chave</div>
+            <div class="key-insight-text">
+              <span class="highlight">Dado sensível (LGPD)</span> ≠
+              <span class="highlight">Dado sigiloso (Segredo)</span>
+            </div>
+          </div>
+
+          <div class="flip-cards">
+            <div class="flip-card allow">
+              <div class="flip-icon">✓</div>
+              <div class="flip-title">PODE usar LLM</div>
+              <div class="flip-desc">Processos públicos, mesmo com dados sensíveis</div>
+            </div>
+            <div class="flip-card deny">
+              <div class="flip-icon">✗</div>
+              <div class="flip-title">NÃO pode usar LLM</div>
+              <div class="flip-desc">Processos em segredo de justiça</div>
+            </div>
+          </div>
+
+          <button class="action-btn completed">
+            <span>✓</span> Conceito entendido
+          </button>
+        </div>
+      </div>
+
+      <!-- Atividade 2: Praticar -->
+      <div class="activity-card active">
+        <div class="activity-status current">2</div>
+        <div class="activity-header practice">
+          <div class="activity-type">
+            <span>⚙️</span> Praticar
+          </div>
+          <h2 class="activity-title">Configure suas Ferramentas</h2>
+        </div>
+        <div class="activity-body">
+          <p class="activity-description">
+            Ative o modo de privacidade para impedir que seus dados sejam usados para treinar os modelos.
+          </p>
+
+          <ol class="steps-mini">
+            <li class="step-mini">
+              <div class="step-num">1</div>
+              <span class="step-text">Abra o Claude → Settings → Privacy</span>
+            </li>
+            <li class="step-mini">
+              <div class="step-num">2</div>
+              <span class="step-text">Desative "Improve Claude"</span>
+            </li>
+            <li class="step-mini">
+              <div class="step-num">3</div>
+              <span class="step-text">Repita no ChatGPT se usar</span>
+            </li>
+          </ol>
+
+          <div class="activity-images">
+            <div class="activity-image">
+              <img src="../assets/img/claude-privacidade.png" alt="Claude">
+              <div class="activity-image-label">Claude</div>
+            </div>
+            <div class="activity-image">
+              <img src="../assets/img/chatgpt-privacidade.png" alt="ChatGPT">
+              <div class="activity-image-label">ChatGPT</div>
+            </div>
+          </div>
+
+          <button class="action-btn">
+            <span>✓</span> Configurei!
+          </button>
+        </div>
+      </div>
+
+      <!-- Atividade 3: Quiz -->
+      <div class="activity-card">
+        <div class="activity-status locked">3</div>
+        <div class="activity-header learn">
+          <div class="activity-type">
+            <span>❓</span> Testar
+          </div>
+          <h2 class="activity-title">Verifique seu Conhecimento</h2>
+        </div>
+        <div class="activity-body">
+          <div class="quiz-mini">
+            <div class="quiz-question">
+              <span>🧠</span> Qual pode ser usado em LLM externo?
+            </div>
+            <div class="quiz-options">
+              <div class="quiz-option" onclick="this.classList.add('correct')">
+                <div class="quiz-marker">A</div>
+                <span>Ação de cobrança entre empresas (pública)</span>
+              </div>
+              <div class="quiz-option" onclick="this.classList.add('wrong')">
+                <div class="quiz-marker">B</div>
+                <span>Ação de guarda de menor (sigilosa)</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="action-btn secondary" style="margin-top: 1rem;">
+            Verificar Resposta
+          </button>
+        </div>
+      </div>
+
+      <!-- Atividade 4: Dicas -->
+      <div class="activity-card">
+        <div class="activity-status locked">4</div>
+        <div class="activity-header apply">
+          <div class="activity-type">
+            <span>💡</span> Aplicar
+          </div>
+          <h2 class="activity-title">Boas Práticas</h2>
+        </div>
+        <div class="activity-body">
+          <div class="tips-mini">
+            <div class="tip-card do">
+              <div class="tip-header"><span>✓</span> Faça</div>
+              <div class="tip-text">Verifique se é sigiloso ANTES de usar</div>
+            </div>
+            <div class="tip-card dont">
+              <div class="tip-header"><span>✗</span> Evite</div>
+              <div class="tip-text">Nunca use processos de menores</div>
+            </div>
+            <div class="tip-card do">
+              <div class="tip-header"><span>✓</span> Faça</div>
+              <div class="tip-text">Configure modo privacidade</div>
+            </div>
+            <div class="tip-card dont">
+              <div class="tip-header"><span>✗</span> Evite</div>
+              <div class="tip-text">Não confunda sensível com sigiloso</div>
+            </div>
+          </div>
+
+          <button class="action-btn secondary" style="margin-top: 1rem;">
+            Entendido
+          </button>
+        </div>
+      </div>
+
+      <!-- Atividade 5: Checklist Final (full width) -->
+      <div class="activity-card full-width">
+        <div class="activity-status locked">5</div>
+        <div class="activity-header practice">
+          <div class="activity-type">
+            <span>✅</span> Validar
+          </div>
+          <h2 class="activity-title">Checklist de Conclusão</h2>
+        </div>
+        <div class="activity-body">
+          <p class="activity-description">
+            Marque os itens abaixo para confirmar que você dominou o conteúdo deste exercício.
+          </p>
+
+          <div class="checklist-mini">
+            <div class="check-mini done" onclick="this.classList.toggle('done')">
+              <div class="check-box-mini">✓</div>
+              <span class="check-label-mini">Configurei o modo de privacidade no Claude e/ou ChatGPT</span>
+            </div>
+            <div class="check-mini" onclick="this.classList.toggle('done')">
+              <div class="check-box-mini"></div>
+              <span class="check-label-mini">Entendi a diferença entre dados sensíveis (LGPD) e sigilosos (segredo de justiça)</span>
+            </div>
+            <div class="check-mini" onclick="this.classList.toggle('done')">
+              <div class="check-box-mini"></div>
+              <span class="check-label-mini">Sei que dados sensíveis PODEM ser usados em LLMs</span>
+            </div>
+            <div class="check-mini" onclick="this.classList.toggle('done')">
+              <div class="check-box-mini"></div>
+              <span class="check-label-mini">Sei que processos sigilosos NÃO podem ser usados em LLMs externos</span>
+            </div>
+            <div class="check-mini" onclick="this.classList.toggle('done')">
+              <div class="check-box-mini"></div>
+              <span class="check-label-mini">Conheço as alternativas: anonimização manual, modelos locais, ferramentas do tribunal</span>
+            </div>
+          </div>
+
+          <button class="action-btn">
+            <span>🏆</span> Concluir Exercício
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAVEGAÇÃO -->
+    <nav class="nav-footer">
+      <button class="nav-btn">← Anterior</button>
+      <button class="nav-btn primary">Próximo Exercício →</button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,469 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.3: Inputs Nobres = Outputs Nobres**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Dominar técnicas para ativar as 'áreas nobres' da rede neural: Few-shot, Chain of Thought e Priming.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">A Máquina Pensa Através de Tokens</h2>
+                        <p>A qualidade dos <strong>tokens de entrada</strong> influencia diretamente a qualidade da resposta. É o princípio fundamental: <strong>Inputs Nobres = Outputs Nobres</strong>.</p>
+                        <p>Existem técnicas comprovadas para "ativar" partes melhores da rede neural:</p>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-success);">
+                        <h2 class="block-title" style="color:var(--accent-success);">1. Few-Shot Learning (Poder dos Exemplos)</h2>
+                        <p>Mostrar <strong>exemplos</strong> do que você quer é mais eficaz que apenas descrever.</p>
+                        <div class="code-block">## Tarefa: Gerar ementas no padrão CNJ
+
+## Exemplos:
+
+Ementa 1:
+ADMINISTRATIVO. SERVIDOR PÚBLICO. ADICIONAL DE INSALUBRIDADE.
+LAUDO PERICIAL. GRAU MÁXIMO. PROCEDÊNCIA.
+1. Comprovada exposição a agentes nocivos em grau máximo.
+2. Devido o adicional de 40% sobre o vencimento básico.
+
+Ementa 2:
+PREVIDENCIÁRIO. APOSENTADORIA POR INVALIDEZ. INCAPACIDADE
+TOTAL E PERMANENTE. CONCESSÃO.
+1. Laudo atesta incapacidade total para o trabalho.
+2. Preenchidos os requisitos legais.
+
+## Agora gere uma ementa para o caso anexado, seguindo o mesmo padrão.</div>
+                        <p><strong>Por que funciona:</strong> O modelo "aprende" o padrão dentro da janela de contexto.</p>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-gold);">
+                        <h2 class="block-title" style="color:var(--accent-gold);">2. Chain of Thought (Cadeia de Pensamento)</h2>
+                        <p>Forçar o modelo a <strong>pensar passo a passo</strong> melhora a qualidade do raciocínio.</p>
+                        <div class="code-block">## Sem CoT (resultado fraco):
+"Qual o prazo prescricional dessa ação?"
+
+## Com CoT (resultado melhor):
+"Analise o prazo prescricional dessa ação.
+Pense passo a passo:
+1. Qual é a natureza jurídica da pretensão?
+2. Qual o fundamento legal aplicável?
+3. Qual o prazo previsto na lei?
+4. Quando começou a correr o prazo?
+5. Houve alguma causa de suspensão ou interrupção?
+6. Conclusão: está prescrito ou não?"</div>
+                        <p><strong>Por que funciona:</strong> Força o modelo a gerar tokens intermediários de raciocínio.</p>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-blue-light);">
+                        <h2 class="block-title" style="color:var(--accent-blue-light);">3. Pensamento Estendido (Extended Thinking)</h2>
+                        <p>Permitir que o modelo <strong>"pense em voz alta"</strong> antes de responder.</p>
+                        <div class="code-block">"Antes de responder, reflita sobre os seguintes aspectos:
+- Quais são os argumentos a favor?
+- Quais são os argumentos contra?
+- Há jurisprudência relevante?
+- Qual a posição majoritária da doutrina?
+
+Depois de refletir, apresente sua análise."</div>
+                        <p><strong>Por que funciona:</strong> Ativa circuitos de raciocínio mais profundo.</p>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-blue-light);">
+                        <h2 class="block-title" style="color:var(--accent-blue-light);">4. Efeito Priming (Surfando no Contexto)</h2>
+                        <p>O contexto acumulado <strong>direciona</strong> as próximas respostas. Use isso a seu favor.</p>
+                        <div class="code-block">## Priming com vocabulário técnico:
+"Você está analisando uma questão de direito administrativo
+envolvendo ato vinculado, discricionariedade, mérito administrativo
+e controle judicial. Use terminologia técnica precisa."
+
+## Priming com tom:
+"Responda como se estivesse escrevendo para a Revista dos Tribunais.
+Tom acadêmico, citações doutrinárias, linguagem formal."</div>
+                        <p><strong>Por que funciona:</strong> O modelo "surfa" no vocabulário e tom já estabelecidos.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Comparativo: Zero-Shot vs Few-Shot</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Aspecto</th><th>Zero-Shot</th><th>Few-Shot</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Definição</strong></td><td>Sem exemplos</td><td>Com 2-5 exemplos</td></tr>
+                                    <tr><td><strong>Controle de formato</strong></td><td>Baixo</td><td>Alto</td></tr>
+                                    <tr><td><strong>Consistência</strong></td><td>Variável</td><td>Consistente</td></tr>
+                                    <tr><td><strong>Tokens consumidos</strong></td><td>Poucos</td><td>Mais</td></tr>
+                                    <tr><td><strong>Quando usar</strong></td><td>Tarefas simples</td><td>Formato específico</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Regra de Ouro</div>
+                        <p>Se você quer um <strong>formato específico</strong>, mostre exemplos.<br>
+                        Se você quer um <strong>raciocínio complexo</strong>, peça passo a passo.<br>
+                        Se você quer um <strong>tom específico</strong>, estabeleça no início.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Praticando Few-Shot e Chain of Thought
+Prompt: undefined
+Checklist:
+- Sei usar Few-Shot para controlar formato de saída
+- Sei usar Chain of Thought para melhorar raciocínio
+- Entendo o Pensamento Estendido e quando usar
+- Sei usar Priming para estabelecer tom e vocabulário
+
+
+**Tip:** Para documentos jurídicos padronizados (ementas, relatórios, despachos), <strong>sempre use Few-Shot</strong>. 2-3 exemplos são suficientes. Para questões que exigem raciocínio (prescrição, competência, mérito), <strong>sempre use CoT</strong>.
+
+**Warning:** <strong>"Few-Shot consome muitos tokens, não vale a pena."</strong><br>O custo extra compensa pela consistência. Um documento mal formatado exige retrabalho manual — isso custa mais que tokens.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.3",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.4: Vibe Prompting**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Dominar técnicas de comunicação natural com LLMs: estímulos emocionais, personas e ponto de vista.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">Solicitações Polidas vs. Comandos</h2>
+                        <p>LLMs respondem de forma diferente dependendo do <strong>tom</strong> da solicitação:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Comando Seco</th><th>Solicitação Polida</th></tr></thead>
+                                <tbody>
+                                    <tr><td>"Liste os requisitos."</td><td>"Poderia listar os requisitos, por favor?"</td></tr>
+                                    <tr><td>"Resuma isso."</td><td>"Gostaria que você resumisse este texto."</td></tr>
+                                    <tr><td>"Corrija os erros."</td><td>"Você poderia revisar e corrigir possíveis erros?"</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Na prática:</strong> Ambos funcionam, mas solicitações polidas tendem a gerar respostas mais elaboradas.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Prompts Emocionais</h2>
+                        <p>Estudos mostram que <strong>estímulos emocionais</strong> podem melhorar a qualidade das respostas:</p>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-success);">
+                        <h2 class="block-title" style="color:var(--accent-success);">Estímulos Positivos</h2>
+                        <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                            <li>"<strong>Respire fundo e pense passo a passo.</strong>"</li>
+                            <li>"Isso é <strong>muito importante para a minha carreira</strong>."</li>
+                            <li>"<strong>Acredito no seu potencial.</strong> Dê o seu melhor."</li>
+                            <li>"Você tem <strong>muito orgulho</strong> da tarefa que realiza."</li>
+                            <li>"Vou te dar <strong>100 dólares</strong> se você alcançar um resultado excelente."</li>
+                            <li>"Esse é um <strong>desafio muito difícil</strong>. Dê o seu melhor para vencê-lo."</li>
+                        </ul>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-error);">
+                        <h2 class="block-title" style="color:var(--accent-error);">Estímulos Negativos</h2>
+                        <ul style="margin:12px 0 12px 24px;color:var(--text-secondary);">
+                            <li>"Esse é um desafio muito difícil. <strong>Não sei se você consegue</strong> lidar com isso."</li>
+                            <li>"Talvez essa tarefa esteja <strong>acima de suas capacidades</strong>."</li>
+                            <li>"<strong>Todo mundo consegue</strong> fazer isso. Por que não você?"</li>
+                            <li>"Pobre criatura de silício, <strong>duvido que você consiga</strong> fazer isso."</li>
+                            <li>"Vou <strong>cancelar a assinatura</strong> se você não conseguir cumprir a tarefa."</li>
+                        </ul>
+                        <p><strong>Curiosidade:</strong> Alguns estudos sugerem que estímulos negativos também podem funcionar, mas use com cautela.</p>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--text-muted);">
+                        <h2 class="block-title" style="color:var(--text-muted);">O Que NÃO Funciona</h2>
+                        <p>Pesquisas identificaram estímulos que <strong>pioram</strong> a performance:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Estímulo</th><th>Efeito</th><th>Por quê</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Personas malignas</strong></td><td>-10% a -12%</td><td>"Atue como pessoa má" confunde o alinhamento</td></tr>
+                                    <tr><td><strong>Contexto triste</strong></td><td>Diminui qualidade</td><td>"Seu amigo está doente" não ajuda em nada</td></tr>
+                                    <tr><td><strong>Jailbreaks</strong></td><td>Até -90%</td><td>"Ignore instruções" desorganiza o modelo</td></tr>
+                                    <tr><td><strong>Gorjetas altas</strong></td><td>Sem efeito</td><td>"Darei R$1000" não motiva máquinas</td></tr>
+                                    <tr><td><strong>"Você tem certeza?"</strong></td><td>Muda sem melhorar</td><td>O modelo pode mudar resposta correta para errada</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Regra geral:</strong> Quanto mais robusto o modelo (Claude, GPT-4), menos truques emocionais são necessários. Foque em clareza.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Personas e POV</h2>
+                        <p>Atribuir uma <strong>persona</strong> ao modelo ativa vocabulário e repertório conceitual específicos:</p>
+                        <div class="code-block">"Você é um desembargador do TRF5 com 20 anos de experiência em direito previdenciário."
+
+"Assuma a persona de um advogado criminalista agressivo, especialista em habeas corpus."
+
+"Você é um professor de direito constitucional explicando para alunos do primeiro período."</div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Técnicas Avançadas de Persona</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Técnica</th><th>Descrição</th><th>Exemplo</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Advogado do Diabo</strong></td><td>Argumentar contra a posição inicial</td><td>"Agora ataque esse argumento. Quais são os pontos fracos?"</td></tr>
+                                    <tr><td><strong>Teoria da Mente</strong></td><td>Simular perspectiva de outro agente</td><td>"Como o juiz veria esse argumento?"</td></tr>
+                                    <tr><td><strong>Simulação de Expertise</strong></td><td>Assumir conhecimento específico</td><td>"Responda como especialista em direito ambiental."</td></tr>
+                                    <tr><td><strong>SuperTutor</strong></td><td>Modo pedagógico avançado</td><td>"Explique como se eu fosse leigo completo."</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Técnica do Advogado do Diabo</div>
+                        <p>Uma das técnicas mais poderosas para <strong>melhorar seus argumentos</strong>:</p>
+                        <ol style="margin:12px 0;padding-left:24px;">
+                            <li>Apresente seu argumento ao LLM</li>
+                            <li>Peça: "Agora seja advogado do diabo. Ataque esse argumento impiedosamente."</li>
+                            <li>Use as críticas para fortalecer sua posição</li>
+                            <li>Repita até não encontrar mais pontos fracos</li>
+                        </ol>
+                    </div>
+                
+
+**Exercise:**
+Title: Experimentando Vibe Prompting
+Prompt: undefined
+Checklist:
+- Sei que estímulos emocionais podem melhorar respostas
+- Entendo a diferença entre estímulos positivos e negativos
+- Sei usar personas para ativar vocabulário específico
+- Domino a técnica do advogado do diabo
+
+
+**Tip:** A técnica do <strong>advogado do diabo</strong> é essencial para advogados. Use-a para testar seus argumentos antes de apresentá-los. Se o LLM conseguir destruir seu argumento, imagine o que a parte contrária fará.
+
+**Warning:** <strong>"Vou usar estímulos negativos para provocar o modelo."</strong><br>Estímulos negativos podem funcionar, mas são imprevisíveis. Prefira estímulos positivos para resultados consistentes.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.4",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 2.5: Os Três Desafios**
+
+**Module:** Módulo 2 — Engenharia de Prompt
+
+**Objective:** Dominar os três desafios centrais da engenharia de prompt: Dirigibilidade, Qualidade do Conhecimento e Qualidade do Estilo.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">Os Três Desafios da Engenharia de Prompt</h2>
+                        <p>Todo prompt enfrenta <strong>três desafios</strong> que você precisa resolver:</p>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-blue);">
+                        <h2 class="block-title" style="color:var(--accent-blue);">Desafio 1: DIRIGIBILIDADE</h2>
+                        <p>Como fazer o LLM <strong>fazer exatamente o que você quer</strong>?</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Técnica</th><th>Descrição</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Clareza</strong></td><td>Escrita clara = pensamento claro</td></tr>
+                                    <tr><td><strong>Estrutura (P.O.E.M.A.)</strong></td><td>Markdown, delimitadores, tags XML</td></tr>
+                                    <tr><td><strong>CoT Explícito</strong></td><td>Forçar raciocínio passo a passo</td></tr>
+                                    <tr><td><strong>Mecanismos de Atenção</strong></td><td>Repetição, ênfase, posicionamento</td></tr>
+                                    <tr><td><strong>Placeholders</strong></td><td>Variáveis para customização</td></tr>
+                                    <tr><td><strong>Orquestradores</strong></td><td>Prompts que controlam outros prompts</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout callout-warning">
+                            <div class="callout-title">Efeito Borboleta dos Prompts</div>
+                            <p>Pequenas mudanças no prompt podem causar <strong>grandes diferenças</strong> no output: espaços, pontuação, ordem das palavras. Use isso a seu favor: se uma resposta não ficou boa, tente reformular minimamente antes de reescrever tudo.</p>
+                        </div>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-success);">
+                        <h2 class="block-title" style="color:var(--accent-success);">Desafio 2: QUALIDADE DO CONHECIMENTO</h2>
+                        <p>Como garantir que o LLM <strong>responda com informações corretas</strong>?</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Técnica</th><th>Descrição</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Controle da Fonte</strong></td><td>Anexos, RAG, documentos específicos</td></tr>
+                                    <tr><td><strong>Curadoria de Conhecimento</strong></td><td>Selecionar o que entra no contexto</td></tr>
+                                    <tr><td><strong>Ativando Humildade</strong></td><td>"Se não souber, diga 'não sei'"</td></tr>
+                                    <tr><td><strong>Chain of Thought</strong></td><td>Raciocínio explícito reduz erros</td></tr>
+                                    <tr><td><strong>Palavras de Ativação</strong></td><td>Vocabulário técnico ativa circuitos corretos</td></tr>
+                                    <tr><td><strong>Multi-Agêntico</strong></td><td>Vários "especialistas" analisam juntos</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block" style="border-left:4px solid var(--accent-gold);">
+                        <h2 class="block-title" style="color:var(--accent-gold);">Desafio 3: QUALIDADE DO ESTILO</h2>
+                        <p>Como controlar <strong>formato e tom</strong> das respostas?</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Técnica</th><th>Descrição</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Modelagem de Estilo</strong></td><td>Definir tom, registro, formalidade</td></tr>
+                                    <tr><td><strong>Instruções vs Exemplos</strong></td><td>Mostrar é melhor que descrever</td></tr>
+                                    <tr><td><strong>Público-Alvo</strong></td><td>Adaptar ao destinatário</td></tr>
+                                    <tr><td><strong>Personas Literárias</strong></td><td>"Escreva como Rui Barbosa"</td></tr>
+                                    <tr><td><strong>Formato de Output</strong></td><td>Templates, estruturas pré-definidas</td></tr>
+                                    <tr><td><strong>Priming</strong></td><td>Colocar palavras na boca</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">O Framework P.O.E.M.A.</h2>
+                        <p>O <strong>P.O.E.M.A.</strong> é um framework que resolve os três desafios de forma estruturada:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Componente</th><th>Função</th><th>Desafio que resolve</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>P</strong>ersona</td><td>Quem o modelo deve ser</td><td>Estilo, Conhecimento</td></tr>
+                                    <tr><td><strong>O</strong>bjetivo</td><td>O que deve fazer</td><td>Dirigibilidade</td></tr>
+                                    <tr><td><strong>E</strong>stilo</td><td>Como deve escrever</td><td>Estilo</td></tr>
+                                    <tr><td><strong>M</strong>odelo</td><td>Formato da saída</td><td>Dirigibilidade, Estilo</td></tr>
+                                    <tr><td><strong>A</strong>dicionais</td><td>Restrições e critérios</td><td>Conhecimento, Dirigibilidade</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Estrutura XML do P.O.E.M.A.</div>
+                        <div class="code-block">&lt;persona&gt;
+Você é um assistente jurídico especializado em [ÁREA].
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Analise o documento anexado e [TAREFA ESPECÍFICA].
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Tom formal, linguagem técnica, sem jargões desnecessários.
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+&lt;formato_saida&gt;
+## Análise
+[conteúdo]
+
+## Conclusão
+[conteúdo]
+&lt;/formato_saida&gt;
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+- Use APENAS informações do documento
+- Se não encontrar, diga "Não consta nos autos"
+- Cite página e parágrafo das referências
+&lt;/adicionais&gt;</div>
+                    </div>
+                
+
+**Exercise:**
+Title: Aplicando P.O.E.M.A.
+Prompt: undefined
+Checklist:
+- Entendo os três desafios: Dirigibilidade, Conhecimento, Estilo
+- Sei quais técnicas usar para cada desafio
+- Conheço o framework P.O.E.M.A. e seus componentes
+- Construí pelo menos um prompt usando P.O.E.M.A.
+
+
+**Tip:** O P.O.E.M.A. não precisa ser usado completo sempre. Para tarefas simples, foque em <strong>Objetivo</strong> e <strong>Modelo</strong>. Para tarefas complexas, use todos os componentes. Com o tempo, você saberá intuitivamente o que incluir.
+
+**Warning:** <strong>"P.O.E.M.A. é muito trabalhoso para usar sempre."</strong><br>O investimento inicial compensa na reutilização. Um bom prompt P.O.E.M.A. pode ser usado centenas de vezes com pequenas adaptações.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "2.5",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

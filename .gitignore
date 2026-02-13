@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temp files
+*.tmp
+*.temp
+*.log
+
+# Debug files
+site/i18n/caderno/debug*
+site/i18n/caderno/temp/
+
+# Local env
+.env
+.env.local

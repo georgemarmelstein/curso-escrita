@@ -1,0 +1,516 @@
+/**
+ * Base Styles - Escrita Jurídica com IA
+ * Reset, tipografia base e estilos fundamentais
+ */
+
+/* ========================================
+   CSS RESET MODERNO
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Acessibilidade: foco visível */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Remove outline padrão quando não há foco via teclado */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ========================================
+   CORPO BASE
+   ======================================== */
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-regular);
+  color: var(--color-ink);
+  background-color: var(--color-background);
+}
+
+/* ========================================
+   TIPOGRAFIA - HEADINGS
+   ======================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+  color: var(--color-ink);
+}
+
+h1 {
+  font-size: var(--text-4xl);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: var(--space-6);
+}
+
+h2 {
+  font-size: var(--text-3xl);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: var(--space-5);
+}
+
+h3 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-4);
+}
+
+h4 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-3);
+}
+
+h5 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-3);
+}
+
+h6 {
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-2);
+}
+
+/* ========================================
+   TIPOGRAFIA - PARÁGRAFOS E TEXTO
+   ======================================== */
+
+p {
+  margin-bottom: var(--space-4);
+  line-height: var(--leading-relaxed);
+}
+
+.lead {
+  font-size: var(--text-xl);
+  color: var(--color-ink-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.small {
+  font-size: var(--text-sm);
+}
+
+.muted {
+  color: var(--color-ink-muted);
+}
+
+strong,
+b {
+  font-weight: var(--font-semibold);
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+/* ========================================
+   LINKS
+   ======================================== */
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition-colors);
+}
+
+a:hover {
+  color: var(--color-primary-light);
+  text-decoration: underline;
+}
+
+/* Link com ícone externo */
+a[target="_blank"]::after {
+  content: " ↗";
+  font-size: 0.75em;
+  opacity: 0.7;
+}
+
+/* ========================================
+   LISTAS
+   ======================================== */
+
+.list {
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-6);
+}
+
+.list li {
+  margin-bottom: var(--space-2);
+  line-height: var(--leading-relaxed);
+}
+
+.list-disc {
+  list-style-type: disc;
+}
+
+.list-decimal {
+  list-style-type: decimal;
+}
+
+/* Lista com marcadores customizados */
+.list-check li::before {
+  content: "✓";
+  color: var(--color-success);
+  font-weight: var(--font-bold);
+  margin-right: var(--space-2);
+}
+
+.list-arrow li::before {
+  content: "→";
+  color: var(--color-accent);
+  margin-right: var(--space-2);
+}
+
+/* ========================================
+   CÓDIGO INLINE
+   ======================================== */
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 0.125em 0.375em;
+  background-color: rgba(25, 74, 104, 0.08);
+  border-radius: var(--radius-sm);
+  color: var(--color-primary-dark);
+}
+
+pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* ========================================
+   CITAÇÕES
+   ======================================== */
+
+blockquote {
+  margin: var(--space-6) 0;
+  padding: var(--space-4) var(--space-6);
+  border-left: 4px solid var(--color-accent);
+  background-color: rgba(190, 156, 109, 0.08);
+  font-style: italic;
+  color: var(--color-ink-secondary);
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote cite {
+  display: block;
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  font-style: normal;
+  color: var(--color-ink-muted);
+}
+
+blockquote cite::before {
+  content: "— ";
+}
+
+/* ========================================
+   TABELAS
+   ======================================== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-6);
+  font-size: var(--text-sm);
+}
+
+thead {
+  background-color: rgba(25, 74, 104, 0.05);
+}
+
+th {
+  font-weight: var(--font-semibold);
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 2px solid var(--color-border);
+}
+
+td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+tbody tr:hover {
+  background-color: rgba(25, 74, 104, 0.02);
+}
+
+/* ========================================
+   SEPARADORES
+   ======================================== */
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: var(--color-border);
+  margin: var(--space-8) 0;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: var(--space-8) 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.divider::before {
+  margin-right: var(--space-4);
+}
+
+.divider::after {
+  margin-left: var(--space-4);
+}
+
+/* ========================================
+   SELEÇÃO DE TEXTO
+   ======================================== */
+
+::selection {
+  background-color: rgba(25, 74, 104, 0.2);
+  color: var(--color-ink);
+}
+
+::-moz-selection {
+  background-color: rgba(25, 74, 104, 0.2);
+  color: var(--color-ink);
+}
+
+/* ========================================
+   SCROLLBAR CUSTOMIZADA
+   ======================================== */
+
+/* Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-ink-muted);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) var(--color-surface);
+}
+
+/* ========================================
+   UTILITÁRIOS DE TEXTO
+   ======================================== */
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ========================================
+   UTILITÁRIOS DE VISIBILIDADE
+   ======================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+/* ========================================
+   UTILITÁRIOS DE ESPAÇAMENTO
+   ======================================== */
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--space-1); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mb-8 { margin-bottom: var(--space-8); }
+
+/* ========================================
+   IMPRESSÃO
+   ======================================== */
+
+@media print {
+  body {
+    background: white;
+    color: black;
+    font-size: 12pt;
+  }
+
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

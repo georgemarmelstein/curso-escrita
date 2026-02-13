@@ -1,0 +1,69 @@
+RELATÓRIO DE ANONIMIZAÇÃO - chunk_03.txt
+==========================================
+
+ARQUIVO ORIGINAL:
+- Caminho: C:\Users\georg\curso-escrita\docs\exercicios\caso-igor\chunks\chunk_03.txt
+- Tamanho: 78K
+- Linhas: 1627
+
+ARQUIVO ANONIMIZADO:
+- Caminho: C:\Users\georg\curso-escrita\docs\exercicios\caso-igor\chunks\chunk_03_anon.txt
+- Tamanho: 78K
+- Linhas: 1627
+
+SUBSTITUIÇÕES REALIZADAS:
+==========================
+
+1. NOMES COMPLETOS (8 mapeamentos):
+   - RODRIGO GENEROSO ANDRADE → RODRIGO SILVA LIMA
+   - IGOR BARCELOS ORTEGA → IGOR SANTOS COSTA
+   - JOSE KAUE LEAL AMORIM → JOSE OLIVEIRA MARTINS
+   - FELIPE BRUNO DOS SANTOS PIRES → FELIPE SOUZA RIBEIRO
+   - WAGNER MARTIN DE SOUZA → WAGNER PEREIRA SANTOS
+   - ROBERTO DE ALMEIDA VIANA → ROBERTO FERREIRA
+   - DIOGO PERES FERREIRA → DIOGO ALMEIDA CASTRO
+   - RICARDO ALEXANDRE O. RODRIGUES → RICARDO GOMES TEIXEIRA
+
+2. ABREVIAÇÕES (8 mapeamentos):
+   - R.G.A. → R.S.L.
+   - I.B.O. → I.S.C.
+   - J.K.L.A. → J.O.M.
+   - F.B.S.P. → F.S.R.
+   - W.M.S. → W.P.S.
+   - R.A.V. → R.F.
+   - D.P.F. → D.A.C.
+   - R.A.O.R. → R.G.T.
+
+3. NÚMEROS DE DOCUMENTOS (RG, PIS, etc) (5 mapeamentos):
+   - 3.852.412 → 9876543
+   - 1.503.779 → 7654321
+   - 18.345.872 → 4567890
+   - 7.621.413 → 3456789
+   - 5.238.190 → 2345678
+
+4. CPF (2 únicos encontrados):
+   - Foram gerados números fictícios no padrão XXX.XXX.XXX-XX
+   - Exemplo: 111.222.333-44, 112.223.334-45
+
+5. PLACAS VEICULARES (1 de cada):
+   - CNO-8913 → ABC-1234
+   - DTD-3976 → XYZ-5678
+
+6. NÚMEROS DE PROCESSO (1 único):
+   - Padrão original: 0001804-91.2016.8.26.0535
+   - Anonimizado: 0009999-00.2016.8.26.0535
+   - Mantida estrutura do formato judicial
+
+7. TELEFONES (11 encontrados):
+   - Padrão: (11) 9999-9000 até (11) 9999-9010
+   - Números fictícios com formato válido brasileiro
+
+8. ENDEREÇOS:
+   - Mantidos conforme existiam no original (ruas e bairros)
+
+FORMATAÇÃO:
+- Mantida integralmente a formatação original
+- Preservadas todas as quebras de linha e espaçamento
+- Codificação UTF-8 preservada
+
+STATUS: ✓ CONCLUÍDO COM SUCESSO

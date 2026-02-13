@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposta 8 - Híbrida Terracota (Marrom/Creme)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Paleta Terracota - Marrom Quente + Creme */
+      --color-primary: #5c4033;
+      --color-primary-light: #8b6914;
+      --color-accent: #c77b30;
+      --color-accent-light: #e6a756;
+      --color-background: #faf6f0;
+      --color-surface: #ffffff;
+      --color-surface-warm: #fefbf6;
+      --color-ink: #2d2418;
+      --color-ink-muted: #7a6b5a;
+      --color-success: #5a7247;
+      --color-warning: #b8860b;
+      --color-error: #a63d40;
+      --color-border: #e8dfd3;
+
+      /* Fontes Elegantes */
+      --font-display: 'Playfair Display', 'Georgia', serif;
+      --font-body: 'Source Serif 4', 'Georgia', serif;
+      --font-ui: 'Nunito Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--color-background);
+      color: var(--color-ink);
+      line-height: 1.75;
+    }
+
+    /* ===== LAYOUT ===== */
+    .app {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      background: var(--color-primary);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-brand {
+      padding: 2.5rem 1.75rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--color-accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.35;
+      margin-bottom: 0.25rem;
+    }
+
+    .brand-subtitle {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      opacity: 0.75;
+    }
+
+    /* Progress */
+    .sidebar-progress {
+      padding: 1.5rem 1.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-label {
+      font-family: var(--font-ui);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+    }
+
+    .progress-value {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 40%;
+      background: var(--color-accent);
+      border-radius: 3px;
+    }
+
+    /* Navigation */
+    .sidebar-nav {
+      flex: 1;
+      padding: 1.25rem 0;
+    }
+
+    .nav-section-label {
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      opacity: 0.6;
+      padding: 0.75rem 1.75rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.875rem 1.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 4px solid transparent;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.1);
+      border-left-color: var(--color-accent);
+    }
+
+    .nav-bullet {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      flex-shrink: 0;
+    }
+
+    .nav-item.active .nav-bullet {
+      background: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(199, 123, 48, 0.3);
+    }
+
+    .nav-item.completed .nav-bullet {
+      background: var(--color-success);
+    }
+
+    .nav-content {
+      flex: 1;
+    }
+
+    .nav-title {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-meta {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-top: 0.15rem;
+    }
+
+    .nav-badge {
+      font-family: var(--font-ui);
+      font-size: 0.6rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .nav-item.completed .nav-badge {
+      background: var(--color-success);
+    }
+
+    /* ===== MAIN ===== */
+    .main {
+      padding: 3rem 4rem;
+      max-width: 820px;
+    }
+
+    /* Header */
+    .page-header {
+      margin-bottom: 3rem;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .header-number {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--color-accent);
+      line-height: 1;
+    }
+
+    .header-info {
+      flex: 1;
+    }
+
+    .header-eyebrow {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .header-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      line-height: 1.2;
+    }
+
+    .header-divider {
+      height: 3px;
+      background: linear-gradient(to right, var(--color-accent), transparent);
+      margin: 1.5rem 0;
+      border-radius: 2px;
+    }
+
+    .header-lead {
+      font-family: var(--font-body);
+      font-size: 1.1rem;
+      color: var(--color-ink-muted);
+      font-style: italic;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    /* Objectives */
+    .objectives-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      position: relative;
+    }
+
+    .objectives-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 1.5rem;
+      right: 1.5rem;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
+      border-radius: 0 0 4px 4px;
+    }
+
+    .objectives-heading {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      margin-bottom: 1rem;
+    }
+
+    .objectives-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .objective-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.75rem;
+      background: var(--color-surface-warm);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .objective-item:hover {
+      background: var(--color-border);
+    }
+
+    .objective-check {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--color-accent);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all 0.2s;
+    }
+
+    .objective-item.done .objective-check {
+      background: var(--color-accent);
+    }
+
+    .objective-item.done .objective-check::after {
+      content: '✓';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: bold;
+      height: 100%;
+    }
+
+    .objective-text {
+      font-size: 0.85rem;
+      color: var(--color-ink);
+      line-height: 1.5;
+    }
+
+    /* Concept */
+    .concept-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .concept-banner {
+      background: linear-gradient(135deg, var(--color-primary) 0%, #7a5a3e 100%);
+      color: white;
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+
+    .concept-equation {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .concept-equation .em {
+      background: rgba(199, 123, 48, 0.4);
+      padding: 0.1rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .concept-body {
+      padding: 1.75rem;
+    }
+
+    .concept-text {
+      font-size: 1rem;
+      color: var(--color-ink-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .concept-text strong {
+      color: var(--color-ink);
+    }
+
+    /* Comparison */
+    .compare-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .compare-box {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid;
+    }
+
+    .compare-box.yes {
+      border-color: var(--color-success);
+    }
+
+    .compare-box.no {
+      border-color: var(--color-error);
+    }
+
+    .compare-header {
+      padding: 0.75rem 1rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .compare-box.yes .compare-header {
+      background: rgba(90, 114, 71, 0.15);
+      color: var(--color-success);
+    }
+
+    .compare-box.no .compare-header {
+      background: rgba(166, 61, 64, 0.15);
+      color: var(--color-error);
+    }
+
+    .compare-content {
+      padding: 1rem;
+      background: var(--color-surface);
+    }
+
+    .compare-label {
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .compare-box.yes .compare-label { color: var(--color-success); }
+    .compare-box.no .compare-label { color: var(--color-error); }
+
+    .compare-desc {
+      font-size: 0.85rem;
+      color: var(--color-ink-muted);
+    }
+
+    /* Practice */
+    .practice-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .practice-header {
+      background: var(--color-accent);
+      color: white;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .practice-icon {
+      font-size: 1.25rem;
+    }
+
+    .practice-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .practice-body {
+      padding: 1.75rem;
+    }
+
+    .practice-intro {
+      font-size: 0.95rem;
+      color: var(--color-ink-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .steps-list {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--color-surface-warm);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-action {
+      font-weight: 600;
+      color: var(--color-ink);
+      margin-bottom: 0.15rem;
+    }
+
+    .step-detail {
+      font-size: 0.85rem;
+      color: var(--color-ink-muted);
+    }
+
+    /* Images */
+    .images-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .image-box {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+    }
+
+    .image-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .image-caption {
+      padding: 0.6rem;
+      text-align: center;
+      font-family: var(--font-ui);
+      font-size: 0.75rem;
+      color: var(--color-ink-muted);
+      background: var(--color-surface-warm);
+    }
+
+    /* Button */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--color-primary-light);
+      transform: translateY(-1px);
+    }
+
+    /* Checklist */
+    .checklist-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .checklist-header {
+      background: linear-gradient(135deg, var(--color-primary) 0%, #7a5a3e 100%);
+      color: white;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .checklist-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .checklist-count {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .checklist-body {
+      padding: 0.75rem;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .check-item:hover {
+      background: var(--color-surface-warm);
+    }
+
+    .check-box {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--color-border);
+      border-radius: 5px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .check-item.done .check-box {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: white;
+      font-size: 0.75rem;
+    }
+
+    .check-text {
+      font-size: 0.9rem;
+      color: var(--color-ink);
+    }
+
+    .check-item.done .check-text {
+      color: var(--color-ink-muted);
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">EJ</div>
+        <h1 class="brand-title">Privacidade e Proteção de Dados</h1>
+        <p class="brand-subtitle">Exercício 0.1 · Módulo Preparatório</p>
+      </div>
+
+      <div class="sidebar-progress">
+        <div class="progress-header">
+          <span class="progress-label">Progresso</span>
+          <span class="progress-value">40%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Conteúdo do Exercício</div>
+
+        <a href="#objetivos" class="nav-item completed">
+          <div class="nav-bullet"></div>
+          <div class="nav-content">
+            <div class="nav-title">Objetivos</div>
+            <div class="nav-meta">O que você vai aprender</div>
+          </div>
+          <span class="nav-badge">Lido</span>
+        </a>
+
+        <a href="#conceito" class="nav-item completed">
+          <div class="nav-bullet"></div>
+          <div class="nav-content">
+            <div class="nav-title">Conceito Fundamental</div>
+            <div class="nav-meta">LGPD vs Segredo de Justiça</div>
+          </div>
+          <span class="nav-badge">Lido</span>
+        </a>
+
+        <a href="#pratica" class="nav-item active">
+          <div class="nav-bullet"></div>
+          <div class="nav-content">
+            <div class="nav-title">Prática Guiada</div>
+            <div class="nav-meta">Configure as ferramentas</div>
+          </div>
+        </a>
+
+        <a href="#alternativas" class="nav-item">
+          <div class="nav-bullet"></div>
+          <div class="nav-content">
+            <div class="nav-title">Alternativas</div>
+            <div class="nav-meta">Para processos sigilosos</div>
+          </div>
+        </a>
+
+        <a href="#checklist" class="nav-item">
+          <div class="nav-bullet"></div>
+          <div class="nav-content">
+            <div class="nav-title">Checklist Final</div>
+            <div class="nav-meta">Valide seu aprendizado</div>
+          </div>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <header class="page-header">
+        <div class="header-meta">
+          <div class="header-number">01</div>
+          <div class="header-info">
+            <div class="header-eyebrow">Módulo Preparatório</div>
+            <h1 class="header-title">Privacidade e Proteção de Dados</h1>
+          </div>
+        </div>
+        <div class="header-divider"></div>
+        <p class="header-lead">
+          Compreenda as regras essenciais de segurança antes de usar IA no trabalho jurídico.
+        </p>
+      </header>
+
+      <!-- Objetivos -->
+      <section id="objetivos" class="section">
+        <div class="section-header">
+          <div class="section-icon">🎯</div>
+          <h2 class="section-title">Objetivos</h2>
+        </div>
+
+        <div class="objectives-card">
+          <div class="objectives-heading">Ao final deste exercício você será capaz de:</div>
+          <div class="objectives-grid">
+            <div class="objective-item done" onclick="this.classList.toggle('done')">
+              <div class="objective-check"></div>
+              <span class="objective-text">Distinguir dados sensíveis (LGPD) de sigilosos</span>
+            </div>
+            <div class="objective-item done" onclick="this.classList.toggle('done')">
+              <div class="objective-check"></div>
+              <span class="objective-text">Identificar quando pode usar LLMs externos</span>
+            </div>
+            <div class="objective-item" onclick="this.classList.toggle('done')">
+              <div class="objective-check"></div>
+              <span class="objective-text">Configurar modo de privacidade</span>
+            </div>
+            <div class="objective-item" onclick="this.classList.toggle('done')">
+              <div class="objective-check"></div>
+              <span class="objective-text">Conhecer alternativas para sigilosos</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conceito -->
+      <section id="conceito" class="section">
+        <div class="section-header">
+          <div class="section-icon">📚</div>
+          <h2 class="section-title">Conceito Fundamental</h2>
+        </div>
+
+        <div class="concept-card">
+          <div class="concept-banner">
+            <p class="concept-equation">
+              <span class="em">Dado sensível (LGPD)</span> ≠ <span class="em">Dado sigiloso (Segredo)</span>
+            </p>
+          </div>
+          <div class="concept-body">
+            <p class="concept-text">
+              A LGPD protege dados pessoais sensíveis, mas isso <strong>não impede</strong> seu uso em LLMs.
+              O que impede é o <strong>segredo de justiça</strong> — processos com tramitação sigilosa.
+            </p>
+
+            <div class="compare-row">
+              <div class="compare-box yes">
+                <div class="compare-header">✓ Dados Sensíveis (LGPD)</div>
+                <div class="compare-content">
+                  <div class="compare-label">Pode usar LLM</div>
+                  <p class="compare-desc">Processos públicos, mesmo com dados de saúde ou religião.</p>
+                </div>
+              </div>
+              <div class="compare-box no">
+                <div class="compare-header">✗ Dados Sigilosos</div>
+                <div class="compare-content">
+                  <div class="compare-label">Não pode usar LLM</div>
+                  <p class="compare-desc">Guarda de menor, violência doméstica, segredo de justiça.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Prática -->
+      <section id="pratica" class="section">
+        <div class="section-header">
+          <div class="section-icon">⚙️</div>
+          <h2 class="section-title">Prática Guiada</h2>
+        </div>
+
+        <div class="practice-card">
+          <div class="practice-header">
+            <span class="practice-icon">🔧</span>
+            <span class="practice-title">Configure o Modo de Privacidade</span>
+          </div>
+          <div class="practice-body">
+            <p class="practice-intro">
+              Mesmo para processos públicos, ative o modo de privacidade para impedir
+              que seus dados sejam usados para treinar os modelos.
+            </p>
+
+            <ol class="steps-list">
+              <li class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <div class="step-action">Abra o Claude em outra aba</div>
+                  <div class="step-detail">Acesse claude.ai e faça login</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <div class="step-action">Acesse Settings → Privacy</div>
+                  <div class="step-detail">Menu lateral ou ícone de configurações</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <div class="step-action">Desative "Improve Claude"</div>
+                  <div class="step-detail">Seus dados não serão usados para treinamento</div>
+                </div>
+              </li>
+            </ol>
+
+            <div class="images-row">
+              <div class="image-box">
+                <img src="../assets/img/claude-privacidade.png" alt="Claude">
+                <div class="image-caption">Claude — Privacidade</div>
+              </div>
+              <div class="image-box">
+                <img src="../assets/img/chatgpt-privacidade.png" alt="ChatGPT">
+                <div class="image-caption">ChatGPT — Privacidade</div>
+              </div>
+            </div>
+
+            <button class="btn">
+              <span>✓</span> Configurei minhas ferramentas
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alternativas -->
+      <section id="alternativas" class="section">
+        <div class="section-header">
+          <div class="section-icon">🔐</div>
+          <h2 class="section-title">Alternativas para Sigilosos</h2>
+        </div>
+
+        <div class="concept-card">
+          <div class="concept-body">
+            <p class="concept-text">
+              Quando o processo tramita em segredo de justiça, você tem três opções:
+            </p>
+            <ol style="margin-top: 1rem; padding-left: 1.25rem;">
+              <li style="margin-bottom: 0.75rem; color: var(--color-ink);">
+                <strong>Anonimização manual</strong> — Remova dados identificadores antes de usar
+              </li>
+              <li style="margin-bottom: 0.75rem; color: var(--color-ink);">
+                <strong>Modelos locais</strong> — Use LLMs offline, sem enviar dados externos
+              </li>
+              <li style="color: var(--color-ink);">
+                <strong>Ferramentas do tribunal</strong> — Prefira soluções institucionais homologadas
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- Checklist -->
+      <section id="checklist" class="section">
+        <div class="section-header">
+          <div class="section-icon">✅</div>
+          <h2 class="section-title">Checklist Final</h2>
+        </div>
+
+        <div class="checklist-card">
+          <div class="checklist-header">
+            <span class="checklist-title">Valide seu Aprendizado</span>
+            <span class="checklist-count">2/5</span>
+          </div>
+          <div class="checklist-body">
+            <div class="check-item done" onclick="this.classList.toggle('done')">
+              <div class="check-box">✓</div>
+              <span class="check-text">Configurei o modo de privacidade no Claude e/ou ChatGPT</span>
+            </div>
+            <div class="check-item done" onclick="this.classList.toggle('done')">
+              <div class="check-box">✓</div>
+              <span class="check-text">Entendi a diferença entre dados sensíveis e sigilosos</span>
+            </div>
+            <div class="check-item" onclick="this.classList.toggle('done')">
+              <div class="check-box"></div>
+              <span class="check-text">Sei que dados sensíveis PODEM ser usados em LLMs</span>
+            </div>
+            <div class="check-item" onclick="this.classList.toggle('done')">
+              <div class="check-box"></div>
+              <span class="check-text">Sei que processos sigilosos NÃO podem ser usados</span>
+            </div>
+            <div class="check-item" onclick="this.classList.toggle('done')">
+              <div class="check-box"></div>
+              <span class="check-text">Conheço as alternativas para processos sigilosos</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

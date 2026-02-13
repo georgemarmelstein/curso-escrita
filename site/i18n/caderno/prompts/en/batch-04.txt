@@ -1,0 +1,416 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.4: Máquinas Estocásticas**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Perceber que os LLMs fornecem respostas diferentes a cada interação, pois seu processamento é probabilístico e estocástico.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que é Estocástico?</h2>
+                        <p>Na aula anterior, você aprendeu que LLMs funcionam como "máquinas de adivinhação" — prevendo o próximo token com base em probabilidades. Agora vamos explorar uma consequência fundamental disso: <strong>LLMs são máquinas estocásticas</strong>.</p>
+                        <p><strong>Estocástico</strong> significa "baseado em probabilidade e aleatoriedade". Diferente de uma calculadora que sempre dá o mesmo resultado para 2+2, um LLM pode dar respostas diferentes para a mesma pergunta.</p>
+                        <div class="code-block">
+<span class="code-comment">// Calculadora (determinística)</span>
+2 + 2 = 4  (sempre)
+2 + 2 = 4  (sempre)
+2 + 2 = 4  (sempre)
+
+<span class="code-comment">// LLM (estocástico)</span>
+"Me diz uma fruta" → "Maçã"
+"Me diz uma fruta" → "Banana"
+"Me diz uma fruta" → "Laranja"
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Por que as Respostas Variam?</h2>
+                        <p>Lembre-se: o modelo calcula uma <strong>distribuição de probabilidades</strong> para cada token. Para a pergunta "Me diz uma fruta", a distribuição pode ser:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Token</th><th>Probabilidade</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Maçã</td><td>35%</td></tr>
+                                    <tr><td>Banana</td><td>25%</td></tr>
+                                    <tr><td>Laranja</td><td>20%</td></tr>
+                                    <tr><td>Morango</td><td>10%</td></tr>
+                                    <tr><td>Outros</td><td>10%</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>O modelo <strong>amostra</strong> dessa distribuição — como girar uma roleta tendenciosa. "Maçã" tem maior chance de sair, mas não é garantida. Cada execução é um novo giro da roleta.</p>
+                        <img src="assets/img/1Je65TdJbDm55KQCja7rPVw.png" alt="Representação visual de uma rede neural com camadas de processamento" style="max-width: 100%; margin: 20px 0; border-radius: 8px;" loading="lazy">
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Padrões Ocultos nos Dados de Treinamento</h2>
+                        <p>Embora as respostas variem, elas seguem <strong>padrões estatísticos</strong> aprendidos durante o treinamento. Alguns exemplos curiosos:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Pergunta</th><th>Resposta mais frequente</th><th>Por quê?</th></tr></thead>
+                                <tbody>
+                                    <tr><td>"Me diz uma fruta"</td><td>Maçã</td><td>Fruta mais citada em textos</td></tr>
+                                    <tr><td>"Me diz uma ferramenta"</td><td>Martelo</td><td>Ferramenta icônica culturalmente</td></tr>
+                                    <tr><td>"Pense num número de 1 a 100"</td><td>27 ou 37</td><td>Números "aleatórios" preferidos por humanos</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>Os LLMs absorvem vieses culturais e estatísticos dos dados de treinamento. Quando humanos escrevem "escolha um número aleatório", tendem a escolher números como 27 ou 37. O modelo aprendeu esse padrão.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Regressão à Moda</h2>
+                        <p>Na estatística, existe o conceito de <strong>regressão à média</strong>: em medições repetidas, valores extremos tendem a se aproximar da média. Os LLMs exibem um fenômeno similar, mas diferente: a <strong>regressão à moda</strong>.</p>
+                        <p>A <strong>moda</strong> é o valor que aparece com mais frequência em um conjunto de dados. Nos LLMs, isso significa que o modelo tende a gravitar para as respostas mais comuns nos dados de treinamento.</p>
+                        <div class="code-block">
+<span class="code-comment">// Regressão à Média (estatística tradicional)</span>
+Valores extremos → tendem à MÉDIA (valor central)
+
+<span class="code-comment">// Regressão à Moda (LLMs)</span>
+Respostas possíveis → tendem à MODA (mais frequente)
+                        </div>
+                        <p><strong>Por que isso acontece?</strong> O modelo foi treinado para prever o próximo token mais provável. "Mais provável" significa "mais frequente nos dados de treinamento". Portanto, sem instruções específicas, o modelo naturalmente gravita para:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Tipo de Tarefa</th><th>A Moda (resposta mais comum)</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Escrever uma introdução</td><td>Fórmulas genéricas ("Nos dias atuais...", "É sabido que...")</td></tr>
+                                    <tr><td>Analisar um contrato</td><td>Pontos óbvios que qualquer análise mencionaria</td></tr>
+                                    <tr><td>Sugerir argumentos</td><td>Argumentos mais comuns na jurisprudência</td></tr>
+                                    <tr><td>Resumir um texto</td><td>Estrutura padrão de resumo acadêmico</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Implicação crucial:</strong> Sem instruções específicas, você receberá a resposta "média" — aquela que aparece com mais frequência em textos similares. Para obter respostas diferenciadas, você precisa <strong>afastar o modelo da moda</strong> com instruções precisas, exemplos específicos, ou pedindo explicitamente por abordagens não-convencionais.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Viés de Frequência</h2>
+                        <p>A regressão à moda é uma manifestação de um fenômeno mais amplo: o <strong>viés de frequência</strong>. O modelo reproduz padrões na proporção em que aparecem nos dados de treinamento.</p>
+                        <div class="code-block">
+<span class="code-comment">// Nos dados de treinamento:</span>
+"Maçã" aparece 10.000 vezes como exemplo de fruta
+"Jabuticaba" aparece 500 vezes como exemplo de fruta
+
+<span class="code-comment">// Na resposta do modelo:</span>
+"Maçã" tem ~20x mais chance de ser gerada que "Jabuticaba"
+                        </div>
+                        <p><strong>Consequências práticas do viés de frequência:</strong></p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Área</th><th>O que é mais frequente nos dados</th><th>O que o modelo tende a gerar</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Jurisdição</td><td>Textos de direito americano (em inglês)</td><td>Conceitos de common law mesmo quando perguntado sobre civil law</td></tr>
+                                    <tr><td>Jurisprudência</td><td>Tribunais superiores mais citados</td><td>STF e STJ, mesmo quando TRF seria mais relevante</td></tr>
+                                    <tr><td>Argumentos</td><td>Teses majoritárias e consolidadas</td><td>Argumentos "seguros" em vez de teses inovadoras</td></tr>
+                                    <tr><td>Estilo</td><td>Linguagem jurídica formal tradicional</td><td>Texto rebuscado mesmo quando clareza é pedida</td></tr>
+                                    <tr><td>Doutrina</td><td>Autores mais citados (clássicos)</td><td>Referências a doutrinadores famosos, não necessariamente os mais adequados</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Por que isso importa no Direito?</strong> O viés de frequência pode fazer o modelo:</p>
+                        <ul style="margin: 16px 0; padding-left: 24px; color: var(--text-secondary);">
+                            <li>Privilegiar interpretações majoritárias sobre minoritárias (mesmo quando a minoritária é mais adequada ao caso)</li>
+                            <li>Reproduzir vieses históricos presentes na jurisprudência</li>
+                            <li>Sugerir soluções "padrão" quando o caso exige criatividade</li>
+                            <li>Ignorar especificidades locais em favor de padrões mais universais</li>
+                        </ul>
+                        <p><strong>Antídoto:</strong> Seja específico. Em vez de "analise este contrato", diga "analise este contrato de locação comercial sob a perspectiva do locatário, identificando cláusulas potencialmente abusivas segundo o CDC e a jurisprudência do TJSP".</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Implicações Práticas</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Situação</th><th>Consequência</th><th>O que fazer</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Gerar textos criativos</td><td>Cada geração é única</td><td>Gere várias versões e escolha</td></tr>
+                                    <tr><td>Análise de documentos</td><td>Pode destacar aspectos diferentes</td><td>Execute múltiplas vezes, compare</td></tr>
+                                    <tr><td>Tarefas objetivas</td><td>Respostas podem variar ligeiramente</td><td>Use instruções mais específicas</td></tr>
+                                    <tr><td>Reprodutibilidade</td><td>Difícil obter mesma resposta exata</td><td>Aceite variação ou use seed fixa</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+
+**Exercise:**
+Title: Experimentando a Estocasticidade
+Prompt: undefined
+Checklist:
+- Entendo que LLMs são máquinas estocásticas (probabilísticas)
+- Percebi que a mesma pergunta pode gerar respostas diferentes
+- Identifiquei padrões estatísticos nas respostas (Maçã, Martelo, 27)
+- Compreendo o conceito de 'regressão à moda' — o modelo gravita para respostas comuns
+- Entendo o 'viés de frequência' — o modelo reproduz o que é mais comum nos dados
+- Sei que instruções genéricas produzem respostas genéricas
+- Compreendo que variação é característica, não defeito
+- Sei que posso usar essa variação a meu favor (múltiplas gerações)
+
+
+**Tip:** A estocasticidade pode ser <strong>controlada</strong> (não eliminada). Através de <strong>prompts estruturados</strong> — técnica que você aprenderá no módulo de Engenharia de Prompt — conseguimos dirigir o modelo para respostas mais <strong>previsíveis</strong>, mais <strong>padronizadas</strong> e mais <strong>profundas</strong>. Quanto mais específico o prompt, menor a variação.
+
+**Warning:** <strong>"Preciso de respostas sempre iguais, então LLMs não servem."</strong><br>Errado. A variação é característica, não defeito — mas pode ser <strong>minimizada</strong>. Instruções detalhadas, exemplos (few-shot), formatos específicos e restrições explícitas reduzem drasticamente a variação. O segredo está na qualidade do prompt, não na natureza do modelo.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.4",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.5: Maldição da Reversão**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Perceber que os LLMs aprendem com base na frequência das palavras na base de treinamento, tendo facilidade em uma direção e dificuldade na direção inversa.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que é a Maldição da Reversão?</h2>
+                        <p>A <strong>Maldição da Reversão</strong> (Reversal Curse) é um fenômeno documentado em <a href="https://arxiv.org/abs/2309.12288" target="_blank">estudo de 2023</a> que demonstra uma limitação fundamental dos LLMs: eles aprendem associações em uma <strong>direção específica</strong>, não bidirecionalmente como os humanos.</p>
+                        <p>Se um LLM aprendeu que "A está relacionado a B" nos dados de treinamento, ele <strong>não necessariamente</strong> consegue deduzir que "B está relacionado a A".</p>
+                        <div class="code-block">
+<span class="code-comment">// Humano (relacionamento bidirecional)</span>
+"Anitta é filha de Miriam Macedo"
+   ↔ automaticamente sabe que
+"Miriam Macedo é mãe de Anitta"
+
+<span class="code-comment">// LLM (relacionamento unidirecional)</span>
+"Anitta → Miriam Macedo" ✓ (direção frequente nos dados)
+"Miriam Macedo → Anitta" ✗ (direção rara, pode falhar)
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Por que Isso Acontece?</h2>
+                        <p>Lembre-se: LLMs são máquinas de previsão de tokens treinadas em texto. Eles aprendem padrões <strong>na ordem em que aparecem</strong> nos dados.</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Nos dados de treinamento</th><th>O que o modelo aprende</th></tr></thead>
+                                <tbody>
+                                    <tr><td>"Anitta, nome artístico de Larissa de Macedo Machado, é filha de Miriam Macedo..."</td><td>Anitta → Miriam Macedo (forte)</td></tr>
+                                    <tr><td>Raras menções de "Miriam Macedo" como sujeito principal</td><td>Miriam Macedo → ? (fraco)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>A direção "pessoa famosa → familiar" aparece milhares de vezes. A direção inversa "familiar → pessoa famosa" quase nunca aparece como padrão nos textos.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Teste da Reversão
+Prompt: undefined
+Checklist:
+- Entendo o conceito de 'Maldição da Reversão'
+- Percebi que LLMs aprendem associações em uma direção
+- Testei a assimetria com o exemplo Anitta/Miriam Macedo
+- Compreendo por que a direção da pergunta importa
+- Entendo que LLMs não 'entendem' relacionamentos como humanos
+
+
+**Tip:** Os LLMs <strong>não "entendem"</strong> relacionamentos bidirecionais como os humanos. Eles dependem da <strong>frequência estatística</strong> das associações nos dados de treinamento.
+
+**Warning:** <strong>"Se o modelo sabe que A→B, ele sabe que B→A."</strong><br>Errado. Esta é a maldição da reversão. LLMs não fazem inferência lógica automática — eles reproduzem padrões estatísticos. Se a reversão não está nos dados de treinamento, o modelo não a 'deduz' sozinho.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.5",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to English.
+Keep technical terms in their original form when commonly used in English (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+For idiomatic expressions, adapt to natural English equivalents.
+
+## Source Lesson (Portuguese)
+
+**Lesson 1.6: A Janela de Contexto**
+
+**Module:** Módulo 1 — Fundamentos
+
+**Objective:** Dominar o conceito de janela de contexto — seu superpoder e sua kriptonita no uso de LLMs.
+
+**Content:**
+
+                    <div class="block">
+                        <h2 class="block-title">O que é Janela de Contexto?</h2>
+                        <p>A <strong>Janela de Contexto</strong> é a quantidade de texto que a máquina consegue "prestar atenção" ao mesmo tempo. O modelo só enxerga uma janela limitada — e esquece o que fica muito para trás.</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Modelo</th><th>Janela Padrão</th><th>Janela Estendida (beta)</th></tr></thead>
+                                <tbody>
+                                    <tr><td>GPT-4o (2024)</td><td>128K tokens</td><td>—</td></tr>
+                                    <tr><td>Claude 3.5 Sonnet</td><td>200K tokens</td><td>—</td></tr>
+                                    <tr><td><strong>Claude Opus 4</strong></td><td>200K tokens</td><td>—</td></tr>
+                                    <tr><td>Gemini 2.0</td><td>1M tokens</td><td>2M tokens</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>Na prática, 200K tokens equivalem a aproximadamente <strong>500 páginas</strong> de texto ou um livro inteiro. Mas atenção: isso não significa que você pode anexar 500 páginas. Dentro da janela de contexto entram também o prompt de sistema e as respostas do modelo. Por isso, em um modelo de 200K, a <strong>capacidade real de processamento</strong> fica em torno de <strong>150-200 páginas</strong> — e mesmo assim, com degradação de qualidade conforme veremos no fenômeno do <em>Context Rot</em> mais adiante.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Duas Metáforas para Entender</h2>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Metáfora</th><th>O que significa</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>🚶 Trilha na Areia</strong></td><td>Você caminha deixando pegadas. Conforme avança, as pegadas antigas vão sendo apagadas pelo vento. Novas paisagens surgem, mas o que está mais próximo é visto com maior foco — o distante já se perdeu.</td></tr>
+                                    <tr><td><strong>🗂️ Mesa de Trabalho</strong></td><td>Você vai empilhando documentos na mesa. Quando a pilha cresce demais, o que estava embaixo vai sendo soterrado — ainda existe, mas fica cada vez mais difícil de acessar até desaparecer.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Trate a janela de contexto como uma mesa de trabalho.</strong> O que você coloca primeiro pode ser soterrado pelo que vem depois.</p>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">⚡ Superpoder e Kriptonita</div>
+                        <p>A janela de contexto será seu <strong>superpoder</strong> e sua <strong>kriptonita</strong>:</p>
+                        <ul style="margin: 12px 0; padding-left: 24px;">
+                            <li><strong>Pouco contexto</strong> = resposta fraca, genérica (o modelo não tem informação suficiente)</li>
+                            <li><strong>Excesso de contexto</strong> = distração, degradação (o modelo se perde no volume)</li>
+                        </ul>
+                        <p>O segredo é o <strong>equilíbrio</strong>: contexto suficiente para a tarefa, não mais.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">O Fenômeno "Context Rot"</h2>
+                        <p>Um <a href="https://research.trychroma.com/context-rot" target="_blank">estudo de 2025 da Chroma Research</a> documentou a <strong>degradação de desempenho</strong> conforme o contexto aumenta — o chamado <strong>Context Rot</strong> (apodrecimento do contexto).</p>
+                        <p>Contrário à suposição comum, os LLMs <strong>não processam uniformemente</strong> todos os tokens em contextos longos. A qualidade cai dramaticamente.</p>
+                        <img src="assets/img/context-rot-hero.png" alt="Gráfico mostrando degradação de desempenho de LLMs conforme contexto aumenta" style="max-width: 100%; margin: 20px 0; border-radius: 8px; border: 1px solid var(--border-light);" loading="lazy">
+                        <p><strong>Como ler o gráfico:</strong> O eixo X mostra o tamanho do contexto (de 25 a 10.000 palavras). O eixo Y mostra a precisão. Observe como <strong>todos os modelos</strong> (Claude, GPT-4, Gemini, Qwen) começam com alta precisão em contextos curtos, mas <strong>degradam significativamente</strong> conforme o contexto aumenta.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Mais Contexto ≠ Melhor Resultado</h2>
+                        <p>A promessa de janelas de 1 milhão de tokens pode ser uma <strong>armadilha</strong>:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Efeito</th><th>O que acontece</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Degradação de qualidade</strong></td><td>Quanto mais texto, menor a precisão em encontrar informações específicas</td></tr>
+                                    <tr><td><strong>Aumento de latência</strong></td><td>Mais contexto = mais tempo de processamento (segundos ou minutos)</td></tr>
+                                    <tr><td><strong>Custo maior</strong></td><td>Você paga por token processado — contexto grande = conta maior</td></tr>
+                                    <tr><td><strong>Diluição de instruções</strong></td><td>Suas instruções podem se "perder" no meio de documentos longos</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p><strong>Regra prática:</strong> Não jogue tudo na janela só porque cabe. Selecione o que é relevante.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Contextos Isolados</h2>
+                        <p>Cada conversa é uma janela de contexto <strong>independente</strong>:</p>
+                        <div class="code-block">
+Conversa 1: [Você: "Meu nome é João"] [Claude: "Olá João!"]
+Conversa 2: [Você: "Qual meu nome?"] [Claude: "Não sei seu nome."]
+
+↑ Janelas completamente isoladas — o modelo NÃO transfere informação.</div>
+                        <p>Quando você abre uma nova conversa, o modelo começa do <strong>zero</strong> — sem memória das conversas anteriores.</p>
+                    </div>
+
+                    <div class="block">
+                        <h2 class="block-title">Simule a Janela de Contexto</h2>
+                        <p>Use o simulador abaixo para entender na prática como a janela de contexto funciona. Adicione elementos e veja o que acontece quando ela enche:</p>
+                        <div class="iframe-container">
+                            <iframe src="../docs/caderno/demo-contexto.html" style="width:100%;height:600px;border:1px solid var(--border-light);border-radius:12px;margin:20px 0;box-shadow:var(--shadow-md);" loading="lazy" title="Simulador de Janela de Contexto" onerror="this.classList.add('error')"></iframe>
+                            <div class="iframe-fallback">
+                                <p>Conteudo interativo indisponivel.</p>
+                                <p><a href="../docs/caderno/demo-contexto.html" target="_blank">Abrir Simulador de Contexto em nova aba</a></p>
+                            </div>
+                        </div>
+                        <p><strong>Experimente:</strong> Compare os modos <em>Stuffing</em> vs <em>RAG</em> e veja a diferença entre <em>Colapso</em> e <em>Deslizante</em>.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Explorando a Janela de Contexto
+Prompt: undefined
+Checklist:
+- Entendo que a janela de contexto é como uma mesa de trabalho limitada
+- Sei os tamanhos aproximados (200K padrão, 1M estendido)
+- Compreendo o fenômeno 'Context Rot' (degradação com contexto longo)
+- Entendo que mais contexto não significa melhor resultado
+- Sei que cada conversa é uma janela isolada
+
+
+**Tip:** Trate a janela de contexto como <strong>mesa de trabalho</strong>: coloque apenas o que é relevante para a tarefa atual. Posicione informações importantes no <strong>início</strong> ou no <strong>final</strong>, nunca no meio.
+
+**Warning:** <strong>"Vou jogar todo o processo na janela porque cabe."</strong><br>Péssima ideia. Quanto maior o contexto, maior a latência, menor a precisão, e maior o custo. Selecione os documentos relevantes em vez de jogar tudo.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "1.6",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

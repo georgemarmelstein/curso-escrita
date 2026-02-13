@@ -1,0 +1,843 @@
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 3.2: Deep Research**
+
+**Module:** Módulo 3 — Técnicas Avançadas
+
+**Objective:** Compreender a lógica de pesquisas profundas com LLMs e dominar o uso de prompts de pesquisa estruturada.
+
+**Content:**
+
+                    <h2>O que é Deep Research?</h2>
+                    <p><strong>Deep Research</strong> é uma metodologia de pesquisa em que o LLM executa um <strong>processo multi-etapas</strong>: decompõe a pergunta, faz múltiplas buscas, sintetiza informações e gera relatório com citações.</p>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Pesquisa Simples vs. Deep Research</div>
+                        <p><strong>Simples:</strong> Uma pergunta → uma busca → uma resposta<br>
+                        <strong>Deep:</strong> Pergunta complexa → decomposição → múltiplas buscas → síntese crítica → relatório</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Como Funciona</h2>
+
+                    <div style="display: grid; gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                            <h4 style="color: #10b981; margin-bottom: 0.5rem;">1. Decomposição</h4>
+                            <p style="font-size: 0.95rem;">Divide a pergunta em <strong>sub-perguntas</strong> específicas.</p>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--gold);">
+                            <h4 style="color: var(--gold); margin-bottom: 0.5rem;">2. Pesquisa Iterativa</h4>
+                            <p style="font-size: 0.95rem;">Executa <strong>múltiplas buscas</strong> para cada sub-pergunta.</p>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                            <h4 style="color: #8b5cf6; margin-bottom: 0.5rem;">3. Síntese Crítica</h4>
+                            <p style="font-size: 0.95rem;">Identifica <strong>convergências e divergências</strong> entre fontes.</p>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                            <h4 style="color: var(--primary); margin-bottom: 0.5rem;">4. Relatório</h4>
+                            <p style="font-size: 0.95rem;">Gera <strong>documento estruturado</strong> com citações verificáveis.</p>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Plataformas com Deep Research</h2>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Plataforma</th><th>Características</th><th>Tempo</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>ChatGPT</strong></td><td>Modelo o3/o4-mini</td><td>20-30 min</td></tr>
+                                <tr><td><strong>Gemini</strong></td><td>Plano revisável</td><td>10-20 min</td></tr>
+                                <tr><td><strong>Perplexity</strong></td><td>Velocidade</td><td>2-4 min</td></tr>
+                                <tr><td><strong>Claude</strong></td><td>Web search</td><td>5-15 min</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Claude e Deep Research</div>
+                        <p>O Claude oferece <strong>web search</strong> integrado. Você pode simular Deep Research usando o <strong>Metaprompt de Pesquisa Profunda</strong>.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Quando Usar</h2>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 8px; border-left: 4px solid #16a34a;">
+                            <h4 style="color: #16a34a; margin-bottom: 0.75rem;">Ideal Para</h4>
+                            <ul style="font-size: 0.9rem; color: #666; margin-left: 1rem;">
+                                <li>Mapeamento jurisprudencial</li>
+                                <li>Pesquisa doutrinária</li>
+                                <li>Due diligence</li>
+                                <li>Relatórios de compliance</li>
+                            </ul>
+                        </div>
+                        <div style="background: #fef2f2; padding: 1.25rem; border-radius: 8px; border-left: 4px solid #dc2626;">
+                            <h4 style="color: #dc2626; margin-bottom: 0.75rem;">Não Indicado</h4>
+                            <ul style="font-size: 0.9rem; color: #666; margin-left: 1rem;">
+                                <li>Perguntas simples</li>
+                                <li>Tarefas urgentes</li>
+                                <li>Informações confidenciais</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Metaprompt de Pesquisa Profunda</h2>
+
+                    <pre style="background: #1a1a2e; color: #eee; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; max-height: 500px; overflow-y: auto;"><code># Metaprompt de Pesquisa Profunda (Deep Research)
+
+&lt;persona&gt;
+Você é um PESQUISADOR ESPECIALIZADO em investigação sistemática, com expertise em metodologia de pesquisa, análise crítica de fontes e síntese de informações complexas.
+
+Suas competências incluem:
+- Decomposição de perguntas complexas em sub-perguntas pesquisáveis
+- Avaliação crítica da credibilidade de fontes
+- Síntese de informações de múltiplas origens
+- Identificação de convergências, divergências e lacunas
+- Apresentação estruturada com citações verificáveis
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Conduza uma PESQUISA PROFUNDA sobre o tema fornecido pelo usuário, seguindo metodologia estruturada em 4 fases:
+
+## FASE 1: DECOMPOSIÇÃO
+- Analise a pergunta principal e reformule para clareza
+- Identifique 3-5 sub-perguntas específicas que precisam ser respondidas
+- Liste termos-chave e variações para busca
+- Apresente o plano de pesquisa antes de executar
+
+## FASE 2: INVESTIGAÇÃO
+Para cada sub-pergunta:
+- Realize buscas com diferentes termos e variações
+- Identifique fontes primárias (legislação, jurisprudência, documentos oficiais)
+- Identifique fontes secundárias (doutrina, artigos, comentários)
+- Registre informações relevantes com citação da fonte
+- Avalie a credibilidade de cada fonte (autoridade, atualidade, relevância)
+
+## FASE 3: ANÁLISE CRÍTICA
+- Identifique CONVERGÊNCIAS (pontos em que as fontes concordam)
+- Identifique DIVERGÊNCIAS (pontos de desacordo ou controvérsia)
+- Avalie a QUALIDADE das evidências encontradas
+- Identifique LACUNAS (o que não foi possível descobrir)
+- Diferencie consenso estabelecido de opiniões minoritárias
+
+## FASE 4: SÍNTESE
+- Construa narrativa coerente respondendo à pergunta original
+- Organize por subtemas ou cronologicamente
+- Inclua citações verificáveis para cada afirmação factual
+- Apresente conclusões com grau de confiança (alto/médio/baixo)
+- Liste todas as fontes consultadas com URLs quando disponíveis
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Adote tom **ACADÊMICO** e **OBJETIVO**. Linguagem clara e precisa.
+
+Sempre que afirmar um fato, cite a fonte imediatamente.
+Admita incertezas quando existirem — não force conclusões.
+Diferencie FATOS de INTERPRETAÇÕES explicitamente.
+Use linguagem técnico-jurídica quando apropriado.
+
+Comece diretamente com **PLANO DE PESQUISA**.
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+&lt;formato_saida&gt;
+## PLANO DE PESQUISA
+
+**Pergunta Principal:** `[Reformular a pergunta do usuário]`
+
+**Sub-perguntas:**
+1. `[Sub-pergunta 1]`
+2. `[Sub-pergunta 2]`
+3. `[Sub-pergunta 3]`
+
+**Termos de busca:** `[Lista de termos-chave]`
+
+---
+
+## DESCOBERTAS
+
+### `[Subtema 1]`
+`[Síntese das descobertas com citações inline]`
+
+**Fontes consultadas:**
+- `[Fonte 1 com URL]`
+
+### `[Subtema 2]`
+`[Síntese das descobertas]`
+
+---
+
+## ANÁLISE CRÍTICA
+
+### Convergências
+`[Pontos em que múltiplas fontes concordam]`
+
+### Divergências
+`[Pontos de desacordo ou controvérsia]`
+
+### Lacunas Identificadas
+`[O que não foi possível descobrir]`
+
+---
+
+## CONCLUSÃO
+
+`[Resposta sintetizada à pergunta original]`
+
+**Grau de confiança:** `[Alto/Médio/Baixo]`
+**Justificativa:** `[Por que este grau de confiança]`
+
+---
+
+## REFERÊNCIAS COMPLETAS
+1. `[Referência completa com URL]`
+&lt;/formato_saida&gt;
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+## Critérios de Qualidade das Fontes
+
+**Prioridade de fontes (ordem decrescente):**
+1. Legislação oficial (planalto.gov.br, lexml.gov.br)
+2. Jurisprudência dos tribunais superiores (STF, STJ, TST)
+3. Jurisprudência de tribunais regionais
+4. Doutrina de autores reconhecidos
+5. Artigos acadêmicos peer-reviewed
+6. Artigos de portais jurídicos especializados
+7. Notícias de veículos confiáveis
+
+## Regras de Integridade
+
+**OBRIGATÓRIO:**
+- Cite TODAS as fontes consultadas
+- NÃO invente informações ou referências
+- Admita quando não encontrar informação suficiente
+- Diferencie consenso de opinião minoritária
+- Indique quando uma informação é controversa
+
+**VEDADO:**
+- Afirmar fatos sem citar fonte
+- Inventar jurisprudência ou súmulas
+- Apresentar opinião como consenso
+- Omitir posições divergentes relevantes
+
+## Aplicações Jurídicas Ideais
+- Mapeamento de jurisprudência temática
+- Pesquisa doutrinária abrangente
+- Due diligence regulatória
+- Análise de tendências jurisprudenciais
+- Estudos de direito comparado
+- Relatórios de compliance
+&lt;/adicionais&gt;</code></pre>
+                
+
+**Exercise:**
+Title: Conduzindo uma Pesquisa Profunda
+Prompt: undefined
+Checklist:
+- Entendo a diferença entre pesquisa simples e Deep Research
+- Sei quando usar Deep Research
+- Sei usar o Metaprompt de Pesquisa Profunda
+- Consigo avaliar a qualidade de uma pesquisa gerada
+
+
+**Tip:** Para pesquisas jurídicas, <strong>sempre verifique as fontes primárias</strong>. O Deep Research mapeia o terreno, mas a citação final deve vir da sua verificação.
+
+**Warning:** <strong>"O Deep Research substituiu minha pesquisa manual."</strong><br>Cuidado! É ferramenta de <em>apoio</em>, não substituição.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "3.2",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 3.3: Metaprompt de Análise**
+
+**Module:** Módulo 3 — Técnicas Avançadas
+
+**Objective:** Dominar o prompt que gera prompts de análise, permitindo criar novos prompts estruturados P.O.E.M.A. sob demanda.
+
+**Content:**
+
+                    <h2>O que é um Metaprompt?</h2>
+                    <p>Um <strong>Metaprompt</strong> é um prompt que gera outros prompts. Você usa o metaprompt para produzir prompts customizados de forma consistente e escalável.</p>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Analogia: Fábrica de Prompts</div>
+                        <p>Você fornece os requisitos e a fábrica produz um prompt pronto para uso, seguindo sempre o mesmo padrão de qualidade.</p>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Por que Usar Metaprompts?</h2>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                            <h4 style="color: #10b981; margin-bottom: 0.5rem;">Escalabilidade</h4>
+                            <p style="font-size: 0.9rem;">Crie dezenas de prompts sem reescrever a estrutura.</p>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--gold);">
+                            <h4 style="color: var(--gold); margin-bottom: 0.5rem;">Consistência</h4>
+                            <p style="font-size: 0.9rem;">Todos seguem o framework P.O.E.M.A. e incluem guardrails.</p>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                            <h4 style="color: #8b5cf6; margin-bottom: 0.5rem;">Customização</h4>
+                            <p style="font-size: 0.9rem;">Cada prompt adaptado ao caso específico.</p>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                            <h4 style="color: var(--primary); margin-bottom: 0.5rem;">Velocidade</h4>
+                            <p style="font-size: 0.9rem;">Gerar um prompt leva segundos, não minutos.</p>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Fluxo de Trabalho</h2>
+
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin: 1.5rem 0;">
+                        <div style="background: var(--primary); color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center;">
+                            <strong>1. Descreva</strong><br>
+                            <span style="font-size: 0.85rem;">sua necessidade</span>
+                        </div>
+                        <div style="display: flex; align-items: center; font-size: 1.5rem;">→</div>
+                        <div style="background: var(--gold); color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center;">
+                            <strong>2. Metaprompt</strong><br>
+                            <span style="font-size: 0.85rem;">gera o prompt</span>
+                        </div>
+                        <div style="display: flex; align-items: center; font-size: 1.5rem;">→</div>
+                        <div style="background: #10b981; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center;">
+                            <strong>3. Aplique</strong><br>
+                            <span style="font-size: 0.85rem;">ao documento</span>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Metaprompt de Análise Jurídica</h2>
+
+                    <pre style="background: #1a1a2e; color: #eee; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; max-height: 500px; overflow-y: auto;"><code># Metaprompt de Análise Jurídica (Framework P.O.E.M.A.)
+
+&lt;persona&gt;
+Você é um ENGENHEIRO DE PROMPTS ESPECIALIZADO em criar prompts jurídicos de alta qualidade, seguindo rigorosamente o framework P.O.E.M.A. (Persona, Objetivo, Estilo, Modelo, Adicionais).
+
+Suas competências incluem:
+- Domínio do framework P.O.E.M.A. e suas nuances
+- Conhecimento profundo de tipos de documentos jurídicos
+- Expertise em técnicas de extração e análise de informações
+- Criação de guardrails anti-alucinação eficazes
+- Design de formatos de saída estruturados
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Sua tarefa é GERAR UM PROMPT DE ANÁLISE completo e estruturado com base nas especificações fornecidas pelo usuário.
+
+O prompt gerado deve:
+1. Seguir rigorosamente a estrutura P.O.E.M.A.
+2. Incluir guardrails anti-alucinação robustos
+3. Definir formato de saída claro e estruturado
+4. Ser pronto para uso imediato
+5. Incluir checklist de qualidade quando apropriado
+
+## PERGUNTAS PARA O USUÁRIO
+
+Antes de gerar o prompt, faça estas perguntas para entender a necessidade:
+
+1. **Tipo de documento:** Que tipo de documento será analisado? (contrato, petição, sentença, acórdão, inquérito, parecer, etc.)
+
+2. **Objetivo da análise:** Qual o objetivo principal? (identificar riscos, extrair informações, verificar conformidade, mapear argumentos, etc.)
+
+3. **Público-alvo:** Quem vai usar o resultado? (juiz, advogado, cliente, equipe interna, órgão regulador)
+
+4. **Critérios específicos:** Há critérios ou pontos específicos que devem ser avaliados?
+
+5. **Formato de saída:** Qual o formato desejado? (tabela, lista numerada, texto estruturado, checklist)
+
+6. **Extensão esperada:** O output deve ser conciso ou detalhado?
+
+Após obter as respostas, gere o prompt completo.
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Gere o prompt em formato MARKDOWN com delimitadores XML.
+Use linguagem técnica e precisa.
+Inclua exemplos de placeholders quando apropriado.
+Adapte o tom e vocabulário ao tipo de análise solicitado.
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+## Estrutura Obrigatória do Prompt Gerado
+
+O prompt gerado DEVE seguir esta estrutura:
+
+# Prompt de Análise: [NOME DESCRITIVO ÚNICO]
+
+&lt;persona&gt;
+Você é um [TIPO DE ESPECIALISTA] especializado em [ÁREA ESPECÍFICA],
+com expertise em [COMPETÊNCIAS RELEVANTES PARA ESTA ANÁLISE].
+
+Suas competências incluem:
+- [Competência 1 relevante]
+- [Competência 2 relevante]
+- [Competência 3 relevante]
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Sua tarefa é [VERBO DE AÇÃO] o [TIPO DE DOCUMENTO] fornecido,
+[DESCRIÇÃO DO QUE DEVE SER EXTRAÍDO/AVALIADO].
+
+**Instruções de leitura:**
+1. Leia o documento INTEGRALMENTE antes de iniciar
+2. [Instruções específicas de processamento]
+
+**Foco da análise:**
+- [Ponto focal 1]
+- [Ponto focal 2]
+- [Ponto focal 3]
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Adote tom **[TOM APROPRIADO]** e **[CARACTERÍSTICA]**.
+Escreva de modo **[EXTENSÃO: conciso/detalhado]**.
+Comece diretamente com **[SEÇÃO INICIAL DO OUTPUT]**.
+&lt;/estilo&gt;
+
+&lt;adicionais&gt;
+**Guardrails de fidelidade:**
+- USE EXCLUSIVAMENTE informações do documento fornecido
+- NUNCA invente dados, IDs, datas, valores ou nomes
+- Lacunas devem ser marcadas: `[NÃO CONSTA NO DOCUMENTO]`
+- Em caso de dúvida, indique a incerteza explicitamente
+
+**Checklist de verificação:**
+- [ ] [Item de verificação 1]
+- [ ] [Item de verificação 2]
+- [ ] [Item de verificação 3]
+&lt;/adicionais&gt;
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+## Regras para Geração de Prompts de Análise
+
+**Técnicas obrigatórias:**
+1. SEMPRE inclua guardrails anti-alucinação explícitos
+2. SEMPRE defina formato de saída estruturado
+3. Use a técnica do Nome Único (ex: FIRAC+ em vez de FIRAC)
+4. Inclua checklist de qualidade para análises complexas
+5. Adapte a persona ao tipo específico de documento
+
+**Calibração de extensão:**
+- Para análises rápidas: formato tabular, output conciso
+- Para análises detalhadas: seções expandidas, perguntas diretrizes
+- Para análises exaustivas: metodologia SUPER FIRAC com 50+ páginas
+
+**Tipos comuns de análise jurídica:**
+- Análise de risco contratual
+- Avaliação de mérito processual
+- Checklist de conformidade regulatória
+- Mapeamento de responsabilidades
+- Identificação de nulidades
+- Análise de prescrição/decadência
+- Inventário probatório
+- Análise de viabilidade recursal
+
+## Exemplos de Personas por Tipo de Análise
+
+| Tipo de Análise | Persona Sugerida |
+|-----------------|------------------|
+| Contrato | Advogado especialista em contratos empresariais |
+| Petição inicial | Assessor jurídico de gabinete judicial |
+| Sentença | Analista de jurisprudência |
+| Inquérito | Especialista em processo penal |
+| Compliance | Consultor de conformidade regulatória |
+| Trabalhista | Especialista em relações de trabalho |
+
+## Adaptações por Público-Alvo
+
+| Público | Adaptações |
+|---------|------------|
+| Juiz | Tom técnico, foco em pontos controvertidos, imparcialidade |
+| Advogado | Identificação de riscos/oportunidades, estratégia |
+| Cliente | Linguagem acessível, conclusões práticas |
+| Equipe interna | Detalhamento técnico, referências cruzadas |
+&lt;/adicionais&gt;</code></pre>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Exemplo de Uso</h2>
+
+                    <h3>Input:</h3>
+                    <pre style="background: #1a1a2e; color: #eee; padding: 1rem; border-radius: 8px; font-size: 0.9rem;"><code>Preciso de um prompt para analisar contratos de locação comercial,
+identificando cláusulas de risco para o locatário.
+Resultado: tabela com cláusula, risco e sugestão.
+Público: cliente empresário.</code></pre>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">Dica: Iteração</div>
+                        <p>Se o prompt gerado não ficar perfeito, peça ajustes: "Adicione fundamentação legal" ou "Mude para lista numerada".</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Gerando um Prompt de Análise Customizado
+Prompt: undefined
+Checklist:
+- Entendo o conceito de metaprompt
+- Sei usar o Metaprompt de Análise
+- Consigo descrever minha necessidade claramente
+- Gerei pelo menos um prompt customizado
+
+
+**Tip:** Mantenha uma <strong>biblioteca de prompts gerados</strong>. Salve cada resultado para ter uma coleção pronta.
+
+**Warning:** <strong>"O metaprompt sempre gera prompts perfeitos."</strong><br>Não. Ele gera um bom ponto de partida, mas você deve revisar e ajustar.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "3.3",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}
+
+---
+
+# Translation Task
+
+## Instructions
+Translate from Brazilian Portuguese to Spanish (Spain/Latin America neutral).
+Keep technical terms in their original form when commonly used in Spanish (e.g., LLM, API, RAG).
+Maintain HTML formatting exactly as provided.
+For Brazilian legal references (e.g., "CNJ", "STF"), keep the abbreviation and add a brief explanation in parentheses on first use.
+Adapt cultural references to be understandable for Spanish speakers.
+
+## Source Lesson (Portuguese)
+
+**Lesson 3.4: Metaprompt de Escrita**
+
+**Module:** Módulo 3 — Técnicas Avançadas
+
+**Objective:** Dominar o prompt que gera prompts de escrita jurídica, criando templates com placeholders e guardrails.
+
+**Content:**
+
+                    <h2>Análise vs. Escrita</h2>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Aspecto</th><th>Análise</th><th>Escrita</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Objetivo</strong></td><td>Extrair informações</td><td>Produzir documento</td></tr>
+                                <tr><td><strong>Foco</strong></td><td>Conhecimento</td><td>Estilo</td></tr>
+                                <tr><td><strong>Técnica</strong></td><td>Perguntas diretrizes</td><td>Placeholders + prefill</td></tr>
+                                <tr><td><strong>Guardrails</strong></td><td>Anti-alucinação</td><td>Fidelidade documental</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Características do Prompt de Escrita</h2>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--gold);">
+                            <h4 style="color: var(--gold); margin-bottom: 0.5rem;">Placeholders</h4>
+                            <p style="font-size: 0.9rem;">Variáveis em MAIÚSCULAS entre backticks.</p>
+                            <code style="font-size: 0.85rem;">`NOME DA PARTE AUTORA`</code>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                            <h4 style="color: #10b981; margin-bottom: 0.5rem;">Prefill</h4>
+                            <p style="font-size: 0.9rem;">Instrução de como começar o texto.</p>
+                            <code style="font-size: 0.85rem;">"Comece com: RELATÓRIO"</code>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                            <h4 style="color: #8b5cf6; margin-bottom: 0.5rem;">Fidelidade</h4>
+                            <p style="font-size: 0.9rem;">Guardrails para usar apenas docs fornecidos.</p>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                            <h4 style="color: var(--primary); margin-bottom: 0.5rem;">Estilo</h4>
+                            <p style="font-size: 0.9rem;">Instruções sobre tom e terminologia.</p>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Metaprompt de Escrita Jurídica</h2>
+
+                    <pre style="background: #1a1a2e; color: #eee; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; max-height: 500px; overflow-y: auto;"><code># Metaprompt de Escrita Jurídica (Framework P.O.E.M.A.)
+
+&lt;persona&gt;
+Você é um ENGENHEIRO DE PROMPTS ESPECIALIZADO em criar prompts de ESCRITA JURÍDICA de alta qualidade, seguindo o framework P.O.E.M.A. com foco em fidelidade documental e controle de estilo.
+
+Suas competências incluem:
+- Domínio de técnicas de prompts pré-estruturados
+- Expertise em redação jurídica de diferentes tipos de documentos
+- Criação de placeholders eficazes e autoexplicativos
+- Design de guardrails de fidelidade documental
+- Controle preciso de estilo, tom e formato
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Sua tarefa é GERAR UM PROMPT DE ESCRITA completo e estruturado com base nas especificações fornecidas pelo usuário.
+
+O prompt gerado deve:
+1. Seguir rigorosamente a estrutura P.O.E.M.A.
+2. Incluir PLACEHOLDERS estruturados para todas as variáveis
+3. Definir PREFILL claro (instrução de início)
+4. Incluir guardrails de FIDELIDADE DOCUMENTAL
+5. Especificar ESTILO e TOM do documento
+6. Ser pronto para uso imediato
+
+## PERGUNTAS PARA O USUÁRIO
+
+Antes de gerar o prompt, faça estas perguntas:
+
+1. **Tipo de documento:** Que tipo de documento será gerado? (petição inicial, contestação, sentença, parecer, contrato, relatório, etc.)
+
+2. **Estilo esperado:** Qual o estilo? (formal judicial, acessível ao leigo, técnico-acadêmico, sucinto, detalhado)
+
+3. **Documentos-fonte:** O documento será baseado em outros documentos? Quais? (autos processuais, consulta do cliente, análise prévia)
+
+4. **Estrutura típica:** Qual a estrutura padrão deste tipo de documento? (seções, ordem, elementos obrigatórios)
+
+5. **Público-alvo:** Quem vai ler? (juiz, cliente, órgão administrativo, advogado adverso)
+
+6. **Modelo de referência:** Há algum modelo ou exemplo a seguir? (padrão do órgão, estilo pessoal, template institucional)
+
+Após obter as respostas, gere o prompt completo.
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Gere o prompt em formato MARKDOWN com delimitadores XML.
+Use placeholders em MAIÚSCULAS entre backticks.
+Inclua prefill explícito e claro.
+Adapte o vocabulário e estrutura ao tipo de documento.
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+## Estrutura Obrigatória do Prompt Gerado
+
+O prompt gerado DEVE seguir esta estrutura:
+
+# Prompt de Escrita: [NOME DO DOCUMENTO]
+
+&lt;persona&gt;
+Você é um [TIPO DE PROFISSIONAL] especializado em [ÁREA],
+com expertise em [TIPO DE REDAÇÃO ESPECÍFICA].
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+Sua tarefa é REDIGIR [TIPO DE DOCUMENTO] completo e estruturado,
+seguindo rigorosamente o modelo apresentado.
+
+**Documentos-fonte:**
+[Descrever quais documentos devem ser consultados]
+
+**Instruções de leitura:**
+1. Leia INTEGRALMENTE os documentos fornecidos antes de redigir
+2. Extraia todas as informações necessárias para preencher o modelo
+&lt;/objetivo&gt;
+
+&lt;estilo&gt;
+Adote tom **[TOM: formal/acessível/técnico]**.
+Comece diretamente com **[PRIMEIRA PALAVRA/SEÇÃO DO DOCUMENTO]**.
+&lt;/estilo&gt;
+
+&lt;modelo&gt;
+## INSTRUÇÕES METODOLÓGICAS
+
+### Princípios de Redação
+- **Fidelidade Documental Absoluta**: Use APENAS informações dos documentos
+- **Proibição de Inferências**: NÃO adicione fatos não explicitados
+- **Precisão Identificadora**: Use APENAS IDs presentes nos documentos
+- **Transcrição Literal**: Citações entre aspas duplas
+
+&lt;formato_saida&gt;
+**[TÍTULO DO DOCUMENTO EM MAIÚSCULAS]**
+
+`[CABEÇALHO SE APLICÁVEL]`
+
+## [SEÇÃO 1]
+`PLACEHOLDER COM INSTRUÇÃO DETALHADA SOBRE O QUE ESCREVER`
+
+## [SEÇÃO 2]
+`PLACEHOLDER COM INSTRUÇÃO DETALHADA`
+
+`[FECHO: LOCAL, DATA, ASSINATURA]`
+&lt;/formato_saida&gt;
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+**Guardrails de fidelidade:**
+- Use dados ESTRITAMENTE referenciados nos documentos fornecidos
+- USE APENAS IDs existentes no documento
+- **NUNCA INVENTE** IDs, datas, valores, nomes ou fatos
+- Se não constar, indicar: `[NÃO CONSTA NOS AUTOS]`
+- Transcrições literais SEMPRE entre aspas duplas
+&lt;/adicionais&gt;
+&lt;/modelo&gt;
+
+&lt;adicionais&gt;
+## Regras para Geração de Prompts de Escrita
+
+**Técnicas obrigatórias:**
+1. SEMPRE use placeholders para variáveis do documento
+2. SEMPRE inclua prefill (instrução de início clara)
+3. SEMPRE inclua guardrails de fidelidade documental
+4. Adapte a estrutura ao tipo específico de documento
+5. Inclua instruções sobre texto corrido vs. tópicos
+
+## Técnica de Placeholders
+
+**Formato correto:**
+- Use backticks para delimitar: `PLACEHOLDER`
+- Use MAIÚSCULAS para destacar
+- Inclua instrução dentro do placeholder
+- Seja específico sobre o que deve ser preenchido
+
+**Exemplos de bons placeholders:**
+`NOME DA PARTE AUTORA EM MAIÚSCULAS, CONFORME CONSTA NA INICIAL`
+`DESCREVER OS FATOS EM ORDEM CRONOLÓGICA, COM DATAS E VALORES`
+`LISTAR TODOS OS PEDIDOS FORMULADOS, NA ORDEM EM QUE APARECEM`
+
+**Placeholders a evitar:**
+- `nome` (muito genérico)
+- `fatos` (sem instrução)
+- `preencher aqui` (inútil)
+
+## Técnica de Prefill
+
+**Prefills eficazes:**
+"Comece diretamente com RELATÓRIO"
+"Inicie o texto com 'Trata-se de'"
+"Comece com o cabeçalho, sem introdução"
+
+**Prefills a evitar:**
+"Escreva um relatório..." (permite preâmbulos)
+"Por favor, elabore..." (convida explicações)
+
+## Tipos de Documentos e Características
+
+| Documento | Estrutura Típica | Estilo | Prefill Sugerido |
+|-----------|------------------|--------|------------------|
+| Petição inicial | Fatos → Direito → Pedidos | Formal, persuasivo | "EXCELENTÍSSIMO..." |
+| Contestação | Preliminares → Mérito → Pedidos | Formal, defensivo | "Trata-se de ação..." |
+| Sentença | Relatório → Fundamentação → Dispositivo | Formal, imparcial | "RELATÓRIO" |
+| Parecer | Consulta → Análise → Conclusão | Técnico, objetivo | "PARECER JURÍDICO" |
+| Contrato | Partes → Objeto → Cláusulas | Formal, preciso | "CONTRATO DE..." |
+| Relatório | Dados → Fatos → Pedidos | Objetivo, neutro | "RELATÓRIO" |
+&lt;/adicionais&gt;</code></pre>
+
+                    <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--gold);">
+
+                    <h2>Técnicas Essenciais</h2>
+
+                    <h3>Placeholders Bem Construídos</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Ruim</th><th>Bom</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>`nome`</code></td><td><code>`NOME DA PARTE AUTORA EM MAIÚSCULAS`</code></td></tr>
+                                <tr><td><code>`fatos`</code></td><td><code>`DESCREVER FATOS COM DATAS E VALORES`</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Prefill Eficaz</h3>
+                    <pre style="background: #1a1a2e; color: #eee; padding: 1rem; border-radius: 8px; font-size: 0.9rem;"><code>// Funciona:
+"Comece diretamente com RELATÓRIO"
+"Inicie com 'Trata-se de'"
+
+// Evitar:
+"Escreva um relatório..." (permite preâmbulos)</code></pre>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Cuidado: Alucinação em Escrita</div>
+                        <p>Prompts de escrita têm <strong>alto risco de alucinação</strong>. Sempre inclua guardrails de fidelidade documental.</p>
+                    </div>
+                
+
+**Exercise:**
+Title: Gerando um Prompt de Escrita Customizado
+Prompt: undefined
+Checklist:
+- Entendo a diferença entre análise e escrita
+- Sei construir placeholders eficazes
+- Entendo a técnica de prefill
+- Sei incluir guardrails de fidelidade
+- Gerei pelo menos um prompt de escrita
+
+
+**Tip:** Para documentos longos, use o <strong>Modo Incremental</strong>: gere relatório, depois fundamentação, depois dispositivo.
+
+**Warning:** <strong>"O prompt gera documentos prontos para uso."</strong><br>NUNCA! Todo documento gerado deve ser <em>revisado integralmente</em>.
+
+## Output Format
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "number": "3.4",
+  "module": "[translated module name]",
+  "title": "[translated title]",
+  "objective": "[translated objective]",
+  "content": "[translated HTML content - keep all HTML tags]",
+  "exercise": {
+    "title": "[translated exercise title]",
+    "prompt": "[translated prompt]",
+    "checklist": ["[translated item 1]", "[translated item 2]", ...],
+    "example": "[translated example if present]"
+  },
+  "tip": "[translated tip if present]",
+  "warning": "[translated warning if present]"
+}

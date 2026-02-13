@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposta 1 - Gamificada (Missão/Quest)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #194A68;
+      --color-accent: #BE9C6D;
+      --color-background: #FFF4E4;
+      --color-surface: #FFFFFF;
+      --color-ink: #0f172a;
+      --color-ink-muted: #64748b;
+      --color-success: #16a34a;
+      --color-warning: #ca8a04;
+      --color-error: #dc2626;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-background);
+      color: var(--color-ink);
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ===== HEADER DA MISSÃO ===== */
+    .mission-header {
+      background: linear-gradient(135deg, var(--color-primary) 0%, #2a6a8f 100%);
+      border-radius: 20px;
+      padding: 2.5rem;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .mission-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+
+    .mission-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.15);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .mission-badge-icon {
+      width: 20px;
+      height: 20px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    .mission-title {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .mission-subtitle {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+
+    /* ===== BARRA DE PROGRESSO DA MISSÃO ===== */
+    .mission-progress {
+      background: var(--color-surface);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .progress-label {
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    .progress-stats {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--color-ink-muted);
+    }
+
+    .progress-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .progress-bar-container {
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 20%;
+      background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .step-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--color-ink-muted);
+    }
+
+    .step-dot.completed {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .step-dot.current {
+      background: var(--color-primary);
+      color: white;
+      box-shadow: 0 0 0 4px rgba(25, 74, 104, 0.2);
+    }
+
+    .step-label {
+      font-size: 0.7rem;
+      color: var(--color-ink-muted);
+      text-align: center;
+      max-width: 80px;
+    }
+
+    /* ===== OBJETIVO DA MISSÃO ===== */
+    .mission-objective {
+      background: linear-gradient(135deg, rgba(190, 156, 109, 0.1) 0%, rgba(190, 156, 109, 0.2) 100%);
+      border: 2px solid var(--color-accent);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .objective-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .objective-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--color-accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .objective-title {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    .objective-list {
+      list-style: none;
+    }
+
+    .objective-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+
+    .objective-check {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--color-accent);
+      border-radius: 6px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .objective-check:hover {
+      background: rgba(190, 156, 109, 0.2);
+    }
+
+    .objective-check.checked {
+      background: var(--color-accent);
+      position: relative;
+    }
+
+    .objective-check.checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    /* ===== ETAPAS DA MISSÃO ===== */
+    .mission-stages {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .stage-card {
+      background: var(--color-surface);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 2px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .stage-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .stage-card.active {
+      border-color: var(--color-primary);
+    }
+
+    .stage-card.completed {
+      border-color: var(--color-success);
+    }
+
+    .stage-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: #f8fafc;
+      cursor: pointer;
+    }
+
+    .stage-number {
+      width: 36px;
+      height: 36px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .stage-card.completed .stage-number {
+      background: var(--color-success);
+    }
+
+    .stage-info {
+      flex: 1;
+    }
+
+    .stage-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--color-ink);
+    }
+
+    .stage-meta {
+      font-size: 0.8rem;
+      color: var(--color-ink-muted);
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.2rem;
+    }
+
+    .stage-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .stage-status.pending {
+      background: #f1f5f9;
+      color: var(--color-ink-muted);
+    }
+
+    .stage-status.in-progress {
+      background: rgba(25, 74, 104, 0.1);
+      color: var(--color-primary);
+    }
+
+    .stage-status.done {
+      background: rgba(22, 163, 74, 0.1);
+      color: var(--color-success);
+    }
+
+    .stage-content {
+      padding: 1.5rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .stage-description {
+      color: var(--color-ink-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    /* ===== TAREFA DENTRO DA ETAPA ===== */
+    .task-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .task-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .task-icon {
+      font-size: 1.1rem;
+    }
+
+    .task-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .task-action {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .task-action:hover {
+      background: #2a6a8f;
+      transform: translateY(-1px);
+    }
+
+    /* ===== RECOMPENSA ===== */
+    .reward-card {
+      background: linear-gradient(135deg, var(--color-accent) 0%, #d4b88a 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .reward-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .reward-info h4 {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .reward-info p {
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+
+    /* ===== IMAGENS ===== */
+    .image-gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .gallery-item {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .gallery-caption {
+      padding: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--color-ink-muted);
+      text-align: center;
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER DA MISSÃO -->
+    <div class="mission-header">
+      <div class="mission-badge">
+        <div class="mission-badge-icon">M0</div>
+        <span>Módulo Preparatório • Exercício 1</span>
+      </div>
+      <h1 class="mission-title">Privacidade e Proteção de Dados</h1>
+      <p class="mission-subtitle">Domine as regras de segurança antes de usar IA no trabalho jurídico</p>
+    </div>
+
+    <!-- BARRA DE PROGRESSO -->
+    <div class="mission-progress">
+      <div class="progress-header">
+        <span class="progress-label">Progresso da Missão</span>
+        <div class="progress-stats">
+          <div class="progress-stat">
+            <span>⏱</span> ~15 min
+          </div>
+          <div class="progress-stat">
+            <span>📊</span> 1/5 etapas
+          </div>
+        </div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill"></div>
+      </div>
+      <div class="progress-steps">
+        <div class="progress-step">
+          <div class="step-dot completed">✓</div>
+          <span class="step-label">Conceito</span>
+        </div>
+        <div class="progress-step">
+          <div class="step-dot current">2</div>
+          <span class="step-label">Configurar</span>
+        </div>
+        <div class="progress-step">
+          <div class="step-dot">3</div>
+          <span class="step-label">Praticar</span>
+        </div>
+        <div class="progress-step">
+          <div class="step-dot">4</div>
+          <span class="step-label">Testar</span>
+        </div>
+        <div class="progress-step">
+          <div class="step-dot">5</div>
+          <span class="step-label">Validar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBJETIVO -->
+    <div class="mission-objective">
+      <div class="objective-header">
+        <div class="objective-icon">🎯</div>
+        <h2 class="objective-title">Objetivos desta Missão</h2>
+      </div>
+      <ul class="objective-list">
+        <li class="objective-item">
+          <div class="objective-check"></div>
+          <span>Distinguir dados sensíveis (LGPD) de dados sigilosos (segredo de justiça)</span>
+        </li>
+        <li class="objective-item">
+          <div class="objective-check"></div>
+          <span>Identificar quando um processo pode ou não ser usado em LLMs externos</span>
+        </li>
+        <li class="objective-item">
+          <div class="objective-check"></div>
+          <span>Configurar o modo de privacidade do Claude e ChatGPT</span>
+        </li>
+        <li class="objective-item">
+          <div class="objective-check"></div>
+          <span>Conhecer alternativas para processos sigilosos</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ETAPAS -->
+    <div class="mission-stages">
+      <!-- Etapa 1 -->
+      <div class="stage-card completed">
+        <div class="stage-header">
+          <div class="stage-number">✓</div>
+          <div class="stage-info">
+            <div class="stage-title">Entenda o Conceito</div>
+            <div class="stage-meta">
+              <span>📖 Leitura</span>
+              <span>~3 min</span>
+            </div>
+          </div>
+          <span class="stage-status done">Concluído</span>
+        </div>
+        <div class="stage-content">
+          <p class="stage-description">
+            <strong>Dado sensível (LGPD)</strong> ≠ <strong>Dado sigiloso (Segredo de Justiça)</strong>
+          </p>
+          <p class="stage-description">
+            A LGPD protege dados pessoais sensíveis (saúde, religião, orientação sexual), mas isso <strong>não impede</strong> seu uso em LLMs. O que impede é o <strong>segredo de justiça</strong> — processos que tramitam em sigilo por determinação legal ou judicial.
+          </p>
+          <div class="task-box">
+            <div class="task-header">
+              <span class="task-icon">💡</span>
+              <span class="task-label">Regra de Ouro</span>
+            </div>
+            <p>Processo <strong>público</strong> → pode usar LLM externo<br>
+            Processo <strong>sigiloso</strong> → NÃO pode usar LLM externo</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 2 -->
+      <div class="stage-card active">
+        <div class="stage-header">
+          <div class="stage-number">2</div>
+          <div class="stage-info">
+            <div class="stage-title">Configure sua Ferramenta</div>
+            <div class="stage-meta">
+              <span>⚙️ Prática</span>
+              <span>~5 min</span>
+            </div>
+          </div>
+          <span class="stage-status in-progress">Em andamento</span>
+        </div>
+        <div class="stage-content">
+          <p class="stage-description">
+            Mesmo para processos públicos, é boa prática ativar o modo de privacidade. Isso impede que seus dados sejam usados para treinar o modelo.
+          </p>
+
+          <div class="task-box">
+            <div class="task-header">
+              <span class="task-icon">🔧</span>
+              <span class="task-label">Tarefa: Configure o Claude</span>
+            </div>
+            <p style="margin-bottom: 1rem; color: var(--color-ink-muted);">
+              Acesse Settings → Privacy e desative "Improve Claude".
+            </p>
+            <div class="image-gallery">
+              <div class="gallery-item">
+                <img src="../assets/img/claude-privacidade.png" alt="Configuração Claude">
+                <div class="gallery-caption">Claude - Modo Privacidade</div>
+              </div>
+              <div class="gallery-item">
+                <img src="../assets/img/chatgpt-privacidade.png" alt="Configuração ChatGPT">
+                <div class="gallery-caption">ChatGPT - Modo Privacidade</div>
+              </div>
+            </div>
+            <button class="task-action">
+              <span>✓</span> Marquei como feito
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 3 -->
+      <div class="stage-card">
+        <div class="stage-header">
+          <div class="stage-number">3</div>
+          <div class="stage-info">
+            <div class="stage-title">Pratique a Decisão</div>
+            <div class="stage-meta">
+              <span>🧪 Exercício</span>
+              <span>~4 min</span>
+            </div>
+          </div>
+          <span class="stage-status pending">Bloqueado</span>
+        </div>
+      </div>
+
+      <!-- Etapa 4 -->
+      <div class="stage-card">
+        <div class="stage-header">
+          <div class="stage-number">4</div>
+          <div class="stage-info">
+            <div class="stage-title">Teste seu Conhecimento</div>
+            <div class="stage-meta">
+              <span>📝 Quiz</span>
+              <span>~2 min</span>
+            </div>
+          </div>
+          <span class="stage-status pending">Bloqueado</span>
+        </div>
+      </div>
+
+      <!-- Etapa 5 -->
+      <div class="stage-card">
+        <div class="stage-header">
+          <div class="stage-number">5</div>
+          <div class="stage-info">
+            <div class="stage-title">Checklist Final</div>
+            <div class="stage-meta">
+              <span>✅ Validação</span>
+              <span>~1 min</span>
+            </div>
+          </div>
+          <span class="stage-status pending">Bloqueado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECOMPENSA -->
+    <div class="reward-card">
+      <div class="reward-icon">🏆</div>
+      <div class="reward-info">
+        <h4>Conquista: Guardião de Dados</h4>
+        <p>Complete todas as etapas para desbloquear esta conquista</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Interatividade básica
+    document.querySelectorAll('.objective-check').forEach(check => {
+      check.addEventListener('click', () => {
+        check.classList.toggle('checked');
+      });
+    });
+  </script>
+</body>
+</html>

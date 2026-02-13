@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposta 2 - Lab/Workshop (Estações de Trabalho)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #194A68;
+      --color-accent: #BE9C6D;
+      --color-background: #f1f5f9;
+      --color-surface: #FFFFFF;
+      --color-ink: #0f172a;
+      --color-ink-muted: #64748b;
+      --color-success: #16a34a;
+      --color-warning: #ca8a04;
+      --color-error: #dc2626;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-background);
+      color: var(--color-ink);
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER DO LAB ===== */
+    .lab-header {
+      background: var(--color-surface);
+      border-bottom: 3px solid var(--color-primary);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lab-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .lab-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--color-primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .lab-title-group h1 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    .lab-title-group span {
+      font-size: 0.85rem;
+      color: var(--color-ink-muted);
+    }
+
+    .lab-status {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .status-item {
+      text-align: center;
+    }
+
+    .status-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    .status-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-ink-muted);
+    }
+
+    /* ===== GRID DO LAB ===== */
+    .lab-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: calc(100vh - 90px);
+    }
+
+    /* ===== PAINEL LATERAL - FERRAMENTAS ===== */
+    .tools-panel {
+      background: var(--color-surface);
+      border-right: 1px solid #e2e8f0;
+      padding: 1.5rem;
+    }
+
+    .tools-section {
+      margin-bottom: 2rem;
+    }
+
+    .tools-section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-ink-muted);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .tool-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 0.25rem;
+    }
+
+    .tool-item:hover {
+      background: #f8fafc;
+    }
+
+    .tool-item.active {
+      background: rgba(25, 74, 104, 0.08);
+      border-left: 3px solid var(--color-primary);
+    }
+
+    .tool-icon {
+      width: 36px;
+      height: 36px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .tool-item.active .tool-icon {
+      background: var(--color-primary);
+    }
+
+    .tool-info {
+      flex: 1;
+    }
+
+    .tool-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .tool-desc {
+      font-size: 0.75rem;
+      color: var(--color-ink-muted);
+    }
+
+    .tool-badge {
+      padding: 0.2rem 0.5rem;
+      border-radius: 50px;
+      font-size: 0.65rem;
+      font-weight: 600;
+    }
+
+    .tool-badge.required {
+      background: rgba(220, 38, 38, 0.1);
+      color: var(--color-error);
+    }
+
+    .tool-badge.optional {
+      background: #f1f5f9;
+      color: var(--color-ink-muted);
+    }
+
+    /* ===== ÁREA DE TRABALHO ===== */
+    .workspace {
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    /* ===== ESTAÇÃO DE TRABALHO ===== */
+    .workstation {
+      background: var(--color-surface);
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .workstation-header {
+      background: linear-gradient(135deg, var(--color-primary) 0%, #2a6a8f 100%);
+      color: white;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .workstation-title-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .workstation-number {
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .workstation-title {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .workstation-tag {
+      background: rgba(255,255,255,0.2);
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+    }
+
+    .workstation-body {
+      padding: 1.5rem;
+    }
+
+    /* ===== ÁREA DE CONCEITO ===== */
+    .concept-area {
+      background: linear-gradient(to right, rgba(190, 156, 109, 0.08), transparent);
+      border-left: 4px solid var(--color-accent);
+      padding: 1.25rem;
+      border-radius: 0 12px 12px 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .concept-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .concept-text {
+      color: var(--color-ink);
+      line-height: 1.7;
+    }
+
+    .concept-highlight {
+      background: linear-gradient(to bottom, transparent 60%, rgba(190, 156, 109, 0.3) 60%);
+      padding: 0 2px;
+      font-weight: 600;
+    }
+
+    /* ===== BANCADA DE EXPERIMENTO ===== */
+    .experiment-bench {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .bench-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .bench-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .bench-title {
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    .bench-subtitle {
+      font-size: 0.8rem;
+      color: var(--color-ink-muted);
+    }
+
+    /* ===== COMPARADOR LADO A LADO ===== */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .comparison-panel {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .comparison-header {
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .comparison-panel.safe .comparison-header {
+      background: rgba(22, 163, 74, 0.1);
+      color: var(--color-success);
+    }
+
+    .comparison-panel.danger .comparison-header {
+      background: rgba(220, 38, 38, 0.1);
+      color: var(--color-error);
+    }
+
+    .comparison-content {
+      padding: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .case-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .case-badge.public {
+      background: rgba(22, 163, 74, 0.1);
+      color: var(--color-success);
+    }
+
+    .case-badge.secret {
+      background: rgba(220, 38, 38, 0.1);
+      color: var(--color-error);
+    }
+
+    /* ===== ÁREA DE PRÁTICA ===== */
+    .practice-area {
+      background: white;
+      border: 2px solid var(--color-primary);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .practice-header {
+      background: var(--color-primary);
+      color: white;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .practice-body {
+      padding: 1.25rem;
+    }
+
+    .practice-instruction {
+      color: var(--color-ink-muted);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .practice-steps {
+      list-style: none;
+    }
+
+    .practice-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .practice-step:last-child {
+      border-bottom: none;
+    }
+
+    .step-number {
+      width: 24px;
+      height: 24px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-action {
+      font-weight: 500;
+    }
+
+    .step-detail {
+      font-size: 0.85rem;
+      color: var(--color-ink-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ===== IMAGENS ===== */
+    .image-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .image-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .image-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .image-label {
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--color-ink-muted);
+      background: #fafafa;
+      font-weight: 500;
+    }
+
+    /* ===== RESULTADO/OUTPUT ===== */
+    .output-panel {
+      background: #0f172a;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 1.5rem;
+    }
+
+    .output-header {
+      background: #1e293b;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .output-title {
+      color: #94a3b8;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+    }
+
+    .output-dots {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .output-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .output-dot.red { background: #ef4444; }
+    .output-dot.yellow { background: #eab308; }
+    .output-dot.green { background: #22c55e; }
+
+    .output-body {
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+
+    .output-success {
+      color: #4ade80;
+    }
+
+    .output-error {
+      color: #f87171;
+    }
+
+    .output-comment {
+      color: #64748b;
+    }
+
+    /* ===== CHECKLIST FINAL ===== */
+    .checklist-panel {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .checklist-header {
+      background: linear-gradient(135deg, var(--color-accent) 0%, #d4b88a 100%);
+      color: white;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .checklist-title {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .checklist-progress {
+      background: rgba(255,255,255,0.2);
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+    }
+
+    .checklist-items {
+      padding: 1rem;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .checklist-item:hover {
+      background: #f8fafc;
+    }
+
+    .check-box {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .checklist-item.checked .check-box {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: white;
+    }
+
+    .check-text {
+      font-size: 0.9rem;
+      color: var(--color-ink);
+    }
+
+    .checklist-item.checked .check-text {
+      color: var(--color-ink-muted);
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER DO LAB -->
+  <header class="lab-header">
+    <div class="lab-brand">
+      <div class="lab-icon">🔬</div>
+      <div class="lab-title-group">
+        <h1>Laboratório de IA Jurídica</h1>
+        <span>Exercício 0.1 — Privacidade e Proteção de Dados</span>
+      </div>
+    </div>
+    <div class="lab-status">
+      <div class="status-item">
+        <div class="status-value">2/4</div>
+        <div class="status-label">Estações</div>
+      </div>
+      <div class="status-item">
+        <div class="status-value">50%</div>
+        <div class="status-label">Progresso</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="lab-container">
+    <!-- PAINEL DE FERRAMENTAS -->
+    <aside class="tools-panel">
+      <div class="tools-section">
+        <div class="tools-section-title">Estações do Exercício</div>
+        <div class="tool-item active">
+          <div class="tool-icon">📖</div>
+          <div class="tool-info">
+            <div class="tool-name">Conceitos</div>
+            <div class="tool-desc">LGPD vs Sigilo</div>
+          </div>
+          <span class="tool-badge required">Obrig.</span>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">⚙️</div>
+          <div class="tool-info">
+            <div class="tool-name">Configuração</div>
+            <div class="tool-desc">Modo privacidade</div>
+          </div>
+          <span class="tool-badge required">Obrig.</span>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">🧪</div>
+          <div class="tool-info">
+            <div class="tool-name">Experimentos</div>
+            <div class="tool-desc">Casos práticos</div>
+          </div>
+          <span class="tool-badge optional">Opcion.</span>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">✅</div>
+          <div class="tool-info">
+            <div class="tool-name">Validação</div>
+            <div class="tool-desc">Checklist final</div>
+          </div>
+          <span class="tool-badge required">Obrig.</span>
+        </div>
+      </div>
+
+      <div class="tools-section">
+        <div class="tools-section-title">Materiais de Apoio</div>
+        <div class="tool-item">
+          <div class="tool-icon">📄</div>
+          <div class="tool-info">
+            <div class="tool-name">LGPD</div>
+            <div class="tool-desc">Art. 5º, II</div>
+          </div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">⚖️</div>
+          <div class="tool-info">
+            <div class="tool-name">CPC</div>
+            <div class="tool-desc">Art. 189</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE TRABALHO -->
+    <main class="workspace">
+      <!-- ESTAÇÃO 1: CONCEITOS -->
+      <div class="workstation">
+        <div class="workstation-header">
+          <div class="workstation-title-group">
+            <div class="workstation-number">01</div>
+            <div class="workstation-title">Estação: Conceitos Fundamentais</div>
+          </div>
+          <div class="workstation-tag">📖 Teoria</div>
+        </div>
+        <div class="workstation-body">
+          <div class="concept-area">
+            <div class="concept-label">Conceito-Chave</div>
+            <p class="concept-text">
+              <span class="concept-highlight">Dado sensível (LGPD)</span> ≠ <span class="concept-highlight">Dado sigiloso (Segredo de Justiça)</span>
+            </p>
+          </div>
+
+          <div class="experiment-bench">
+            <div class="bench-header">
+              <div class="bench-icon">🔍</div>
+              <div>
+                <div class="bench-title">Análise Comparativa</div>
+                <div class="bench-subtitle">Compare os dois conceitos lado a lado</div>
+              </div>
+            </div>
+
+            <div class="comparison-grid">
+              <div class="comparison-panel safe">
+                <div class="comparison-header">
+                  <span>✓</span> Dados Sensíveis (LGPD)
+                </div>
+                <div class="comparison-content">
+                  <span class="case-badge public">PODE usar LLM</span>
+                  <p>Saúde, religião, orientação sexual, dados biométricos. A LGPD protege, mas <strong>não impede</strong> uso em ferramentas de IA.</p>
+                </div>
+              </div>
+              <div class="comparison-panel danger">
+                <div class="comparison-header">
+                  <span>✗</span> Dados Sigilosos (Segredo)
+                </div>
+                <div class="comparison-content">
+                  <span class="case-badge secret">NÃO pode usar LLM</span>
+                  <p>Processos em segredo de justiça: família, menores, violência doméstica. <strong>Vedado</strong> em LLMs externos.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESTAÇÃO 2: CONFIGURAÇÃO -->
+      <div class="workstation">
+        <div class="workstation-header">
+          <div class="workstation-title-group">
+            <div class="workstation-number">02</div>
+            <div class="workstation-title">Estação: Configuração Prática</div>
+          </div>
+          <div class="workstation-tag">⚙️ Hands-on</div>
+        </div>
+        <div class="workstation-body">
+          <div class="practice-area">
+            <div class="practice-header">
+              <span>🔧</span> Tarefa: Configure o modo de privacidade
+            </div>
+            <div class="practice-body">
+              <p class="practice-instruction">
+                Siga os passos abaixo para configurar suas ferramentas:
+              </p>
+              <ol class="practice-steps">
+                <li class="practice-step">
+                  <div class="step-number">1</div>
+                  <div class="step-content">
+                    <div class="step-action">Abra o Claude em outra aba</div>
+                    <div class="step-detail">Acesse claude.ai e faça login</div>
+                  </div>
+                </li>
+                <li class="practice-step">
+                  <div class="step-number">2</div>
+                  <div class="step-content">
+                    <div class="step-action">Acesse Settings → Privacy</div>
+                    <div class="step-detail">No menu lateral ou no ícone de configurações</div>
+                  </div>
+                </li>
+                <li class="practice-step">
+                  <div class="step-number">3</div>
+                  <div class="step-content">
+                    <div class="step-action">Desative "Improve Claude"</div>
+                    <div class="step-detail">Isso impede que seus dados sejam usados para treinamento</div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="image-row">
+            <div class="image-card">
+              <img src="../assets/img/claude-privacidade.png" alt="Claude Privacy">
+              <div class="image-label">Claude — Configuração de Privacidade</div>
+            </div>
+            <div class="image-card">
+              <img src="../assets/img/chatgpt-privacidade.png" alt="ChatGPT Privacy">
+              <div class="image-label">ChatGPT — Configuração de Privacidade</div>
+            </div>
+          </div>
+
+          <div class="output-panel">
+            <div class="output-header">
+              <span class="output-title">output.log</span>
+              <div class="output-dots">
+                <div class="output-dot red"></div>
+                <div class="output-dot yellow"></div>
+                <div class="output-dot green"></div>
+              </div>
+            </div>
+            <div class="output-body">
+              <span class="output-comment"># Verificação de configuração</span><br>
+              <span class="output-success">✓ Claude: Modo privacidade ATIVO</span><br>
+              <span class="output-success">✓ ChatGPT: Histórico desativado</span><br>
+              <span class="output-comment"># Pronto para uso seguro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECKLIST FINAL -->
+      <div class="checklist-panel">
+        <div class="checklist-header">
+          <div class="checklist-title">Checklist de Validação</div>
+          <div class="checklist-progress">2/5 concluídos</div>
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item checked" onclick="this.classList.toggle('checked')">
+            <div class="check-box">✓</div>
+            <span class="check-text">Configurei o modo de privacidade no Claude e/ou ChatGPT</span>
+          </div>
+          <div class="checklist-item checked" onclick="this.classList.toggle('checked')">
+            <div class="check-box">✓</div>
+            <span class="check-text">Entendi a diferença entre dados sensíveis (LGPD) e sigilosos (segredo)</span>
+          </div>
+          <div class="checklist-item" onclick="this.classList.toggle('checked')">
+            <div class="check-box"></div>
+            <span class="check-text">Sei que dados sensíveis PODEM ser usados em LLMs</span>
+          </div>
+          <div class="checklist-item" onclick="this.classList.toggle('checked')">
+            <div class="check-box"></div>
+            <span class="check-text">Sei que processos sigilosos NÃO podem ser usados em LLMs externos</span>
+          </div>
+          <div class="checklist-item" onclick="this.classList.toggle('checked')">
+            <div class="check-box"></div>
+            <span class="check-text">Conheço as alternativas: anonimização manual, modelos locais</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
