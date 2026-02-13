@@ -210,6 +210,7 @@
                     <div>
                         <div class="sidebar-title">IA Aplicada ao Direito</div>
                         <div class="sidebar-subtitle">Caderno de Exercícios</div>
+                        <div class="sidebar-author">by George Marmelstein</div>
                     </div>
                 </div>
             </div>
@@ -351,10 +352,6 @@
                     <span>Glossario</span>
                 </a>
                 <div class="header-spacer"></div>
-                <div class="header-progress" aria-label="Progresso do curso">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso de conclusao"><div class="progress-fill" id="progress-fill"></div></div>
-                    <span class="progress-text" id="progress-text" aria-live="polite">0/37</span>
-                </div>
                 <div class="lang-selector" id="lang-selector">
                     <button class="lang-btn" onclick="toggleLangSelector()" aria-label="Selecionar idioma">
                         <span id="current-lang-flag">🇧🇷</span>
@@ -9316,8 +9313,10 @@ Intimem-se.
             });
             const completed = Object.keys(completedItems).length;
             const percentage = total > 0 ? (completed / total * 100) : 0;
-            document.getElementById('progress-fill').style.width = percentage + '%';
-            document.getElementById('progress-text').textContent = `${completed}/${total}`;
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            if (progressFill) progressFill.style.width = percentage + '%';
+            if (progressText) progressText.textContent = `${completed}/${total}`;
         }
 
         // =====================
