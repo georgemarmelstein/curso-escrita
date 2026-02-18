@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O que são Agentes?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+            padding: 20px 25px 10px 25px;
+        }
+
+        /* Título */
+        .title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .subtitle {
+            color: rgba(255, 244, 228, 0.5);
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .source-tag {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 12px;
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6em;
+            color: var(--super-gold-light);
+        }
+
+        /* Container principal - duas colunas */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 30px;
+            align-items: start;
+            max-width: 950px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.3s forwards;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Coluna de mito */
+        .myth-column {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.6s ease-out 0.4s forwards;
+        }
+
+        .column-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .column-icon {
+            font-size: 1.3em;
+        }
+
+        .column-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .myth-label { color: var(--super-red); }
+        .reality-label { color: var(--super-green); }
+
+        /* Lista de mitos */
+        .myth-list {
+            list-style: none;
+        }
+
+        .myth-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            border-radius: 8px;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.6);
+            text-decoration: line-through;
+            text-decoration-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .myth-x {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--super-red);
+            font-size: 0.9em;
+        }
+
+        /* Seta central */
+        .arrow-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: var(--super-gold);
+            opacity: 0;
+            animation: fadeUp 0.6s ease-out 0.6s forwards;
+            padding-top: 60px;
+        }
+
+        /* Coluna de realidade */
+        .reality-column {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.6s ease-out 0.5s forwards;
+        }
+
+        /* Box do arquivo */
+        .file-box {
+            background: rgba(74, 222, 128, 0.03);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .file-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: rgba(74, 222, 128, 0.08);
+            border-bottom: 1px solid rgba(74, 222, 128, 0.15);
+        }
+
+        .file-icon { font-size: 1.1em; }
+
+        .file-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-green);
+        }
+
+        .file-badge {
+            margin-left: auto;
+            padding: 3px 8px;
+            background: rgba(74, 222, 128, 0.15);
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5em;
+            color: var(--super-green);
+            letter-spacing: 0.5px;
+        }
+
+        /* Conteúdo do arquivo */
+        .file-content {
+            padding: 12px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            line-height: 1.6;
+        }
+
+        .md-heading { color: var(--super-gold); font-weight: 600; }
+        .md-text { color: rgba(255, 244, 228, 0.7); }
+        .md-rule { color: var(--super-green); }
+        .md-highlight { color: #22d3ee; }
+
+        /* Contador de linhas */
+        .line-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding: 6px 12px;
+            background: rgba(190, 156, 109, 0.1);
+            border-radius: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6em;
+            color: var(--super-gold);
+        }
+
+        .line-counter .count {
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        /* Definition box */
+        .definition-box {
+            margin-top: 25px;
+            padding: 15px 25px;
+            background: rgba(190, 156, 109, 0.05);
+            border-left: 3px solid var(--super-gold);
+            border-radius: 0 10px 10px 0;
+            max-width: 700px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.9s forwards;
+        }
+
+        .definition-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1em;
+            color: var(--super-cream);
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .definition-quote .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .definition-source {
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Insight final */
+        .insight {
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 1.2s forwards;
+        }
+
+        .insight-main {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.95em;
+            color: var(--super-cream);
+            font-style: italic;
+        }
+
+        .insight-main .gold { color: var(--super-gold); font-weight: 600; }
+
+        /* ============================================
+           EMBED MODE
+           ============================================ */
+        body.embed-mode {
+            padding: 15px 30px 10px 30px;
+        }
+
+        body.embed-mode .title { margin-bottom: 18px; }
+        body.embed-mode .title h1 { font-size: 2.2em; }
+        body.embed-mode .subtitle { font-size: 0.95em; }
+        body.embed-mode .source-tag { font-size: 0.75em; padding: 5px 14px; }
+
+        body.embed-mode .comparison-container { gap: 40px; max-width: 1000px; }
+        body.embed-mode .column-label { font-size: 0.8em; }
+        body.embed-mode .myth-item { padding: 12px 16px; font-size: 0.85em; margin-bottom: 10px; }
+        body.embed-mode .arrow-divider { font-size: 2.5em; }
+
+        body.embed-mode .file-header { padding: 12px 16px; }
+        body.embed-mode .file-path { font-size: 0.85em; }
+        body.embed-mode .file-badge { font-size: 0.6em; }
+        body.embed-mode .file-content { padding: 14px 16px; font-size: 0.8em; line-height: 1.7; }
+        body.embed-mode .line-counter { font-size: 0.75em; margin-top: 14px; }
+
+        body.embed-mode .definition-box { margin-top: 22px; padding: 18px 28px; }
+        body.embed-mode .definition-quote { font-size: 1.15em; }
+        body.embed-mode .definition-source { font-size: 0.8em; }
+
+        body.embed-mode .insight { margin-top: 15px; }
+        body.embed-mode .insight-main { font-size: 1.1em; }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>O que são Agentes?</h1>
+        <div class="subtitle">A verdade que desmistifica tudo</div>
+        <span class="source-tag">Barry Zhang, Anthropic — "Skills are just folders"</span>
+    </div>
+
+    <div class="comparison-container">
+        <!-- Coluna: Mito -->
+        <div class="myth-column">
+            <div class="column-header">
+                <span class="column-icon">&#10060;</span>
+                <span class="column-label myth-label">O que você pode imaginar</span>
+            </div>
+            <ul class="myth-list">
+                <li class="myth-item">
+                    <span class="myth-x">X</span>
+                    <span>Código complexo em Python</span>
+                </li>
+                <li class="myth-item">
+                    <span class="myth-x">X</span>
+                    <span>Scripts com centenas de linhas</span>
+                </li>
+                <li class="myth-item">
+                    <span class="myth-x">X</span>
+                    <span>Algoritmos de machine learning</span>
+                </li>
+                <li class="myth-item">
+                    <span class="myth-x">X</span>
+                    <span>Deploy, compilação, infraestrutura</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Seta central -->
+        <div class="arrow-divider">&#10140;</div>
+
+        <!-- Coluna: Realidade -->
+        <div class="reality-column">
+            <div class="column-header">
+                <span class="column-icon">&#10004;</span>
+                <span class="column-label reality-label">O que realmente é</span>
+            </div>
+            <div class="file-box">
+                <div class="file-header">
+                    <span class="file-icon">&#128196;</span>
+                    <span class="file-path">resumidor.md</span>
+                    <span class="file-badge">TEXTO</span>
+                </div>
+                <div class="file-content">
+                    <div><span class="md-heading"># Skill: Resumidor</span></div>
+                    <div>&nbsp;</div>
+                    <div><span class="md-text">Você resume documentos longos.</span></div>
+                    <div>&nbsp;</div>
+                    <div><span class="md-heading">## Regras</span></div>
+                    <div><span class="md-rule">- SEMPRE</span> <span class="md-text">cite a página</span></div>
+                    <div><span class="md-rule">- NUNCA</span> <span class="md-text">invente informações</span></div>
+                    <div>&nbsp;</div>
+                    <div><span class="md-heading">## Formato</span></div>
+                    <div><span class="md-highlight">| Fato | Página |</span></div>
+                </div>
+            </div>
+            <div class="line-counter">
+                <span>Apenas</span>
+                <span class="count">10</span>
+                <span>linhas de texto</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="definition-box">
+        <div class="definition-quote">
+            "Um agente é um <span class="highlight">prompt</span> que ensina o LLM a usar ferramentas.<br>
+            Não é código. É <span class="highlight">linguagem natural</span> em um arquivo de texto."
+        </div>
+        <div class="definition-source">— A verdade libertadora</div>
+    </div>
+
+    <div class="insight">
+        <div class="insight-main">
+            Se você sabe escrever em português, você <span class="gold">já sabe</span> criar agentes.
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

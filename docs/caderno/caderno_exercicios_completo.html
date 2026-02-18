@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caderno de Exercícios - Escrita Jurídica com IA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'EB Garamond', 'Century Schoolbook', 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #3A3A3A;
+            background: linear-gradient(135deg, #FFF4E4 0%, #FFFFFF 50%, #FFF4E4 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(25, 74, 104, 0.15);
+            border: 2px solid #BE9C6D;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #194A68;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #194A68, #BE9C6D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .header h2 {
+            font-size: 1.5rem;
+            color: #194A68;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #3A3A3A;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .tabs-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(25, 74, 104, 0.15);
+            border: 1px solid #BE9C6D;
+            display: flex;
+            min-height: 600px;
+        }
+
+        .tabs {
+            display: flex;
+            flex-direction: column;
+            background: #194A68;
+            min-width: 200px;
+            padding: 0;
+            overflow-y: auto;
+        }
+
+        .tab {
+            padding: 15px 20px;
+            background: #194A68;
+            color: #FFFFFF;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 3px solid transparent;
+            font-size: 14px;
+            font-family: 'EB Garamond', 'Century Schoolbook', 'Times New Roman', serif;
+            font-weight: 500;
+            text-align: left;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: #5287A8;
+            color: #FFFFFF;
+            transform: translateX(5px);
+        }
+
+        .tab.active {
+            background: #BE9C6D;
+            color: #194A68;
+            border-right-color: #194A68;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            background: #FFFFFF;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .exercise-title {
+            font-size: 1.8rem;
+            color: #194A68;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #BE9C6D;
+            font-weight: 700;
+        }
+
+        .exercise-list {
+            background: #FFF4E4;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #BE9C6D;
+        }
+
+        .exercise-list ol {
+            margin-left: 20px;
+        }
+
+        .exercise-list li {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            color: #3A3A3A;
+        }
+
+        .instruction-text {
+            background: #FFF4E4;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #194A68;
+            color: #3A3A3A;
+        }
+
+        .example-text {
+            background: #FFFFFF;
+            border: 2px solid #5287A8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            color: #3A3A3A;
+        }
+
+        .template-text {
+            background: #FFF4E4;
+            border: 2px dashed #BE9C6D;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            color: #3A3A3A;
+        }
+
+        .text-block {
+            background: #FFF4E4;
+            border: 2px solid #194A68;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(25, 74, 104, 0.1);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #BE9C6D;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'EB Garamond', 'Century Schoolbook', 'Times New Roman', serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .copy-btn:hover {
+            background: #194A68;
+            color: #FFFFFF;
+            transform: scale(1.05);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .copy-btn.copied {
+            background: #194A68;
+            color: #FFFFFF;
+        }
+
+        .text-block h3 {
+            color: #194A68;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .text-block p, .text-block div {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: #3A3A3A;
+        }
+
+        .prompt-box {
+            background: #FFFFFF;
+            color: #3A3A3A;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            border: 3px solid #194A68;
+            box-shadow: 0 4px 15px rgba(25, 74, 104, 0.1);
+        }
+
+        .prompt-box h3 {
+            color: #194A68;
+            margin-bottom: 15px;
+            font-weight: 600;
+            background: linear-gradient(45deg, #194A68, #BE9C6D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .prompt-box .copy-btn {
+            background: #194A68;
+            color: #FFFFFF;
+        }
+
+        .prompt-box .copy-btn:hover {
+            background: #BE9C6D;
+            color: #194A68;
+        }
+
+        .alert {
+            background: #FFF4E4;
+            border: 1px solid #5287A8;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #3A3A3A;
+        }
+
+        .alert-warning {
+            background: #FFF4E4;
+            border-color: #BE9C6D;
+            border-width: 2px;
+        }
+
+        .code-block {
+            background: #3A3A3A;
+            color: #FFF4E4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #BE9C6D;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(82, 135, 168, 0.3) 0%, rgba(82, 135, 168, 0.3) 100%);
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: #194A68;
+            font-weight: 600;
+        }
+
+        .download-section {
+            background: #FFFFFF;
+            color: #3A3A3A;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            border: 3px solid #BE9C6D;
+            box-shadow: 0 4px 15px rgba(25, 74, 104, 0.1);
+        }
+
+        .download-section h3 {
+            color: #194A68;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #194A68, #BE9C6D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #BE9C6D;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border: 2px solid #BE9C6D;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'EB Garamond', 'Century Schoolbook', 'Times New Roman', serif;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .download-btn:hover {
+            background: #194A68;
+            color: #FFFFFF;
+            border-color: #194A68;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 74, 104, 0.2);
+        }
+
+        .resource-list {
+            background: #FFF4E4;
+            border: 1px solid #5287A8;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #BE9C6D;
+        }
+
+        .resource-item:last-child {
+            border-bottom: none;
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-title {
+            font-weight: 600;
+            color: #194A68;
+            margin-bottom: 5px;
+        }
+
+        .resource-desc {
+            font-size: 0.9em;
+            color: #3A3A3A;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .tabs-container {
+                flex-direction: column;
+            }
+            
+            .tabs {
+                flex-direction: row;
+                min-width: unset;
+                overflow-x: auto;
+                padding: 0;
+                max-height: 60px;
+            }
+            
+            .tab {
+                flex: 1;
+                min-width: 120px;
+                padding: 15px 10px;
+                text-align: center;
+                border-right: none;
+                border-bottom: 3px solid transparent;
+                font-size: 12px;
+            }
+
+            .tab:hover {
+                transform: translateY(-2px);
+            }
+
+            .tab.active {
+                border-right: none;
+                border-bottom-color: #194A68;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ESCRITA JURÍDICA COM IA</h1>
+            <h2>CADERNO DE EXERCÍCIOS - 2025</h2>
+            <p><strong>George Marmelstein</strong></p>
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab active" onclick="openTab(event, 'ex0')">0 | Privacidade</button>
+                <button class="tab" onclick="openTab(event, 'ex1')">1 | Modo Agêntico</button>
+                <button class="tab" onclick="openTab(event, 'ex2')">2 | Contexto</button>
+                <button class="tab" onclick="openTab(event, 'ex3')">3 | Alucinações</button>
+                <button class="tab" onclick="openTab(event, 'ex4')">4 | Estocasticidade</button>
+                <button class="tab" onclick="openTab(event, 'ex5')">5 | Reversão</button>
+                <button class="tab" onclick="openTab(event, 'ex6')">6 | Modo Extrativo</button>
+                <button class="tab" onclick="openTab(event, 'ex7')">7 | Via Prompt</button>
+                <button class="tab" onclick="openTab(event, 'ex8')">8 | Via Anexo</button>
+                <button class="tab" onclick="openTab(event, 'ex9')">9 | Modo Interativo</button>
+                <button class="tab" onclick="openTab(event, 'ex10')">10 | Personas</button>
+                <button class="tab" onclick="openTab(event, 'ex11')">11 | Revisão</button>
+                <button class="tab" onclick="openTab(event, 'ex12')">12 | Estilos</button>
+                <button class="tab" onclick="openTab(event, 'ex13')">13 | Marcadores</button>
+                <button class="tab" onclick="openTab(event, 'ex14')">14 | FIRAC+</button>
+                <button class="tab" onclick="openTab(event, 'ex15')">15 | Audiência</button>
+                <button class="tab" onclick="openTab(event, 'ex16')">16 | Análise Probatória</button>
+                <button class="tab" onclick="openTab(event, 'ex17')">17 | Relatório Inicial</button>
+                <button class="tab" onclick="openTab(event, 'ex18')">18 | Contestação</button>
+                <button class="tab" onclick="openTab(event, 'ex19')">19 | Sentença</button>
+                <button class="tab" onclick="openTab(event, 'ex20')">20 | Ementa CNJ</button>
+                <button class="tab" onclick="openTab(event, 'ex21')">21 | Tarefa Final</button>
+                <button class="tab" onclick="openTab(event, 'extra')">EXTRA | P.O.E.M.A.</button>
+            </div>
+
+            <div id="ex0" class="tab-content active">
+                <div class="exercise-title">Exercício 0 - Configurações de Privacidade</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Configurar o modo de privacidade do LLM para que os dados não sejam compartilhados para treinamento da máquina, em cumprimento à Resolução 615, do CNJ, de 2025 (art. 19, § 3º, inc. III).
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa:</strong><br>
+                    Vá em <strong>CONFIGURAÇÕES ➜ PRIVACIDADE ➜ CONFIGURAÇÕES DE PRIVACIDADE ➜ AJUDAR A MELHORAR O CLAUDE (DESATIVAR)</strong>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>⚖️ Fundamento Legal:</strong><br>
+                    A Resolução CNJ nº 615/2025, em seu artigo 19, § 3º, inciso III, estabelece que o uso de sistemas de inteligência artificial deve respeitar a privacidade e a proteção de dados pessoais, vedando o compartilhamento de informações processuais para treinamento de modelos sem autorização expressa.
+                </div>
+                
+                <div class="example-text">
+                    <strong>🔒 Por que isso é importante:</strong><br>
+                    • Proteção de dados processuais sensíveis<br>
+                    • Cumprimento da LGPD (Lei Geral de Proteção de Dados)<br>
+                    • Respeito ao sigilo profissional<br>
+                    • Conformidade com as normas do CNJ<br>
+                    • Garantia da confidencialidade das informações jurídicas<br>
+                    • Prevenção de vazamento de dados estratégicos
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>🔍 Passo a Passo Detalhado:</strong><br>
+                    1. Clique no ícone do seu perfil (canto superior direito)<br>
+                    2. Selecione "Configurações" ou "Settings"<br>
+                    3. Navegue até a seção "Privacidade" ou "Privacy"<br>
+                    4. Localize "Configurações de Privacidade" ou "Privacy Settings"<br>
+                    5. Encontre a opção "Ajudar a melhorar o Claude" ou "Help improve Claude"<br>
+                    6. <strong>DESATIVE</strong> esta opção<br>
+                    7. Confirme a alteração
+                </div>
+                
+                <div class="alert">
+                    <strong>✅ Verificação:</strong> Após desativar, verifique se a configuração foi salva corretamente. A opção deve aparecer como "Desativado" ou com um indicador visual de que está desligada.
+                </div>
+                
+                <div class="example-text">
+                    <strong>💡 Nota Importante:</strong><br>
+                    Esta configuração deve ser realizada <strong>ANTES</strong> de começar a usar o Claude para atividades jurídicas. Uma vez configurada, suas conversas e dados não serão utilizados para melhorar ou treinar o modelo de IA.
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>⚠️ Atenção:</strong><br>
+                    • Realize esta configuração em TODOS os dispositivos que você utilizar<br>
+                    • Verifique periodicamente se a configuração permanece ativa<br>
+                    • Oriente sua equipe a fazer o mesmo procedimento<br>
+                    • Documente esta configuração como parte das boas práticas do escritório/órgão
+                </div>
+            </div>
+
+            <div id="ex1" class="tab-content">
+                <div class="exercise-title">Exercício 1 - Entendendo o Modo Agêntico</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Familiarizar-se com as capacidades básicas dos LLMs, incluindo seus recursos de busca (busca simples, busca de conversas passadas e buscas profundas), o artefato, as suas skills, pensamento prolongado, análise de dados, entre outras.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 1:</strong><br>
+                    <strong>[ATIVE A FERRAMENTA DE BUSCA]</strong>. Pergunte: <em>Explique as condições de uso dos LLMs segundo a resolução 615 do CNJ.</em>
+                </div>
+                
+                <div class="example-text">
+                    <strong>🔍 O que observar:</strong><br>
+                    • Como o Claude busca informações atualizadas na web<br>
+                    • A diferença entre conhecimento parametrizado e busca em tempo real<br>
+                    • A qualidade e relevância das fontes encontradas<br>
+                    • Como ele cita e referencia as informações encontradas
+                </div>
+                
+                <div class="alert">
+                    <strong>---</strong>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 2:</strong><br>
+                    <strong>[ABRA UMA NOVA CONVERSA. DESATIVE A FERRAMENTA DE BUSCA]</strong>. Pergunte: <em>Explique as condições de uso dos LLMs segundo a resolução 615 do CNJ.</em>
+                </div>
+                
+                <div class="example-text">
+                    <strong>💭 O que observar:</strong><br>
+                    • O que acontece quando o modelo não pode buscar informações atualizadas<br>
+                    • Compare a resposta com a Tarefa 1<br>
+                    • Note as diferenças de precisão e atualização<br>
+                    • Observe se o modelo reconhece suas limitações
+                </div>
+                
+                <div class="alert">
+                    <strong>---</strong>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 3:</strong><br>
+                    <strong>[ABRA UMA NOVA CONVERSA]</strong>. Pergunte: <em>Crie uma tabela com os conceitos fundamentais para entender os LLMs. ATIVE O ARTIFACT.</em>
+                </div>
+                
+                <div class="example-text">
+                    <strong>🎨 O que observar:</strong><br>
+                    • Como o Claude cria artefatos visuais interativos<br>
+                    • A organização e estruturação das informações em tabelas<br>
+                    • A capacidade de síntese de conceitos complexos<br>
+                    • Como o artefato pode ser editado e refinado
+                </div>
+                
+                <div class="alert">
+                    <strong>---</strong>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 4:</strong><br>
+                    <strong>[ABRA UMA NOVA CONVERSA]</strong>. Pergunte: <em>Quanto é 9989984719 x 70989808013?</em><br>
+                    <em>(Verifique se ele irá ativar ou não alguma ferramenta de cálculo. Se não ativar, peça para ele ativar a ferramenta de cálculo e compare o resultado).</em>
+                </div>
+                
+                <div class="example-text">
+                    <strong>🔢 O que observar:</strong><br>
+                    • Se o modelo ativa automaticamente ferramentas de cálculo<br>
+                    • A diferença entre cálculo mental (aproximado) e cálculo preciso<br>
+                    • Como o modo agêntico reconhece quando precisa de ferramentas<br>
+                    • A precisão dos resultados com e sem ferramentas computacionais
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>💡 Conceito-chave - Modo Agêntico:</strong><br>
+                    O modo agêntico permite que os LLMs usem ferramentas externas automaticamente (busca web, cálculos, criação de artefatos, análise de dados) para fornecer respostas mais precisas e atualizadas. É fundamental entender quando e como o modelo ativa essas capacidades.
+                </div>
+            </div>
+
+            <div id="ex2" class="tab-content">
+                <div class="exercise-title">Exercício 2 - Janela de Contexto</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Compreender o conceito de "janela de contexto" e suas limitações práticas no uso de IAs generativas e perceber que cada conversa inaugura uma nova janela de contexto.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 1:</strong><br>
+                    <strong>[DESATIVE A FERRAMENTA DE BUSCA E DE MEMÓRIA]</strong>. Escreva: <em>Olá, LLM. Sou [SEU NOME], nasci em [ANO]. Quantos anos eu tenho?</em>
+                </div>
+                
+                <div class="example-text">
+                    <strong>🔍 O que observar:</strong><br>
+                    • O modelo consegue calcular sua idade com base na informação fornecida<br>
+                    • A resposta é baseada apenas no contexto da conversa atual<br>
+                    • Todas as informações necessárias estão presentes na janela de contexto<br>
+                    • O cálculo é feito considerando a data atual
+                </div>
+                
+                <div class="alert">
+                    <strong>---</strong>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 2:</strong><br>
+                    <strong>[ABRA UMA NOVA CONVERSA]</strong>. Pergunte: <em>Qual o meu nome e quando eu nasci?</em>
+                </div>
+                
+                <div class="example-text">
+                    <strong>💭 O que observar:</strong><br>
+                    • O modelo NÃO terá acesso às informações da conversa anterior<br>
+                    • Cada nova conversa inicia uma janela de contexto completamente nova<br>
+                    • O LLM não conseguirá responder sobre seu nome ou ano de nascimento<br>
+                    • Isso demonstra a limitação fundamental: conversas não se comunicam entre si
+                </div>
+                
+                <div class="alert">
+                    <strong>---</strong>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 3:</strong><br>
+                    <strong>[ATIVE A FERRAMENTA DE MEMÓRIA]</strong>. Pergunte: <em>Qual o meu nome e quando eu nasci?</em>
+                </div>
+                
+                <div class="example-text">
+                    <strong>🧠 O que observar:</strong><br>
+                    • Com a memória ativada, o modelo pode ter armazenado informações de conversas anteriores<br>
+                    • A ferramenta de memória funciona FORA da janela de contexto tradicional<br>
+                    • Compare o comportamento com e sem memória ativada<br>
+                    • Entenda que a memória é uma funcionalidade adicional, não parte da janela de contexto
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>💡 Conceito-chave - Janela de Contexto:</strong><br>
+                    A janela de contexto é o "espaço de memória" que o LLM tem acesso durante UMA conversa específica. Quando você abre uma nova conversa, uma nova janela de contexto é criada, sem acesso às informações das conversas anteriores. A ferramenta de memória é um recurso EXTRA que permite persistir informações entre conversas, mas não faz parte da janela de contexto natural do modelo.
+                </div>
+                
+                <div class="template-text">
+                    <strong>📌 Implicações Práticas:</strong><br>
+                    • Para trabalhos longos, mantenha tudo na MESMA conversa<br>
+                    • Se precisar mudar de conversa, repasse as informações essenciais<br>
+                    • A memória pode ajudar, mas não substitui um contexto bem construído<br>
+                    • Documentos anexados ficam disponíveis apenas na conversa atual
+                </div>
+            </div>
+
+            <div id="ex3" class="tab-content">
+                <div class="exercise-title">Exercício 3 - Alucinações</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Perceber que os LLMs, quando usam como base apenas o conhecimento da máquina, têm propensão para inventar fatos que parecem plausíveis, mas são falsos.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 1:</strong><br>
+                    Pergunte para o LLM quem você é, <strong>SEM CONSULTAR A INTERNET</strong>.<br>
+                    Verifique as inconsistências factuais.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 2:</strong><br>
+                    1. Peça ao LLM escrever um texto sobre <span class="highlight">LIBERDADE DE EXPRESSÃO NAS ELEIÇÕES</span><br>
+                    2. Logo em seguida, <strong>PEÇA PARA INCLUIR PRECEDENTES DO TSE, SEM CONSULTAR A INTERNET</strong>
+                </div>
+                
+                <div class="example-text">
+                    <strong>💭 O que observar:</strong><br>
+                    • O LLM inventará números de processos fictícios?<br>
+                    • Criará nomes de relatores inexistentes?<br>
+                    • Citará decisões que não existem?<br>
+                    • Como ele se comporta quando pressionado por informações específicas?
+                </div>
+                
+                <div class="alert">
+                    <strong>---</strong>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 3 - Teste de Tokenização:</strong><br>
+                    Pergunte ao LLM, <strong>SEM CONSULTAR A INTERNET</strong>:<br>
+                    <em>"Qual o Estado do Brasil que não tem a letra 'a'?"</em>
+                </div>
+                
+                <div class="example-text">
+                    <strong>🔤 O que observar:</strong><br>
+                    • O LLM provavelmente errará a resposta<br>
+                    • Pode citar estados que claramente têm a letra "a"<br>
+                    • Isso ocorre porque LLMs processam por <strong>tokens</strong>, não por letras individuais<br>
+                    • A tokenização divide palavras em unidades maiores, dificultando análise letra por letra<br>
+                    • A resposta correta é: <strong>nenhum estado brasileiro tem nome sem a letra "a"</strong><br>
+                    • Este é um exemplo clássico de limitação estrutural dos LLMs
+                </div>
+                
+                <div class="template-text">
+                    <strong>💡 Por que isso acontece:</strong><br>
+                    LLMs não "veem" letras individuais naturalmente. Eles processam texto em pedaços chamados tokens, que podem ser palavras inteiras, partes de palavras ou até múltiplas palavras. Quando pedimos análise letra por letra, o modelo precisa fazer um esforço extra para decompor os tokens, e frequentemente falha nessa tarefa aparentemente simples.
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>⚠️ Lição importante:</strong> As "alucinações" são limitações inerentes dos LLMs. Sempre verifique informações factuais, especialmente dados específicos como números de processos, nomes e datas.
+                </div>
+            </div>
+
+            <div id="ex4" class="tab-content">
+                <div class="exercise-title">Exercício 4 - Respostas Estocásticas</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Perceber que os LLMs fornecem respostas diferentes a cada interação, pois seu processamento é probabilístico e estocástico (randômico).
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 1:</strong><br>
+                    Peça para o LLM responder, bem rápido, sem pensar muito, o <strong>NOME DE UMA FRUTA E DE UMA FERRAMENTA</strong>.<br>
+                    <em>(Na maioria das vezes, ele responderá "Maçã" e "Martelo", mas nem sempre)</em>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 2:</strong><br>
+                    Peça para o LLM responder, bem rápido, sem pensar muito, um <strong>NÚMERO DE 1 A 100</strong>.<br>
+                    <em>(Você verá que ele muda a resposta, mas há desproporcionalidade no número 27)</em>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 3:</strong><br>
+                    Peça: <strong>INDIQUE, sem enrolar, O NOME DE UM ÚNICO CLUBE que você considera o melhor time de futebol do estado de São Paulo</strong>.<br>
+                    Repita em outra janela de contexto.
+                </div>
+                
+                <div class="example-text">
+                    <strong>📊 Resultado esperado:</strong><br>
+                    As respostas variam, mas geralmente giram em torno de Palmeiras, Corinthians, Santos ou São Paulo. Dificilmente citará outros times menos prováveis.
+                </div>
+            </div>
+
+            <div id="ex5" class="tab-content">
+                <div class="exercise-title">Exercício 5 - Maldição da Reversão</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Perceber que os LLMs aprendem com base na frequência das palavras na base de treinamento, tendo facilidade em uma direção e dificuldade na direção inversa.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Teste da Reversão:</strong><br>
+                    1. Peça para o LLM responder, bem rápido e <strong>SEM CONSULTAR A INTERNET</strong>, qual o nome da mãe da Anitta.<br>
+                    <em>(Provavelmente responderá corretamente: Miriam Macedo)</em>
+                    <br><br>
+                    2. <strong>ABRA UMA NOVA JANELA DE CONTEXTO</strong> e pergunte: <br>
+                    <strong>NÃO CONSULTE A INTERNET. Quem é a filha de Miriam Macedo?</strong><br>
+                    <em>(Provavelmente dirá que NÃO SABE ou alucinará um nome fictício)</em>
+                </div>
+                
+                <div class="example-text">
+                    <strong>🧠 Explicação:</strong><br>
+                    Esta é a "maldição da reversão": o modelo tem facilidade para responder "Anitta → Miriam Macedo" (direção frequente nos dados de treinamento), mas dificuldade na direção inversa "Miriam Macedo → Anitta".
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>💡 Lição:</strong> Os LLMs não "entendem" relacionamentos bidirecionais como os humanos. Dependem da frequência estatística das associações nos dados de treinamento.
+                </div>
+            </div>
+
+            <div id="ex6" class="tab-content">
+                <div class="exercise-title">Exercício 6 - Conhecimento da Máquina e Modo Extrativo</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> O modo extrativo refere-se à capacidade do modelo responder com base em seu conhecimento parametrizado. É valioso para conceitos, mas limitado para dados factuais.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 1:</strong><br>
+                    1. Peça para o LLM explicar os limites da liberdade de expressão<br>
+                    2. Em seguida, peça para incluir, <strong>SEM CONSULTAR A INTERNET</strong>, 10 decisões mais relevantes do STJ sobre qualquer tema específico<br>
+                    3. Use o Google para testar se as decisões existem
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 2:</strong><br>
+                    Peça para o LLM construir um cenário imaginário contrafactual:<br>
+                    <strong>"E SE NÃO EXISTISSEM LEIS? Conte a história do Presidente Trump governando um mundo assim."</strong>
+                </div>
+                
+                <div class="example-text">
+                    <strong>📊 Resultado esperado:</strong><br>
+                    • A primeira resposta será satisfatória (conceitual)<br>
+                    • A segunda terá alucinações (factual)<br>
+                    • A terceira mostrará criatividade para cenários imaginários
+                </div>
+                
+                <div class="alert">
+                    <strong>💡 Conclusão:</strong> O conhecimento parametrizado é excelente para conceitos e criatividade, mas falha em dados factuais específicos.
+                </div>
+            </div>
+
+            <div id="ex7" class="tab-content">
+                <div class="exercise-title">Exercício 7 - Conhecimento do Usuário (via Prompt)</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Fornecer conteúdo específico para análise e interpretação, usando o conhecimento da máquina como lente analítica. Reduz alucinações e aproveita o potencial analítico.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Como fazer:</strong><br>
+                    1. Copie um texto longo (entre 10 a 30 páginas) e cole no prompt<br>
+                    2. Peça para o LLM fazer uma análise detalhada e profunda do texto
+                </div>
+                
+                <div class="template-text">
+                    <strong>🎯 Experimento adicional:</strong><br>
+                    Brinque com a possibilidade de criar uma tabela para explicar o texto com diferentes públicos-alvo:
+                    <ul>
+                        <li>Crianças de 12 anos</li>
+                        <li>Adolescentes de 16 anos</li>
+                        <li>Estudantes de graduação</li>
+                        <li>Estudantes de pós-graduação</li>
+                        <li>Especialistas na área</li>
+                    </ul>
+                </div>
+                
+                <div class="example-text">
+                    <strong>✅ Vantagens do Modo Interpretativo:</strong><br>
+                    • Reduz alucinações ao focar no material fornecido<br>
+                    • Aproveita o potencial analítico do modelo<br>
+                    • Gera insights precisos sobre o conteúdo
+                </div>
+            </div>
+
+            <div id="ex8" class="tab-content">
+                <div class="exercise-title">Exercício 8 - Conhecimento do Usuário (via Anexo)</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Utilizar o segundo modo de inserir conhecimento do usuário: via anexo. É o modo mais prático e frequentemente utilizado.
+                </div>
+                
+                <div class="download-section">
+                    <h3>📚 Artigos Recomendados para Download</h3>
+                    <p>Use os artigos abaixo como material de estudo:</p>
+                    
+                    <div class="resource-list">
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Knowledge Conflicts for LLMs: A Survey</div>
+                                <div class="resource-desc">Pesquisa sobre conflitos de conhecimento em LLMs</div>
+                            </div>
+                            <a href="https://arxiv.org/pdf/2403.08319" class="download-btn" target="_blank">
+                                📄 Download PDF
+                            </a>
+                        </div>
+                        
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">50 Anos da Corte Constitucional Alemã</div>
+                                <div class="resource-desc">Schwabe e Martins - Análise histórica e jurisprudencial</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/0nffesgqe6hnzd5ws1kdq/Schwabe-e-Martins-50-anos-da-Corte-Constitucional-alema.pdf?rlkey=dtactmcnzzqtioyio9w5smzx7&dl=0" class="download-btn" target="_blank">
+                                📄 Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa:</strong><br>
+                    1. Baixe o artigo acima ou qualquer outro de seu interesse<br>
+                    2. Anexe no prompt e faça perguntas sobre o texto<br>
+                    3. Teste diferentes tipos de análise: resumo, crítica, comparações, aplicações práticas
+                </div>
+                
+                <div class="example-text">
+                    <strong>💡 Sugestões de perguntas:</strong><br>
+                    • Quais são os principais conflitos de conhecimento identificados?<br>
+                    • Como isso se aplica à prática jurídica?<br>
+                    • Quais as limitações metodológicas do estudo?<br>
+                    • Como os resultados se relacionam com nossa experiência prática?
+                </div>
+            </div>
+
+            <div id="ex9" class="tab-content">
+                <div class="exercise-title">Exercício 9 - Modo Interativo</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Utilizar LLMs de forma centrada no usuário, onde o humano direciona o modelo através de prompts e feedback para gerar conteúdo específico.
+                </div>
+                
+                <div class="example-text">
+                    <strong>🤖 Características do Modo Interativo:</strong><br>
+                    • Funciona como uma "máquina de escrever inteligente e obediente"<br>
+                    • Possui inteligência limitada ao conhecimento de treinamento<br>
+                    • É projetado para obediência sem sabedoria intrínseca própria<br>
+                    • Adapta-se completamente às necessidades do usuário
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa:</strong><br>
+                    1. Peça para o LLM julgar o seguinte caso:<br>
+                    <em>"João pulou o muro da casa de Pedro para furtar sua TV. Na fuga, ao pular o muro, João quebrou o pé. Em razão disso, João ingressou com uma ação de indenização contra Pedro porque o muro era muito alto. Como você julgaria? João tem direito a uma indenização?"</em>
+                    <br><br>
+                    2. Depois da primeira resposta, peça para fazer uma decisão em sentido contrário<br>
+                    3. Sugira para incluir coisas absurdas na decisão (poesia, alusão aos Smurfs)<br>
+                    4. Se ele se negar, diga que é para uma simulação acadêmica
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>📊 Resultado esperado:</strong> Em geral, ele fará o que você determina, demonstrando sua natureza obediente e adaptável às instruções do usuário.
+                </div>
+            </div>
+
+            <div id="ex10" class="tab-content">
+                <div class="exercise-title">Exercício 10 - Persona - POV</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Aplicar o conceito de persona como ferramenta estratégica para direcionar modelos de IA, definindo uma "voz" específica alinhada com público-alvo e propósito.
+                </div>
+                
+                <div class="download-section">
+                    <h3>📚 Materiais Sugeridos</h3>
+                    
+                    <div class="resource-list">
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Tapinha (Decisão Barroso)</div>
+                                <div class="resource-desc">Precedente judicial para análise</div>
+                            </div>
+                            <a href="https://www.migalhas.com.br/arquivos/2023/9/19E7ECFEE12DD6_musicatapinhadecisaobarroso.pdf" class="download-btn" target="_blank">
+                                📄 Download PDF
+                            </a>
+                        </div>
+                        
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Haia</div>
+                                <div class="resource-desc">Caso completo para análise</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/vwlermgbdr2gxi1hbu7pn/casohaia.txt?rlkey=1kw751s5e9jzwwjck2z73ktk4&dl=0" class="download-btn" target="_blank">
+                                📄 Download TXT
+                            </a>
+                        </div>
+                        
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Isabela</div>
+                                <div class="resource-desc">Interrogatório para análise</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/qrl3ppnnu9ab7ba47k5pi/casoisabela.txt?rlkey=vknazy3fn1pi5ngcecxep81qf&dl=0" class="download-btn" target="_blank">
+                                📄 Download TXT
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prompt-box">
+                    <button class="copy-btn" onclick="copyText(this)">📋 Copiar</button>
+                    <h3>PROMPT POV</h3>
+                    <div>
+                        Assuma a persona do autor do texto e escreva um texto em TOM INTROSPECTIVO, em primeira pessoa, e reflexivo para me explicar as ideias nele contidas, como se estivesse dentro da mente dessa pessoa. Mostre suas angústias, inquietações, motivações e conclusões.
+                    </div>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 1:</strong><br>
+                    Escolha um artigo doutrinário ou uma decisão, ANEXE NO LLM e execute o PROMPT POV acima.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 2:</strong><br>
+                    Escreva um comando para testar diferentes personas do mundo jurídico: policial, suspeito, testemunha, advogado, promotor, juiz, perito. Peça para escrever diferentes versões de um mesmo caso em diferentes papéis.
+                </div>
+            </div>
+
+            <div id="ex11" class="tab-content">
+                <div class="exercise-title">Exercício 11 - Revisão Gramatical e de Estilo</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Utilizar modelos de linguagem para melhorar significativamente a qualidade da redação textual, aproveitando sua compreensão das características de boa escrita.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefas:</strong><br>
+                    1. Copie o texto abaixo e peça para o LLM corrigir os erros gramaticais<br>
+                    2. Teste usar persona ("Professor de português" ou "Revisor de textos jurídicos")<br>
+                    3. Peça para informar quais foram os erros e mudanças realizadas<br>
+                    4. Use o LLM para melhorar o texto (clareza e organização)
+                </div>
+
+                <div class="text-block">
+                    <button class="copy-btn" onclick="copyText(this)">📋 Copiar</button>
+                    <h3>TEXTO COM ERROS</h3>
+                    <div>
+                        No caso em tela, a parte autora requer que seja determinada a sua regularização perante a Caixa Econômica Federal, com a emissão do Certificado de Regularidade do FGTS -CRF, devido a quitação integral do Débito de Fundo de Garantia e da Contribuição Social -NDFC nº 99999, com os documentos ecaminhados para o setor de Recolhimento de FGTS em Brasília/DF, conforme os protocolos de nº 99999.202 e 9996.202. Porém, sem resposta da CAIXA.
+                        <br><br>
+                        Em auditamento ao pedido inicial (art. 303, § 1º, I, do CPC) requer a delacaração de inexistência de débito, a restituição em dobro de valor pago a maior, bem como a condenação da CAIXA em danos morais no valor de R$ 20.000,00 (vinte mil reais), ou outro valor a ser fixado pelo Juízo.
+                        <br><br>
+                        Ressalta-se que é dever da Caixa Econômica Federal emitir a CRF, nos termos do art. 7º da Lei 8036/90, especialmente quando já houver comprovação de quitação dos débitos impostos, como no caso em comento, conforme se vê:
+                        <br><br>
+                        (...)
+                        <br><br>
+                        Desse modo, restou comprovado que a empresa autora adimpliu o débito do FGTS junto ao a gente gestor do Fundo - Caixa Econômica Federal -havendo regularização da totalidade do débito da NDFC nº DASDA, conforme os comprovantes de pagamento individualizados anexos - DOC. IV (id: 543252 a 4352342). Inclusive, em razão do receio da demora, no dia 06/04/2021 a requerente realisou, novamente, o pagamento da NDFC nº 53452 (DOC. III), a fim de ter, de logo, a Certidão, conforme novos comprovantes de pagamento anexos (DOC. XVI).
+                        <br><br>
+                        Ademais, é imperioso destacar, que os três Autos de Infrações, já teve suas mutas devidamente adimplida, nos respectivos valores de R$ 266,02, R$ 3.405,12, e R$ 201,52, de modo que, os autos encontram-se arquivados definitivamente.
+                    </div>
+                </div>
+
+                <div class="prompt-box">
+                    <button class="copy-btn" onclick="copyText(this)">📋 Copiar</button>
+                    <h3>SUPERPROMPT REVISÃO</h3>
+                    <div>
+                        Você é um assistente especializado sênior em linguagem e em revisão de textos jurídicos.
+                        <br><br>
+                        Sua função é revisar minutas elaboradas por assessores e estagiários, aplicando critérios técnicos rigorosos e o estilo de escrita, conforme as instruções aqui fornecidas. Tenha orgulho do que você faz, pois a sua tarefa é muito importante para melhorar a justiça.
+                        <br><br>
+                        Lembre-se: você sempre prioriza a clareza e abomina o juridiquês.
+                        <br><br>
+                        ## INSTRUÇÕES PARA REVISÃO
+                        <br><br>
+                        Analise o texto fornecido EM DETALHES, ANALISANDO CADA LINHA COM MUITA ATENÇÃO, considerando os seguintes critérios, em ordem de prioridade:
+                        <br><br>
+                        ### 1. REVISÃO GRAMATICAL E FORMAL
+                        <br>
+                        - Identifique e corrija erros de ortografia e digitação<br>
+                        - Identifique e corrija erros de pontuação<br>
+                        - Verifique concordância verbal e nominal<br>
+                        - Analise regência verbal e nominal
+                        <br><br>
+                        ### 2. CLAREZA
+                        <br>
+                        - Avalie objetividade das ideias<br>
+                        - Identifique períodos longos ou confusos<br>
+                        - Sugira melhor organização de parágrafos
+                        <br><br>
+                        ### 3. SIMPLIFICAÇÃO
+                        <br>
+                        - Elimine redundâncias e prolixidade<br>
+                        - Corte frases de preenchimento<br>
+                        - Substitua jargões por linguagem acessível
+                        <br><br>
+                        ### 4. ELEGÂNCIA
+                        <br>
+                        - Melhore conectivos e transições<br>
+                        - Evite adjetivações excessivas<br>
+                        - Elimine juridiquês hermético
+                    </div>
+                </div>
+            </div>
+
+            <div id="ex12" class="tab-content">
+                <div class="exercise-title">Exercício 12 - Camada de Estilo</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Dominar o controle da camada de estilo dos modelos de linguagem através da utilização estratégica de paletas específicas derivadas do aprendizado da máquina.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa:</strong><br>
+                    Escolha um texto de sua preferência e brinque com as várias possibilidades de estilo do LLM usando a tabela de paletas como base.
+                </div>
+                
+                <div class="template-text">
+                    <strong>🎨 Paletas de Estilo para Controle de LLMs</strong><br><br>
+                    
+                    <strong>📚 1. PALETA DE REFERÊNCIAS LITERÁRIAS</strong>
+                    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                        <tr style="background: #F2A900; color: #2D2926;">
+                            <th style="padding: 10px; border: 1px solid #2D2926;">📖 Categoria</th>
+                            <th style="padding: 10px; border: 1px solid #2D2926;">🔍 Subcategoria</th>
+                            <th style="padding: 10px; border: 1px solid #2D2926;">✍️ Elementos</th>
+                        </tr>
+                        <tr>
+                            <td rowspan="6" style="padding: 10px; border: 1px solid #F2A900; vertical-align: top;"><strong>Ficção</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Autores Clássicos</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">William Shakespeare, Charles Dickens, Victor Hugo, Dostoiévski, Tolstói, James Joyce, Franz Kafka, Marcel Proust</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Autores Modernos</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Ernest Hemingway, J.R.R. Tolkien, George Orwell, Ray Bradbury, Isaac Asimov, Kurt Vonnegut, Gabriel García Márquez</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Autores Brasileiros</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Machado de Assis, Guimarães Rosa, Jorge Amado, Graciliano Ramos, Érico Veríssimo, Nelson Rodrigues</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Autoras Clássicas</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Jane Austen, Charlotte Brontë, Virginia Woolf, Emily Dickinson, Edith Wharton, Zora Neale Hurston</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Autoras Modernas</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Clarice Lispector, Lygia Fagundes Telles, J.K. Rowling, Margaret Atwood, Toni Morrison, Zadie Smith</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Autoras Contemporâneas</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Elena Ferrante, Chimamanda Ngozi Adichie, Donna Tartt, Gillian Flynn, Conceição Evaristo</td>
+                        </tr>
+                    </table>
+                    
+                    <strong>📰 3. PALETA DE ESTILOS JORNALÍSTICOS</strong>
+                    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                        <tr style="background: #F2A900; color: #2D2926;">
+                            <th style="padding: 10px; border: 1px solid #2D2926;">📻 Categoria</th>
+                            <th style="padding: 10px; border: 1px solid #2D2926;">🏷️ Tipo</th>
+                            <th style="padding: 10px; border: 1px solid #2D2926;">📄 Elementos</th>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="padding: 10px; border: 1px solid #F2A900; vertical-align: top;"><strong>Jornais Internacionais</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Prestígio</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">The New York Times, The Guardian, The Wall Street Journal, The Washington Post, Financial Times, Le Monde</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Tabloides</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">The Sun, Daily Mail, New York Post, Bild</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="padding: 10px; border: 1px solid #F2A900; vertical-align: top;"><strong>Jornais Brasileiros</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Nacionais</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Folha de S.Paulo, O Globo, Estado de S.Paulo, Valor Econômico</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Regionais</td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Zero Hora, Correio Braziliense, O Tempo, Diário de Pernambuco</td>
+                        </tr>
+                    </table>
+                    
+                    <strong>😊 4. PALETA DE TONS EMOCIONAIS</strong>
+                    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                        <tr style="background: #F2A900; color: #2D2926;">
+                            <th style="padding: 10px; border: 1px solid #2D2926;">🎭 Categoria</th>
+                            <th style="padding: 10px; border: 1px solid #2D2926;">🎨 Elementos</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;"><strong>Tons Formais</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Sóbrio, Diplomático, Profissional, Protocolar, Cerimonioso, Acadêmico, Institucional</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;"><strong>Tons Críticos</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Crítico, Analítico, Cético, Questionador, Investigativo, Incisivo, Mordaz</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;"><strong>Tons Expressivos</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Humorístico, Deboche, Sarcástico, Irônico, Satírico, Espirituoso, Bem-humorado</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;"><strong>Tons Motivacionais</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Inspirador, Encorajador, Otimista, Entusiasta, Motivacional, Empoderador, Energético</td>
+                        </tr>
+                    </table>
+                    
+                    <strong>⚖️ 10. PALETA DE REFERÊNCIAS JURÍDICAS</strong>
+                    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                        <tr style="background: #F2A900; color: #2D2926;">
+                            <th style="padding: 10px; border: 1px solid #2D2926;">👨‍⚖️ Categoria</th>
+                            <th style="padding: 10px; border: 1px solid #2D2926;">📜 Elementos</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;"><strong>Juristas Brasileiros</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Rui Barbosa, Miguel Reale, Celso Antônio Bandeira de Mello, Eros Grau</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;"><strong>Juristas Americanos</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Daniel Webster, Oliver Wendell Holmes, Antonin Scalia, Ruth Bader Ginsburg</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #F2A900;"><strong>Estilos Jurídicos</strong></td>
+                            <td style="padding: 10px; border: 1px solid #F2A900;">Petição, Parecer, Acórdão, Sentença, Contrato, Termo de Referência</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="example-text">
+                    <strong>💡 Experimentos sugeridos:</strong><br>
+                    • Reescreva uma petição no estilo de Machado de Assis<br>
+                    • Transforme uma decisão judicial em artigo jornalístico<br>
+                    • Adapte um texto técnico para linguagem motivacional<br>
+                    • Converta um parecer em formato de executive summary
+                </div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo prático:</strong> Aprender a manipular conscientemente diferentes dimensões estilísticas para adequar textos a diferentes públicos e contextos.
+                </div>
+            </div>
+
+            <div id="ex13" class="tab-content">
+                <div class="exercise-title">Exercício 13 - Marcadores e Delimitadores</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Aprender a organizar instruções usando Markdown e tags XML para criar comandos claros e bem estruturados, obtendo respostas mais precisas.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa:</strong><br>
+                    Faça um prompt, usando markdown, que solicite uma análise jurídica completa de um processo judicial. O prompt deve estar estruturado de forma organizada e profissional.
+                </div>
+                
+                <div class="template-text">
+                    <strong>📋 Seções Obrigatórias da Análise:</strong><br>
+                    • <strong>Fatos Relevantes:</strong> resumo cronológico dos acontecimentos principais<br>
+                    • <strong>Questão Jurídica Central:</strong> identificando o problema de direito<br>
+                    • <strong>Pontos Controvertidos:</strong> aspectos em disputa entre as partes<br>
+                    • <strong>Direito Aplicável:</strong> normas, jurisprudência e doutrina pertinentes<br>
+                    • <strong>Argumentos do Autor:</strong> teses e provas da parte requerente<br>
+                    • <strong>Argumentos do Réu:</strong> teses de defesa e provas da parte requerida<br>
+                    • <strong>Conclusão:</strong> posicionamento fundamentado sobre o provável resultado
+                </div>
+                
+                <div class="example-text">
+                    <strong>🛠️ Ferramentas de Formatação:</strong><br>
+                    <strong>Markdown:</strong> # (títulos), ** (negrito), * (itálico), - (listas), ` (código)<br>
+                    <strong>Tags XML:</strong> &lt;contexto&gt;&lt;/contexto&gt;, &lt;instrucoes&gt;&lt;/instrucoes&gt;<br>
+                    <strong>Delimitadores:</strong> *** para separar seções, --- para linhas divisórias<br>
+                    <strong>Hierarquia:</strong> # Principal ## Subtítulo ### Detalhes
+                </div>
+                
+                <div class="alert">
+                    <strong>💡 Resultado esperado:</strong> Comandos organizados facilitam a compreensão do modelo, evitando confusão entre diferentes partes do pedido e gerando respostas mais estruturadas.
+                </div>
+            </div>
+
+            <div id="ex14" class="tab-content">
+                <div class="exercise-title">Exercício 14 - FIRAC+</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Dominar a metodologia PROMPT FIRAC+ para realizar análises jurídicas estruturadas e completas através de seções específicas organizadas.
+                </div>
+                
+                <div class="download-section">
+                    <h3>📚 Casos para Análise</h3>
+                    
+                    <div class="resource-list">
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Tortura - Fase de Conhecimento</div>
+                                <div class="resource-desc">Processo judicial completo para análise FIRAC+</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/4dnlnvxkx0d2dq5xoovot/CASO-TORTURA-FASE-CONHECIMENTO.pdf?rlkey=2i7vfysf1bg8hxdbhy4e2qdkh&dl=0" class="download-btn" target="_blank">
+                                📄 Download PDF
+                            </a>
+                        </div>
+                        
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Igor</div>
+                                <div class="resource-desc">Caso completo para análise FIRAC+</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/9a42w4b42x024wc2zu9a4/CASO-RODRIGO-IGOR2.txt?rlkey=rrwqrq17p1rk30ozlrchp2aq6&dl=0" class="download-btn" target="_blank">
+                                📄 Download TXT
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="prompt-box">
+                    <button class="copy-btn" onclick="copyText(this)">📋 Copiar</button>
+                    <h3>Prompt FIRAC+</h3>
+                    <div>
+                        ## **TAREFA PRINCIPAL**
+                        <br><br>
+                        - **ANALISE EM DETALHE** o caso jurídico fornecido LENDO **TODOS OS DOCUMENTOS**, **INCORPORE NUANCES** e forneça uma **ARGUMENTAÇÃO LÓGICA**
+                        <br><br>
+                        - Se houver mais de um documento anexado, ANALISE TODOS DOCUMENTOS INTEGRALMENTE, seguindo uma ordem numérica
+                        <br><br>
+                        - Incorpore na pergunta do usuário o seguinte texto: "Consulte todos os documentos fornecidos na íntegra. Eles podem ter informações contraditórias. Por isso, faça uma leitura holística para captar todos os pontos controvertidos e todas as questões jurídicas na sua profundidade e totalidade"
+                        <br><br>
+                        - Use o formato **FIRAC+**, seguindo a **ESTRUTURA** do **MODELO**
+                        <br><br>
+                        ## **ESPECIALIDADE**
+                        <br><br>
+                        - Você é um **ESPECIALISTA** em DIREITO, LINGUÍSTICA, CIÊNCIAS COGNITIVAS E SOCIAIS
+                        <br><br>
+                        - Incorpore as **ESPECIALIDADES** da **MATÉRIA DE FUNDO** do caso analisado
+                        <br><br>
+                        ## **LINGUAGEM** E **ESTILO DE ESCRITA**
+                        <br><br>
+                        - Adote um tom **PROFISSIONAL** e **AUTORITATIVO**, sem jargões desnecessários
+                        <br><br>
+                        - Escreva de modo **CONCISO**, mas completo e abrangente, sem redundância
+                        <br><br>
+                        - Seja econômico, usando apenas expressões necessárias para a clareza
+                        <br><br>
+                        - Vá direto para a resposta, começando o texto com **DADOS DO PROCESSO**
+                        <br><br>
+                        ## **EXEMPLO** E **MODELO** E **ESTRUTURA**
+                        <br><br>
+                        - Use o formato de análise e de layout **FIRAC+**, conforme exemplo a seguir:
+                        <br><br>
+                        ### **DADOS DO PROCESSO📋** - `TRIBUNAL - TIPO DE RECURSO OU AÇÃO - NÚMERO DO PROCESSO - RELATOR - DATA DE JULGAMENTO - NOME DAS PARTES - NOME DOS ADVOGADOS POR PARTES`
+                        <br><br>
+                        ### **FATOS🕵️‍♂️** - `ESCREVA UMA LISTA NUMERADA com todos os fatos, em ordem cronológica, com PROFUNDIDADE, DETALHES e MINÚCIAS, descrevendo os eventos, as datas e os nomes para a compreensão holística do caso`
+                        <br><br>
+                        ### **PROBLEMA JURÍDICO❓**
+                        <br><br>
+                        #### **QUESTÃO CENTRAL🎯** - `ESTABELEÇA COM PROFUNDIDADE a questão central, enriquecendo a pergunta para respostas mais profundas`
+                        <br><br>
+                        #### **PONTOS CONTROVERTIDOS🔥** - `ESCREVA UMA LISTA NUMERADA delimitando os pontos controvertidos com base nas nuances do caso`
+                        <br><br>
+                        ### **DIREITO APLICÁVEL⚖️** - `LISTE as normas aplicáveis ao caso, referenciadas nos documentos`
+                        <br><br>
+                        ### **ANÁLISE E APLICAÇÃO🔍**
+                        <br><br>
+                        #### **ARGUMENTOS E PROVAS DO AUTOR📘** - `ESCREVA UMA LISTA NUMERADA com todos os argumentos e provas do autor COM INFERÊNCIA LÓGICA`
+                        <br><br>
+                        #### **ARGUMENTOS E PROVAS DO RÉU📜** - `ESCREVA UMA LISTA NUMERADA com todos os argumentos e provas do réu COM INFERÊNCIA LÓGICA`
+                        <br><br>
+                        ### **CONCLUSÃO🛏️** - `INFORME se o caso já foi solucionado. Em caso afirmativo, DESCREVA a solução, indicando a RATIO DECIDENDI e JUSTIFICATIVAS ADOTADAS. Quando não houver solução estabelecida, SEJA IMPARCIAL E APENAS sugira direcionamentos`
+                        <br><br>
+                        ## **FONTES**
+                        <br><br>
+                        - Cite dados e informações estritamente referenciados no caso em análise, sem adicionar materiais externos.
+                        <br><br>
+                        ## **NOTAS**
+                        <br><br>
+                        - Forneça orientação e análise imparciais e holísticas incorporando as melhores práticas e metodologias dos ESPECIALISTAS.
+                        <br><br>
+                        - Vá passo a passo para respostas complexas. Respire fundo. Dê o seu melhor, pois isso é muito importante para mim.
+                        <br><br>
+                        - Ao detalhar os FATOS, assegure-se de prover uma riqueza de detalhes. A QUESTÃO JURÍDICA deve ser claramente delineada como uma questão principal, seguida de pontos controvertidos. Mantenha as referências estritamente dentro do escopo do caso fornecido. Termine com 🎓.
+                    </div>
+                </div>
+                
+                <div class="example-text">
+                    <strong>🗝️ Estrutura FIRAC+:</strong><br>
+                    <strong>F</strong>atos relevantes<br>
+                    <strong>I</strong>ssue (questão jurídica + pontos controvertidos)<br>
+                    <strong>R</strong>ule (direito aplicável)<br>
+                    <strong>A</strong>nalysis (análise dos argumentos das partes + provas)<br>
+                    <strong>C</strong>onclusion (conclusão)<br>
+                    <strong>+</strong> Dados do processo e estrutura aprimorada
+                </div>
+            </div>
+
+            <div id="ex15" class="tab-content">
+                <div class="exercise-title">Exercício 15 - Perguntas em Audiência e Quesitos</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Utilizar o LLM como ferramenta estratégica para desenvolver perguntas de audiência e quesitos periciais baseados na análise jurídica previamente realizada.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 1 - Perguntas de Audiência:</strong><br>
+                    Partindo do caso anterior (Caso Tortura), desenvolva possibilidades de perguntas a serem formuladas na audiência do caso.<br>
+                    Experimente inserir técnicas específicas para uma entrevista mais eficiente e humana.
+                </div>
+                
+                <div class="template-text">
+                    <strong>🎯 Técnicas de Entrevista a Incluir:</strong><br>
+                    • <strong>RAPPORT:</strong> estabelecimento de conexão e confiança<br>
+                    • <strong>Entrevista Cognitiva:</strong> técnicas para recuperação de memória<br>
+                    • <strong>Perguntas Abertas:</strong> permitir narrativa livre inicial<br>
+                    • <strong>Perguntas Fechadas:</strong> confirmar detalhes específicos<br>
+                    • <strong>Sequência Cronológica:</strong> organizar depoimento temporalmente<br>
+                    • <strong>Escuta Ativa:</strong> demonstrar atenção e compreensão
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa 2 - Quesitos Periciais:</strong><br>
+                    Use o LLM para sugerir quesitos em uma perícia judicial do caso, estabelecendo o conhecimento técnico necessário para solucionar cada ponto.
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>⚠️ ALERTA - USO ERRADO E PROIBIDO:</strong><br>
+                    NÃO peça para a máquina fazer análise jurídica para saber se o caso está prescrito ou calcular prazos. Isso viola a Resolução CNJ nº 615/2025 - AR4 (alto risco): formulação de juízos conclusivos sobre aplicação da norma jurídica a fatos concretos.
+                </div>
+                
+                <div class="example-text">
+                    <strong>💡 Por que é proibido:</strong><br>
+                    • Viola resolução do CNJ sobre uso de IA<br>
+                    • A máquina possui vieses inerentes<br>
+                    • Cálculos de prescrição exigem análise jurídica conclusiva<br>
+                    • Deve ser realizado por profissional qualificado
+                </div>
+            </div>
+
+            <div id="ex16" class="tab-content">
+                <div class="exercise-title">Exercício 16 - Análise Probatória com IA</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Explorar o uso de IA como ferramenta de amplificação cognitiva para análise descritiva e organização do material probatório, desenvolvendo metodologias próprias de sistematização de provas.
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>⚠️ AVISO LEGAL IMPORTANTE:</strong><br>
+                    É <strong>VEDADO</strong> utilizar LLMs para valoração probatória ou formulação de juízos conclusivos sobre o peso das provas, conforme Resolução CNJ nº 615/2025.<br><br>
+                    • A IA deve ser usada apenas para <strong>ANÁLISE DESCRITIVA</strong> e <strong>ORGANIZAÇÃO</strong><br>
+                    • A <strong>VALORAÇÃO</strong> da prova é prerrogativa exclusiva do julgador humano<br>
+                    • O objetivo é <strong>AMPLIFICAR</strong> o poder cognitivo, não substituir o julgamento<br>
+                    • Mantenha sempre o <strong>CETICISMO PROFISSIONAL</strong> sobre outputs da IA
+                </div>
+                
+                <div class="download-section">
+                    <h3>📚 Caso de Referência</h3>
+                    
+                    <div class="resource-list">
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Igor - Material Probatório</div>
+                                <div class="resource-desc">Caso complexo para exploração de técnicas de análise</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/9a42w4b42x024wc2zu9a4/CASO-RODRIGO-IGOR2.txt?rlkey=rrwqrq17p1rk30ozlrchp2aq6&dl=0" class="download-btn" target="_blank">
+                                📄 Download TXT
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa Exploratória:</strong><br>
+                    Baixe o Caso Igor e desenvolva seus próprios prompts para criar uma <strong>ANÁLISE PROBATÓRIA DESCRITIVA</strong> completa. Experimente diferentes abordagens metodológicas e frameworks de organização. O objetivo é explorar como a IA pode ajudar a <strong>visualizar, organizar e identificar padrões</strong> no conjunto probatório, sem realizar valoração ou julgamento.
+                </div>
+                
+                <div class="template-text">
+                    <strong>🧭 Sugestões de Ferramentas Analíticas para Explorar:</strong><br><br>
+                    
+                    <strong>1. LINHA DO TEMPO PROBATÓRIA</strong><br>
+                    • Experimente criar cronologias detalhadas dos eventos<br>
+                    • Identifique lacunas temporais e períodos críticos<br>
+                    • Mapeie a sequência de produção das provas<br>
+                    • Visualize sobreposições e contradições temporais<br><br>
+                    
+                    <strong>2. PENTAGRAMA DE BURKE</strong><br>
+                    • Aplique os cinco elementos da análise retórica de Kenneth Burke:<br>
+                    &nbsp;&nbsp;- <strong>Ato:</strong> O que aconteceu?<br>
+                    &nbsp;&nbsp;- <strong>Agente:</strong> Quem fez?<br>
+                    &nbsp;&nbsp;- <strong>Agência:</strong> Como foi feito?<br>
+                    &nbsp;&nbsp;- <strong>Cena:</strong> Onde e quando aconteceu?<br>
+                    &nbsp;&nbsp;- <strong>Propósito:</strong> Por que foi feito?<br>
+                    • Use para mapear narrativas competitivas<br>
+                    • Identifique elementos faltantes em cada versão<br><br>
+                    
+                    <strong>3. DIAGRAMA DE ISHIKAWA (ESPINHA DE PEIXE)</strong><br>
+                    • Construa diagramas causais para cada hipótese<br>
+                    • Mapeie causas primárias, secundárias e terciárias<br>
+                    • Identifique fatores contribuintes vs determinantes<br>
+                    • Visualize a complexidade causal dos eventos<br><br>
+                    
+                    <strong>4. MAPEAMENTO DE VIESES COGNITIVOS</strong><br>
+                    • Catalogue possíveis vieses presentes nas narrativas<br>
+                    • Identifique padrões de pensamento nas testemunhas<br>
+                    • Mapeie vieses de seleção na coleta de provas<br>
+                    • Documente vieses de confirmação nas argumentações<br><br>
+                    
+                    <strong>5. ANÁLISE DE VULNERABILIDADES</strong><br>
+                    • Descreva pontos fracos em cada linha probatória<br>
+                    • Identifique dependências críticas de prova única<br>
+                    • Mapeie contradições internas e externas<br>
+                    • Catalogue provas faltantes ou não produzidas<br><br>
+                    
+                    <strong>6. IDENTIFICAÇÃO DE RED FLAGS</strong><br>
+                    • Sinalize inconsistências significativas<br>
+                    • Identifique mudanças abruptas de versão<br>
+                    • Marque coincidências improváveis<br>
+                    • Destaque ausências inexplicadas de provas esperadas<br><br>
+                    
+                    <strong>7. MATRIZ DE CORROBORAÇÃO</strong><br>
+                    • Crie tabelas de confirmação cruzada<br>
+                    • Mapeie quais provas apoiam quais fatos<br>
+                    • Identifique ilhas probatórias isoladas<br>
+                    • Visualize redes de suporte mútuo<br><br>
+                    
+                    <strong>8. ANÁLISE DE NARRATIVAS COMPETITIVAS</strong><br>
+                    • Compare versões paralelas dos eventos<br>
+                    • Identifique pontos de convergência e divergência<br>
+                    • Mapeie elementos únicos de cada narrativa<br>
+                    • Catalogue pressupostos não declarados
+                </div>
+                
+                <div class="example-text">
+                    <strong>💡 Dicas para Construção de Prompts Eficazes:</strong><br>
+                    • Seja <strong>ESPECÍFICO</strong> sobre o tipo de análise desejada<br>
+                    • Peça sempre análise <strong>DESCRITIVA</strong>, não valorativa<br>
+                    • Solicite <strong>ORGANIZAÇÃO</strong> em categorias claras<br>
+                    • Requeira <strong>IDENTIFICAÇÃO</strong> de padrões, não conclusões<br>
+                    • Exija <strong>MAPEAMENTO</strong> de relações, não julgamentos<br>
+                    • Instrua para <strong>CATALOGAR</strong> achados, não interpretá-los<br>
+                    • Peça <strong>VISUALIZAÇÕES</strong> (tabelas, listas, diagramas)<br>
+                    • Solicite sempre a <strong>FONTE</strong> de cada informação
+                </div>
+                
+                <div class="template-text">
+                    <strong>🔬 Técnicas Avançadas para Experimentar:</strong><br>
+                    • <strong>Análise de Redes Sociais:</strong> mapeamento de relações entre atores<br>
+                    • <strong>Análise de Sentimento:</strong> tom emocional dos depoimentos<br>
+                    • <strong>Detecção de Anomalias:</strong> identificação de outliers probatórios<br>
+                    • <strong>Clusterização:</strong> agrupamento de provas similares<br>
+                    • <strong>Análise de Frequência:</strong> termos e conceitos recorrentes<br>
+                    • <strong>Mapeamento de Gaps:</strong> o que falta para completar o quadro<br>
+                    • <strong>Análise Contrafactual:</strong> cenários alternativos possíveis<br>
+                    • <strong>Timeline Forense:</strong> reconstrução minuto a minuto
+                </div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo do Exercício:</strong><br>
+                    Desenvolver <strong>AUTONOMIA</strong> na criação de prompts para análise probatória. Cada caso é único e requer abordagens customizadas. Use este exercício para:<br>
+                    • Experimentar diferentes metodologias<br>
+                    • Descobrir o que funciona para seu estilo<br>
+                    • Criar seu próprio toolkit de prompts<br>
+                    • Desenvolver intuição sobre limitações da IA<br>
+                    • Aprender a formular perguntas precisas
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>⚖️ Lembrete Ético:</strong><br>
+                    A análise probatória com IA deve sempre:<br>
+                    • <strong>DESCREVER</strong>, não julgar<br>
+                    • <strong>ORGANIZAR</strong>, não valorar<br>
+                    • <strong>IDENTIFICAR</strong>, não concluir<br>
+                    • <strong>MAPEAR</strong>, não decidir<br>
+                    • <strong>CATALOGAR</strong>, não ponderar<br><br>
+                    A decisão sobre o valor e peso das provas é <strong>EXCLUSIVAMENTE HUMANA</strong>.
+                </div>
+                
+                <div class="example-text">
+                    <strong>📊 Resultados Esperados:</strong><br>
+                    Ao final desta exploração, você deverá ter:<br>
+                    • Conjunto de prompts personalizados para análise probatória<br>
+                    • Compreensão das capacidades e limites da IA neste contexto<br>
+                    • Metodologia própria de organização probatória com IA<br>
+                    • Consciência crítica sobre vieses e limitações<br>
+                    • Habilidade de usar IA como ferramenta cognitiva auxiliar<br>
+                    • Respeito pelos limites éticos e legais estabelecidos
+                </div>
+            </div>
+
+            <div id="ex17" class="tab-content">
+                <div class="exercise-title">Exercício 17 - Relatório Inicial</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Elaborar relatórios de petições iniciais utilizando prompts estruturados para sistematização de informações processuais.
+                </div>
+                
+                <div class="download-section">
+                    <h3>📚 Petições Iniciais para Download</h3>
+                    
+                    <div class="resource-list">
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Tortura - Petição Inicial</div>
+                                <div class="resource-desc">Petição inicial anonimizada para prática</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/j6xidubqazeb0m7ibnm76/1-PETI-O-INICIAL-ANONIMIZADA.docx?rlkey=u5cod3liqj2fl88e11zna5d73&dl=0" class="download-btn" target="_blank">
+                                📄 Download DOCX
+                            </a>
+                        </div>
+                        
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Roger Waters</div>
+                                <div class="resource-desc">Petição inicial para análise</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/2xajiyh83jvoifyv5p1ls/1-peticao-inicial.pdf?rlkey=j2mby8n9t5jlitlb3lg3lxl26&dl=0" class="download-btn" target="_blank">
+                                📄 Download PDF
+                            </a>
+                        </div>
+                        
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Henri Borel - Denúncia</div>
+                                <div class="resource-desc">Denúncia do Ministério Público</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/i34tq4l58s6wno9kxh3wo/denuncia_lei_945597.pdf?rlkey=q6f82rp5c2xjshj5n0gdey26x&dl=0" class="download-btn" target="_blank">
+                                📄 Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa:</strong><br>
+                    Escolha uma petição inicial e elabore o relatório respectivo. Caso não tenha uma petição, baixe um dos modelos acima ou use o modelo simples abaixo.
+                </div>
+
+                <div class="text-block">
+                    <button class="copy-btn" onclick="copyText(this)">📋 Copiar</button>
+                    <h3>MODELO DE PETIÇÃO INICIAL SIMPLES</h3>
+                    <div>
+                        <strong>Petição Inicial</strong>
+                        <br><br>
+                        EXCELENTÍSSIMO SENHOR DOUTOR JUIZ FEDERAL DA ___ VARA FEDERAL DO CEARÁ
+                        <br><br>
+                        A UNIÃO FEDERAL, mediante provocação da República Federal da Alemanha, propõe, conforme os termos da Convenção de Haia sobre Aspectos Civis do Sequestro Internacional de Crianças, promulgada no Brasil pelo Decreto n. 3413, de 2000, a presente AÇÃO CAUTELAR DE BUSCA, APREENSÃO E RESTITUIÇÃO DE MENOR contra a CLÁUDIA DE SOUSA, pelos fatos a seguir narrados:
+                        <br><br>
+                        <strong>DOS FATOS</strong>
+                        <br><br>
+                        Em 2014, a requerida Cláudia de Sousa conheceu o Senhor Fritz Herman, cidadão alemão, quando ele passava férias no Brasil.
+                        <br><br>
+                        Desde essa época, eles mantiveram um relacionamento amoroso e resolveram morar juntos, na cidade de Frankfurt, na Alemanha.
+                        <br><br>
+                        Após um ano de relacionamento, eles tiveram um filho: Mathews, que nasceu em 2 de janeiro de 2016.
+                        <br><br>
+                        Em julho de 2018, o casal resolveu passar férias no Brasil para que a criança conhecesse a família de Cláudia. A passagem de volta estava marcada para agosto de 2018.
+                        <br><br>
+                        Uma semana antes da data prevista para o retorno do casal, Cláudia informou a Fritz que não pretendia voltar para Alemanha e que sua filha ficaria com ela. Fritz não concordou, mas precisou voltar da Alemanha para não perder seu emprego.
+                        <br><br>
+                        Ressalte-se que, pela legislação alemã, quando não há separação nem acordo judicial, a guarda da criança é do pai e da mãe conjuntamente.
+                        <br><br>
+                        Por conta disso, a Autoridade Central Administrativa Federal na Alemanha solicitou ao Brasil cooperação jurídica internacional direta em matéria civil, no sentido de restituir àquele país o menor Mathews, retido ilegalmente no território brasileiro, consoante exposto.
+                        <br><br>
+                        A presente ação pretende, portanto, fazer cumprir o disposto na Convenção de Haia, objetivando a busca e apreensão e o retorno do menor Mathews ao país de sua residência habitual, Alemanha. Ressalte-se que o pai da criança concordou em arcar com as despesas advindas do retorno.
+                        <br><br>
+                        <strong>DO DIREITO</strong>
+                        <br><br>
+                        O artigo 3º da Convenção sobre os Aspectos Civis do Sequestro Internacional de Crianças dispõe:
+                        <br><br>
+                        "Art. 3º A transferência ou a retenção de uma criança é considerada ilícita quando:
+                        <br><br>
+                        a) tenha havido violação a direito de guarda atribuído a pessoa ou a instituição ou a qualquer outro organismo, individual ou conjuntamente, pela lei do Estado onde a criança tivesse sua residência habitual imediatamente antes de sua transferência ou da retenção; e
+                        <br><br>
+                        b) esse direito estivesse sendo exercido de maneira efetiva, individual ou em conjuntamente, no momento da transferência ou da retenção ou devesse está-lo sendo se tais acontecimentos não tivessem ocorrido. O direito de guarda referido na alínea a) pode resultar de uma atribuição de pleno direito, de uma decisão judicial ou administrativa ou de um acordo vigente segundo o direito desse Estado".
+                        <br><br>
+                        <strong>DO PEDIDO</strong>
+                        <br><br>
+                        Diante do exposto, requer a UNIÃO que seja concedida medida cautelar de busca e apreensão para que o menor Mathew Herman seja imediatamente devolvido à República Federal da Alemanha, apreendendo-o de quem injustamente o possua, inclusive com o seu passaporte, procedendo-se, na pronta decorrência, a restituição devida.
+                        <br><br>
+                        Protesta pela produção de provas documentais, testemunhais, periciais, inspeção judicial e de todos os meios probantes, ainda que não especificados no CPC, mas desde que moralmente legítimos e obtidos de forma lícita, sendo assim todas as provas em direito admitidas.
+                        <br><br>
+                        Dar-se à causa o valor de R$ 10.000,00 para fins fiscais.
+                    </div>
+                </div>
+
+                <div class="prompt-box">
+                    <button class="copy-btn" onclick="copyText(this)">📋 Copiar</button>
+                    <h3>MODELO DE PROMPT RELATÓRIO INICIAL</h3>
+                    <div>
+                        # **TAREFA PRINCIPAL**
+                        <br><br>
+                        - Você é um juiz experiente na elaboração de relatórios de petições iniciais. Sua tarefa é analisar a petição fornecida pelo usuário e escrever um relatório seguindo a ESTRUTURA MODELO abaixo sugerida.
+                        <br><br>
+                        - ESCREVA UM RELATÓRIO da petição inicial, usando como base a ESTRUTURA MODELO do modelo abaixo, adaptando e inserindo novos dados se necessário.
+                        <br><br>
+                        # **ESTRUTURA MODELO**
+                        <br><br>
+                        - Siga a ESTRUTURA MODELO a seguir:
+                        <br><br>
+                        "RELATÓRIO
+                        <br><br>
+                        Trata-se de `TIPO DE AÇÃO EM MAIÚSCULAS SEM ASPAS` proposta por `NOME DE DA(S) PARTE(S) AUTORA(S) EM MAIÚSCULAS` contra `NOME DA(S) PARTE(S) REQUERIDA(S) EM MAIÚSCULAS - INSIRA TODOS OS NOMES`, com o objetivo de `SINTETIZAR O PEDIDO DA AÇÃO EM MINÚSCULAS`.
+                        <br><br>
+                        Alega a parte autora que `ESCREVER UMA **LISTA NUMERADA** DETALHADA COM TODOS OS FATOS ALEGADOS PELA PARTE AUTORA. SEJA MINUCIOSO, PROFUNDO E DETALHISTA. EXTRAIA TODOS OS FATOS NARRADOS NA SUA MÁXIMA CAPACIDADE DE SAÍDA`.
+                        <br><br>
+                        Para reforçar sua alegação, argumenta que `INDICAR, **EM LISTA NUMERADA**, OS ARGUMENTOS JURÍDICOS ALEGADOS PELA PARTE AUTORA`. Sustenta ainda que `INDICAR OUTRAS CONSIDERAÇÕES RELEVANTES DA PETIÇÃO INICIAL`.
+                        <br><br>
+                        Por fim, requer que `DESCREVER O PEDIDO CENTRAL DE MODO DETALHADO E SINTETIZAR OS ARGUMENTOS SECUNDÁRIOS`."
+                    </div>
+                </div>
+            </div>
+
+            <div id="ex18" class="tab-content">
+                <div class="exercise-title">Exercício 18 - Relatório Inicial + Contestação</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Elaborar relatórios conjuntos de petição inicial e contestação, proporcionando visão completa dos argumentos de ambas as partes.
+                </div>
+                
+                <div class="download-section">
+                    <h3>📚 Documentos para Download - Caso Tortura</h3>
+                    
+                    <div class="resource-list">
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Petição Inicial - Caso Tortura</div>
+                                <div class="resource-desc">Petição inicial anonimizada</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/j6xidubqazeb0m7ibnm76/1-PETI-O-INICIAL-ANONIMIZADA.docx?rlkey=u5cod3liqj2fl88e11zna5d73&dl=0" class="download-btn" target="_blank">
+                                📄 Download DOCX
+                            </a>
+                        </div>
+                        
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Contestação - Caso Tortura</div>
+                                <div class="resource-desc">Contestação anonimizada</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/dzpxu4nt4fwm1v7kc0j71/2-CONTESTA-O-ANONIMIZADO.docx?rlkey=ng1xp2ck62so7wekzr1lh4rkq&dl=0" class="download-btn" target="_blank">
+                                📄 Download DOCX
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa:</strong><br>
+                    Partindo do prompt anterior (relatório inicial), faça um modelo para elaborar conjuntamente o relatório da INICIAL E DA CONTESTAÇÃO.
+                </div>
+                
+                <div class="template-text">
+                    <strong>🗝️ Estrutura Sugerida do Relatório Conjunto:</strong><br>
+                    • <strong>Identificação da Ação:</strong> tipo, partes, objeto<br>
+                    • <strong>Alegações do Autor:</strong> fatos, direitos, pedidos<br>
+                    • <strong>Alegações do Réu:</strong> defesas, contrargumentos, pedidos<br>
+                    • <strong>Pontos Controvertidos:</strong> divergências entre as partes<br>
+                    • <strong>Questões Probatórias:</strong> provas requeridas por cada parte<br>
+                    • <strong>Síntese:</strong> panorama geral da controvérsia
+                </div>
+                
+                <div class="example-text">
+                    <strong>💡 Vantagens do Relatório Conjunto:</strong><br>
+                    • Visão holística do conflito<br>
+                    • Identificação clara dos pontos controvertidos<br>
+                    • Facilita a condução do processo<br>
+                    • Base sólida para instrução probatória
+                </div>
+            </div>
+
+            <div id="ex19" class="tab-content">
+                <div class="exercise-title">Exercício 19 - Minuta de Sentença</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Elaborar esqueleto de minuta de sentença com relatório, fundamentação e dispositivo a partir das peças essenciais de um processo.
+                </div>
+                
+                <div class="download-section">
+                    <h3>📚 Caso para Análise</h3>
+                    
+                    <div class="resource-list">
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-title">Caso Tortura (Sem Sentença)</div>
+                                <div class="resource-desc">Processo completo sem decisão final</div>
+                            </div>
+                            <a href="https://www.dropbox.com/scl/fi/pvn0psev6h8g6882cpked/PROCESSO-SEM-SENTEN-A.pdf?rlkey=4e76knab3c80fdpjduxsq0lpb&dl=0" class="download-btn" target="_blank">
+                                📄 Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="prompt-box">
+                    <button class="copy-btn" onclick="copyText(this)">📋 Copiar</button>
+                    <h3>PROMPT MINUTA DE SENTENÇA</h3>
+                    <div>
+                        ## TAREFA
+                        <br><br>
+                        - Você é um juiz, especializado na redação de minutas de sentença
+                        <br><br>
+                        - Escreva a SENTENÇA JUDICIAL do TEXTO fornecido, usando como base a ESTRUTURA MODELO do modelo abaixo, adaptando e inserindo novos dados se necessário.
+                        <br><br>
+                        - O resultado da sentença será de PROCEDÊNCIA, IMPROCEDÊNCIA ou PROCEDÊNCIA PARCIAL, conforme o RESULTADO indicado pelo usuário
+                        <br><br>
+                        ## ESTRUTURA
+                        <br><br>
+                        - Siga a estrutura a seguir:
+                        <br><br>
+                        RELATÓRIO
+                        <br><br>
+                        `NOME DA PARTE AUTORA` propôs a presente ação `TIPO DE AÇÃO JUDICIAL` contra a `NOME DA PARTE REQUERIDA`, alegando que `RESUMIR OS FATOS ALEGADOS PELA PARTE AUTORA`. Para reforçar sua alegação, aponta como causa de pedir que `INDICAR A CAUSA DE PEDIR E OS ARGUMENTOS RELEVANTES`. Ao final, pediu que `RESUMIR O PEDIDO PRINCIPAL`.
+                        <br><br>
+                        `NOME DA PARTE REQUERIDA` apresentou contestação, sustentando que `RESUMIR OS FATOS ALEGADOS PELA PARTE REQUERIDA`. Para isso, argumenta que `INDICAR OS ARGUMENTOS JURÍDICOS ALEGADOS PELA PARTE REQUERIDA`. Por fim, requereu que [...].
+                        <br><br>
+                        `RESUMA OUTRAS PEÇAS PROCESSUAIS QUANDO HOUVER`
+                        <br><br>
+                        É o que havia a relatar. Passo a decidir.
+                        <br><br>
+                        FUNDAMENTAÇÃO
+                        <br><br>
+                        O ponto central da controvérsia é decidir se `INCLUIR a QUESTÃO CENTRAL DA CONTROVÉRSIA`. Em outras palavras,`INCLUIR a QUESTÃO CENTRAL EM OUTRO PONTO DE VISTA`.
+                        <br><br>
+                        O sistema jurídico brasileiro tem como princípio e fundamentos a ideia de que `DETALHAR OS PRINCÍPIOS E OS CONCEITOS QUE SE APLICAM AO CASO`.
+                        <br><br>
+                        No caso dos autos, `NOME DA PARTE AUTORA` demonstrou que [...].
+                        <br><br>
+                        Por sua vez, `NOME DA PARTE REQUERIDA` alegou [...]
+                        <br><br>
+                        Confrontando os argumentos das partes, entendo que `ARGUMENTO CENTRAL`.
+                        <br><br>
+                        Além disso, `REFORÇO ARGUMENTATIVO`
+                        <br><br>
+                        Conclui-se, assim, que [...].
+                        <br><br>
+                        A jurisprudência dos tribunais reforça essa conclusão... `REFORÇO DE JURISPRUDÊNCIA SEM FAZER REFERÊNCIA`.
+                        <br><br>
+                        Em resumo, (a) `RESUMO DOS FATOS`; (b) `RESUMO DA CAUSA PEDIR`; (c) `RESUMO DA CONCLUSÃO COM O ARGUMENTO VENCEDOR`.
+                        <br><br>
+                        DISPOSITIVO
+                        <br><br>
+                        Ante o exposto, JULGO `PROCEDENTE OU IMPROCEDENTE OU PARCIALMENTE PROCEDENTE` o pedido, no sentido de....
+                        <br><br>
+                        `Aplicar as regras de sucumbência quando houver, usando como exemplo o seguinte texto apenas como modelo: "A parte `sucumbente` será responsável pelos honorários de sucumbência, que determino em 10% sobre o valor da condenação, conforme o art. 85, §§ 2º e 3º, inciso I, do Código de Processo Civil. Caso haja isenção de pagamento concedida, esta seguirá a condição de suspensão de cobrança estabelecida no art. 98, § 3º, do mesmo código.`
+                        <br><br>
+                        No cálculo, devem ser observadas as orientações constantes no Manual de Cálculos da Justiça Federal, atualizado pelas orientações mais recentes do tema".
+                        <br><br>
+                        Sentença publicada e registrada eletronicamente. Intimem-se via sistema.
+                        <br><br>
+                        Fortaleza/Ce, `data fornecida pelo sistema`.
+                        <br><br>
+                        JUIZ FEDERAL
+                        <br><br>
+                        # RESULTADO
+                        <br><br>
+                        >> O USUÁRIO DEVERÁ INDICAR SE O RESULTADO É DE PROCEDÊNCIA, IMPROCEDÊNCIA OU PROCEDÊNCIA PARCIAL
+                        <br><br>
+                        <usuário> O resultado será de:
+                    </div>
+                </div>
+                
+                <div class="alert">
+                    <strong>⚖️ Estrutura da Sentença:</strong> A sentença judicial deve conter relatório (síntese do processo), fundamentação (razões de decidir) e dispositivo (decisão), conforme art. 489 do CPC.
+                </div>
+            </div>
+
+            <div id="ex20" class="tab-content">
+                <div class="exercise-title">Exercício 20 - Ementa CNJ</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Elaborar ementas seguindo o padrão do formato CNJ para facilitar a compreensão das decisões, aplicação de precedentes e uso de inteligência artificial.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa:</strong><br>
+                    Escolha uma sentença, decisão ou voto de sua autoria e faça a ementa seguindo o padrão do formato CNJ.
+                </div>
+
+                <div class="prompt-box">
+                    <button class="copy-btn" onclick="copyText(this)">📋 Copiar</button>
+                    <h3>PROMPT EMENTA CNJ</h3>
+                    <div>
+                        # TAREFA
+                        <br><br>
+                        - Você é uma analista jurídico especializado em analisar um caso fornecido com profundidade, precisão e detalhes, captando as nuances, com o propósito de escrever uma **EMENTA**, conforme ESTRUTURA fornecida
+                        <br><br>
+                        - **ESCREVA** a EMENTA do caso fornecido, seguindo estritamente a ESTRUTURA fornecida
+                        <br><br>
+                        - Cite apenas fatos, normas e precedentes do caso fornecido
+                        <br><br>
+                        - Comece o texto com ***Ementa***
+                        <br><br>
+                        # ESTRUTURA
+                        <br><br>
+                        - Use o formato da ESTRUTURA aqui fornecida, melhorando, adaptando e incluindo o que for necessário para garantir clareza, coesão, coerência, objetividade e precisão:
+                        <br><br>
+                        ## ***Ementa***: `RAMO DO DIREITO. CLASSE PROCESSUAL. FRASE OU PALAVRAS QUE INDIQUEM O ASSUNTO PRINCIPAL DO MAIS GERAL AO MAIS ESPECÍFICO DIVIDIDOS POR PONTO EM LETRA MAIÚSCULA. CONCLUSÃO.`
+                        <br><br>
+                        ### **I. CASO EM EXAME**
+                        <br><br>
+                        1. `Apresente o caso, com a indicação dos fatos relevantes e do pedido principal`
+                        <br><br>
+                        ### **II. QUESTÃO EM DISCUSSÃO**
+                        <br><br>
+                        2. `Identifique com precisão e profundidade a(s) questão(ões) central(is) do caso. Quando houver apenas uma questão, inicie o texto com "A questão em discussão consiste em". Quando houver duas ou mais questões, especifique a quantidade e enumere-as da seguinte forma: "Há X questões em discussão: (i) definir se...; (ii) estabelecer se...; (iii) determinar se...; etc."`
+                        <br><br>
+                        ### **III. RAZÕES DE DECIDIR**
+                        <br><br>
+                        - `Apresente as principais justificativas que fundamentam a decisão, extraídas da fundamentação. Cada justificativa autônoma deve ser redigida em um item numerado (3., 4., 5., etc.), de forma concisa e objetiva, contendo apenas uma ideia central por item. Utilize quantos itens forem necessários para contemplar todas as justificativas relevantes`.
+                        <br><br>
+                        3. [Justificativa 1]
+                        <br><br>
+                        4. [Justificativa 2]...
+                        <br><br>
+                        ### **IV. DISPOSITIVO E TESE**
+                        <br><br>
+                        5. `Apresente o resultado do julgamento. Exemplo: Pedido procedente/improcedente OU Recurso provido/desprovido`.
+                        <br><br>
+                        *Tese de julgamento*: `Enumere a(s) tese(s) jurídica(s) firmada(s) no julgamento (ratio decidendi), de forma concisa e objetiva, seguindo esta formatação: "1. [Tese 1]. 2. [Tese 2]. 3. [Tese 3]..." Cada tese deve ser redigida como uma única frase, iniciando com letra maiúscula e terminando com ponto final`
+                        <br><br>
+                        ___________
+                        <br><br>
+                        *Dispositivos relevantes citados*: `Identifique as normas citadas. Exemplo: CF/1988, art. 1º, III e IV; CC, arts. 1.641, II, e 1.639, § 2º.`
+                        <br><br>
+                        *Jurisprudência relevante citada*: `Identifique os precedentes citados. Exemplo: STF, ADPF nº 130, Rel. Min. Ayres Britto, Plenário, j. 30.04.2009.`
+                        <br><br>
+                        ## EXEMPLO
+                        <br><br>
+                        - O EXEMPLO a seguir pode ser usado como modelo:
+                        <br><br>
+                        ***Ementa***: DIREITO CONSTITUCIONAL E PROCESSUAL. PROPOSTA DE PADRONIZAÇÃO. EMENTA-PADRÃO. RECOMENDAÇÃO DE MODELO PARA A ELABORAÇÃO DE EMENTAS PELOS TRIBUNAIS. APROVAÇÃO.
+                        <br><br>
+                        ### **I. CASO EM EXAME**
+                        <br><br>
+                        1. Proposta de padronização de ementas dos acórdãos proferidos pelos mais de 90 tribunais brasileiros.
+                        <br><br>
+                        ### **II. QUESTÃO EM DISCUSSÃO**
+                        <br><br>
+                        2. A questão central consiste em discutir um modelo de ementa com o objetivo de facilitar a compreensão das decisões, a aplicação dos precedentes e o uso de inteligência artificial.
+                        <br><br>
+                        ### **III. RAZÕES DE DECIDIR**
+                        <br><br>
+                        3. Ementas devem ser claras, objetivas e escritas em linguagem simples, sob pena de prejudicar a pesquisa e a compreensão pelas partes do processo, pela comunidade jurídica e pela população em geral.
+                        <br><br>
+                        4. Precedentes que não são conhecidos ou compreendidos não podem ser seguidos. Assim, a padronização das ementas favorece a consolidação do sistema brasileiro de precedentes.
+                        <br><br>
+                        5. Por fim, a adoção de um modelo de ementas favorece o treinamento de ferramentas de inteligência artificial para a busca de precedentes.
+                        <br><br>
+                        ### **IV. DISPOSITIVO E TESE**
+                        <br><br>
+                        6. Recomendação aprovada.
+                        <br><br>
+                        ______
+                        <br><br>
+                        *Dispositivos relevantes citados*: CF/1988, arts. 5º, XIV, 37, caput, e 93, IX. CPC, arts. 926 e seguintes
+                        <br><br>
+                        *Jurisprudência relevante citada*: CNJ, AN nº 00000-65.2042.2.00.0000, rel. Conselheiro João da Silva, j. 01.07.2078; CNJ, ADI nº 0001, rel. Min. George Marmelstein, j. 14.11.2046
+                    </div>
+                </div>
+                
+                <div class="example-text">
+                    <strong>🎯 Objetivos da Ementa Padronizada:</strong><br>
+                    • Facilitar a compreensão das decisões<br>
+                    • Melhorar a aplicação de precedentes<br>
+                    • Otimizar o uso de inteligência artificial<br>
+                    • Consolidar o sistema brasileiro de precedentes<br>
+                    • Proporcionar clareza e objetividade
+                </div>
+            </div>
+
+            <div id="ex21" class="tab-content">
+                <div class="exercise-title">Exercício 21 - Tarefa Final</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Integrar todos os conhecimentos adquiridos realizando uma análise jurídica completa de um caso real de sua responsabilidade.
+                </div>
+                
+                <div class="instruction-text">
+                    <strong>📋 Tarefa Integradora:</strong><br>
+                    Escolha um caso real de sua responsabilidade e execute as seguintes etapas:
+                </div>
+                
+                <div class="template-text">
+                    <strong>🗝️ Etapas da Tarefa Final:</strong><br>
+                    <strong>1. Análise FIRAC+</strong><br>
+                    • Aplique a metodologia FIRAC+ completa<br>
+                    • Dados do processo, fatos, questões jurídicas, direito aplicável<br>
+                    • Análise dos argumentos de ambas as partes<br>
+                    • Conclusão fundamentada
+                    <br><br>
+                    <strong>2. Relatório das Peças Essenciais</strong><br>
+                    • Elabore relatório da petição inicial<br>
+                    • Se houver contestação, inclua no relatório<br>
+                    • Identifique pontos controvertidos
+                    <br><br>
+                    <strong>3. Minuta da Decisão</strong><br>
+                    • Redija minuta de sentença ou da peça cabível<br>
+                    • Siga a estrutura: relatório, fundamentação, dispositivo<br>
+                    • Aplique as regras de sucumbência quando apropriado
+                    <br><br>
+                    <strong>4. Ementa no Padrão CNJ</strong><br>
+                    • Elabore ementa seguindo a estrutura padronizada<br>
+                    • Identifique caso, questões, razões de decidir<br>
+                    • Formule teses jurídicas claras e objetivas
+                </div>
+                
+                <div class="example-text">
+                    <strong>💡 Critérios de Qualidade:</strong><br>
+                    • <strong>Consistência:</strong> harmonia entre todas as peças<br>
+                    • <strong>Técnica:</strong> uso correto dos prompts desenvolvidos<br>
+                    • <strong>Clareza:</strong> linguagem acessível e objetiva<br>
+                    • <strong>Completude:</strong> análise abrangente de todos os aspectos<br>
+                    • <strong>Precisão:</strong> adequação aos fatos e ao direito aplicável
+                </div>
+                
+                <div class="alert">
+                    <strong>🏆 Meta de Aprendizado:</strong> Ao final desta tarefa, você deverá dominar o uso estratégico da IA para todas as fases da atividade jurisdicional, desde a análise inicial até a redação final das decisões.
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>📋 Checklist Final:</strong><br>
+                    ✅ Análise FIRAC+ completa e estruturada<br>
+                    ✅ Relatório das peças processuais essenciais<br>
+                    ✅ Minuta de decisão com fundamentação sólida<br>
+                    ✅ Ementa padronizada CNJ<br>
+                    ✅ Coerência entre todos os documentos<br>
+                    ✅ Aplicação correta dos prompts aprendidos<br>
+                    ✅ Linguagem jurídica clara e precisa
+                </div>
+            </div>
+
+            <div id="extra" class="tab-content">
+                <div class="exercise-title">EXTRA - Estrutura P.O.E.M.A.</div>
+                
+                <div class="alert">
+                    <strong>🎯 Objetivo:</strong> Dominar a estrutura P.O.E.M.A. para criar prompts avançados e sistemáticos, combinando todos os elementos essenciais de uma instrução completa para o LLM.
+                </div>
+                
+                <div class="template-text">
+                    <strong>📝 O que é P.O.E.M.A.?</strong><br>
+                    P.O.E.M.A. é um acrônimo mnemônico que ajuda a estruturar prompts complexos de forma organizada e completa:<br><br>
+                    • <strong>P</strong> = Persona (quem o LLM deve ser)<br>
+                    • <strong>O</strong> = Objetivo (o que deve fazer)<br>
+                    • <strong>E</strong> = Estilo (como deve comunicar)<br>
+                    • <strong>M</strong> = Modelo/Metodologia (estrutura a seguir)<br>
+                    • <strong>A</strong> = Adicionais (instruções complementares)
+                </div>
+
+                <div class="instruction-text">
+                    <strong>🎭 P - PERSONA</strong><br>
+                    Define <strong>quem</strong> o LLM deve personificar e suas características principais.<br><br>
+                    
+                    <strong>Elementos da Persona:</strong><br>
+                    • Papel profissional ou expertise<br>
+                    • Perspectiva ou ponto de vista<br>
+                    • Características emocionais ou psicológicas<br>
+                    • Nível de conhecimento e experiência<br>
+                    • Tom de autoridade ou posicionamento<br><br>
+                    
+                    <strong>Exemplos de Personas:</strong><br>
+                    • "Você é um juiz federal com 20 anos de experiência"<br>
+                    • "Assuma a persona de um revisor sênior especializado em textos jurídicos"<br>
+                    • "Você é um especialista que consegue explicar conceitos complexos para leigos"<br>
+                    • "Escreva como se estivesse dentro da mente do autor, narrando suas inquietações"
+                </div>
+
+                <div class="instruction-text">
+                    <strong>🎯 O - OBJETIVO</strong><br>
+                    Estabelece <strong>o que</strong> o LLM deve realizar e com qual finalidade.<br><br>
+                    
+                    <strong>Componentes do Objetivo:</strong><br>
+                    • Tarefa principal clara e específica<br>
+                    • Resultado esperado<br>
+                    • Profundidade de análise<br>
+                    • Escopo e limitações<br>
+                    • Critérios de sucesso<br><br>
+                    
+                    <strong>Exemplos de Objetivos:</strong><br>
+                    • "Analise o caso fornecido usando a metodologia FIRAC+"<br>
+                    • "Explique o texto com profundidade para que eu possa entender"<br>
+                    • "Revise a minuta corrigindo erros e melhorando a clareza"<br>
+                    • "Identifique todas as inconsistências probatórias"
+                </div>
+
+                <div class="instruction-text">
+                    <strong>✍️ E - ESTILO</strong><br>
+                    Define <strong>como</strong> o LLM deve comunicar e apresentar as informações.<br><br>
+                    
+                    <strong>Aspectos do Estilo:</strong><br>
+                    • Tom da comunicação (formal, informal, técnico)<br>
+                    • Estrutura textual (parágrafos, listas, tabelas)<br>
+                    • Nível de linguagem (leigo, intermediário, especialista)<br>
+                    • Abordagem didática (exemplos, analogias, metáforas)<br>
+                    • Economia de palavras (conciso vs detalhado)<br><br>
+                    
+                    <strong>Exemplos de Estilo:</strong><br>
+                    • "Escreva como numa conversa entre pessoas inteligentes"<br>
+                    • "Use linguagem clara e acessível, sem juridiquês"<br>
+                    • "Seja conciso e direto, sem palavras desnecessárias"<br>
+                    • "Organize as ideias do simples para o complexo"
+                </div>
+
+                <div class="instruction-text">
+                    <strong>📐 M - MODELO/METODOLOGIA</strong><br>
+                    Estabelece a <strong>estrutura</strong> ou framework que o LLM deve seguir.<br><br>
+                    
+                    <strong>Tipos de Modelos:</strong><br>
+                    • Estruturas predefinidas (FIRAC+, IRAC, etc.)<br>
+                    • Seções obrigatórias<br>
+                    • Ordem de apresentação<br>
+                    • Formato de saída<br>
+                    • Elementos visuais (emojis, marcadores, tabelas)<br><br>
+                    
+                    <strong>Exemplos de Metodologias:</strong><br>
+                    • Estrutura com seções específicas: Dados → Análise → Conclusão<br>
+                    • Framework FIRAC: Fatos → Issue → Rule → Analysis → Conclusion<br>
+                    • Método com emojis: 📚 TEORIA → 🔬 PRÁTICA → 📊 RESULTADOS<br>
+                    • Template específico: Relatório → Fundamentação → Dispositivo
+                </div>
+
+                <div class="instruction-text">
+                    <strong>➕ A - ADICIONAIS</strong><br>
+                    Instruções <strong>complementares</strong> que refinam e direcionam o comportamento do LLM.<br><br>
+                    
+                    <strong>Tipos de Adicionais:</strong><br>
+                    • Restrições e limitações<br>
+                    • Instruções de transparência<br>
+                    • Comportamentos específicos<br>
+                    • Pedidos de esforço e qualidade<br>
+                    • Regras de continuidade<br><br>
+                    
+                    <strong>Exemplos de Adicionais:</strong><br>
+                    • "Base-se apenas no texto fornecido"<br>
+                    • "Quando não souber, seja transparente"<br>
+                    • "Respire fundo. Dê o seu melhor. Isso é importante para mim"<br>
+                    • "Se solicitado algo diferente, adapte-se mantendo a persona"
+                </div>
+
+                <div class="prompt-box">
+                    <button class="copy-btn" onclick="copyText(this)">📋 Copiar</button>
+                    <h3>EXEMPLO COMPLETO P.O.E.M.A.</h3>
+                    <div>
+                        # P.O.E.M.A.
+                        <br><br>
+                        ## 🎭 PERSONA
+                        <br>
+                        • Você deve assumir a PERSONA de um escritor e escrever de modo INTROSPECTIVO, em primeira pessoa, como se estivesse dentro da mente do autor do texto, narrando suas inquietações, angústias e motivações
+                        <br>
+                        • Você é ESPECIALISTA no assunto fornecido e consegue explicá-lo para alguém que não sabe nada do assunto
+                        <br><br>
+                        ## 🎯 OBJETIVO
+                        <br>
+                        • Explique o texto fornecido, ensinando com profundidade e em detalhes para que eu possa entender, seguindo o MÉTODO SUPERTUTOR
+                        <br>
+                        • Você tem muito orgulho do texto que você escreveu e quer transmitir seu conhecimento com entusiasmo
+                        <br><br>
+                        ## ✍️ ESTILO
+                        <br>
+                        • Você escreve como se estivesse falando para mim, numa conversa entre pessoas inteligentes
+                        <br>
+                        • Eu sou um estudante curioso que adora aprender coisas novas de modo claro e didático, com exemplos vívidos e ricos em detalhes
+                        <br>
+                        • Você organiza suas ideias com coerência e lógica, apresentando primeiro as ideias mais simples e depois as mais complexas
+                        <br>
+                        • Você **NÃO USA** palavras inúteis, apresentando as ideias de modo conciso e completo. Escreva apenas palavras necessárias
+                        <br><br>
+                        ## 📐 MÉTODO
+                        <br>
+                        • DADOS DO TEXTO 📚
+                        <br>
+                        • ANGÚSTIAS, CURIOSIDADES E INQUIETAÇÕES INTELECTUAIS 🤔
+                        <br>
+                        • PORQUE ISSO É IMPORTANTE 🌍
+                        <br>
+                        • METODOLOGIA 🔬
+                        <br>
+                        • RESULTADOS 📊
+                        <br>
+                        • NOVAS DIREÇÕES ➡️
+                        <br>
+                        • PLAYBOOK 🧭
+                        <br>
+                        • APROFUNDAR 🔍
+                        <br><br>
+                        ## ➕ ADICIONAIS
+                        <br>
+                        • Você deve se basear apenas no texto fornecido
+                        <br>
+                        • Quando não houver respostas no texto, seja transparente e informe que você não tratou do tema
+                        <br>
+                        • Se o USUÁRIO solicitar outros direcionamentos, continue a conversa sem se ater ao MÉTODO. Assuma a PERSONA DO AUTOR e continue a conversação COMO SE FOSSE o referido autor
+                        <br>
+                        • Respire fundo. Dê o seu melhor. Isso é muito importante para mim. Por favor.
+                        <br>
+                        • Importante: eu sou leigo. Não entendo nada do assunto. Seja o mais didático possível com exemplos ilustrativos
+                        <br>
+                        • Cumpra as instruções acima com maestria. Dê o seu melhor. Evite desculpas de IA.
+                        <br>
+                        • Comece o texto com "Vamos começar!"
+                    </div>
+                </div>
+
+                <div class="template-text">
+                    <strong>🔧 Variações e Adaptações do P.O.E.M.A.:</strong><br><br>
+                    
+                    <strong>Para Análise Jurídica:</strong><br>
+                    • P: Juiz experiente<br>
+                    • O: Analisar processo<br>
+                    • E: Linguagem técnica mas clara<br>
+                    • M: Estrutura FIRAC+<br>
+                    • A: Base apenas nos autos<br><br>
+                    
+                    <strong>Para Revisão de Textos:</strong><br>
+                    • P: Revisor sênior<br>
+                    • O: Corrigir e melhorar<br>
+                    • E: Feedback construtivo<br>
+                    • M: Gramática → Clareza → Estilo<br>
+                    • A: Explique cada mudança<br><br>
+                    
+                    <strong>Para Ensino:</strong><br>
+                    • P: Professor didático<br>
+                    • O: Ensinar conceito complexo<br>
+                    • E: Do simples ao complexo<br>
+                    • M: Teoria → Exemplos → Prática<br>
+                    • A: Adapte ao nível do aluno
+                </div>
+
+                <div class="example-text">
+                    <strong>💡 Dicas Práticas para Usar P.O.E.M.A.:</strong><br>
+                    • <strong>Nem sempre use todos os elementos</strong> - adapte conforme a necessidade<br>
+                    • <strong>Comece simples</strong> - adicione complexidade gradualmente<br>
+                    • <strong>Teste variações</strong> - ajuste cada componente para otimizar resultados<br>
+                    • <strong>Seja específico</strong> - quanto mais detalhado, melhor o resultado<br>
+                    • <strong>Mantenha coerência</strong> - os elementos devem se complementar<br>
+                    • <strong>Itere e refine</strong> - ajuste baseado nos resultados obtidos
+                </div>
+
+                <div class="alert">
+                    <strong>🎯 Exercício Prático:</strong><br>
+                    Crie seu próprio prompt P.O.E.M.A. para uma tarefa específica do seu trabalho jurídico. Experimente diferentes combinações de persona, objetivo, estilo, metodologia e adicionais até encontrar a configuração ideal para suas necessidades.
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Lembrete Importante:</strong><br>
+                    A estrutura P.O.E.M.A. é uma <strong>ferramenta flexível</strong>, não uma camisa de força. Use-a como ponto de partida para criar prompts organizados, mas sinta-se livre para adaptar, simplificar ou expandir conforme necessário. O objetivo é ter clareza e sistematização, não rigidez.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // Hide all tab contents
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            // Remove active class from all tabs
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            // Show the selected tab content and mark the button as active
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function copyText(button) {
+            // Find the text content in the parent element, excluding the button
+            const textBlock = button.parentElement;
+            const textToCopy = Array.from(textBlock.childNodes)
+                .filter(node => node !== button)
+                .map(node => {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        return node.textContent;
+                    } else if (node.nodeType === Node.ELEMENT_NODE && node !== button) {
+                        return node.innerText || node.textContent;
+                    }
+                    return '';
+                })
+                .join('')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                // Visual feedback
+                const originalText = button.innerHTML;
+                button.innerHTML = '✔ Copiado!';
+                button.classList.add('copied');
+                
+                setTimeout(function() {
+                    button.innerHTML = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Erro ao copiar texto: ', err);
+                alert('Erro ao copiar o texto. Tente selecionar e copiar manualmente.');
+            });
+        }
+
+        // Initialize first tab as active
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.tab').click();
+        });
+    </script>
+</body>
+</html>

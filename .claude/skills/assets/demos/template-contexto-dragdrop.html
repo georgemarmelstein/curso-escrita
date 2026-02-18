@@ -1,0 +1,2596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Janela de Contexto</title>
+
+    <!-- Google Fonts: Paleta Super -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================
+           PALETA SUPER - CSS Variables
+           ========================================== */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+
+            /* Variações funcionais derivadas */
+            --super-gold-dim: rgba(190, 156, 109, 0.6);
+            --super-gold-subtle: rgba(190, 156, 109, 0.3);
+            --super-gold-ghost: rgba(190, 156, 109, 0.15);
+
+            /* Cores semânticas (mantidas sutis) */
+            --color-success: #4ade80;
+            --color-warning: #fbbf24;
+            --color-danger: #f87171;
+            --color-info: rgba(190, 156, 109, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--super-bg-dark) 0%, var(--super-bg-section) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--super-cream);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            color: var(--super-gold-dim);
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            font-weight: 300;
+        }
+
+        /* Container principal */
+        .demo-container {
+            display: flex;
+            gap: 30px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        /* ============================================
+           MODO EMBED (dentro de iframe)
+           ============================================ */
+        body.embed-mode {
+            padding: 12px;
+            min-height: auto;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body.embed-mode h1,
+        body.embed-mode .subtitle {
+            display: none;
+        }
+
+        body.embed-mode .demo-container {
+            flex-direction: row;
+            gap: 20px;
+            height: 100%;
+        }
+
+        body.embed-mode .context-window {
+            flex: 3;
+            min-height: auto;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        body.embed-mode .context-header {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+        }
+
+        body.embed-mode .context-title {
+            font-size: 1.1em;
+        }
+
+        body.embed-mode .fill-bar-container {
+            width: 160px;
+            height: 22px;
+        }
+
+        body.embed-mode .cost-indicator {
+            padding: 6px 12px;
+        }
+
+        body.embed-mode .cost-label {
+            font-size: 0.7em;
+        }
+
+        body.embed-mode .cost-value {
+            font-size: 1em;
+        }
+
+        body.embed-mode .unified-context {
+            min-height: 280px;
+            padding: 12px;
+            padding-left: 25px;
+            margin-left: 8px;
+        }
+
+        body.embed-mode .context-label {
+            left: -55px;
+            font-size: 0.65em;
+        }
+
+        body.embed-mode .block {
+            padding: 10px 14px;
+            border-radius: 10px;
+            gap: 8px;
+        }
+
+        body.embed-mode .block-icon {
+            font-size: 1.6em;
+        }
+
+        body.embed-mode .block-name {
+            font-size: 0.85em;
+        }
+
+        body.embed-mode .block-size {
+            font-size: 0.7em;
+        }
+
+        body.embed-mode .block-order {
+            width: 18px;
+            height: 18px;
+            font-size: 0.6em;
+            top: -6px;
+            left: -6px;
+        }
+
+        body.embed-mode .block-delete {
+            width: 18px;
+            height: 18px;
+            font-size: 0.6em;
+            top: -6px;
+            right: -6px;
+        }
+
+        body.embed-mode .status-message {
+            font-size: 0.85em;
+            padding: 10px 18px;
+            bottom: 12px;
+        }
+
+        /* Painel de controles - Layout compacto para embed */
+        body.embed-mode .controls-panel {
+            flex: 1;
+            max-width: 300px;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow: hidden;
+        }
+
+        body.embed-mode .controls-title {
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+
+        body.embed-mode .controls-title:nth-of-type(2) {
+            margin-top: 4px;
+        }
+
+        body.embed-mode .mode-toggle {
+            margin-bottom: 6px;
+            padding: 2px;
+        }
+
+        body.embed-mode .mode-btn {
+            padding: 6px 4px;
+            font-size: 0.7em;
+            flex-direction: row;
+            gap: 6px;
+        }
+
+        body.embed-mode .mode-btn .mode-icon {
+            font-size: 1.1em;
+        }
+
+        /* Grid 2x4 para os botões de adicionar */
+        body.embed-mode .add-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        body.embed-mode .add-btn {
+            padding: 8px 10px;
+            font-size: 0.7em;
+            border-radius: 6px;
+            justify-content: flex-start;
+        }
+
+        body.embed-mode .add-btn .icon {
+            font-size: 1em;
+        }
+
+        body.embed-mode .add-btn span:not(.icon) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        body.embed-mode .drag-instruction {
+            display: none;
+        }
+
+        /* Botões de ação em linha - logo abaixo dos add buttons */
+        body.embed-mode .action-buttons-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 0;
+            border: none;
+        }
+
+        body.embed-mode .compact-btn {
+            flex: 1;
+            margin: 0;
+            padding: 8px 6px;
+            font-size: 0.7em;
+        }
+
+        body.embed-mode .reset-btn {
+            flex: 0 0 auto;
+            margin: 0;
+            padding: 8px 10px;
+            font-size: 0.7em;
+            width: auto;
+        }
+
+        body.embed-mode .cost-explanation {
+            display: none;
+        }
+
+        /* Janela de Contexto - Glassmorphism Paleta Super */
+        .context-window {
+            flex: 2;
+            background: rgba(10, 10, 18, 0.6);
+            border-radius: 16px;
+            border: 1px solid var(--super-gold-subtle);
+            padding: 20px;
+            min-height: 520px;
+            position: relative;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                        inset 0 1px 0 rgba(190, 156, 109, 0.1);
+        }
+
+        .context-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--super-gold-ghost);
+        }
+
+        .context-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.1em;
+            color: var(--super-gold);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        /* Indicadores no header */
+        .header-indicators {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Barra de preenchimento - Paleta Super */
+        .fill-bar-container {
+            width: 180px;
+            height: 24px;
+            background: rgba(10, 10, 18, 0.8);
+            border: 1px solid var(--super-gold-ghost);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .fill-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--super-gold-light), var(--super-gold));
+            border-radius: 12px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .fill-bar.warning {
+            background: linear-gradient(90deg, var(--color-warning), #d97706);
+        }
+
+        .fill-bar.danger {
+            background: linear-gradient(90deg, var(--color-danger), #ef4444);
+        }
+
+        .fill-bar.critical {
+            background: linear-gradient(90deg, #dc2626, #991b1b);
+            animation: pulse-critical 0.5s ease infinite;
+        }
+
+        @keyframes pulse-critical {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .fill-text {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            font-weight: bold;
+            color: var(--super-cream);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        /* Indicador de custo - Glassmorphism */
+        .cost-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--super-gold-ghost);
+            border: 1px solid var(--super-gold-subtle);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .cost-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cost-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            font-weight: bold;
+            color: var(--super-cream);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cost-value.high {
+            color: var(--color-warning);
+        }
+
+        .cost-value.very-high {
+            color: var(--color-danger);
+            animation: cost-pulse 1s ease infinite;
+        }
+
+        @keyframes cost-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Container do contexto unificado */
+        .unified-context {
+            position: relative;
+            min-height: 350px;
+            padding: 15px;
+            padding-left: 25px;
+            margin-left: 10px;
+            border-left: 4px solid var(--super-gold);
+            transition: border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .unified-context.warning {
+            border-color: var(--color-warning);
+        }
+
+        .unified-context.danger {
+            border-color: var(--color-danger);
+        }
+
+        .unified-context.critical {
+            border-color: #dc2626;
+            animation: border-pulse 0.5s ease infinite;
+        }
+
+        @keyframes border-pulse {
+            0%, 100% { border-color: #dc2626; }
+            50% { border-color: #991b1b; }
+        }
+
+        /* Label do contexto unificado */
+        .context-label {
+            position: absolute;
+            left: -60px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        /* Bracket visual */
+        .context-bracket {
+            position: absolute;
+            left: -8px;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            pointer-events: none;
+        }
+
+        .bracket-top, .bracket-bottom {
+            position: absolute;
+            left: 0;
+            width: 15px;
+            height: 15px;
+            border-left: 4px solid;
+            border-color: inherit;
+        }
+
+        .bracket-top {
+            top: 0;
+            border-top: 4px solid;
+            border-top-left-radius: 8px;
+        }
+
+        .bracket-bottom {
+            bottom: 0;
+            border-bottom: 4px solid;
+            border-bottom-left-radius: 8px;
+        }
+
+        /* Área dos blocos */
+        .blocks-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-content: flex-start;
+            min-height: 120px;
+            position: relative;
+            padding: 10px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Área vazia - visual de convite ao drop */
+        .blocks-area:empty::before,
+        .blocks-area:has(.drop-zone-hint:only-child)::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px dashed var(--super-gold-subtle);
+            border-radius: 12px;
+            pointer-events: none;
+        }
+
+        /* Blocos de conteúdo - Glassmorphism */
+        .block {
+            background: rgba(26, 26, 46, 0.6);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--super-gold-ghost);
+            animation: block-enter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            backdrop-filter: blur(8px);
+        }
+
+        @keyframes block-enter {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .block.fading {
+            opacity: 0.4;
+            filter: blur(1px);
+            transform: scale(0.97);
+        }
+
+        .block.forgotten {
+            opacity: 0.15;
+            filter: blur(3px) grayscale(100%);
+            transform: scale(0.9);
+        }
+
+        /* Níveis de "esquecimento" para modo sliding - gradual fade */
+        .block.fade-level-1 {
+            opacity: 0.7;
+            filter: grayscale(20%);
+            transform: scale(0.98);
+        }
+
+        .block.fade-level-2 {
+            opacity: 0.5;
+            filter: grayscale(40%) blur(0.5px);
+            transform: scale(0.96);
+        }
+
+        .block.fade-level-3 {
+            opacity: 0.35;
+            filter: grayscale(60%) blur(1px);
+            transform: scale(0.94);
+        }
+
+        .block.fade-level-4 {
+            opacity: 0.2;
+            filter: grayscale(80%) blur(1.5px);
+            transform: scale(0.92);
+        }
+
+        .block.fade-level-5 {
+            opacity: 0.1;
+            filter: grayscale(100%) blur(2px);
+            transform: scale(0.9);
+        }
+
+        .block.fade-level-6 {
+            opacity: 0.05;
+            filter: grayscale(100%) blur(3px);
+            transform: scale(0.88);
+            pointer-events: none;
+        }
+
+        /* Indicador visual de "memória perdida" */
+        .block.fade-level-4::after,
+        .block.fade-level-5::after,
+        .block.fade-level-6::after {
+            content: '💨';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+            opacity: 0.5;
+        }
+
+        .block.sliding-out {
+            animation: slide-out 0.5s ease forwards;
+        }
+
+        @keyframes slide-out {
+            to {
+                opacity: 0;
+                transform: translateX(-50px) scale(0.8);
+                max-width: 0;
+                padding: 0;
+                margin: 0;
+                border: 0;
+            }
+        }
+
+        .block-icon {
+            font-size: 1.8em;
+        }
+
+        .block-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .block-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.85em;
+            color: var(--super-cream);
+        }
+
+        .block-size {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold-dim);
+        }
+
+        /* Indicador de ordem no bloco */
+        .block-order {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 50%;
+            font-size: 0.65em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Botão de deletar bloco */
+        .block-delete {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: rgba(239, 68, 68, 0.8);
+            border-radius: 50%;
+            font-size: 0.7em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .block:hover .block-delete {
+            opacity: 1;
+        }
+
+        .block-delete:hover {
+            background: rgba(239, 68, 68, 1);
+            transform: scale(1.1);
+        }
+
+        /* Cores por tipo de bloco - Paleta Super com variações sutis */
+        .block.system {
+            border-color: var(--super-gold);
+            background: linear-gradient(135deg, rgba(190,156,109,0.25), rgba(190,156,109,0.1));
+        }
+        .block.custom {
+            border-color: var(--super-gold-light);
+            background: linear-gradient(135deg, rgba(212,184,150,0.2), rgba(212,184,150,0.08));
+        }
+        .block.customprompt {
+            border-color: rgba(190,156,109,0.7);
+            background: linear-gradient(135deg, rgba(190,156,109,0.18), rgba(190,156,109,0.06));
+        }
+        .block.user {
+            border-color: var(--super-cream);
+            background: linear-gradient(135deg, rgba(255,244,228,0.15), rgba(255,244,228,0.05));
+        }
+        .block.attachment {
+            border-color: #d4a574;
+            background: linear-gradient(135deg, rgba(212,165,116,0.25), rgba(212,165,116,0.1));
+        }
+        .block.web {
+            border-color: rgba(190,156,109,0.5);
+            background: linear-gradient(135deg, rgba(26,26,46,0.8), rgba(10,10,18,0.6));
+            border-style: dotted;
+        }
+        .block.response {
+            border-color: var(--super-gold-dim);
+            background: linear-gradient(135deg, rgba(190,156,109,0.12), rgba(190,156,109,0.04));
+        }
+        .block.turn {
+            border-color: rgba(255,244,228,0.3);
+            background: linear-gradient(135deg, rgba(255,244,228,0.08), rgba(255,244,228,0.02));
+        }
+        .block.compacted {
+            border-color: var(--super-gold);
+            background: linear-gradient(135deg, rgba(190,156,109,0.35), rgba(190,156,109,0.15));
+            border-width: 2px;
+            border-style: dashed;
+            box-shadow: 0 0 20px rgba(190,156,109,0.2);
+        }
+
+        /* Mensagens de status - Paleta Super */
+        .status-message {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.85em;
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            max-width: 90%;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-message.visible {
+            opacity: 1;
+        }
+
+        .status-message.info {
+            background: var(--super-gold-ghost);
+            border: 1px solid var(--super-gold-subtle);
+            color: var(--super-gold-light);
+        }
+
+        .status-message.warning {
+            background: rgba(251,191,36,0.2);
+            border: 1px solid rgba(251,191,36,0.5);
+            color: var(--color-warning);
+        }
+
+        .status-message.error {
+            background: rgba(248,113,113,0.2);
+            border: 1px solid rgba(248,113,113,0.5);
+            color: var(--color-danger);
+            animation: shake 0.5s ease;
+        }
+
+        .status-message.sliding {
+            background: var(--super-gold-ghost);
+            border: 1px solid var(--super-gold);
+            color: var(--super-cream);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(-50%) rotate(0); }
+            25% { transform: translateX(-50%) rotate(-2deg); }
+            75% { transform: translateX(-50%) rotate(2deg); }
+        }
+
+        /* Painel de controles - Glassmorphism Paleta Super */
+        .controls-panel {
+            flex: 1;
+            background: rgba(10, 10, 18, 0.6);
+            border-radius: 16px;
+            border: 1px solid var(--super-gold-subtle);
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            max-width: 320px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                        inset 0 1px 0 rgba(190, 156, 109, 0.1);
+        }
+
+        .controls-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+            font-size: 1em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Toggle de modo - Paleta Super */
+        .mode-toggle {
+            display: flex;
+            background: rgba(10, 10, 18, 0.5);
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 15px;
+            border: 1px solid var(--super-gold-ghost);
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 8px;
+            border: none;
+            background: transparent;
+            color: var(--super-gold-dim);
+            cursor: pointer;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .mode-btn .mode-icon {
+            font-size: 1.4em;
+        }
+
+        .mode-btn:hover {
+            color: var(--super-cream);
+        }
+
+        .mode-btn.active {
+            background: var(--super-gold-subtle);
+            color: var(--super-gold);
+            box-shadow: 0 2px 8px rgba(190, 156, 109, 0.2);
+        }
+
+        .add-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .add-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+        }
+
+        .add-btn:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(190, 156, 109, 0.3);
+        }
+
+        .add-btn:active {
+            transform: scale(0.98);
+        }
+
+        .add-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .add-btn .icon { font-size: 1.3em; }
+
+        /* Drag and Drop */
+        .add-btn {
+            cursor: grab;
+        }
+
+        .add-btn:active {
+            cursor: grabbing;
+        }
+
+        .add-btn.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .blocks-area.drag-over {
+            background: var(--super-gold-ghost);
+            border: 2px dashed var(--super-gold);
+            border-radius: 12px;
+            min-height: 100px;
+            box-shadow: inset 0 0 30px rgba(190, 156, 109, 0.1);
+        }
+
+        .drop-zone-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Inter', sans-serif;
+            color: var(--super-gold);
+            font-size: 1em;
+            opacity: 0.6;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        .blocks-area.drag-over .drop-zone-hint {
+            opacity: 1;
+        }
+
+        /* Esconder hint quando há blocos */
+        .blocks-area:has(.block) .drop-zone-hint {
+            display: none;
+        }
+
+        /* Blocos arrastáveis */
+        .block {
+            cursor: grab;
+        }
+
+        .block:active {
+            cursor: grabbing;
+        }
+
+        .block.dragging {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+
+        .block.drag-over-left::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--super-gold);
+            border-radius: 2px;
+            animation: drop-indicator 0.5s ease infinite;
+        }
+
+        .block.drag-over-right::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--super-gold);
+            border-radius: 2px;
+            animation: drop-indicator 0.5s ease infinite;
+        }
+
+        @keyframes drop-indicator {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Ghost drag preview */
+        .drag-ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.9;
+            transform: rotate(3deg) scale(1.05);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5),
+                        0 0 20px rgba(190, 156, 109, 0.3);
+        }
+
+        /* Indicador de instrução - Paleta Super */
+        .drag-instruction {
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            color: var(--super-gold-dim);
+            font-size: 0.75em;
+            margin-top: 10px;
+            padding: 8px;
+            background: var(--super-gold-ghost);
+            border-radius: 6px;
+        }
+
+        .drag-instruction .icon {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        /* Botões de adicionar - Paleta Super com variações de intensidade */
+        .add-btn.system {
+            background: linear-gradient(135deg, var(--super-gold), rgba(190,156,109,0.7));
+            color: var(--super-bg-dark);
+        }
+        .add-btn.custom {
+            background: linear-gradient(135deg, var(--super-gold-light), var(--super-gold));
+            color: var(--super-bg-dark);
+        }
+        .add-btn.customprompt {
+            background: linear-gradient(135deg, rgba(190,156,109,0.8), rgba(190,156,109,0.5));
+            color: var(--super-cream);
+        }
+        .add-btn.user {
+            background: linear-gradient(135deg, var(--super-cream), rgba(255,244,228,0.8));
+            color: var(--super-bg-dark);
+        }
+        .add-btn.attachment {
+            background: linear-gradient(135deg, #d4a574, var(--super-gold));
+            color: var(--super-bg-dark);
+        }
+        .add-btn.web {
+            background: linear-gradient(135deg, rgba(190,156,109,0.6), rgba(190,156,109,0.4));
+            color: var(--super-cream);
+            border: 1px solid var(--super-gold-subtle);
+        }
+        .add-btn.response {
+            background: linear-gradient(135deg, rgba(212,184,150,0.7), rgba(190,156,109,0.5));
+            color: var(--super-bg-dark);
+        }
+        .add-btn.turn {
+            background: linear-gradient(135deg, rgba(26,26,46,0.9), rgba(10,10,18,0.8));
+            color: var(--super-gold-dim);
+            border: 1px solid var(--super-gold-ghost);
+        }
+
+        /* Container dos botões de ação */
+        .action-buttons-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Botão de compactar - Paleta Super */
+        .compact-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--super-gold-subtle), var(--super-gold-ghost));
+            border: 2px solid var(--super-gold);
+            border-radius: 8px;
+            color: var(--super-gold);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .compact-btn:hover {
+            background: linear-gradient(135deg, var(--super-gold), var(--super-gold-subtle));
+            color: var(--super-bg-dark);
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(190, 156, 109, 0.4);
+        }
+
+        .compact-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Botão de reset - Paleta Super */
+        .reset-btn {
+            width: 100%;
+            padding: 10px;
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid var(--super-gold-ghost);
+            border-radius: 8px;
+            color: var(--super-cream);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reset-btn:hover {
+            background: var(--super-gold-ghost);
+            border-color: var(--super-gold-subtle);
+        }
+
+        /* Legenda de custo - Paleta Super */
+        .cost-explanation {
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--super-gold-ghost);
+            border: 1px solid var(--super-gold-subtle);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            color: var(--super-gold-light);
+        }
+
+        .cost-explanation h4 {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            margin-bottom: 8px;
+            font-size: 0.95em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cost-explanation p {
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .cost-formula {
+            background: rgba(10, 10, 18, 0.6);
+            padding: 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            color: var(--super-gold);
+        }
+
+        /* Animação de colapso */
+        .context-window.collapse {
+            animation: collapse-shake 0.6s ease;
+        }
+
+        @keyframes collapse-shake {
+            0%, 100% { transform: rotate(0); }
+            10%, 30%, 50%, 70%, 90% { transform: rotate(-1deg); }
+            20%, 40%, 60%, 80% { transform: rotate(1deg); }
+        }
+
+        /* ==========================================
+           ARMAZENAMENTO EXTERNO (RAG) - Paleta Super
+           ========================================== */
+        .external-storage {
+            margin-top: 15px;
+            background: rgba(26, 26, 46, 0.6);
+            border: 2px dashed var(--super-gold-subtle);
+            border-radius: 12px;
+            padding: 15px;
+            display: none; /* Escondido por padrão (modo stuffing) */
+            backdrop-filter: blur(10px);
+        }
+
+        .external-storage.visible {
+            display: block;
+            animation: storage-appear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes storage-appear {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .storage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--super-gold-ghost);
+        }
+
+        .storage-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .storage-subtitle {
+            font-family: 'Inter', sans-serif;
+            color: var(--super-gold-dim);
+            font-size: 0.7em;
+        }
+
+        .storage-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 50px;
+            position: relative;
+        }
+
+        .storage-hint {
+            color: var(--super-gold-dim);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            text-align: center;
+            width: 100%;
+            padding: 10px;
+        }
+
+        /* Documento armazenado externamente */
+        .stored-doc {
+            background: var(--super-gold-ghost);
+            border: 1px solid var(--super-gold-subtle);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            animation: doc-store 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes doc-store {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .stored-doc .doc-icon {
+            font-size: 1.5em;
+        }
+
+        .stored-doc .doc-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stored-doc .doc-name {
+            font-family: 'Inter', sans-serif;
+            color: var(--super-cream);
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .stored-doc .doc-size {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--super-gold);
+            font-size: 0.7em;
+        }
+
+        .stored-doc .doc-status {
+            color: var(--color-success);
+            font-size: 0.65em;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stored-doc .doc-delete {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            background: rgba(239, 68, 68, 0.8);
+            border-radius: 50%;
+            font-size: 0.6em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stored-doc:hover .doc-delete {
+            opacity: 1;
+        }
+
+        /* Chunk block (menor que bloco normal) - Paleta Super */
+        .block.chunk {
+            border-color: var(--super-gold-light);
+            background: linear-gradient(135deg, rgba(212,184,150,0.25), rgba(190,156,109,0.15));
+            padding: 8px 12px;
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.15);
+        }
+
+        .block.chunk .block-icon {
+            font-size: 1.2em;
+        }
+
+        .block.chunk .block-name {
+            font-size: 0.75em;
+        }
+
+        .block.chunk .block-size {
+            font-size: 0.65em;
+        }
+
+        /* Animação de busca/retrieval */
+        .chunk-retrieval {
+            animation: chunk-fly 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes chunk-fly {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.5);
+            }
+            50% {
+                opacity: 0.7;
+                transform: translateY(-10px) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Indicador de busca no documento */
+        .stored-doc.searching {
+            animation: doc-search 0.5s ease infinite;
+        }
+
+        @keyframes doc-search {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(190, 156, 109, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 20px 5px rgba(190, 156, 109, 0.6);
+            }
+        }
+
+        /* Toggle de paradigma - destaque visual diferente */
+        .paradigm-toggle {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid var(--super-gold-ghost);
+        }
+
+        .paradigm-toggle .mode-btn.active {
+            background: var(--super-gold-subtle);
+            color: var(--super-gold);
+        }
+
+        /* Embed mode para external storage */
+        body.embed-mode .external-storage {
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        body.embed-mode .storage-header {
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+        }
+
+        body.embed-mode .storage-title {
+            font-size: 0.75em;
+        }
+
+        body.embed-mode .storage-subtitle {
+            font-size: 0.6em;
+        }
+
+        body.embed-mode .storage-hint {
+            font-size: 0.65em;
+            padding: 6px;
+        }
+
+        body.embed-mode .stored-doc {
+            padding: 8px 10px;
+        }
+
+        body.embed-mode .stored-doc .doc-icon {
+            font-size: 1.2em;
+        }
+
+        body.embed-mode .stored-doc .doc-name {
+            font-size: 0.75em;
+        }
+
+        body.embed-mode .stored-doc .doc-size {
+            font-size: 0.6em;
+        }
+
+        body.embed-mode .block.chunk {
+            padding: 6px 10px;
+        }
+
+        body.embed-mode .block.chunk .block-icon {
+            font-size: 1em;
+        }
+
+        body.embed-mode .block.chunk .block-name {
+            font-size: 0.7em;
+        }
+
+        /* Responsivo */
+        @media (max-width: 1000px) {
+            .demo-container {
+                flex-direction: column;
+            }
+            .controls-panel {
+                order: -1;
+                max-width: none;
+            }
+            .add-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .add-btn {
+                flex: 1;
+                min-width: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🧠 O Problema da Janela de Contexto</h1>
+    <p class="subtitle">Arraste ou clique para adicionar elementos. Reordene arrastando blocos no contexto.</p>
+
+    <div class="demo-container">
+        <div class="context-window" id="contextWindow">
+            <div class="context-header">
+                <span class="context-title">
+                    📦 Janela de Contexto (200K tokens)
+                </span>
+                <div class="header-indicators">
+                    <div class="cost-indicator">
+                        <span class="cost-label">Custo/Resposta</span>
+                        <span class="cost-value" id="costValue">💰 $0.00</span>
+                    </div>
+                    <div class="fill-bar-container">
+                        <div class="fill-bar" id="fillBar"></div>
+                        <span class="fill-text" id="fillText">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container unificado mostrando que é um único bloco de contexto -->
+            <div class="unified-context" id="unifiedContext">
+                <span class="context-label">CONTEXTO UNIFICADO</span>
+                <div class="blocks-area" id="blocksArea">
+                    <div class="drop-zone-hint" id="dropHint">
+                        📥 Solte aqui para adicionar ao contexto
+                    </div>
+                    <!-- Blocos serão adicionados aqui -->
+                </div>
+            </div>
+
+            <div class="status-message" id="statusMessage"></div>
+
+            <!-- Área de armazenamento externo (só visível no modo RAG) -->
+            <div class="external-storage" id="externalStorage">
+                <div class="storage-header">
+                    <span class="storage-title">📁 Armazenamento Externo</span>
+                    <span class="storage-subtitle">Documentos indexados (fora do contexto)</span>
+                </div>
+                <div class="storage-area" id="storageArea">
+                    <div class="storage-hint" id="storageHint">
+                        📎 No modo RAG, anexos ficam aqui e apenas chunks entram no contexto
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <h3 class="controls-title">⚙️ Modo de Operação</h3>
+
+            <!-- Toggle de paradigma de anexo -->
+            <div class="mode-toggle paradigm-toggle">
+                <button class="mode-btn active" id="modeStuffing" onclick="setParadigm('stuffing')">
+                    <span class="mode-icon">📄</span>
+                    <span>Stuffing</span>
+                </button>
+                <button class="mode-btn" id="modeRAG" onclick="setParadigm('rag')">
+                    <span class="mode-icon">🔍</span>
+                    <span>RAG</span>
+                </button>
+            </div>
+
+            <!-- Toggle de modo de overflow -->
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="modeCollapse" onclick="setMode('collapse')">
+                    <span class="mode-icon">💥</span>
+                    <span>Colapso</span>
+                </button>
+                <button class="mode-btn" id="modeSliding" onclick="setMode('sliding')">
+                    <span class="mode-icon">🔄</span>
+                    <span>Deslizante</span>
+                </button>
+            </div>
+
+            <h3 class="controls-title">🎛️ Adicionar Elementos</h3>
+            <div class="add-buttons" id="addButtons">
+                <button class="add-btn system" draggable="true" data-type="system" onclick="addBlock('system')">
+                    <span class="icon">🤖</span>
+                    <span>System Prompt</span>
+                </button>
+                <button class="add-btn custom" draggable="true" data-type="custom" onclick="addBlock('custom')">
+                    <span class="icon">⚙️</span>
+                    <span>Tools + MCPs</span>
+                </button>
+                <button class="add-btn customprompt" draggable="true" data-type="customprompt" onclick="addBlock('customprompt')">
+                    <span class="icon">📝</span>
+                    <span>Custom Prompt</span>
+                </button>
+                <button class="add-btn user" draggable="true" data-type="user" onclick="addBlock('user')">
+                    <span class="icon">💬</span>
+                    <span>Prompt Usuário</span>
+                </button>
+                <button class="add-btn attachment" draggable="true" data-type="attachment" onclick="addBlock('attachment')">
+                    <span class="icon">📎</span>
+                    <span>Anexo PDF</span>
+                </button>
+                <button class="add-btn web" draggable="true" data-type="web" onclick="addBlock('web')">
+                    <span class="icon">🌐</span>
+                    <span>Busca Web</span>
+                </button>
+                <button class="add-btn response" draggable="true" data-type="response" onclick="addBlock('response')">
+                    <span class="icon">💭</span>
+                    <span>Resposta IA</span>
+                </button>
+                <button class="add-btn turn" draggable="true" data-type="turn" onclick="addBlock('turn')">
+                    <span class="icon">🔄</span>
+                    <span>Novo Turno</span>
+                </button>
+            </div>
+            <div class="drag-instruction">
+                <span class="icon">✋</span> Arraste os elementos ou clique para adicionar
+            </div>
+
+            <div class="action-buttons-row">
+                <button class="compact-btn" onclick="compactContext()">
+                    📦 Compactar
+                </button>
+                <button class="reset-btn" onclick="resetDemo()">
+                    🔄 Reset
+                </button>
+            </div>
+
+            <div class="cost-explanation">
+                <h4>💡 Por que o custo aumenta?</h4>
+                <p>Cada resposta da IA processa <strong>TODO</strong> o contexto acumulado. Quanto mais tokens, maior o custo.</p>
+                <div class="cost-formula">
+                    Custo = Tokens × $0.003 / 1K
+                </div>
+                <p style="margin-top: 8px; font-size: 0.9em; color: #888;">
+                    <strong>💥 Modo Colapso:</strong> Ao atingir 100%, TUDO falha. Nenhuma resposta possível.<br><br>
+                    <strong>🔄 Modo Deslizante:</strong> Blocos antigos vão <em>desbotando</em> gradualmente - a IA "esquece" o início da conversa para processar o novo. O custo estabiliza, mas perde-se contexto.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração dos blocos (valores realistas baseados em medições)
+        // Janela total: 200K tokens
+        const blockTypes = {
+            system: {
+                icon: '🤖',
+                name: 'System Prompt',
+                size: 1.5,      // 1.5% = 3K tokens
+                sizeText: '3.1K tokens (1.5%)',
+                tokens: 3100
+            },
+            custom: {
+                icon: '⚙️',
+                name: 'Tools + MCPs',
+                size: 16.7,     // ~33K tokens (system tools + MCP tools)
+                sizeText: '33K tokens (16.7%)',
+                tokens: 33300
+            },
+            customprompt: {
+                icon: '📝',
+                name: 'Custom Prompt',
+                size: 1,        // 1% = 2K tokens
+                sizeText: '2K tokens (1%)',
+                tokens: 2000
+            },
+            user: {
+                icon: '💬',
+                name: 'Prompt Usuário',
+                size: 0.5,      // ~1K tokens
+                sizeText: '1K tokens (0.5%)',
+                tokens: 1000
+            },
+            attachment: {
+                icon: '📎',
+                name: 'Anexo PDF',
+                size: 15,       // ~30K tokens (PDF médio)
+                sizeText: '30K tokens (15%)',
+                tokens: 30000
+            },
+            web: {
+                icon: '🌐',
+                name: 'Busca Web',
+                size: 9,        // ~18K tokens
+                sizeText: '18K tokens (9%)',
+                tokens: 18000
+            },
+            response: {
+                icon: '💭',
+                name: 'Resposta IA',
+                size: 1.5,      // ~3K tokens
+                sizeText: '3K tokens (1.5%)',
+                tokens: 3000
+            },
+            turn: {
+                icon: '🔄',
+                name: 'Novo Turno',
+                size: 3,        // ~6K tokens (acumulado)
+                sizeText: '6K tokens (3%)',
+                tokens: 6000
+            },
+            compacted: {
+                icon: '📦',
+                name: 'Conversa Compactada',
+                size: 0,        // Será calculado dinamicamente
+                sizeText: '',   // Será calculado dinamicamente
+                tokens: 0
+            },
+            // Chunks para modo RAG
+            chunk1: {
+                icon: '🧩',
+                name: 'Chunk 1',
+                size: 1,        // 1% = 2K tokens
+                sizeText: '2K tokens (1%)',
+                tokens: 2000
+            },
+            chunk2: {
+                icon: '🧩',
+                name: 'Chunk 2',
+                size: 1,
+                sizeText: '2K tokens (1%)',
+                tokens: 2000
+            },
+            chunk3: {
+                icon: '🧩',
+                name: 'Chunk 3',
+                size: 0.5,
+                sizeText: '1K tokens (0.5%)',
+                tokens: 1000
+            }
+        };
+
+        const maxCapacity = 100; // 100% = 200K tokens
+        const pricePerThousand = 0.003; // $0.003 per 1K tokens
+        let currentFill = 0;
+        let totalTokens = 0;
+        let blocks = [];
+        let blockCounter = 0;
+        let mode = 'collapse'; // 'collapse' ou 'sliding'
+        let paradigm = 'stuffing'; // 'stuffing' ou 'rag'
+        let storedDocuments = []; // Documentos no armazenamento externo (RAG)
+        let docCounter = 0;
+
+        // ==========================================
+        // PARADIGMA: STUFFING vs RAG
+        // ==========================================
+        function setParadigm(newParadigm) {
+            paradigm = newParadigm;
+            document.getElementById('modeStuffing').classList.toggle('active', paradigm === 'stuffing');
+            document.getElementById('modeRAG').classList.toggle('active', paradigm === 'rag');
+
+            // Mostrar/esconder área de armazenamento externo
+            const externalStorage = document.getElementById('externalStorage');
+            if (paradigm === 'rag') {
+                externalStorage.classList.add('visible');
+                showStatus('🔍 Modo RAG: Anexos ficam no armazenamento externo, apenas chunks relevantes entram no contexto.', 'info');
+            } else {
+                externalStorage.classList.remove('visible');
+                showStatus('📄 Modo Stuffing: Anexos entram inteiros na janela de contexto.', 'info');
+            }
+            setTimeout(hideStatus, 4000);
+        }
+
+        // Adiciona documento ao armazenamento externo (modo RAG)
+        function addToExternalStorage(type) {
+            const blockInfo = blockTypes[type];
+            const storageArea = document.getElementById('storageArea');
+
+            // Remover hint se existir
+            const hint = document.getElementById('storageHint');
+            if (hint) hint.style.display = 'none';
+
+            // Criar elemento do documento
+            const doc = document.createElement('div');
+            doc.className = 'stored-doc';
+            doc.id = `doc-${docCounter}`;
+            doc.innerHTML = `
+                <span class="doc-delete" onclick="removeStoredDoc('doc-${docCounter}', event)" title="Remover">✕</span>
+                <span class="doc-icon">${blockInfo.icon}</span>
+                <div class="doc-info">
+                    <span class="doc-name">${blockInfo.name}</span>
+                    <span class="doc-size">${blockInfo.sizeText}</span>
+                    <span class="doc-status">✓ Indexado</span>
+                </div>
+            `;
+
+            // Dados do documento
+            const docData = {
+                id: doc.id,
+                type: type,
+                tokens: blockInfo.tokens,
+                size: blockInfo.size,
+                element: doc
+            };
+
+            storedDocuments.push(docData);
+            storageArea.appendChild(doc);
+            docCounter++;
+
+            showStatus(`📁 ${blockInfo.name} indexado no armazenamento externo. Adicione um prompt para buscar chunks relevantes!`, 'info');
+            setTimeout(hideStatus, 4000);
+        }
+
+        // Remove documento do armazenamento externo
+        function removeStoredDoc(docId, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+            const docIndex = storedDocuments.findIndex(d => d.id === docId);
+            if (docIndex === -1) return;
+
+            const docData = storedDocuments[docIndex];
+            docData.element.style.transition = 'all 0.3s ease';
+            docData.element.style.opacity = '0';
+            docData.element.style.transform = 'scale(0.8)';
+
+            setTimeout(() => {
+                docData.element.remove();
+                storedDocuments.splice(docIndex, 1);
+
+                // Mostrar hint se não houver mais documentos
+                if (storedDocuments.length === 0) {
+                    const hint = document.getElementById('storageHint');
+                    if (hint) hint.style.display = 'block';
+                }
+            }, 300);
+        }
+
+        // Busca chunks no documento e adiciona ao contexto (simulação)
+        function retrieveChunks() {
+            if (storedDocuments.length === 0) return;
+
+            // Animar busca no documento
+            storedDocuments.forEach(doc => {
+                doc.element.classList.add('searching');
+            });
+
+            // Após animação de busca, adicionar chunks
+            setTimeout(() => {
+                storedDocuments.forEach(doc => {
+                    doc.element.classList.remove('searching');
+                });
+
+                // Adicionar 2-3 chunks ao contexto
+                const chunksToAdd = ['chunk1', 'chunk2', 'chunk3'];
+                chunksToAdd.forEach((chunkType, index) => {
+                    setTimeout(() => {
+                        addChunkBlock(chunkType);
+                    }, index * 200);
+                });
+
+                showStatus(`🔍 Retrieval: ${chunksToAdd.length} chunks relevantes encontrados e adicionados ao contexto!`, 'info');
+                setTimeout(hideStatus, 3000);
+            }, 800);
+        }
+
+        // Adiciona um bloco de chunk ao contexto
+        function addChunkBlock(chunkType) {
+            const blockInfo = blockTypes[chunkType];
+
+            const block = document.createElement('div');
+            block.className = `block chunk chunk-retrieval`;
+            block.id = `block-${blockCounter}`;
+            block.innerHTML = `
+                <span class="block-order">${blocks.length + 1}</span>
+                <span class="block-delete" onclick="deleteBlock('block-${blockCounter}', event)" title="Remover">✕</span>
+                <span class="block-icon">${blockInfo.icon}</span>
+                <div class="block-content">
+                    <span class="block-name">${blockInfo.name}</span>
+                    <span class="block-size">${blockInfo.sizeText}</span>
+                </div>
+            `;
+
+            const blockData = {
+                id: block.id,
+                type: chunkType,
+                size: blockInfo.size,
+                tokens: blockInfo.tokens,
+                element: block,
+                order: blocks.length + 1,
+                forgotten: false
+            };
+
+            setupBlockDrag(block, blockData);
+            blocks.push(blockData);
+            document.getElementById('blocksArea').appendChild(block);
+            blockCounter++;
+
+            // Atualizar preenchimento
+            const totalSize = blocks.reduce((sum, b) => sum + b.size, 0);
+            currentFill = mode === 'sliding' ? totalSize : Math.min(totalSize, 150);
+            totalTokens = blocks.reduce((sum, b) => sum + b.tokens, 0);
+
+            updateVisuals();
+        }
+
+        function setMode(newMode) {
+            mode = newMode;
+            document.getElementById('modeCollapse').classList.toggle('active', mode === 'collapse');
+            document.getElementById('modeSliding').classList.toggle('active', mode === 'sliding');
+
+            // Resetar estados visuais dos blocos
+            blocks.forEach(b => {
+                b.element.classList.remove('fading', 'forgotten', 'sliding-out');
+                for (let i = 1; i <= 6; i++) {
+                    b.element.classList.remove(`fade-level-${i}`);
+                }
+                b.forgotten = false;
+            });
+
+            // Recalcular currentFill baseado no modo
+            const totalSize = blocks.reduce((sum, b) => sum + b.size, 0);
+            if (mode === 'sliding') {
+                currentFill = totalSize;
+            } else {
+                currentFill = Math.min(totalSize, 150);
+            }
+
+            updateVisuals();
+        }
+
+        // addBlock is defined below in the Drag and Drop section
+
+        function removeOldestBlocks(sizeNeeded) {
+            // No novo modelo, não removemos - apenas aplicamos fade
+            // Esta função é mantida para compatibilidade mas não faz nada no modo sliding
+        }
+
+        // Calcula e aplica níveis de fade aos blocos no modo sliding
+        function applyFadeLevels() {
+            if (mode !== 'sliding') {
+                // No modo collapse, limpar todos os fade levels
+                blocks.forEach(b => {
+                    for (let i = 1; i <= 6; i++) {
+                        b.element.classList.remove(`fade-level-${i}`);
+                    }
+                    b.forgotten = false;
+                });
+                return;
+            }
+
+            // Calcular o total de tokens
+            const totalSize = blocks.reduce((sum, b) => sum + b.size, 0);
+
+            if (totalSize <= maxCapacity) {
+                // Abaixo do limite - nenhum fade, atualizar custo normal
+                blocks.forEach(b => {
+                    for (let i = 1; i <= 6; i++) {
+                        b.element.classList.remove(`fade-level-${i}`);
+                    }
+                    b.forgotten = false;
+                });
+                // Atualizar custo com todos os tokens
+                updateCostForActiveTokens(totalTokens);
+                return;
+            }
+
+            // Excesso que precisa ser "esquecido"
+            const excess = totalSize - maxCapacity;
+            let accumulatedSize = 0;
+
+            // Aplicar fade aos blocos mais antigos (do início do array)
+            blocks.forEach((block, index) => {
+                // Limpar fade levels anteriores
+                for (let i = 1; i <= 6; i++) {
+                    block.element.classList.remove(`fade-level-${i}`);
+                }
+
+                // Quanto deste bloco está no "excesso"?
+                const blockStart = accumulatedSize;
+                const blockEnd = accumulatedSize + block.size;
+                accumulatedSize = blockEnd;
+
+                if (blockEnd <= excess) {
+                    // Bloco completamente "esquecido"
+                    block.element.classList.add('fade-level-6');
+                    block.forgotten = true;
+                } else if (blockStart < excess) {
+                    // Bloco parcialmente "esquecido"
+                    const forgottenPortion = (excess - blockStart) / block.size;
+                    const fadeLevel = Math.min(5, Math.ceil(forgottenPortion * 6));
+                    block.element.classList.add(`fade-level-${fadeLevel}`);
+                    block.forgotten = false;
+                } else {
+                    // Bloco totalmente na memória ativa
+                    block.forgotten = false;
+                }
+            });
+
+            // Calcular tokens ativos (não esquecidos) para o custo
+            // O custo no modo sliding é baseado no máximo da janela (tokens ativos)
+            let activeTokens = 0;
+            blocks.forEach(b => {
+                if (!b.forgotten) {
+                    activeTokens += b.tokens;
+                }
+            });
+
+            // O custo é limitado ao que cabe na janela
+            const maxTokens = maxCapacity * 2000; // 100% = 200K tokens
+            const effectiveTokens = Math.min(activeTokens, maxTokens);
+
+            // Atualizar custo baseado apenas nos tokens ativos (que cabem na janela)
+            updateCostForActiveTokens(effectiveTokens);
+        }
+
+        function updateCostForActiveTokens(activeTokens) {
+            const costValue = document.getElementById('costValue');
+            const cost = (activeTokens / 1000) * pricePerThousand;
+
+            costValue.textContent = `💰 $${cost.toFixed(3)}`;
+
+            // Mudar cor baseado no custo
+            costValue.classList.remove('high', 'very-high');
+            if (cost >= 0.5) {
+                costValue.classList.add('very-high');
+            } else if (cost >= 0.2) {
+                costValue.classList.add('high');
+            }
+        }
+
+        function updateVisuals() {
+            updateFillBar();
+            updateUnifiedContext();
+            applyFadeLevels();
+
+            // No modo sliding, o custo é atualizado por applyFadeLevels
+            // No modo collapse, atualizar normalmente
+            if (mode === 'collapse') {
+                updateCost();
+            }
+
+            checkOverflow();
+        }
+
+        function updateFillBar() {
+            const fillBar = document.getElementById('fillBar');
+            const fillText = document.getElementById('fillText');
+
+            // No modo sliding, mostrar a porcentagem real (pode passar de 100%)
+            // mas a barra visual fica em 100%
+            const displayPercentage = Math.min(currentFill, 100);
+            fillBar.style.width = `${displayPercentage}%`;
+
+            // Mostrar porcentagem real no texto
+            if (mode === 'sliding' && currentFill > 100) {
+                fillText.textContent = `${Math.round(currentFill)}% 📤`;
+            } else {
+                fillText.textContent = `${Math.round(currentFill)}%`;
+            }
+
+            // Mudar cor baseado no preenchimento e modo
+            fillBar.classList.remove('warning', 'danger', 'critical', 'overflow');
+
+            if (mode === 'sliding') {
+                // No modo sliding, cores mais suaves quando excede
+                if (currentFill > maxCapacity * 1.5) {
+                    fillBar.classList.add('critical');
+                } else if (currentFill > maxCapacity) {
+                    fillBar.classList.add('danger');
+                } else if (currentFill >= 80) {
+                    fillBar.classList.add('warning');
+                }
+            } else {
+                // Modo collapse - comportamento original
+                if (currentFill >= 100) {
+                    fillBar.classList.add('critical');
+                } else if (currentFill >= 80) {
+                    fillBar.classList.add('danger');
+                } else if (currentFill >= 60) {
+                    fillBar.classList.add('warning');
+                }
+            }
+        }
+
+        function updateCost() {
+            const costValue = document.getElementById('costValue');
+            const cost = (totalTokens / 1000) * pricePerThousand;
+
+            costValue.textContent = `💰 $${cost.toFixed(3)}`;
+
+            // Mudar cor baseado no custo
+            costValue.classList.remove('high', 'very-high');
+            if (cost >= 0.5) {
+                costValue.classList.add('very-high');
+            } else if (cost >= 0.2) {
+                costValue.classList.add('high');
+            }
+        }
+
+        function updateUnifiedContext() {
+            const unified = document.getElementById('unifiedContext');
+
+            // Mudar cor da borda lateral
+            unified.classList.remove('warning', 'danger', 'critical');
+            if (currentFill >= 100) {
+                unified.classList.add('critical');
+            } else if (currentFill >= 80) {
+                unified.classList.add('danger');
+            } else if (currentFill >= 60) {
+                unified.classList.add('warning');
+            }
+        }
+
+        function checkOverflow() {
+            const contextWindow = document.getElementById('contextWindow');
+
+            if (mode === 'collapse') {
+                if (currentFill >= 100) {
+                    // COLAPSO!
+                    showStatus('💥 OVERFLOW! Contexto excedido - modelo não consegue processar!', 'error');
+                    contextWindow.classList.add('collapse');
+                    fadeAllBlocks();
+                    setTimeout(() => {
+                        contextWindow.classList.remove('collapse');
+                    }, 600);
+                } else if (currentFill >= 80) {
+                    showStatus('⚠️ ATENÇÃO: Contexto quase cheio! Risco de degradação...', 'warning');
+                    fadeOldBlocks();
+                } else if (currentFill >= 60) {
+                    showStatus('📊 Custo aumentando: cada resposta processa TODO este contexto', 'info');
+                } else {
+                    hideStatus();
+                }
+            } else {
+                // Modo sliding - blocos antigos vão desbotando
+                const excess = currentFill - maxCapacity;
+                const forgottenCount = blocks.filter(b => b.forgotten).length;
+
+                if (currentFill > maxCapacity * 1.5) {
+                    showStatus(`💨 ${forgottenCount} bloco(s) esquecido(s) - memória antiga perdida para sempre!`, 'sliding');
+                } else if (currentFill > maxCapacity) {
+                    showStatus(`🔄 Janela cheia! Blocos antigos estão sendo "esquecidos" gradualmente...`, 'sliding');
+                } else if (currentFill >= 80) {
+                    showStatus('⚠️ Janela quase cheia - próximos elementos empurrarão os antigos', 'warning');
+                } else if (currentFill >= 60) {
+                    showStatus('📊 Modo deslizante: contexto antigo será "esquecido" se necessário', 'info');
+                } else {
+                    hideStatus();
+                }
+            }
+        }
+
+        function fadeOldBlocks() {
+            const fadeCount = Math.ceil(blocks.length * 0.3);
+            for (let i = 0; i < fadeCount && i < blocks.length; i++) {
+                blocks[i].element.classList.add('fading');
+                blocks[i].element.classList.remove('forgotten');
+            }
+        }
+
+        function fadeAllBlocks() {
+            blocks.forEach((block, i) => {
+                if (i < blocks.length * 0.5) {
+                    block.element.classList.add('forgotten');
+                } else {
+                    block.element.classList.add('fading');
+                }
+            });
+        }
+
+        function showStatus(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message visible ${type}`;
+        }
+
+        function hideStatus() {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.className = 'status-message';
+        }
+
+        function resetDemo() {
+            // Limpar blocos
+            const blocksArea = document.getElementById('blocksArea');
+            blocksArea.innerHTML = '<div class="drop-zone-hint" id="dropHint">📥 Solte aqui para adicionar ao contexto</div>';
+            blocks = [];
+            currentFill = 0;
+            totalTokens = 0;
+            blockCounter = 0;
+
+            // Limpar armazenamento externo (RAG)
+            const storageArea = document.getElementById('storageArea');
+            storageArea.innerHTML = '<div class="storage-hint" id="storageHint">📎 No modo RAG, anexos ficam aqui e apenas chunks entram no contexto</div>';
+            storedDocuments = [];
+            docCounter = 0;
+
+            // Resetar visuais
+            updateVisuals();
+            hideStatus();
+
+            // Limpar classes do contexto
+            document.getElementById('unifiedContext').classList.remove('warning', 'danger', 'critical');
+        }
+
+        // ==========================================
+        // DRAG AND DROP FUNCTIONALITY
+        // ==========================================
+
+        let draggedElement = null;
+        let draggedType = null;
+        let isDraggingFromPanel = false;
+        let draggedBlockId = null;
+
+        // Setup drag events for add buttons
+        function setupDragEvents() {
+            const addButtons = document.querySelectorAll('.add-btn[draggable="true"]');
+            const blocksArea = document.getElementById('blocksArea');
+
+            // Add button drag events
+            addButtons.forEach(btn => {
+                btn.addEventListener('dragstart', handleButtonDragStart);
+                btn.addEventListener('dragend', handleButtonDragEnd);
+            });
+
+            // Drop zone events
+            blocksArea.addEventListener('dragenter', handleDragEnter);
+            blocksArea.addEventListener('dragover', handleDragOver);
+            blocksArea.addEventListener('dragleave', handleDragLeave);
+            blocksArea.addEventListener('drop', handleDrop);
+        }
+
+        function handleButtonDragStart(e) {
+            draggedType = e.target.closest('.add-btn').dataset.type;
+            isDraggingFromPanel = true;
+            draggedBlockId = null;
+
+            e.target.closest('.add-btn').classList.add('dragging');
+
+            // Set drag data
+            e.dataTransfer.effectAllowed = 'copy';
+            e.dataTransfer.setData('text/plain', draggedType);
+
+            // Create custom drag image
+            const blockInfo = blockTypes[draggedType];
+            const ghost = document.createElement('div');
+            ghost.className = `block ${draggedType} drag-ghost`;
+            ghost.innerHTML = `
+                <span class="block-icon">${blockInfo.icon}</span>
+                <div class="block-content">
+                    <span class="block-name">${blockInfo.name}</span>
+                    <span class="block-size">${blockInfo.sizeText}</span>
+                </div>
+            `;
+            document.body.appendChild(ghost);
+            e.dataTransfer.setDragImage(ghost, 50, 30);
+            setTimeout(() => ghost.remove(), 0);
+        }
+
+        function handleButtonDragEnd(e) {
+            e.target.closest('.add-btn').classList.remove('dragging');
+            const blocksArea = document.getElementById('blocksArea');
+            blocksArea.classList.remove('drag-over');
+            isDraggingFromPanel = false;
+            draggedType = null;
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            if (isDraggingFromPanel || draggedBlockId) {
+                document.getElementById('blocksArea').classList.add('drag-over');
+            }
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = isDraggingFromPanel ? 'copy' : 'move';
+
+            // Handle block reordering indicator
+            if (draggedBlockId) {
+                const blocksArea = document.getElementById('blocksArea');
+                const blockElements = Array.from(blocksArea.querySelectorAll('.block:not(.dragging)'));
+
+                // Clear previous indicators
+                blockElements.forEach(b => {
+                    b.classList.remove('drag-over-left', 'drag-over-right');
+                });
+
+                // Find closest block for insertion
+                const closestBlock = getClosestBlock(e.clientX, e.clientY, blockElements);
+                if (closestBlock.element) {
+                    closestBlock.element.classList.add(closestBlock.position);
+                }
+            }
+        }
+
+        function handleDragLeave(e) {
+            // Only remove class if actually leaving the blocksArea
+            if (!e.relatedTarget || !document.getElementById('blocksArea').contains(e.relatedTarget)) {
+                document.getElementById('blocksArea').classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const blocksArea = document.getElementById('blocksArea');
+            blocksArea.classList.remove('drag-over');
+
+            // Clear any indicators
+            blocksArea.querySelectorAll('.block').forEach(b => {
+                b.classList.remove('drag-over-left', 'drag-over-right');
+            });
+
+            if (isDraggingFromPanel && draggedType) {
+                // Add new block
+                addBlock(draggedType);
+            } else if (draggedBlockId) {
+                // Reorder blocks
+                reorderBlock(e);
+            }
+        }
+
+        // Block reordering via drag
+        function setupBlockDrag(blockElement, blockData) {
+            blockElement.setAttribute('draggable', 'true');
+
+            blockElement.addEventListener('dragstart', (e) => {
+                draggedBlockId = blockData.id;
+                isDraggingFromPanel = false;
+                blockElement.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', blockData.id);
+            });
+
+            blockElement.addEventListener('dragend', () => {
+                blockElement.classList.remove('dragging');
+                draggedBlockId = null;
+                document.getElementById('blocksArea').classList.remove('drag-over');
+                document.querySelectorAll('.block').forEach(b => {
+                    b.classList.remove('drag-over-left', 'drag-over-right');
+                });
+            });
+        }
+
+        function getClosestBlock(x, y, blockElements) {
+            let closest = { element: null, position: 'drag-over-right', distance: Infinity };
+
+            blockElements.forEach(block => {
+                const rect = block.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+
+                if (distance < closest.distance) {
+                    closest.distance = distance;
+                    closest.element = block;
+                    closest.position = x < centerX ? 'drag-over-left' : 'drag-over-right';
+                }
+            });
+
+            return closest;
+        }
+
+        function reorderBlock(e) {
+            if (!draggedBlockId) return;
+
+            const blocksArea = document.getElementById('blocksArea');
+            const blockElements = Array.from(blocksArea.querySelectorAll('.block:not(.dragging)'));
+            const draggedIndex = blocks.findIndex(b => b.id === draggedBlockId);
+
+            if (draggedIndex === -1) return;
+
+            const closestBlock = getClosestBlock(e.clientX, e.clientY, blockElements);
+
+            if (closestBlock.element) {
+                const targetId = closestBlock.element.id;
+                const targetIndex = blocks.findIndex(b => b.id === targetId);
+
+                if (targetIndex !== -1 && targetIndex !== draggedIndex) {
+                    // Remove from old position
+                    const [movedBlock] = blocks.splice(draggedIndex, 1);
+
+                    // Calculate new position
+                    let newIndex = targetIndex;
+                    if (closestBlock.position === 'drag-over-right') {
+                        newIndex = targetIndex + (draggedIndex < targetIndex ? 0 : 1);
+                    } else {
+                        newIndex = targetIndex + (draggedIndex < targetIndex ? -1 : 0);
+                    }
+                    newIndex = Math.max(0, Math.min(newIndex, blocks.length));
+
+                    // Insert at new position
+                    blocks.splice(newIndex, 0, movedBlock);
+
+                    // Re-render blocks
+                    renderBlocks();
+                    updateBlockOrders();
+                    showStatus('🔀 Bloco reordenado com sucesso!', 'info');
+                    setTimeout(hideStatus, 2000);
+                }
+            }
+        }
+
+        function renderBlocks() {
+            const blocksArea = document.getElementById('blocksArea');
+            blocksArea.innerHTML = '<div class="drop-zone-hint" id="dropHint">📥 Solte aqui para adicionar ao contexto</div>';
+
+            blocks.forEach(blockData => {
+                blocksArea.appendChild(blockData.element);
+                setupBlockDrag(blockData.element, blockData);
+            });
+        }
+
+        function updateBlockOrders() {
+            blocks.forEach((blockData, index) => {
+                const orderSpan = blockData.element.querySelector('.block-order');
+                if (orderSpan) {
+                    orderSpan.textContent = index + 1;
+                }
+                blockData.order = index + 1;
+            });
+        }
+
+        // addBlock with drag support
+        function addBlock(type) {
+            // ==========================================
+            // TRATAMENTO ESPECIAL PARA MODO RAG
+            // ==========================================
+            if (paradigm === 'rag') {
+                // Se for anexo ou busca web, vai para armazenamento externo
+                if (type === 'attachment' || type === 'web') {
+                    addToExternalStorage(type);
+                    return;
+                }
+
+                // Se for prompt do usuário e há documentos armazenados, buscar chunks
+                if (type === 'user' && storedDocuments.length > 0) {
+                    // Adicionar o prompt primeiro
+                    addBlockToContext(type);
+                    // Depois buscar chunks
+                    setTimeout(() => {
+                        retrieveChunks();
+                    }, 500);
+                    return;
+                }
+            }
+
+            // Comportamento padrão (stuffing)
+            addBlockToContext(type);
+        }
+
+        // Função interna que realmente adiciona o bloco ao contexto
+        function addBlockToContext(type) {
+            const blockInfo = blockTypes[type];
+            let newFill = currentFill + blockInfo.size;
+
+            // Se modo collapse e já estourou, não permitir
+            if (mode === 'collapse' && currentFill >= maxCapacity) {
+                showStatus('💥 CONTEXTO COLAPSADO! Reinicie para continuar.', 'error');
+                return;
+            }
+
+            // Criar elemento do bloco
+            const block = document.createElement('div');
+            block.className = `block ${type}`;
+            block.id = `block-${blockCounter}`;
+            block.innerHTML = `
+                <span class="block-order">${blockCounter + 1}</span>
+                <span class="block-delete" onclick="deleteBlock('block-${blockCounter}', event)" title="Remover">✕</span>
+                <span class="block-icon">${blockInfo.icon}</span>
+                <div class="block-content">
+                    <span class="block-name">${blockInfo.name}</span>
+                    <span class="block-size">${blockInfo.sizeText}</span>
+                </div>
+            `;
+
+            // Criar objeto de dados do bloco
+            const blockData = {
+                id: block.id,
+                type: type,
+                size: blockInfo.size,
+                tokens: blockInfo.tokens,
+                element: block,
+                order: blockCounter + 1,
+                forgotten: false
+            };
+
+            // Setup drag events for the new block
+            setupBlockDrag(block, blockData);
+
+            // Adicionar ao array e ao DOM
+            blocks.push(blockData);
+
+            document.getElementById('blocksArea').appendChild(block);
+            blockCounter++;
+
+            // Atualizar preenchimento
+            // No modo sliding, permite ultrapassar - os blocos antigos vão desbotando
+            // No modo collapse, limita a 150 para visualização do overflow
+            if (mode === 'sliding') {
+                currentFill = newFill; // Permite crescer indefinidamente
+            } else {
+                currentFill = Math.min(newFill, 150);
+            }
+
+            totalTokens = blocks.reduce((sum, b) => sum + b.tokens, 0);
+
+            updateVisuals();
+        };
+
+        // Função para compactar o contexto
+        function compactContext() {
+            // Tipos que sobrevivem à compactação (são re-injetados)
+            const preservedTypes = ['system', 'customprompt'];
+
+            // Separar blocos: preservados vs. a compactar (inclui blocos compactados anteriores)
+            const preservedBlocks = blocks.filter(b => preservedTypes.includes(b.type));
+            const toCompactBlocks = blocks.filter(b => !preservedTypes.includes(b.type));
+
+            // Se não há nada para compactar, avisar
+            if (toCompactBlocks.length === 0) {
+                showStatus('⚠️ Nada para compactar! Adicione mais elementos ao contexto.', 'warning');
+                setTimeout(hideStatus, 3000);
+                return;
+            }
+
+            // Se só tem um bloco compactado e nada mais, avisar
+            if (toCompactBlocks.length === 1 && toCompactBlocks[0].type === 'compacted') {
+                showStatus('⚠️ Adicione novos elementos para compactar novamente.', 'warning');
+                setTimeout(hideStatus, 3000);
+                return;
+            }
+
+            // Calcular tokens totais a compactar
+            const totalTokensToCompact = toCompactBlocks.reduce((sum, b) => sum + b.tokens, 0);
+
+            // Taxa de compressão: ~20-25% do original (simulando resumo)
+            const compressionRate = 0.22;
+            const compactedTokens = Math.round(totalTokensToCompact * compressionRate);
+            const compactedSize = (compactedTokens / 2000); // % da janela de 200K
+
+            // Animação: fade out dos blocos a compactar
+            toCompactBlocks.forEach((blockData, index) => {
+                setTimeout(() => {
+                    blockData.element.style.transition = 'all 0.4s ease';
+                    blockData.element.style.opacity = '0';
+                    blockData.element.style.transform = 'scale(0.5) translateY(-20px)';
+                }, index * 100);
+            });
+
+            // Após animações, remover e criar bloco compactado
+            setTimeout(() => {
+                // Remover blocos do DOM
+                toCompactBlocks.forEach(b => b.element.remove());
+
+                // Atualizar array de blocos
+                blocks = preservedBlocks;
+
+                // Criar bloco de conversa compactada
+                const compactedBlock = document.createElement('div');
+                compactedBlock.className = 'block compacted';
+                compactedBlock.id = `block-${blockCounter}`;
+                compactedBlock.innerHTML = `
+                    <span class="block-order">${blocks.length + 1}</span>
+                    <span class="block-delete" onclick="deleteBlock('block-${blockCounter}', event)" title="Remover">✕</span>
+                    <span class="block-icon">📦</span>
+                    <div class="block-content">
+                        <span class="block-name">Conversa Compactada</span>
+                        <span class="block-size">${(compactedTokens/1000).toFixed(1)}K tokens (${compactedSize.toFixed(1)}%)</span>
+                    </div>
+                `;
+
+                // Dados do bloco compactado
+                const compactedData = {
+                    id: compactedBlock.id,
+                    type: 'compacted',
+                    size: compactedSize,
+                    tokens: compactedTokens,
+                    element: compactedBlock,
+                    order: blocks.length + 1,
+                    forgotten: false,
+                    originalTokens: totalTokensToCompact,
+                    blocksCompacted: toCompactBlocks.length
+                };
+
+                // Setup drag
+                setupBlockDrag(compactedBlock, compactedData);
+
+                // Adicionar ao array e DOM
+                blocks.push(compactedData);
+                document.getElementById('blocksArea').appendChild(compactedBlock);
+                blockCounter++;
+
+                // Animação de entrada
+                compactedBlock.style.opacity = '0';
+                compactedBlock.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    compactedBlock.style.transition = 'all 0.5s ease';
+                    compactedBlock.style.opacity = '1';
+                    compactedBlock.style.transform = 'scale(1)';
+                }, 50);
+
+                // Recalcular totais
+                const totalSize = blocks.reduce((sum, b) => sum + b.size, 0);
+                currentFill = mode === 'sliding' ? totalSize : Math.min(totalSize, 150);
+                totalTokens = blocks.reduce((sum, b) => sum + b.tokens, 0);
+
+                // Atualizar ordens
+                updateBlockOrders();
+                updateVisuals();
+
+                // Feedback
+                const savedTokens = totalTokensToCompact - compactedTokens;
+                const savedPercent = ((savedTokens / totalTokensToCompact) * 100).toFixed(0);
+                const hadPreviousCompacted = toCompactBlocks.some(b => b.type === 'compacted');
+                const feedbackPrefix = hadPreviousCompacted ? '📦 Re-compactado!' : '📦 Compactado!';
+                showStatus(`${feedbackPrefix} ${toCompactBlocks.length} blocos → 1 resumo. Economia: ${(savedTokens/1000).toFixed(1)}K tokens (${savedPercent}%)`, 'info');
+                setTimeout(hideStatus, 5000);
+
+            }, toCompactBlocks.length * 100 + 400);
+        }
+
+        // Função para deletar um bloco
+        function deleteBlock(blockId, event) {
+            // Prevenir propagação para não disparar drag
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+            const blockIndex = blocks.findIndex(b => b.id === blockId);
+            if (blockIndex === -1) return;
+
+            const blockData = blocks[blockIndex];
+            const blockElement = blockData.element;
+
+            // Animação de saída
+            blockElement.style.transition = 'all 0.3s ease';
+            blockElement.style.opacity = '0';
+            blockElement.style.transform = 'scale(0.8)';
+
+            setTimeout(() => {
+                // Remover do DOM
+                blockElement.remove();
+
+                // Remover do array
+                blocks.splice(blockIndex, 1);
+
+                // Recalcular preenchimento
+                const totalSize = blocks.reduce((sum, b) => sum + b.size, 0);
+                currentFill = mode === 'sliding' ? totalSize : Math.min(totalSize, 150);
+                totalTokens = blocks.reduce((sum, b) => sum + b.tokens, 0);
+
+                // Atualizar ordens dos blocos restantes
+                updateBlockOrders();
+
+                // Atualizar visuais
+                updateVisuals();
+
+                // Feedback
+                showStatus(`🗑️ ${blockData.type === 'system' ? 'System Prompt' : blockTypes[blockData.type].name} removido`, 'info');
+                setTimeout(hideStatus, 2000);
+            }, 300);
+        }
+
+        // Initialize drag events on page load
+        document.addEventListener('DOMContentLoaded', setupDragEvents);
+
+        // Detectar se está em iframe e aplicar modo embed
+        function detectEmbedMode() {
+            try {
+                // Está em iframe se window.self !== window.top
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                // Se der erro de segurança, provavelmente está em iframe
+                document.body.classList.add('embed-mode');
+            }
+
+            // Também aceita parâmetro URL ?embed=true
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('embed') === 'true') {
+                document.body.classList.add('embed-mode');
+            }
+        }
+
+        // Executar detecção ao carregar
+        detectEmbedMode();
+    </script>
+</body>
+</html>

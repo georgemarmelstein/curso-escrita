@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capa - Arquitetura de Agentes</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            background: var(--super-bg-dark);
+        }
+
+        /* Canvas para arquitetura animada */
+        #bgCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Overlay escuro */
+        .radial-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center,
+                rgba(10, 10, 18, 0.4) 0%,
+                rgba(10, 10, 18, 0.7) 50%,
+                rgba(10, 10, 18, 0.95) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Container principal */
+        .capa-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Numero do modulo */
+        .module-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            font-weight: 400;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: rgba(190, 156, 109, 0.8);
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease 0.2s both;
+        }
+
+        .module-number::before {
+            content: '// ';
+            color: rgba(190, 156, 109, 0.5);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Diagrama de arquitetura */
+        .architecture-diagram {
+            margin: 0 auto 30px;
+            max-width: 700px;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .arch-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .arch-node {
+            background: rgba(190, 156, 109, 0.1);
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 0.8em;
+            color: var(--super-cream);
+            transition: all 0.3s ease;
+        }
+
+        .arch-node.orchestrator {
+            background: rgba(190, 156, 109, 0.2);
+            border-color: var(--super-gold);
+            padding: 15px 30px;
+            font-weight: 600;
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.2);
+        }
+
+        .arch-node.workflow {
+            border-color: var(--super-green);
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        .arch-node.agent {
+            border-color: var(--super-amber);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .arch-connector {
+            color: var(--super-gold);
+            font-size: 1.2em;
+            opacity: 0.6;
+        }
+
+        .arch-connector.vertical {
+            font-size: 1em;
+            margin: 5px 0;
+        }
+
+        /* Animacao dos nos */
+        .arch-node:nth-child(1) { animation: nodeAppear 0.5s ease 0.6s both; }
+        .arch-node:nth-child(2) { animation: nodeAppear 0.5s ease 0.7s both; }
+        .arch-node:nth-child(3) { animation: nodeAppear 0.5s ease 0.8s both; }
+        .arch-node:nth-child(4) { animation: nodeAppear 0.5s ease 0.9s both; }
+        .arch-node:nth-child(5) { animation: nodeAppear 0.5s ease 1.0s both; }
+
+        @keyframes nodeAppear {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Titulo principal */
+        .main-title {
+            margin-bottom: 15px;
+            animation: fadeInUp 1s ease 1.2s both;
+        }
+
+        .title-line {
+            display: block;
+        }
+
+        .title-line.small {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.6em;
+            font-weight: 300;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            color: rgba(255, 244, 228, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .title-line.large {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3.2em;
+            font-weight: 800;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #BE9C6D 0%, #d4b896 40%, #BE9C6D 70%, #9a7d52 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 4s ease infinite;
+            filter: drop-shadow(0 0 30px rgba(190, 156, 109, 0.4));
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Barra decorativa */
+        .decorative-bar {
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--super-gold), transparent);
+            margin: 15px auto;
+            animation: expandBar 1s ease 1.4s both;
+            box-shadow: 0 0 15px rgba(190, 156, 109, 0.5);
+        }
+
+        @keyframes expandBar {
+            from { width: 0; opacity: 0; }
+            to { width: 150px; opacity: 1; }
+        }
+
+        /* Subtitulo */
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            font-weight: 400;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 1.6s both;
+        }
+
+        /* Badges de conceitos */
+        .concepts-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 1.8s both;
+        }
+
+        .concept-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .concept-badge:hover {
+            border-color: rgba(190, 156, 109, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .concept-badge .icon { font-size: 1.2em; }
+
+        .concept-badge .text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-cream);
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        .footer-bar {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            animation: fadeInUp 1s ease 2s both;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .footer-item .label {
+            color: rgba(190, 156, 109, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Embed mode */
+        body.embed-mode .capa-container { padding: 20px; }
+        body.embed-mode .architecture-diagram { margin-bottom: 20px; }
+        body.embed-mode .arch-node { padding: 8px 14px; font-size: 0.7em; }
+        body.embed-mode .arch-node.orchestrator { padding: 10px 20px; }
+        body.embed-mode .title-line.small { font-size: 1.2em; letter-spacing: 8px; }
+        body.embed-mode .title-line.large { font-size: 2.4em; }
+        body.embed-mode .subtitle { font-size: 0.85em; margin-bottom: 20px; }
+        body.embed-mode .concepts-row { gap: 10px; }
+        body.embed-mode .concept-badge { padding: 8px 12px; }
+        body.embed-mode .concept-badge .text { font-size: 0.65em; }
+    </style>
+</head>
+<body>
+    <canvas id="bgCanvas"></canvas>
+    <div class="radial-overlay"></div>
+
+    <div class="capa-container">
+        <div class="module-number">Aula 03</div>
+
+        <!-- Diagrama de arquitetura simplificado -->
+        <div class="architecture-diagram">
+            <div class="arch-row">
+                <div class="arch-node orchestrator">ORCHESTRATOR</div>
+            </div>
+            <div class="arch-row">
+                <span class="arch-connector vertical">|</span>
+            </div>
+            <div class="arch-row">
+                <div class="arch-node workflow">Workflow</div>
+                <span class="arch-connector">---</span>
+                <div class="arch-node agent">Agent</div>
+                <span class="arch-connector">---</span>
+                <div class="arch-node workflow">Pipeline</div>
+            </div>
+            <div class="arch-row">
+                <span class="arch-connector vertical">|</span>
+                <span style="width: 80px;"></span>
+                <span class="arch-connector vertical">|</span>
+                <span style="width: 80px;"></span>
+                <span class="arch-connector vertical">|</span>
+            </div>
+            <div class="arch-row">
+                <div class="arch-node">Gate</div>
+                <div class="arch-node">Fan-Out</div>
+                <div class="arch-node">Context</div>
+            </div>
+        </div>
+
+        <h1 class="main-title">
+            <span class="title-line small">Arquitetura de</span>
+            <span class="title-line large">AGENTES</span>
+        </h1>
+
+        <div class="decorative-bar"></div>
+
+        <p class="subtitle">Padres arquiteturais para sistemas agenticos robustos</p>
+
+        <div class="concepts-row">
+            <div class="concept-badge">
+                <span class="icon">&#128260;</span>
+                <span class="text">Workflow vs Agent</span>
+            </div>
+            <div class="concept-badge">
+                <span class="icon">&#128279;</span>
+                <span class="text">Pipelines</span>
+            </div>
+            <div class="concept-badge">
+                <span class="icon">&#128421;</span>
+                <span class="text">Fan-Out</span>
+            </div>
+            <div class="concept-badge">
+                <span class="icon">&#128274;</span>
+                <span class="text">Gates</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bar">
+        <div class="footer-item">
+            <span class="label">Curso</span>
+            <span>Sistemas Agenticos</span>
+        </div>
+        <div class="footer-item">
+            <span class="label">Duracao</span>
+            <span>3 horas</span>
+        </div>
+        <div class="footer-item">
+            <span class="label">Instrutor</span>
+            <span>George Marmelstein</span>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Canvas animation - flowing connections
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = document.documentElement.clientWidth || window.innerWidth;
+            canvas.height = document.documentElement.clientHeight || window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Particles representing data flow
+        const particles = [];
+        const particleCount = 50;
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+                this.alpha = Math.random() * 0.3 + 0.1;
+                this.connections = [];
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(190, 156, 109, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        // Initialize particles
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw connections between close particles
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 150) {
+                        const alpha = (1 - dist / 150) * 0.15;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(190, 156, 109, ${alpha})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Update and draw particles
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 02 - Desvendando o Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--super-bg-dark);
+            overflow: hidden;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .aula-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            color: var(--super-gold);
+            opacity: 0.7;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease 0.3s both;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            font-weight: 700;
+            color: var(--super-cream);
+            line-height: 1.1;
+            margin-bottom: 25px;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .title .highlight {
+            color: var(--super-gold);
+            display: block;
+            font-style: italic;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.3em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.6);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: fadeIn 1s ease 0.8s both;
+        }
+
+        .terminal-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            color: var(--super-gold);
+            padding: 15px 30px;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 8px;
+            display: inline-block;
+            animation: fadeIn 1s ease 1.1s both;
+        }
+
+        .terminal-hint .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Embed mode */
+        body.embed-mode .title { font-size: 2.8em; }
+        body.embed-mode .subtitle { font-size: 1em; }
+        body.embed-mode .terminal-hint { font-size: 0.9em; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+
+    <div class="content">
+        <div class="aula-number">AULA 02</div>
+        <h1 class="title">
+            Desvendando o
+            <span class="highlight">Claude Code</span>
+        </h1>
+        <p class="subtitle">Uma Introdução Amigável</p>
+        <div class="terminal-hint">
+            $ claude<span class="cursor">_</span>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Effect - PALETA SUPER
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = document.documentElement.clientWidth || window.innerWidth;
+            canvas.height = document.documentElement.clientHeight || window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$>_./claude'.split('');
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
+
+        const colors = {
+            goldBright: 'rgba(190, 156, 109, 0.9)',
+            goldMedium: 'rgba(190, 156, 109, 0.5)',
+            goldDim: 'rgba(190, 156, 109, 0.2)'
+        };
+
+        function draw() {
+            ctx.fillStyle = 'rgba(10, 10, 18, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px JetBrains Mono, monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const brightness = Math.random();
+
+                if (brightness > 0.95) {
+                    ctx.fillStyle = colors.goldBright;
+                } else if (brightness > 0.7) {
+                    ctx.fillStyle = colors.goldMedium;
+                } else {
+                    ctx.fillStyle = colors.goldDim;
+                }
+
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 50);
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

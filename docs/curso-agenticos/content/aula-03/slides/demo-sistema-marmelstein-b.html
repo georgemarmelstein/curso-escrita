@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Marmelstein - Proposta B: Pipeline Vertical</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --gold-muted: rgba(190, 156, 109, 0.4);
+            --cream: #FFF4E4;
+            --cream-soft: rgba(255, 244, 228, 0.8);
+            --dark: #0a0a12;
+            --phase-1: #fbbf24;
+            --phase-2: #22d3ee;
+            --phase-3: #a78bfa;
+            --phase-4: #60a5fa;
+            --phase-5: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2vh 3vw;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4vw;
+            width: 100%;
+            max-width: 1400px;
+            height: 90vh;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            margin-bottom: 3vh;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.5vh;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .pipeline {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .pipeline::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 25px;
+            bottom: 25px;
+            width: 2px;
+            background: linear-gradient(to bottom,
+                var(--phase-1),
+                var(--phase-2),
+                var(--phase-3),
+                var(--phase-4),
+                var(--phase-5)
+            );
+            opacity: 0.4;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 1.5vw;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            padding: 1vh 0;
+        }
+
+        .step:hover { opacity: 0.8; }
+        .step.active { opacity: 1; }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--dark);
+            border: 3px solid var(--step-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--step-color);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step.active .step-number {
+            background: var(--step-color);
+            color: var(--dark);
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.3);
+        }
+
+        .step[data-step="1"] { --step-color: var(--phase-1); }
+        .step[data-step="2"] { --step-color: var(--phase-2); }
+        .step[data-step="3"] { --step-color: var(--phase-3); }
+        .step[data-step="4"] { --step-color: var(--phase-4); }
+        .step[data-step="5"] { --step-color: var(--phase-5); }
+
+        .step-info {
+            flex: 1;
+        }
+
+        .step-name {
+            font-size: clamp(1rem, 1.3vw, 1.2rem);
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 0.3vh;
+        }
+
+        .step-tool {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+            color: var(--gold);
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+        }
+
+        .transform-card {
+            background: rgba(20, 20, 30, 0.9);
+            border: 2px solid var(--gold-muted);
+            border-radius: 16px;
+            padding: 3vh 2.5vw;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s ease;
+        }
+
+        .transform-card.active {
+            border-color: var(--step-color);
+        }
+
+        .transform-header {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            margin-bottom: 3vh;
+        }
+
+        .transform-icon {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+        }
+
+        .transform-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .transform-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2vw;
+            flex: 1;
+        }
+
+        .flow-box {
+            background: rgba(255, 244, 228, 0.05);
+            border: 1px solid var(--gold-muted);
+            border-radius: 12px;
+            padding: 2vh 1.5vw;
+            text-align: center;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .flow-box.input {
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .flow-box.output {
+            border-color: var(--phase-5);
+        }
+
+        .flow-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1vh;
+        }
+
+        .flow-content {
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            color: var(--cream);
+            line-height: 1.4;
+        }
+
+        .flow-arrow {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            color: var(--gold);
+            opacity: 0.6;
+        }
+
+        .transform-process {
+            background: linear-gradient(90deg, transparent, rgba(190, 156, 109, 0.1), transparent);
+            border-radius: 8px;
+            padding: 1.5vh 1vw;
+            text-align: center;
+        }
+
+        .process-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--cream-soft);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .outputs-section {
+            margin-top: auto;
+            padding-top: 2vh;
+            border-top: 1px solid var(--gold-muted);
+        }
+
+        .outputs-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.85vw, 0.8rem);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1vh;
+        }
+
+        .outputs-list {
+            display: flex;
+            gap: 1vw;
+            flex-wrap: wrap;
+        }
+
+        .output-tag {
+            background: rgba(255, 244, 228, 0.08);
+            border: 1px solid var(--gold-muted);
+            border-radius: 20px;
+            padding: 0.5vh 1vw;
+            font-size: clamp(0.75rem, 0.95vw, 0.9rem);
+            color: var(--cream-soft);
+        }
+
+        /* Animations */
+        .step {
+            opacity: 0;
+            animation: stepAppear 0.4s ease forwards;
+        }
+        .step:nth-child(1) { animation-delay: 0.1s; }
+        .step:nth-child(2) { animation-delay: 0.2s; }
+        .step:nth-child(3) { animation-delay: 0.3s; }
+        .step:nth-child(4) { animation-delay: 0.4s; }
+        .step:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes stepAppear {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 0.5; transform: translateX(0); }
+        }
+
+        .step.active { animation: none; opacity: 1; }
+
+        /* Embed mode */
+        body.embed-mode { padding: 1.5vh 2vw; }
+        body.embed-mode .container { gap: 2vw; }
+        body.embed-mode .header-title { font-size: clamp(1.2rem, 2vw, 1.6rem); }
+        body.embed-mode .step-number { width: 40px; height: 40px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="header">
+                <div class="header-label">Pipeline de Desenvolvimento</div>
+                <h1 class="header-title">Sistema Marmelstein</h1>
+            </div>
+
+            <div class="pipeline">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-info">
+                        <div class="step-name">Brainstorming</div>
+                        <div class="step-tool">SuperPack</div>
+                    </div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-info">
+                        <div class="step-name">Planejamento</div>
+                        <div class="step-tool">Writing Plan</div>
+                    </div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-info">
+                        <div class="step-name">Especificação</div>
+                        <div class="step-tool">SuperJurista</div>
+                    </div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-info">
+                        <div class="step-name">Implementação</div>
+                        <div class="step-tool">Feature-Dev</div>
+                    </div>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-number">5</div>
+                    <div class="step-info">
+                        <div class="step-name">Init</div>
+                        <div class="step-tool">CLAUDE.md</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="transform-card" id="transform-card">
+                <div class="transform-header">
+                    <div class="transform-icon" id="transform-icon">💡</div>
+                    <div class="transform-title" id="transform-title">Brainstorming</div>
+                </div>
+
+                <div class="transform-flow">
+                    <div class="flow-box input">
+                        <div class="flow-label">Entrada</div>
+                        <div class="flow-content" id="flow-input">Problema bruto</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="transform-process">
+                        <div class="process-label" id="process-label">Exploração criativa</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box output">
+                        <div class="flow-label">Saída</div>
+                        <div class="flow-content" id="flow-output">Ideias refinadas</div>
+                    </div>
+                </div>
+
+                <div class="outputs-section">
+                    <div class="outputs-title">Entregáveis</div>
+                    <div class="outputs-list" id="outputs-list">
+                        <span class="output-tag">Mapa de ideias</span>
+                        <span class="output-tag">Decisões</span>
+                        <span class="output-tag">Riscos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const steps = [
+            {
+                icon: "💡",
+                title: "Brainstorming",
+                input: "Problema bruto",
+                process: "Exploração criativa",
+                output: "Ideias refinadas",
+                outputs: ["Mapa de ideias", "Decisões", "Riscos"]
+            },
+            {
+                icon: "📋",
+                title: "Planejamento",
+                input: "Ideias refinadas",
+                process: "Estruturação lógica",
+                output: "Plano de ação",
+                outputs: ["Tarefas", "Dependências", "Critérios"]
+            },
+            {
+                icon: "📜",
+                title: "Especificação",
+                input: "Plano de ação",
+                process: "Formalização jurídica",
+                output: "Requisitos formais",
+                outputs: ["Especificação", "Regras", "Casos de uso"]
+            },
+            {
+                icon: "🔨",
+                title: "Implementação",
+                input: "Requisitos formais",
+                process: "Explorar → Implementar → Revisar",
+                output: "Código validado",
+                outputs: ["Código", "Testes", "Review"]
+            },
+            {
+                icon: "📁",
+                title: "Init",
+                input: "Código validado",
+                process: "Documentação sistemática",
+                output: "Projeto documentado",
+                outputs: ["CLAUDE.md", "README", "Padrões"]
+            }
+        ];
+
+        let currentStep = 0;
+        const stepElements = document.querySelectorAll('.step');
+        const transformCard = document.getElementById('transform-card');
+
+        function updateTransform(index) {
+            const step = steps[index];
+            const stepColor = getComputedStyle(stepElements[index]).getPropertyValue('--step-color');
+
+            document.getElementById('transform-icon').textContent = step.icon;
+            document.getElementById('transform-title').textContent = step.title;
+            document.getElementById('flow-input').textContent = step.input;
+            document.getElementById('process-label').textContent = step.process;
+            document.getElementById('flow-output').textContent = step.output;
+
+            const outputsList = document.getElementById('outputs-list');
+            outputsList.innerHTML = step.outputs.map(o => `<span class="output-tag">${o}</span>`).join('');
+
+            transformCard.style.setProperty('--step-color', stepColor);
+            transformCard.classList.add('active');
+        }
+
+        function setActiveStep(index) {
+            stepElements.forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+            currentStep = index;
+            updateTransform(index);
+        }
+
+        stepElements.forEach((el, i) => {
+            el.addEventListener('click', () => setActiveStep(i));
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                setActiveStep((currentStep + 1) % steps.length);
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                setActiveStep((currentStep - 1 + steps.length) % steps.length);
+            }
+        });
+
+        // Initialize
+        updateTransform(0);
+
+        // Embed mode detection
+        try {
+            if (window.self !== window.top) {
+                document.body.classList.add('embed-mode');
+            }
+        } catch (e) {
+            document.body.classList.add('embed-mode');
+        }
+    </script>
+</body>
+</html>

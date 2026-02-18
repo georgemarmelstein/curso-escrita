@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - MCP: A Ponte para o Mundo Externo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+            --amber: #fbbf24;
+            --cyan: #22d3ee;
+            --pink: #f472b6;
+            --red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        .bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(96, 165, 250, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(34, 211, 238, 0.06) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 2.5vh 4vw;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2vh;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5vw;
+        }
+
+        .header-icon {
+            font-size: clamp(2rem, 3.5vw, 3rem);
+        }
+
+        .header-text h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.4rem, 2.4vw, 2rem);
+            font-weight: 600;
+            color: var(--cyan);
+        }
+
+        .header-text p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 0.3vh;
+        }
+
+        .usb-badge {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.15), rgba(96, 165, 250, 0.15));
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            padding: 0.8vh 1.5vw;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        /* Architecture Diagram */
+        .architecture {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5vh;
+            padding: 1vh 0;
+        }
+
+        /* Client Layer */
+        .client-layer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .client-box {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.2), rgba(190, 156, 109, 0.1));
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 2vh 4vw;
+            text-align: center;
+            position: relative;
+            min-width: 30vw;
+        }
+
+        .client-box::after {
+            content: '';
+            position: absolute;
+            bottom: -2vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 2vh;
+            background: linear-gradient(to bottom, var(--gold), var(--cyan));
+        }
+
+        .client-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+            color: var(--gold);
+            margin-bottom: 0.5vh;
+        }
+
+        .client-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        /* Protocol Layer */
+        .protocol-layer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2vw;
+            padding: 1.5vh 0;
+        }
+
+        .protocol-box {
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px dashed var(--cyan);
+            border-radius: 12px;
+            padding: 1.5vh 3vw;
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            position: relative;
+        }
+
+        .protocol-icon {
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+        }
+
+        .protocol-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.8rem, 1.2vw, 1rem);
+            color: var(--cyan);
+        }
+
+        .protocol-desc {
+            font-size: clamp(0.65rem, 0.9vw, 0.75rem);
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Data flow animation */
+        .data-flow {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+            animation: flowDown 2s ease-in-out infinite;
+        }
+
+        .data-flow.up {
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+            animation: flowUp 2s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        @keyframes flowDown {
+            0% { top: -20px; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { top: 40px; opacity: 0; }
+        }
+
+        @keyframes flowUp {
+            0% { top: 40px; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { top: -20px; opacity: 0; }
+        }
+
+        /* Servers Layer */
+        .servers-layer {
+            display: flex;
+            justify-content: center;
+            gap: 2vw;
+            flex-wrap: wrap;
+        }
+
+        .server-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2vh 1.5vw;
+            min-width: 12vw;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .server-card::before {
+            content: '';
+            position: absolute;
+            top: -1.5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 1.5vh;
+            background: linear-gradient(to bottom, var(--cyan), var(--server-color, var(--purple)));
+        }
+
+        .server-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--server-color, var(--purple));
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .server-card.active {
+            border-color: var(--server-color, var(--purple));
+            background: rgba(var(--server-color-rgb, 167, 139, 250), 0.1);
+        }
+
+        .server-icon {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            margin-bottom: 1vh;
+        }
+
+        .server-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.2vw, 1rem);
+            font-weight: 600;
+            color: var(--server-color, var(--purple));
+            margin-bottom: 0.5vh;
+        }
+
+        .server-source {
+            font-size: clamp(0.6rem, 0.85vw, 0.7rem);
+            color: rgba(255, 244, 228, 0.4);
+            margin-bottom: 1vh;
+        }
+
+        .server-desc {
+            font-size: clamp(0.7rem, 0.95vw, 0.8rem);
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.4;
+        }
+
+        /* Server colors */
+        .server-bnp {
+            --server-color: #ef4444;
+            --server-color-rgb: 239, 68, 68;
+        }
+        .server-cjf {
+            --server-color: #4ade80;
+            --server-color-rgb: 74, 222, 128;
+        }
+        .server-julia {
+            --server-color: #60a5fa;
+            --server-color-rgb: 96, 165, 250;
+        }
+        .server-generic {
+            --server-color: #a78bfa;
+            --server-color-rgb: 167, 139, 250;
+        }
+
+        /* External World */
+        .external-layer {
+            display: flex;
+            justify-content: center;
+            gap: 3vw;
+            margin-top: 1vh;
+        }
+
+        .external-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+            padding: 1vh 1.5vw;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .external-icon {
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            opacity: 0.6;
+        }
+
+        .external-text {
+            font-size: clamp(0.65rem, 0.9vw, 0.75rem);
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1.5vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 2vw;
+        }
+
+        .footer-message {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(0.9rem, 1.4vw, 1.15rem);
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .footer-message strong {
+            color: var(--cyan);
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+
+        .config-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.85vw, 0.7rem);
+            color: rgba(255, 244, 228, 0.4);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5vh 1vw;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Connection lines */
+        .connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Pulse animation for active state */
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(34, 211, 238, 0); }
+        }
+
+        .protocol-box {
+            animation: pulse 3s infinite;
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 2vh 3vw; }
+        body.embed-mode .client-box { padding: 1.5vh 3vw; min-width: 25vw; }
+        body.embed-mode .server-card { padding: 1.5vh 1.2vw; min-width: 10vw; }
+        body.embed-mode .header { margin-bottom: 1.5vh; }
+        body.embed-mode .architecture { gap: 1vh; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .servers-layer { gap: 1.5vw; }
+            .server-card { min-width: 22vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <span class="header-icon">🔌</span>
+                <div class="header-text">
+                    <h1>MCP - A Ponte para o Mundo Externo</h1>
+                    <p>Model Context Protocol: conectando agentes a serviços</p>
+                </div>
+            </div>
+            <div class="usb-badge">
+                <span>🔗</span>
+                <span>"USB for AI"</span>
+            </div>
+        </div>
+
+        <div class="architecture">
+            <!-- Client Layer -->
+            <div class="client-layer">
+                <div class="client-box">
+                    <div class="client-title">Claude Code</div>
+                    <div class="client-subtitle">MCP Client</div>
+                </div>
+            </div>
+
+            <!-- Protocol Layer -->
+            <div class="protocol-layer">
+                <div class="protocol-box">
+                    <span class="protocol-icon">⬇️</span>
+                    <div>
+                        <div class="protocol-text">JSON-RPC</div>
+                        <div class="protocol-desc">Request</div>
+                    </div>
+                    <div class="data-flow"></div>
+                </div>
+                <div class="protocol-box">
+                    <span class="protocol-icon">⬆️</span>
+                    <div>
+                        <div class="protocol-text">JSON-RPC</div>
+                        <div class="protocol-desc">Response</div>
+                    </div>
+                    <div class="data-flow up"></div>
+                </div>
+            </div>
+
+            <!-- MCP Servers -->
+            <div class="servers-layer">
+                <div class="server-card server-bnp" data-server="bnp">
+                    <span class="server-icon">⚖️</span>
+                    <div class="server-name">BNP-API</div>
+                    <div class="server-source">STF / STJ</div>
+                    <div class="server-desc">Precedentes qualificados dos tribunais superiores</div>
+                </div>
+
+                <div class="server-card server-cjf" data-server="cjf">
+                    <span class="server-icon">📚</span>
+                    <div class="server-name">CJF</div>
+                    <div class="server-source">Justiça Federal</div>
+                    <div class="server-desc">Jurisprudência unificada federal</div>
+                </div>
+
+                <div class="server-card server-julia" data-server="julia">
+                    <span class="server-icon">🤖</span>
+                    <div class="server-name">JULIA</div>
+                    <div class="server-source">TRF5</div>
+                    <div class="server-desc">Assistente IA do Tribunal Regional</div>
+                </div>
+
+                <div class="server-card server-generic" data-server="generic">
+                    <span class="server-icon">🌐</span>
+                    <div class="server-name">+ Outros</div>
+                    <div class="server-source">APIs diversas</div>
+                    <div class="server-desc">Slack, GitHub, Databases, Custom...</div>
+                </div>
+            </div>
+
+            <!-- External World -->
+            <div class="external-layer">
+                <div class="external-box">
+                    <span class="external-icon">🏛️</span>
+                    <span class="external-text">Tribunais</span>
+                </div>
+                <div class="external-box">
+                    <span class="external-icon">📊</span>
+                    <span class="external-text">Bases de Dados</span>
+                </div>
+                <div class="external-box">
+                    <span class="external-icon">🔐</span>
+                    <span class="external-text">APIs Autenticadas</span>
+                </div>
+                <div class="external-box">
+                    <span class="external-icon">☁️</span>
+                    <span class="external-text">Serviços Cloud</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-left">
+                <span class="footer-message">MCP = <strong>protocolo padronizado</strong> para extensibilidade</span>
+            </div>
+            <div class="footer-right">
+                <span class="config-hint">~/.claude/settings.json → mcpServers</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Interactive server cards
+        const serverCards = document.querySelectorAll('.server-card');
+
+        serverCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('active');
+                // Highlight connection
+                highlightConnection(card.dataset.server);
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('active');
+                clearHighlights();
+            });
+
+            card.addEventListener('click', () => {
+                // Toggle selection
+                serverCards.forEach(c => c.classList.remove('selected'));
+                card.classList.toggle('selected');
+            });
+        });
+
+        function highlightConnection(server) {
+            // Visual feedback for connection
+            const protocolBoxes = document.querySelectorAll('.protocol-box');
+            protocolBoxes.forEach(box => {
+                box.style.borderColor = 'var(--cyan)';
+                box.style.background = 'rgba(34, 211, 238, 0.15)';
+            });
+        }
+
+        function clearHighlights() {
+            const protocolBoxes = document.querySelectorAll('.protocol-box');
+            protocolBoxes.forEach(box => {
+                box.style.borderColor = '';
+                box.style.background = '';
+            });
+        }
+
+        // Auto-cycle through servers for demo effect
+        let currentIndex = 0;
+        function cycleServers() {
+            serverCards.forEach(c => c.classList.remove('active'));
+            serverCards[currentIndex].classList.add('active');
+            highlightConnection(serverCards[currentIndex].dataset.server);
+
+            currentIndex = (currentIndex + 1) % serverCards.length;
+        }
+
+        // Start cycling after 3 seconds of no interaction
+        let cycleInterval;
+        let interactionTimeout;
+
+        function startCycling() {
+            cycleInterval = setInterval(cycleServers, 2500);
+        }
+
+        function stopCycling() {
+            clearInterval(cycleInterval);
+            clearTimeout(interactionTimeout);
+        }
+
+        function resetCycleTimer() {
+            stopCycling();
+            clearHighlights();
+            serverCards.forEach(c => c.classList.remove('active'));
+            interactionTimeout = setTimeout(startCycling, 5000);
+        }
+
+        // Start initial cycle
+        setTimeout(startCycling, 3000);
+
+        // Reset on interaction
+        document.addEventListener('mousemove', resetCycleTimer);
+        document.addEventListener('click', resetCycleTimer);
+    </script>
+</body>
+</html>

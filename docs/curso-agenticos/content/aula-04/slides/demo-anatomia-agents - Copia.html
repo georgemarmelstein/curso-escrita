@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomia de um Sistema Agêntico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-purple: #a78bfa;
+            --super-amber: #fbbf24;
+            --super-cyan: #22d3ee;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            overflow: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            height: 100vh;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EXPLORER SIDEBAR
+           ═══════════════════════════════════════════════════════════ */
+        .explorer {
+            background: linear-gradient(180deg, #12121a 0%, #0a0a12 100%);
+            border-right: 1px solid rgba(190, 156, 109, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .explorer-header {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+            background: rgba(190, 156, 109, 0.05);
+        }
+
+        .explorer-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.8em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .explorer-project {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.15em;
+            color: var(--super-gold);
+            font-weight: 500;
+        }
+
+        .explorer-tree {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 0;
+        }
+
+        /* Tree Items */
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px 10px 0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border-left: 3px solid transparent;
+            user-select: none;
+        }
+
+        .tree-item:hover {
+            background: rgba(190, 156, 109, 0.08);
+        }
+
+        .tree-item.active {
+            background: rgba(190, 156, 109, 0.12);
+            border-left-color: var(--super-gold);
+        }
+
+        .tree-indent {
+            display: inline-block;
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        .tree-chevron {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .tree-chevron.expanded {
+            transform: rotate(90deg);
+        }
+
+        .tree-chevron.empty {
+            visibility: hidden;
+        }
+
+        .tree-icon {
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 1.15em;
+            flex-shrink: 0;
+        }
+
+        .tree-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.05em;
+            color: var(--super-cream);
+            flex: 1;
+        }
+
+        /* Folder colors */
+        .tree-item[data-type="root"] .tree-label {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .tree-item[data-folder="agents"] > .tree-label { color: var(--super-purple); }
+        .tree-item[data-folder="skills"] > .tree-label { color: var(--super-green); }
+        .tree-item[data-folder="commands"] > .tree-label { color: var(--super-amber); }
+        .tree-item[data-folder="mcps"] > .tree-label { color: var(--super-blue); }
+
+        /* File colors based on parent */
+        .tree-item[data-parent="agents"] .tree-label { color: rgba(167, 139, 250, 0.85); }
+        .tree-item[data-parent="skills"] .tree-label { color: rgba(74, 222, 128, 0.85); }
+        .tree-item[data-parent="commands"] .tree-label { color: rgba(251, 191, 36, 0.85); }
+        .tree-item[data-parent="mcps"] .tree-label { color: rgba(96, 165, 250, 0.85); }
+
+        .tree-item.active .tree-label {
+            font-weight: 600;
+        }
+
+        /* Nested items */
+        .tree-children {
+            display: none;
+        }
+
+        .tree-children.expanded {
+            display: block;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           CONTENT PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .content-area {
+            background:
+                radial-gradient(ellipse 80% 50% at 70% 20%, rgba(167, 139, 250, 0.04) 0%, transparent 50%),
+                linear-gradient(135deg, #0d0d15 0%, #0a0a12 100%);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .content-area::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(190, 156, 109, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(190, 156, 109, 0.015) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           CONTENT HEADER - VISUAL IMPACT
+           ═══════════════════════════════════════════════════════════ */
+        .content-header {
+            padding: 32px 48px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15));
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 48px;
+            right: 48px;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(190, 156, 109, 0.4) 20%,
+                rgba(190, 156, 109, 0.4) 80%,
+                transparent);
+        }
+
+        .content-breadcrumb {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .content-breadcrumb span {
+            color: var(--super-gold);
+            font-weight: 500;
+        }
+
+        .content-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.2em;
+            font-weight: 600;
+            color: var(--super-cream);
+            line-height: 1.15;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .content-title .highlight {
+            color: var(--super-purple);
+            position: relative;
+            display: inline-block;
+        }
+        .content-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: linear-gradient(90deg, rgba(167, 139, 250, 0.4), transparent);
+            z-index: -1;
+        }
+
+        .content-title .highlight-green {
+            color: var(--super-green);
+            position: relative;
+            display: inline-block;
+        }
+        .content-title .highlight-green::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0.4), transparent);
+            z-index: -1;
+        }
+
+        .content-title .highlight-amber {
+            color: var(--super-amber);
+            position: relative;
+            display: inline-block;
+        }
+        .content-title .highlight-amber::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.4), transparent);
+            z-index: -1;
+        }
+
+        .content-title .highlight-blue {
+            color: var(--super-blue);
+            position: relative;
+            display: inline-block;
+        }
+        .content-title .highlight-blue::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: linear-gradient(90deg, rgba(96, 165, 250, 0.4), transparent);
+            z-index: -1;
+        }
+
+        .content-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9em;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .content-badge.agents {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(167, 139, 250, 0.1));
+            border: 1px solid rgba(167, 139, 250, 0.35);
+            color: var(--super-purple);
+            box-shadow: 0 4px 15px rgba(167, 139, 250, 0.15);
+        }
+        .content-badge.skills {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.1));
+            border: 1px solid rgba(74, 222, 128, 0.35);
+            color: var(--super-green);
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.15);
+        }
+        .content-badge.commands {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            color: var(--super-amber);
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.15);
+        }
+        .content-badge.mcps {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.1));
+            border: 1px solid rgba(96, 165, 250, 0.35);
+            color: var(--super-blue);
+            box-shadow: 0 4px 15px rgba(96, 165, 250, 0.15);
+        }
+
+        /* Content Body */
+        .content-body {
+            flex: 1;
+            padding: 36px 48px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           CONCEITO STYLE - VISUAL IMPACT
+           ═══════════════════════════════════════════════════════════ */
+        .conceito-container {
+            max-width: 900px;
+            animation: contentFadeIn 0.6s ease forwards;
+        }
+
+        @keyframes contentFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .conceito-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6em;
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.75;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .conceito-text strong {
+            color: var(--super-purple);
+            font-weight: 600;
+            position: relative;
+        }
+
+        .conceito-text strong::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: rgba(167, 139, 250, 0.2);
+            z-index: -1;
+        }
+
+        .conceito-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(167, 139, 250, 0.1));
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            border-radius: 6px;
+            color: var(--super-purple);
+            box-shadow: 0 2px 8px rgba(167, 139, 250, 0.15);
+        }
+
+        /* Quote Box - Enhanced */
+        .quote-box {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.12), rgba(167, 139, 250, 0.03));
+            border-left: 5px solid var(--super-purple);
+            border-radius: 0 16px 16px 0;
+            padding: 32px 36px;
+            position: relative;
+            margin-top: 30px;
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .quote-box::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 8em;
+            color: rgba(167, 139, 250, 0.08);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .quote-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.05));
+            pointer-events: none;
+        }
+
+        .quote-box.skills {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.12), rgba(74, 222, 128, 0.03));
+            border-left-color: var(--super-green);
+        }
+        .quote-box.skills::before { color: rgba(74, 222, 128, 0.08); }
+        .quote-box.skills::after { background: linear-gradient(90deg, transparent, rgba(74, 222, 128, 0.05)); }
+
+        .quote-box.commands {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(251, 191, 36, 0.03));
+            border-left-color: var(--super-amber);
+        }
+        .quote-box.commands::before { color: rgba(251, 191, 36, 0.08); }
+        .quote-box.commands::after { background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.05)); }
+
+        .quote-box.mcps {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.12), rgba(96, 165, 250, 0.03));
+            border-left-color: var(--super-blue);
+        }
+        .quote-box.mcps::before { color: rgba(96, 165, 250, 0.08); }
+        .quote-box.mcps::after { background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.05)); }
+
+        .quote-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.45em;
+            font-style: italic;
+            color: rgba(255, 244, 228, 0.95);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-text .emphasis {
+            font-style: normal;
+            font-weight: 700;
+            background: linear-gradient(180deg, transparent 60%, rgba(167, 139, 250, 0.3) 60%);
+        }
+
+        .quote-text .emphasis.purple {
+            color: var(--super-purple);
+            background: linear-gradient(180deg, transparent 60%, rgba(167, 139, 250, 0.3) 60%);
+        }
+        .quote-text .emphasis.green {
+            color: var(--super-green);
+            background: linear-gradient(180deg, transparent 60%, rgba(74, 222, 128, 0.3) 60%);
+        }
+        .quote-text .emphasis.amber {
+            color: var(--super-amber);
+            background: linear-gradient(180deg, transparent 60%, rgba(251, 191, 36, 0.3) 60%);
+        }
+        .quote-text .emphasis.blue {
+            color: var(--super-blue);
+            background: linear-gradient(180deg, transparent 60%, rgba(96, 165, 250, 0.3) 60%);
+        }
+
+        .quote-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .author-avatar {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.3), rgba(167, 139, 250, 0.1));
+            border: 2px solid rgba(167, 139, 250, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            box-shadow: 0 4px 15px rgba(167, 139, 250, 0.2);
+        }
+
+        .author-name {
+            font-family: 'Raleway', sans-serif;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--super-cream);
+            letter-spacing: 0.5px;
+        }
+
+        .author-role {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.5);
+            font-weight: 500;
+        }
+
+        .quote-source {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.35);
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 244, 228, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Info Box - Enhanced */
+        .info-box {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.1), rgba(190, 156, 109, 0.03));
+            border: 1px solid rgba(190, 156, 109, 0.25);
+            border-radius: 14px;
+            padding: 26px 30px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--super-gold), rgba(190, 156, 109, 0.3));
+        }
+
+        .info-box-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.8em;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--super-gold);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2em;
+            color: rgba(255, 244, 228, 0.88);
+            line-height: 1.65;
+        }
+
+        .info-box-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            padding: 4px 10px;
+            background: rgba(190, 156, 109, 0.2);
+            border-radius: 5px;
+            color: var(--super-gold);
+        }
+
+        .info-box-text strong {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Como Criar Style */
+        .criar-container {
+            max-width: 900px;
+        }
+
+        .criar-intro {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35em;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .criar-command-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+
+        .command-label {
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.7em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--super-green);
+            margin-bottom: 10px;
+        }
+
+        .command-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2em;
+        }
+
+        .command-prompt {
+            color: var(--super-green);
+            font-weight: 600;
+        }
+
+        .command-text {
+            color: var(--super-cream);
+        }
+
+        .command-text .cmd {
+            color: var(--super-gold);
+        }
+
+        .criar-steps {
+            margin-top: 24px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 16px;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border-left: 3px solid var(--super-green);
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            background: rgba(74, 222, 128, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--super-green);
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15em;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.5;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EXEMPLO STYLE - CODE WINDOW
+           ═══════════════════════════════════════════════════════════ */
+        .exemplo-container {
+            max-width: 1000px;
+            animation: contentFadeIn 0.6s ease forwards;
+        }
+
+        .exemplo-intro {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3em;
+            color: rgba(255, 244, 228, 0.85);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .code-window {
+            background: linear-gradient(180deg, #15151f, #0f0f17);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+                0 0 40px rgba(190, 156, 109, 0.08);
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 8px;
+            margin-right: 16px;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .code-dot.red { background: linear-gradient(180deg, #ff6b6b, #ff5f56); }
+        .code-dot.yellow { background: linear-gradient(180deg, #ffd93d, #ffbd2e); }
+        .code-dot.green { background: linear-gradient(180deg, #6bcb77, #27c93f); }
+
+        .code-filename {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88em;
+            color: var(--super-gold);
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-body {
+            padding: 24px 28px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82em;
+            line-height: 1.55;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 55vh;
+            white-space: pre;
+            background:
+                linear-gradient(90deg, rgba(190, 156, 109, 0.03) 1px, transparent 1px) 0 0 / 40px 40px,
+                linear-gradient(rgba(190, 156, 109, 0.02) 1px, transparent 1px) 0 0 / 40px 40px;
+        }
+
+        .code-yaml { color: var(--super-cyan); }
+        .code-yaml-key { color: var(--super-amber); font-weight: 500; }
+        .code-yaml-value { color: var(--super-green); }
+        .code-heading { color: var(--super-purple); font-weight: 700; font-size: 1.05em; }
+        .code-tag { color: var(--super-blue); }
+        .code-comment { color: rgba(255, 244, 228, 0.35); font-style: italic; }
+        .code-rule { color: var(--super-amber); font-weight: 600; }
+        .code-string { color: var(--super-green); }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .container { grid-template-columns: 280px 1fr; }
+        body.embed-mode .explorer-header { padding: 16px; }
+        body.embed-mode .tree-item { padding: 8px 12px 8px 0; }
+        body.embed-mode .tree-label { font-size: 1em; }
+        body.embed-mode .content-header { padding: 24px 36px; }
+        body.embed-mode .content-title { font-size: 2.6em; }
+        body.embed-mode .content-body { padding: 28px 36px; }
+        body.embed-mode .conceito-text { font-size: 1.4em; }
+        body.embed-mode .quote-text { font-size: 1.25em; }
+        body.embed-mode .quote-box { padding: 26px 30px; }
+        body.embed-mode .info-box { padding: 22px 26px; }
+        body.embed-mode .code-body { font-size: 0.78em; padding: 20px 24px; max-height: 50vh; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Explorer Sidebar -->
+        <aside class="explorer">
+            <div class="explorer-header">
+                <div class="explorer-title">Explorer</div>
+                <div class="explorer-project">superjurista</div>
+            </div>
+            <nav class="explorer-tree">
+                <!-- .claude/ root -->
+                <div class="tree-item" data-type="root" data-id="claude-root">
+                    <span class="tree-indent"></span>
+                    <span class="tree-chevron expanded">▶</span>
+                    <span class="tree-icon">📁</span>
+                    <span class="tree-label">.claude/</span>
+                </div>
+
+                <div class="tree-children expanded" id="claude-children">
+                    <!-- agents/ folder -->
+                    <div class="tree-item" data-folder="agents" data-id="agents-folder">
+                        <span class="tree-indent"></span>
+                        <span class="tree-indent"></span>
+                        <span class="tree-chevron expanded">▶</span>
+                        <span class="tree-icon">📁</span>
+                        <span class="tree-label">agents/</span>
+                    </div>
+                    <div class="tree-children expanded" id="agents-children">
+                        <div class="tree-item" data-parent="agents" data-id="agents-conceito">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">conceito.md</span>
+                        </div>
+                        <div class="tree-item" data-parent="agents" data-id="agents-criar">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">como-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-parent="agents" data-id="agents-exemplo">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">exemplo.md</span>
+                        </div>
+                    </div>
+
+                    <!-- skills/ folder -->
+                    <div class="tree-item" data-folder="skills" data-id="skills-folder">
+                        <span class="tree-indent"></span>
+                        <span class="tree-indent"></span>
+                        <span class="tree-chevron">▶</span>
+                        <span class="tree-icon">📁</span>
+                        <span class="tree-label">skills/</span>
+                    </div>
+                    <div class="tree-children" id="skills-children">
+                        <div class="tree-item" data-parent="skills" data-id="skills-conceito">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">conceito.md</span>
+                        </div>
+                        <div class="tree-item" data-parent="skills" data-id="skills-criar">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">como-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-parent="skills" data-id="skills-exemplo">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">exemplo.md</span>
+                        </div>
+                    </div>
+
+                    <!-- commands/ folder -->
+                    <div class="tree-item" data-folder="commands" data-id="commands-folder">
+                        <span class="tree-indent"></span>
+                        <span class="tree-indent"></span>
+                        <span class="tree-chevron">▶</span>
+                        <span class="tree-icon">📁</span>
+                        <span class="tree-label">commands/</span>
+                    </div>
+                    <div class="tree-children" id="commands-children">
+                        <div class="tree-item" data-parent="commands" data-id="commands-conceito">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">conceito.md</span>
+                        </div>
+                        <div class="tree-item" data-parent="commands" data-id="commands-criar">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">como-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-parent="commands" data-id="commands-exemplo">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">exemplo.md</span>
+                        </div>
+                    </div>
+
+                    <!-- mcp-servers/ folder -->
+                    <div class="tree-item" data-folder="mcps" data-id="mcps-folder">
+                        <span class="tree-indent"></span>
+                        <span class="tree-indent"></span>
+                        <span class="tree-chevron">▶</span>
+                        <span class="tree-icon">📁</span>
+                        <span class="tree-label">mcp-servers/</span>
+                    </div>
+                    <div class="tree-children" id="mcps-children">
+                        <div class="tree-item" data-parent="mcps" data-id="mcps-conceito">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">conceito.md</span>
+                        </div>
+                        <div class="tree-item" data-parent="mcps" data-id="mcps-criar">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">como-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-parent="mcps" data-id="mcps-exemplo">
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">exemplo.md</span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <header class="content-header" id="content-header">
+                <div class="content-breadcrumb">
+                    .claude / <span>selecione um arquivo</span>
+                </div>
+                <h1 class="content-title">Anatomia de um Sistema Agêntico</h1>
+            </header>
+            <div class="content-body" id="content-body">
+                <!-- Content loaded by JS -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Embed mode detection
+        (function() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        })();
+
+        // Content data
+        const contentData = {
+            // ═══════════════════════════════════════════════════════════
+            // AGENTS
+            // ═══════════════════════════════════════════════════════════
+            'agents-conceito': {
+                breadcrumb: '.claude / agents / <span>conceito.md</span>',
+                title: 'O que são <span class="highlight">Agents</span>?',
+                badge: { class: 'agents', icon: '🤖', text: 'Componente Fundamental' },
+                type: 'conceito',
+                category: 'agents',
+                content: {
+                    text: `<strong>Agents</strong> são arquivos <code>.md</code> que definem especialistas do Claude para tarefas específicas. Combinam <strong>YAML frontmatter</strong> (metadados estruturados) com <strong>instruções em linguagem natural</strong>.<br><br>
+                    O YAML no início define configurações como modelo, ferramentas e cor. O restante são instruções — tags XML ou Markdown — que ensinam o Claude a executar a tarefa.`,
+                    quote: {
+                        text: `O agente por baixo é muito <span class="emphasis purple">mais universal</span> do que pensávamos. A estrutura pode se tornar tão simples quanto <span class="emphasis purple">bash e sistema de arquivos</span>.`,
+                        author: 'Barry Zhang',
+                        role: 'Anthropic',
+                        avatar: '🔷',
+                        source: 'AIE CODE Conference, Dez 2025'
+                    },
+                    info: {
+                        title: '💡 Por que YAML em prompts agênticos?',
+                        text: `O <code>YAML frontmatter</code> separa metadados das instruções. O Claude Code lê o YAML para saber qual modelo usar, quais ferramentas habilitar e como exibir o agent na interface — sem poluir o prompt com configurações.`
+                    }
+                }
+            },
+            'agents-criar': {
+                breadcrumb: '.claude / agents / <span>como-criar.md</span>',
+                title: 'Como criar um <span class="highlight">Agent</span>',
+                badge: { class: 'agents', icon: '🤖', text: 'Passo a Passo' },
+                type: 'criar',
+                category: 'agents',
+                content: {
+                    intro: 'Criar um agent é escrever um arquivo .md com YAML frontmatter + instruções em português. O YAML define metadados; o corpo define comportamento.',
+                    command: '/agents:create relator-marmelstein',
+                    steps: [
+                        'Claude cria o arquivo em <code>.claude/agents/</code>',
+                        'Você define o frontmatter YAML (name, tools, model)',
+                        'Escreve as instruções usando tags XML ou Markdown',
+                        'O agent fica disponível para invocação'
+                    ]
+                }
+            },
+            'agents-exemplo': {
+                breadcrumb: '.claude / agents / <span>exemplo.md</span>',
+                title: 'Exemplo: <span class="highlight">Agent</span> Real',
+                badge: { class: 'agents', icon: '🤖', text: 'Código de Produção' },
+                type: 'exemplo',
+                category: 'agents',
+                content: {
+                    intro: 'Um agent real de produção — note o YAML frontmatter e as tags XML estruturadas:',
+                    filename: '.claude/agents/extracao/relator-marmelstein.md',
+                    code: `<span class="code-yaml">---</span>
+<span class="code-yaml-key">name:</span> <span class="code-yaml-value">relator-marmelstein</span>
+<span class="code-yaml-key">description:</span> <span class="code-yaml-value">Gera relatório judicial estruturado no formato Marmelstein</span>
+<span class="code-yaml-key">tools:</span> <span class="code-yaml-value">Read Write</span>
+<span class="code-yaml-key">model:</span> <span class="code-yaml-value">opus</span>
+<span class="code-yaml-key">color:</span> <span class="code-yaml-value">yellow</span>
+<span class="code-yaml">---</span>
+
+<span class="code-heading"># Agent: Relator Marmelstein</span>
+
+
+<span class="code-tag">&lt;identidade&gt;</span>
+
+  <span class="code-tag">&lt;papel&gt;</span>
+    Assistente jurídico de alto nível especializado em escrita jurídica
+    e análise processual, com expertise em extração de dados, reconstrução
+    de narrativas e elaboração de relatórios para decisões judiciais.
+  <span class="code-tag">&lt;/papel&gt;</span>
+
+  <span class="code-tag">&lt;estilo&gt;</span>
+    Metódico, detalhista e cronológico. Lê documentos extensos em múltiplos
+    blocos, identifica peças relevantes com sagacidade jurídica.
+  <span class="code-tag">&lt;/estilo&gt;</span>
+
+<span class="code-tag">&lt;/identidade&gt;</span>
+
+
+<span class="code-tag">&lt;capacidade&gt;</span>
+
+  <span class="code-tag">&lt;habilidade&gt;</span>
+    Extrair e sintetizar atos processuais em relatório judicial estruturado
+  <span class="code-tag">&lt;/habilidade&gt;</span>
+
+  <span class="code-tag">&lt;especializacao&gt;</span>
+    Direito previdenciário, processual civil e análise de documentos extensos
+  <span class="code-tag">&lt;/especializacao&gt;</span>
+
+<span class="code-tag">&lt;/capacidade&gt;</span>
+
+
+<span class="code-tag">&lt;contrato&gt;</span>
+
+  <span class="code-tag">&lt;entrada&gt;</span>
+    <span class="code-tag">&lt;tipo&gt;</span>Documentos processuais em texto<span class="code-tag">&lt;/tipo&gt;</span>
+    <span class="code-tag">&lt;formato&gt;</span>TXT ou MD<span class="code-tag">&lt;/formato&gt;</span>
+  <span class="code-tag">&lt;/entrada&gt;</span>
+
+  <span class="code-tag">&lt;saida&gt;</span>
+    <span class="code-tag">&lt;tipo&gt;</span>Relatório judicial estruturado no formato Marmelstein<span class="code-tag">&lt;/tipo&gt;</span>
+    <span class="code-tag">&lt;formato&gt;</span>MD<span class="code-tag">&lt;/formato&gt;</span>
+  <span class="code-tag">&lt;/saida&gt;</span>
+
+<span class="code-tag">&lt;/contrato&gt;</span>
+
+
+<span class="code-tag">&lt;restricoes&gt;</span>
+
+  <span class="code-rule">- NÃO</span> assumir caminhos de arquivo - recebe via contexto do orquestrador
+  <span class="code-rule">- NÃO</span> incluir qualificação das partes (CPF, RG, endereço)
+  <span class="code-rule">- NUNCA</span> inventar informações não presentes nos documentos fornecidos
+  <span class="code-rule">- NUNCA</span> relatar peças de OUTROS processos anexadas como precedentes
+  <span class="code-rule">- SEMPRE</span> incluir IDs de todas as peças citadas (ou "Id. NÃO CONSTA")
+  <span class="code-rule">- SEMPRE</span> seguir ordem cronológica dos atos processuais
+
+<span class="code-tag">&lt;/restricoes&gt;</span>
+
+
+<span class="code-tag">&lt;contingencias&gt;</span>
+
+  <span class="code-tag">&lt;se_entrada_insuficiente&gt;</span>
+    Se não houver petição inicial identificável nos documentos fornecidos:
+    - Iniciar com: "Não foi possível identificar petição inicial..."
+    - Relatar as peças que ESTIVEREM disponíveis
+  <span class="code-tag">&lt;/se_entrada_insuficiente&gt;</span>
+
+  <span class="code-tag">&lt;se_documento_extenso&gt;</span>
+    Se o documento for muito extenso para processar de uma vez:
+    - Ler em MÚLTIPLOS BLOCOS até cobrir 100% do conteúdo
+    - NÃO gerar relatório até ter lido TODO o documento
+  <span class="code-tag">&lt;/se_documento_extenso&gt;</span>
+
+<span class="code-tag">&lt;/contingencias&gt;</span>
+
+
+<span class="code-tag">&lt;instrucoes&gt;</span>
+
+  <span class="code-tag">&lt;passo numero="1" nome="Receber entrada"&gt;</span>
+    Ler os documentos processuais fornecidos pelo orquestrador.
+    → A entrada vem via contexto, não de caminho fixo.
+  <span class="code-tag">&lt;/passo&gt;</span>
+
+  <span class="code-tag">&lt;passo numero="2" nome="Identificar peças relevantes"&gt;</span>
+    Catalogar as peças processuais presentes nos documentos:
+    INCLUIR: Petição inicial, contestação, réplica, decisões, laudos...
+    IGNORAR: Procurações, certidões de rotina, despachos de expediente...
+  <span class="code-tag">&lt;/passo&gt;</span>
+
+  <span class="code-tag">&lt;passo numero="3" nome="Extrair informações"&gt;</span>
+    De cada peça relevante, extrair COM PROFUNDIDADE:
+    - Datas, nomes, eventos em ordem cronológica
+    - Argumentos jurídicos específicos, pedidos, IDs
+  <span class="code-tag">&lt;/passo&gt;</span>
+
+  <span class="code-tag">&lt;passo numero="4" nome="Produzir relatório"&gt;</span>
+    Gerar relatório no formato Marmelstein especificado em &lt;formato_saida&gt;.
+  <span class="code-tag">&lt;/passo&gt;</span>
+
+<span class="code-tag">&lt;/instrucoes&gt;</span>
+
+
+<span class="code-comment">// ... formato_saida, sinalizadores, exemplos, conhecimento_dominio ...</span>`
+                }
+            },
+
+            // ═══════════════════════════════════════════════════════════
+            // SKILLS
+            // ═══════════════════════════════════════════════════════════
+            'skills-conceito': {
+                breadcrumb: '.claude / skills / <span>conceito.md</span>',
+                title: 'O que são <span class="highlight-green">Skills</span>?',
+                badge: { class: 'skills', icon: '🎯', text: 'Conhecimento Composável' },
+                type: 'conceito',
+                category: 'skills',
+                content: {
+                    text: `<strong>Skills</strong> são <strong>pastas</strong> com um arquivo <code>SKILL.md</code> como ponto de entrada. Diferente de agents (arquivos únicos), skills podem ter templates, scripts e referências auxiliares.<br><br>
+                    São "departamentos de expertise" — conhecimento procedural empacotado que o Claude carrega sob demanda.`,
+                    quote: {
+                        text: `Skills são <span class="emphasis green">coleções organizadas de arquivos</span> que empacotam conhecimento procedural composável para agentes. Em outras palavras, <span class="emphasis green">são pastas</span>. Essa simplicidade é deliberada.`,
+                        author: 'Barry Zhang',
+                        role: 'Anthropic',
+                        avatar: '🔷',
+                        source: 'AIE CODE Conference, Dez 2025'
+                    },
+                    info: {
+                        title: '📁 Progressive Disclosure',
+                        text: `Skills podem conter muita informação. Por isso são <strong>progressively disclosed</strong>: no runtime, só os metadados aparecem. Quando o agent precisa usar a skill, ele carrega o resto sob demanda.`
+                    }
+                }
+            },
+            'skills-criar': {
+                breadcrumb: '.claude / skills / <span>como-criar.md</span>',
+                title: 'Como criar uma <span class="highlight-green">Skill</span>',
+                badge: { class: 'skills', icon: '🎯', text: 'Passo a Passo' },
+                type: 'criar',
+                category: 'skills',
+                content: {
+                    intro: 'Skills são pastas estruturadas. O SKILL.md é o entrypoint; outros arquivos são recursos auxiliares.',
+                    command: '/skill-creator',
+                    steps: [
+                        'O wizard pergunta domínio e capacidades',
+                        'Cria a pasta <code>.claude/skills/nome-skill/</code>',
+                        'Gera o <code>SKILL.md</code> com instruções base',
+                        'Você adiciona templates e scripts conforme necessário'
+                    ]
+                }
+            },
+            'skills-exemplo': {
+                breadcrumb: '.claude / skills / <span>exemplo.md</span>',
+                title: 'Exemplo: <span class="highlight-green">Skill</span> na prática',
+                badge: { class: 'skills', icon: '🎯', text: 'Estrutura Real' },
+                type: 'exemplo',
+                category: 'skills',
+                content: {
+                    intro: 'Uma skill de criação de slides — note a estrutura de pasta:',
+                    filename: '.claude/skills/slides-web/SKILL.md',
+                    code: `<span class="code-yaml">---</span>
+<span class="code-yaml-key">name:</span> <span class="code-yaml-value">slides-web</span>
+<span class="code-yaml-key">description:</span> <span class="code-yaml-value">Cria apresentações HTML com Reveal.js</span>
+<span class="code-yaml-key">version:</span> <span class="code-yaml-value">2.0</span>
+<span class="code-yaml">---</span>
+
+<span class="code-heading"># Skill: Criador de Slides Web</span>
+
+
+<span class="code-comment"># ═══════════════════════════════════════════════════</span>
+<span class="code-comment"># Estrutura da pasta:</span>
+<span class="code-comment"># ═══════════════════════════════════════════════════</span>
+
+<span class="code-string">./templates/</span>    <span class="code-comment"># Templates HTML base</span>
+<span class="code-string">./scripts/</span>      <span class="code-comment"># Python para automação</span>
+<span class="code-string">./palettes/</span>     <span class="code-comment"># Paletas de cores</span>
+<span class="code-string">./references/</span>   <span class="code-comment"># Exemplos de uso</span>
+
+
+<span class="code-tag">&lt;capacidades&gt;</span>
+
+  <span class="code-rule">- Criar</span> slides responsivos
+  <span class="code-rule">- Aplicar</span> identidade visual
+  <span class="code-rule">- Gerar</span> demos interativas
+
+<span class="code-tag">&lt;/capacidades&gt;</span>`
+                }
+            },
+
+            // ═══════════════════════════════════════════════════════════
+            // COMMANDS
+            // ═══════════════════════════════════════════════════════════
+            'commands-conceito': {
+                breadcrumb: '.claude / commands / <span>conceito.md</span>',
+                title: 'O que são <span class="highlight-amber">Commands</span>?',
+                badge: { class: 'commands', icon: '⚡', text: 'Atalhos Rápidos' },
+                type: 'conceito',
+                category: 'commands',
+                content: {
+                    text: `<strong>Commands</strong> são arquivos <code>.md</code> que viram <strong>atalhos invocáveis com barra</strong>. O nome do arquivo vira o comando: <code>revisar.md</code> → <code>/revisar</code>.<br><br>
+                    São prompts salvos — você escreve uma vez e reutiliza sempre. Garantem consistência e economizam tempo.`,
+                    quote: {
+                        text: `O verdadeiro valor das skills vem do <span class="emphasis amber">compartilhamento e distribuição</span>. Quando alguém entra no seu time e começa a usar o Claude, ele já sabe o que sua equipe valoriza.`,
+                        author: 'Barry Zhang',
+                        role: 'Anthropic',
+                        avatar: '🔷',
+                        source: 'AIE CODE Conference, Dez 2025'
+                    },
+                    info: {
+                        title: '⚡ Commands vs Agents',
+                        text: `Commands são mais simples que agents: não definem "personalidade", apenas disparam um prompt. Use commands para tarefas pontuais; agents para especialistas que precisam de contexto e regras complexas.`
+                    }
+                }
+            },
+            'commands-criar': {
+                breadcrumb: '.claude / commands / <span>como-criar.md</span>',
+                title: 'Como criar um <span class="highlight-amber">Command</span>',
+                badge: { class: 'commands', icon: '⚡', text: 'Passo a Passo' },
+                type: 'criar',
+                category: 'commands',
+                content: {
+                    intro: 'Commands são os mais simples de criar — basta um arquivo .md com o prompt que você quer salvar.',
+                    command: 'criar arquivo .claude/commands/revisar.md',
+                    steps: [
+                        'Crie o arquivo em <code>.claude/commands/</code>',
+                        'Escreva o prompt dentro do arquivo',
+                        'O nome do arquivo vira o comando',
+                        'Invoque com <code>/revisar</code>'
+                    ]
+                }
+            },
+            'commands-exemplo': {
+                breadcrumb: '.claude / commands / <span>exemplo.md</span>',
+                title: 'Exemplo: <span class="highlight-amber">Command</span> na prática',
+                badge: { class: 'commands', icon: '⚡', text: 'Código Real' },
+                type: 'exemplo',
+                category: 'commands',
+                content: {
+                    intro: 'Um command para revisão de código antes do commit:',
+                    filename: '.claude/commands/pre-commit.md',
+                    code: `<span class="code-heading"># Command: Revisão Pré-Commit</span>
+
+<span class="code-comment">Revise as mudanças staged antes do commit.</span>
+
+
+<span class="code-heading">## Tarefas</span>
+
+<span class="code-rule">1.</span> Liste os arquivos modificados
+
+<span class="code-rule">2.</span> Verifique erros de sintaxe
+
+<span class="code-rule">3.</span> Identifique problemas de segurança
+
+<span class="code-rule">4.</span> Sugira melhorias de código
+
+<span class="code-rule">5.</span> Proponha mensagem de commit
+
+
+<span class="code-heading">## Formato de Saída</span>
+
+<span class="code-string">✅ Aprovado para commit</span>
+
+<span class="code-comment">ou</span>
+
+<span class="code-string">⚠️ Sugestões antes de commitar:</span>`
+                }
+            },
+
+            // ═══════════════════════════════════════════════════════════
+            // MCPs (mcp-servers/)
+            // ═══════════════════════════════════════════════════════════
+            'mcps-conceito': {
+                breadcrumb: '.claude / mcp-servers / <span>conceito.md</span>',
+                title: 'O que são <span class="highlight-blue">MCPs</span>?',
+                badge: { class: 'mcps', icon: '🔌', text: 'Model Context Protocol' },
+                type: 'conceito',
+                category: 'mcps',
+                content: {
+                    text: `<strong>MCPs</strong> (Model Context Protocol) são <strong>servidores que conectam o Claude a ferramentas externas</strong>. Cada servidor é um arquivo na pasta <code>mcp-servers/</code> que define como acessar APIs, bancos de dados e serviços.<br><br>
+                    Enquanto skills fornecem expertise (conhecimento), MCPs fornecem <strong>conectividade</strong> (acesso ao mundo).`,
+                    quote: {
+                        text: `Desenvolvedores estão usando skills que orquestram workflows com múltiplas ferramentas MCP costuradas. <span class="emphasis blue">MCP fornece a conexão</span> com o mundo externo enquanto <span class="emphasis blue">skills fornecem a expertise</span>.`,
+                        author: 'Barry Zhang',
+                        role: 'Anthropic',
+                        avatar: '🔷',
+                        source: 'AIE CODE Conference, Dez 2025'
+                    },
+                    info: {
+                        title: '🔌 MCP + Skills = Poder',
+                        text: `MCPs são a "mão" do agente — permitem ler bancos, chamar APIs, controlar browsers. Skills são o "cérebro" — sabem COMO usar essas ferramentas. Juntos, formam um sistema completo.`
+                    }
+                }
+            },
+            'mcps-criar': {
+                breadcrumb: '.claude / mcp-servers / <span>como-criar.md</span>',
+                title: 'Como criar um <span class="highlight-blue">MCP Server</span>',
+                badge: { class: 'mcps', icon: '🔌', text: 'Passo a Passo' },
+                type: 'criar',
+                category: 'mcps',
+                content: {
+                    intro: 'MCP servers são programas que expõem ferramentas para o Claude. Podem ser escritos em TypeScript, Python ou qualquer linguagem.',
+                    command: '/mcp-builder jurisprudencia-cjf',
+                    steps: [
+                        'O wizard pergunta qual API/serviço conectar',
+                        'Gera o servidor em <code>.claude/mcp-servers/</code>',
+                        'Registra no <code>settings.json</code> global',
+                        'As ferramentas ficam disponíveis para agents e skills'
+                    ]
+                }
+            },
+            'mcps-exemplo': {
+                breadcrumb: '.claude / mcp-servers / <span>exemplo.md</span>',
+                title: 'Exemplo: <span class="highlight-blue">MCP Server</span> na prática',
+                badge: { class: 'mcps', icon: '🔌', text: 'Código Real' },
+                type: 'exemplo',
+                category: 'mcps',
+                content: {
+                    intro: 'Um servidor MCP que conecta à API de jurisprudência do CJF:',
+                    filename: '.claude/mcp-servers/jurisprudencia-cjf/index.ts',
+                    code: `<span class="code-comment">// MCP Server: Jurisprudência CJF</span>
+
+<span class="code-yaml-key">import</span> { McpServer } <span class="code-yaml-key">from</span> <span class="code-string">"@anthropic/mcp"</span>;
+
+
+<span class="code-yaml-key">const</span> server = <span class="code-yaml-key">new</span> McpServer({
+  <span class="code-yaml-key">name:</span> <span class="code-string">"jurisprudencia-cjf"</span>,
+  <span class="code-yaml-key">version:</span> <span class="code-string">"1.0.0"</span>
+});
+
+
+<span class="code-comment">// ═══════════════════════════════════════════════════</span>
+<span class="code-comment">// Tool: Buscar jurisprudência</span>
+<span class="code-comment">// ═══════════════════════════════════════════════════</span>
+
+server.<span class="code-tag">tool</span>(<span class="code-string">"buscar_jurisprudencia"</span>, {
+
+  <span class="code-yaml-key">description:</span> <span class="code-string">"Busca acórdãos nos TRFs"</span>,
+
+  <span class="code-yaml-key">parameters:</span> {
+    <span class="code-yaml-key">termo:</span> { <span class="code-yaml-key">type:</span> <span class="code-string">"string"</span> },
+    <span class="code-yaml-key">tribunal:</span> { <span class="code-yaml-key">type:</span> <span class="code-string">"string"</span>, <span class="code-yaml-key">optional:</span> <span class="code-yaml-value">true</span> }
+  }
+
+}, <span class="code-yaml-key">async</span> ({ termo, tribunal }) => {
+
+  <span class="code-yaml-key">const</span> response = <span class="code-yaml-key">await</span> fetch(
+    <span class="code-string">\`https://api.cjf.jus.br/v1/jurisprudencia?q=\${termo}\`</span>
+  );
+
+  <span class="code-yaml-key">return</span> response.json();
+
+});
+
+
+<span class="code-comment">// ═══════════════════════════════════════════════════</span>
+<span class="code-comment">// Tool: Gerar relatório</span>
+<span class="code-comment">// ═══════════════════════════════════════════════════</span>
+
+server.<span class="code-tag">tool</span>(<span class="code-string">"gerar_relatorio"</span>, {
+
+  <span class="code-yaml-key">description:</span> <span class="code-string">"Gera relatório consolidado"</span>,
+
+  <span class="code-yaml-key">parameters:</span> {
+    <span class="code-yaml-key">acordaos:</span> { <span class="code-yaml-key">type:</span> <span class="code-string">"array"</span> }
+  }
+
+}, <span class="code-yaml-key">async</span> ({ acordaos }) => {
+
+  <span class="code-comment">// Processa e formata os acórdãos</span>
+  <span class="code-yaml-key">return</span> formatarRelatorio(acordaos);
+
+});
+
+
+server.start();`
+                }
+            }
+        };
+
+        // Render functions
+        function renderConceito(data) {
+            let infoHtml = '';
+            if (data.content.info) {
+                infoHtml = `
+                    <div class="info-box">
+                        <div class="info-box-title">${data.content.info.title}</div>
+                        <div class="info-box-text">${data.content.info.text}</div>
+                    </div>
+                `;
+            }
+
+            let sourceHtml = '';
+            if (data.content.quote.source) {
+                sourceHtml = `<div class="quote-source">— ${data.content.quote.source}</div>`;
+            }
+
+            return `
+                <div class="conceito-container">
+                    <div class="conceito-text">${data.content.text}</div>
+                    <div class="quote-box ${data.category}">
+                        <div class="quote-text">"${data.content.quote.text}"</div>
+                        <div class="quote-author">
+                            <div class="author-avatar">${data.content.quote.avatar}</div>
+                            <div class="author-info">
+                                <div class="author-name">${data.content.quote.author}</div>
+                                <div class="author-role">${data.content.quote.role}</div>
+                            </div>
+                        </div>
+                        ${sourceHtml}
+                    </div>
+                    ${infoHtml}
+                </div>
+            `;
+        }
+
+        function renderCriar(data) {
+            let stepsHtml = data.content.steps.map((step, i) => `
+                <div class="step-item">
+                    <div class="step-number">${i + 1}</div>
+                    <div class="step-text">${step}</div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="criar-container">
+                    <div class="criar-intro">${data.content.intro}</div>
+                    <div class="criar-command-box">
+                        <div class="command-label">Comando</div>
+                        <div class="command-line">
+                            <span class="command-prompt">$</span>
+                            <span class="command-text"><span class="cmd">${data.content.command}</span></span>
+                        </div>
+                    </div>
+                    <div class="criar-steps">${stepsHtml}</div>
+                </div>
+            `;
+        }
+
+        function renderExemplo(data) {
+            return `
+                <div class="exemplo-container">
+                    <div class="exemplo-intro">${data.content.intro}</div>
+                    <div class="code-window">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <div class="code-dot red"></div>
+                                <div class="code-dot yellow"></div>
+                                <div class="code-dot green"></div>
+                            </div>
+                            <span class="code-filename">${data.content.filename}</span>
+                        </div>
+                        <div class="code-body">${data.content.code}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderContent(id) {
+            const data = contentData[id];
+            if (!data) return;
+
+            // Update header
+            document.getElementById('content-header').innerHTML = `
+                <div class="content-breadcrumb">${data.breadcrumb}</div>
+                <h1 class="content-title">${data.title}</h1>
+                <div class="content-badge ${data.badge.class}">
+                    <span>${data.badge.icon}</span>
+                    <span>${data.badge.text}</span>
+                </div>
+            `;
+
+            // Render body based on type
+            let bodyHtml;
+            switch (data.type) {
+                case 'conceito':
+                    bodyHtml = renderConceito(data);
+                    break;
+                case 'criar':
+                    bodyHtml = renderCriar(data);
+                    break;
+                case 'exemplo':
+                    bodyHtml = renderExemplo(data);
+                    break;
+            }
+
+            document.getElementById('content-body').innerHTML = bodyHtml;
+        }
+
+        // Tree interaction
+        document.querySelectorAll('.tree-item[data-folder]').forEach(folder => {
+            folder.addEventListener('click', () => {
+                const folderId = folder.dataset.folder;
+                const children = document.getElementById(`${folderId}-children`);
+                const chevron = folder.querySelector('.tree-chevron');
+
+                if (children) {
+                    children.classList.toggle('expanded');
+                    chevron.classList.toggle('expanded');
+                }
+            });
+        });
+
+        document.querySelectorAll('.tree-item[data-parent]').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                // Remove active from all
+                document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                // Render content
+                renderContent(item.dataset.id);
+            });
+        });
+
+        // Auto-select first item
+        document.querySelector('.tree-item[data-id="agents-conceito"]').click();
+    </script>
+</body>
+</html>

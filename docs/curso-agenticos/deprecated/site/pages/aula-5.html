@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 5: Sistema Juridico Agentico | Sistemas Agenticos</title>
+    <meta name="description" content="Aplicacao completa dos conceitos em um sistema juridico funcional - o CLERK (Collaborative Legal Expert for Research and Knowledge)">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">S</span>
+                <span class="logo-text">Sistemas Agenticos</span>
+            </a>
+            <nav class="nav-main">
+                <ul>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Aulas</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="aula-0.html">Aula 0: Abertura</a></li>
+                            <li><a href="aula-1.html">Aula 1: Fundamentos</a></li>
+                            <li><a href="aula-2a.html">Aula 2A: Anatomia</a></li>
+                            <li><a href="aula-2b.html">Aula 2B: Claude Code</a></li>
+                            <li><a href="aula-3.html">Aula 3: Arquitetura</a></li>
+                            <li><a href="aula-4.html">Aula 4: Construindo</a></li>
+                            <li><a href="aula-5.html" class="active">Aula 5: Sistema CLERK</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="glossario.html">Glossario</a></li>
+                    <li><a href="recursos.html">Recursos</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" aria-label="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+        <div class="container">
+            <span class="badge badge-module">Modulo 5</span>
+            <h1>Sistema Juridico Agentico</h1>
+            <p class="lesson-subtitle">CLERK: Collaborative Legal Expert for Research and Knowledge - O assessor de gabinete do seculo XXI</p>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    4 horas
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    7 blocos praticos
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Aplicacao Pratica
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lesson Content -->
+    <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+            <nav class="lesson-nav">
+                <h4>Nesta Aula</h4>
+                <ul>
+                    <li><a href="#bloco1" class="lesson-nav-link">1. Filosofia de Aumentacao</a></li>
+                    <li><a href="#bloco2" class="lesson-nav-link">2. Analogia Scout Agent</a></li>
+                    <li><a href="#bloco3" class="lesson-nav-link">3. MCPs Juridicos</a></li>
+                    <li><a href="#bloco4" class="lesson-nav-link">4. Pipeline CLERK</a></li>
+                    <li><a href="#bloco5" class="lesson-nav-link">5. Governanca</a></li>
+                    <li><a href="#bloco6" class="lesson-nav-link">6. Revisao Subagentes</a></li>
+                    <li><a href="#bloco7" class="lesson-nav-link">7. Projeto Final</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lesson-content">
+            <!-- Mobile TOC -->
+            <div class="mobile-toc">
+                <button class="mobile-toc-trigger">
+                    <span>Navegacao</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <nav class="mobile-toc-content">
+                    <ul>
+                        <li><a href="#bloco1">1. Filosofia de Aumentacao</a></li>
+                        <li><a href="#bloco2">2. Analogia Scout Agent</a></li>
+                        <li><a href="#bloco3">3. MCPs Juridicos</a></li>
+                        <li><a href="#bloco4">4. Pipeline CLERK</a></li>
+                        <li><a href="#bloco5">5. Governanca</a></li>
+                        <li><a href="#bloco6">6. Revisao Subagentes</a></li>
+                        <li><a href="#bloco7">7. Projeto Final</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Introducao -->
+            <section class="lesson-block" id="intro">
+                <h2>A Aula Final: Tudo se Conecta</h2>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Objetivo</div>
+                    <p>Esta aula aplica <strong>todos os conceitos aprendidos</strong> em um sistema juridico completo - o CLERK. Voce vera como filosofia, arquitetura, skills, commands e MCPs se integram para criar um assessor agentico funcional.</p>
+                </div>
+
+                <h3>Pre-requisitos</h3>
+                <ul>
+                    <li>Aulas 0-4 completadas</li>
+                    <li>Claude Code configurado com MCPs juridicos</li>
+                    <li>Compreensao de pipelines e subagentes</li>
+                </ul>
+
+                <h3>O Que E o CLERK</h3>
+
+                <p><strong>CLERK</strong> = <em>Collaborative Legal Expert for Research and Knowledge</em></p>
+
+                <p>O CLERK e o assessor de gabinete do seculo XXI - um sistema agentico que:</p>
+                <ul>
+                    <li>Le processos digitais (OCR, PDF)</li>
+                    <li>Gera relatorios estruturados</li>
+                    <li>Pesquisa em bases vinculantes (BNP, CJF, JULIA)</li>
+                    <li>Sugere minutas fundamentadas</li>
+                    <li><strong>MAS NAO DECIDE</strong> - quem julga e o magistrado</li>
+                </ul>
+            </section>
+
+            <!-- Bloco 1: Filosofia de Aumentacao -->
+            <section id="bloco1" class="lesson-block">
+                <h2>Bloco 1: Filosofia de Aumentacao</h2>
+                <span class="badge badge-time">30 min</span>
+
+                <h3>1.1 AUMENTACAO, Nao Automacao</h3>
+
+                <blockquote>
+                    <p>"Nao e sobre substituir o juiz. E sobre potencializar sua analise."</p>
+                    <cite>Principio Fundamental do CLERK</cite>
+                </blockquote>
+
+                <h4>Dois Paradigmas Fundamentalmente Diferentes</h4>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                        AUTOMACAO                                │
+│                                                                 │
+│  Processo ───► IA ───► Sentenca                                 │
+│                                                                 │
+│  - IA substitui o humano                                        │
+│  - Foco em eficiencia                                           │
+│  - Resultado final automatico                                   │
+│  - Risco: caixa-preta                                           │
+│  - Juridicamente: INCONSTITUCIONAL                              │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                        AUMENTACAO                               │
+│                                                                 │
+│  Processo ───► IA ───► Insumos ───► MAGISTRADO ───► Sentenca   │
+│                                                                 │
+│  - IA potencializa o humano                                     │
+│  - Foco em qualidade decisoria                                  │
+│  - Insumos qualificados para decisao humana                     │
+│  - Transparencia: raciocinio explicito                          │
+│  - Juridicamente: CONSTITUCIONAL (humano decide)                │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>1.2 O Papel do CLERK</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Funcao</th>
+                            <th>O que faz</th>
+                            <th>Analogia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Prepara</strong></td>
+                            <td>Organiza informacoes processuais</td>
+                            <td>Assessor que le os autos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sintetiza</strong></td>
+                            <td>Resume documentos extensos</td>
+                            <td>Prepara relatorios</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pesquisa</strong></td>
+                            <td>Localiza jurisprudencia</td>
+                            <td>Busca precedentes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sugere</strong></td>
+                            <td>Apresenta minutas</td>
+                            <td>Propoe texto inicial</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">Principio Inviolavel</div>
+                    <p>A decisao judicial permanece <strong>EXCLUSIVAMENTE humana</strong>. O CLERK fornece insumos qualificados, mas jamais decide.</p>
+                </div>
+
+                <h3>1.3 A Metafora do Gabinete Judicial</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  GABINETE JUDICIAL TRADICIONAL                                  │
+│                                                                 │
+│  Processo ───► Assessor ───► Magistrado ───► Decisao            │
+│               (prepara)     (decide)                            │
+│                                                                 │
+│  O assessor:                                                    │
+│  - Le os autos                                                  │
+│  - Prepara relatorios                                           │
+│  - Pesquisa precedentes                                         │
+│  - Sugere minutas                                               │
+│  - MAS NAO DECIDE                                               │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  GABINETE JUDICIAL AGENTICO (CLERK)                             │
+│                                                                 │
+│  Processo ───► CLERK ───► Magistrado ───► Decisao               │
+│               (agente)    (humano)                              │
+│                                                                 │
+│  O CLERK:                                                       │
+│  - Le processos digitais (OCR, PDF)                             │
+│  - Gera relatorios estruturados                                 │
+│  - Pesquisa em bases vinculantes (BNP, CJF, JULIA)              │
+│  - Sugere minutas fundamentadas                                 │
+│  - MAS NAO DECIDE                                               │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <div class="callout callout-tip">
+                    <div class="callout-title">Insight</div>
+                    <p>A tecnologia muda, os papeis permanecem. O CLERK e o assessor de gabinete do seculo XXI.</p>
+                </div>
+
+                <h3>1.4 Por Que Aumentacao Funciona</h3>
+
+                <p><strong>Tres razoes fundamentais:</strong></p>
+
+                <ol>
+                    <li><strong>Legitimidade juridica:</strong> A decisao permanece humana (Art. 5o, XXXV, CF)</li>
+                    <li><strong>Qualidade superior:</strong> Humano + IA > humano sozinho OU IA sozinha</li>
+                    <li><strong>Responsabilidade clara:</strong> Magistrado responde pela decisao</li>
+                </ol>
+
+                <blockquote>
+                    <p>"Embedding tools is the key to usage. Support loved it enough that they decided to embed it into their process."</p>
+                    <cite>Lisa Orr, Zapier</cite>
+                </blockquote>
+
+                <p><strong>Traducao juridica:</strong> O CLERK deve estar DENTRO do fluxo de trabalho, nao como ferramenta separada.</p>
+            </section>
+
+            <!-- Bloco 2: Analogia Scout Agent -->
+            <section id="bloco2" class="lesson-block">
+                <h2>Bloco 2: A Analogia Scout Agent</h2>
+                <span class="badge badge-time">35 min</span>
+
+                <h3>2.1 O Padrao Scout Agent (Zapier)</h3>
+
+                <blockquote>
+                    <p>Zapier enfrentava "app erosion" - APIs de terceiros mudando constantemente quebravam integracoes. Time de suporte estava sobrecarregado.</p>
+                    <cite>Lisa Orr, Zapier</cite>
+                </blockquote>
+
+                <p><strong>Solucao:</strong> Scout Agent - agente que ajuda suporte a criar fixes.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  SCOUT AGENT (ZAPIER)                                           │
+│                                                                 │
+│  FASE 1: DIAGNOSIS                                              │
+│  ├─ Agrega: docs da API + logs internos + contexto do cliente   │
+│  ├─ Output: categorizacao + avaliacao de fixabilidade           │
+│  └─ [GATE: Suporte revisa diagnostico]                          │
+│                                                                 │
+│  FASE 2: CODEGEN                                                │
+│  ├─ Roda pipeline CI/CD: plan → execute → validate              │
+│  ├─ Output: merge request com fix proposto                      │
+│  └─ [GATE: Suporte revisa codigo]                               │
+│                                                                 │
+│  FASE 3: ITERATION                                              │
+│  ├─ Suporte comenta no GitLab                                   │
+│  ├─ Agente re-executa com feedback                              │
+│  └─ Suporte submete para engenharia                             │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <p><strong>Resultado:</strong> 40% dos fixes agora gerados pelo Scout. Velocidade dobrou.</p>
+
+                <h3>2.2 Mapeamento: Scout → CLERK</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scout Agent (Suporte)</th>
+                            <th>CLERK (Judicial)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ticket de suporte</td>
+                            <td>Processo judicial</td>
+                        </tr>
+                        <tr>
+                            <td>Diagnosis API</td>
+                            <td>/analisar-caso</td>
+                        </tr>
+                        <tr>
+                            <td>Codegen (fix)</td>
+                            <td>/elaborar-minuta</td>
+                        </tr>
+                        <tr>
+                            <td>Suporte revisa</td>
+                            <td>Magistrado revisa</td>
+                        </tr>
+                        <tr>
+                            <td>Merge request</td>
+                            <td>Minuta de sentenca</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  CLERK JUDICIAL AGENT                                           │
+│                                                                 │
+│  FASE 1: DIAGNOSIS (Analise do Caso)                            │
+│  ├─ Agrega: autos + peticao + precedentes                       │
+│  ├─ Consulta: BNP + CJF + JULIA                                 │
+│  ├─ Classifica: TRIVIAL vs HARD CASE                            │
+│  ├─ Output: relatorio orientador                                │
+│  └─ [GATE: Magistrado revisa classificacao]                     │
+│                                                                 │
+│  FASE 2: CODEGEN (Elaboracao de Minuta)                         │
+│  ├─ Gera: FUNDAMENTACAO + DISPOSITIVO                           │
+│  ├─ Valida: consistencia interna                                │
+│  └─ [GATE: Magistrado revisa minuta]                            │
+│                                                                 │
+│  FASE 3: ITERATION (Revisao)                                    │
+│  ├─ Magistrado comenta/ajusta                                   │
+│  ├─ Agente refina com feedback                                  │
+│  └─ Output final: sentenca completa                             │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>2.3 Os Tres Superpoderes</h3>
+
+                <p><strong>Por que o padrao funciona:</strong></p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Superpoder</th>
+                            <th>Suporte (Zapier)</th>
+                            <th>Gabinete Judicial</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Proximo da dor</strong></td>
+                            <td>Mais perto do cliente</td>
+                            <td>Mais perto do processo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Troubleshooting em tempo real</strong></td>
+                            <td>Logs frescos, contexto vivo</td>
+                            <td>Autos completos, questao atual</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Melhor em validacao</strong></td>
+                            <td>Sabe se fix resolve problema</td>
+                            <td>Sabe se minuta resolve caso</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Implicacao:</strong> O assessor/magistrado e quem VALIDA, nao a IA.</p>
+
+                <h3>2.4 Embedding vs Standalone</h3>
+
+                <blockquote>
+                    <p>"Primeira tentativa: playground standalone = baixa adocao (janela extra para ir). Segunda tentativa: embedado no Jira = alta adocao."</p>
+                    <cite>Lisa Orr, Zapier</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>❌ ERRADO (Standalone):
+Magistrado ──► Abre Claude Code ──► Copia processo ──► Roda comandos ──► Copia minuta ──► Cola no PJE
+
+✅ CERTO (Embedded):
+Magistrado ──► Abre processo no PJE ──► Um clique ──► CLERK executa ──► Minuta aparece no PJE</code></pre>
+
+                <p><strong>Meta:</strong> Integrar CLERK no fluxo do PJE, nao como ferramenta separada.</p>
+            </section>
+
+            <!-- Bloco 3: MCPs Juridicos -->
+            <section id="bloco3" class="lesson-block">
+                <h2>Bloco 3: MCPs Juridicos</h2>
+                <span class="badge badge-time">40 min</span>
+
+                <h3>3.1 O Que Sao MCPs</h3>
+
+                <p><strong>MCP = Model Context Protocol</strong></p>
+
+                <p>MCPs sao "conectores" que dao ao Claude acesso a sistemas externos:</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  ANTES: Claude isolado                                          │
+│                                                                 │
+│  Claude ←─ Voce copia/cola dados ─→ Sistema externo             │
+│                                                                 │
+│  DEPOIS: Claude conectado via MCP                               │
+│                                                                 │
+│  Claude ←──── MCP Server ────→ Sistema externo                  │
+│         (acesso direto)                                         │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>3.2 MCPs Juridicos Disponiveis</h3>
+
+                <p><strong>Tres MCPs para pesquisa de precedentes:</strong></p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>MCP</th>
+                            <th>Fonte</th>
+                            <th>Conteudo</th>
+                            <th>Tools</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>bnp-api</code></td>
+                            <td>BNP/PANGEA (CNJ)</td>
+                            <td>Precedentes vinculantes STF/STJ</td>
+                            <td><code>buscar_precedentes</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>cjf-jurisprudencia</code></td>
+                            <td>CJF Unificada</td>
+                            <td>Jurisprudencia todos TRFs</td>
+                            <td><code>buscar_jurisprudencia_cjf</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>julia-trf5</code></td>
+                            <td>JULIA (TRF5)</td>
+                            <td>1o e 2o grau 5a Regiao</td>
+                            <td><code>buscar_julia</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>3.3 Sintaxe de Busca por Base</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">IMPORTANTE</div>
+                    <p>Cada base tem sintaxe DIFERENTE!</p>
+                </div>
+
+                <h4>BNP (Banco Nacional de Precedentes)</h4>
+                <pre><code>Operadores: +termo (obrigatorio), -termo (excluir), "frase" (exata)
+
+Exemplos:
++pensao +morte +homoafetivo
+"aposentadoria especial" +EPI
++bpc +idoso -estrangeiro
+
+NAO usar: E, OU, NAO (nao funcionam no BNP)</code></pre>
+
+                <h4>CJF (Conselho da Justica Federal)</h4>
+                <pre><code>Operadores: E, OU, NAO, ADJ[n], PROX[n], COM, MESMO (MAIUSCULO!)
+
+Exemplos:
+(pensao E morte)[EMEN] E homoafetivo
+aposentadoria PROX3 invalidez
+Fux[REL] E previdenciario[INDE]
+
+Campos: [EMEN], [REL], [TRIB], [ORGA], [INDE], [ITEO]</code></pre>
+
+                <h4>JULIA (TRF5)</h4>
+                <pre><code>Operadores: e, ou, nao, prox, adj, $ (MINUSCULO!)
+
+Exemplos:
+pensao e morte e homoafetivo
+aposentad$ e especial e epi
+"auxilio-doenca" e cessacao e pericia
+
+Filtros: orgao, instancia, tipos_documento, relator</code></pre>
+
+                <h3>3.4 Arquitetura de Pesquisa</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  ESTRATEGIA DE PESQUISA INTELIGENTE                             │
+│                                                                 │
+│  PASSO 1: Classificar o tema                                    │
+│           ├─ COMUM (BPC, aposentadoria padrao)                  │
+│           │  └─ Apenas BNP (temas vinculantes)                  │
+│           │                                                     │
+│           └─ RARO/COMPLEXO (questao nova, jurisprudencia)       │
+│              └─ BNP → CJF → JULIA (cascata)                     │
+│                                                                 │
+│  PASSO 2: Formular query com operadores corretos                │
+│           ├─ BNP: +termo +termo                                 │
+│           ├─ CJF: termo E termo[EMEN]                           │
+│           └─ JULIA: termo e termo                               │
+│                                                                 │
+│  PASSO 3: Executar em paralelo (quando possivel)                │
+│           ├─ Fan-out: 3 subagentes (BNP, CJF, JULIA)            │
+│           └─ Fan-in: consolidar resultados                      │
+│                                                                 │
+│  PASSO 4: Destilar (economizar tokens)                          │
+│           └─ Retornar apenas: tema, tese, aplicabilidade        │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>3.5 Commands de Pesquisa</h3>
+
+                <h4>Commands Atomicos (uma fonte cada)</h4>
+                <pre><code class="language-bash">/pesquisar-bnp "pensao morte homoafetivo"
+/pesquisar-cjf "pensao E morte E homoafetivo"
+/pesquisar-julia "pensao e morte e homoafetivo"</code></pre>
+
+                <h4>Command Orquestrador (fluxo completo)</h4>
+                <pre><code class="language-bash">/pesquisar-jurisprudencia "pensao por morte para companheiro homoafetivo"</code></pre>
+
+                <p>O orquestrador:</p>
+                <ol>
+                    <li>Classifica o tema (COMUM ou RARO)</li>
+                    <li>Busca no BNP primeiro (vinculantes)</li>
+                    <li>Se nao encontrar, expande para CJF e JULIA</li>
+                    <li>Consolida e destila resultados</li>
+                </ol>
+
+                <h3>3.6 Exemplo Pratico: Pesquisa BPC</h3>
+
+                <p><strong>Questao:</strong> "BPC para idoso estrangeiro residente no Brasil"</p>
+
+                <pre class="diagram"><code>1. BNP: +bpc +idoso +estrangeiro
+   Resultado: Tema 173 - "Estrangeiro residente no pais..."
+
+2. Se tema vinculante encontrado → PARA
+   Se nao → continua para CJF
+
+3. CJF: (BPC OU LOAS)[EMEN] E idoso E estrangeiro
+   Resultado: Acordaos STJ sobre o tema
+
+4. JULIA: bpc e idoso e estrangeiro
+   Resultado: Jurisprudencia regional TRF5</code></pre>
+            </section>
+
+            <!-- Bloco 4: O Pipeline CLERK -->
+            <section id="bloco4" class="lesson-block">
+                <h2>Bloco 4: O Pipeline CLERK</h2>
+                <span class="badge badge-time">45 min</span>
+
+                <h3>4.1 Visao Geral do Pipeline</h3>
+
+                <pre class="diagram"><code>┌──────────────────────────────────────────────────────────────────────────────────────┐
+│  PIPELINE CLERK - 6 FASES                                                            │
+│                                                                                      │
+│  FASE 1       FASE 2      FASE 3        FASE 4       FASE 5      FASE 6             │
+│  Preparacao   Extracao    Orquestrador  Elaboracao   MERGE       REVISAO            │
+│                                                                                      │
+│  PJE → TXT →  Relatorio → Classifica →  Minuta   →   Sentenca →  3 Subagentes      │
+│               judicial    + Orienta     Fund+Disp    Completa    em Paralelo        │
+│                                                                                      │
+│  /baixar-pje  /relatar-   /analisar-    /elaborar-   /merge-     /revisar-          │
+│               processo    caso          minuta       sentenca    sentenca           │
+└──────────────────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.2 Fase 1: Preparacao (Workflow)</h3>
+
+                <p><strong>Objetivo:</strong> Baixar processo do PJE e converter para formato processavel.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  FASE 1: PREPARACAO                                             │
+│                                                                 │
+│  PJE ───► Download ───► OCR/Conversao ───► TXT                  │
+│                                                                 │
+│  Command: /baixar-pje [numero-processo]                         │
+│                                                                 │
+│  Skill: pje-integration                                         │
+│  ├─ Login automatizado no PJE                                   │
+│  ├─ Download de todas as pecas                                  │
+│  ├─ Triagem: PDF pesquisavel vs imagem                          │
+│  └─ OCR quando necessario                                       │
+│                                                                 │
+│  Output: pasta processo-XXXXX/ com TXTs                         │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.3 Fase 2: Extracao (Pipeline Linear)</h3>
+
+                <p><strong>Objetivo:</strong> Gerar relatorio estruturado do processo.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  FASE 2: EXTRACAO                                               │
+│                                                                 │
+│  TXT ───► Triagem ───► Extracao ───► Sintese ───► Relatorio     │
+│                                                                 │
+│  Command: /relatar-processo [caminho]                           │
+│                                                                 │
+│  Skill: relatorio-judicial                                      │
+│  Metodologia: Refinamento Iterativo                             │
+│  ├─ Leitura em chunks de 2000 tokens                            │
+│  ├─ Extracao de elementos-chave por chunk                       │
+│  ├─ Consolidacao em estrutura coerente                          │
+│  └─ Validacao contra checklist                                  │
+│                                                                 │
+│  Output: relatorio.md                                           │
+│  ├─ SINTESE (3-5 linhas)                                        │
+│  ├─ FATOS RELEVANTES (tabela cronologica)                       │
+│  ├─ PEDIDOS                                                     │
+│  └─ DOCUMENTOS PROBATORIOS                                      │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.4 Fase 3: Orquestrador (Bolsao Agentico + Fan-Out)</h3>
+
+                <p><strong>Objetivo:</strong> Pesquisar precedentes e classificar o caso.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  FASE 3: ORQUESTRADOR                                           │
+│                                                                 │
+│  Relatorio ───► Classificar ───► Pesquisar ───► Orientar        │
+│                                                                 │
+│  Command: /analisar-caso [caminho]                              │
+│                                                                 │
+│  ETAPA 1: Identificar questao juridica central                  │
+│                                                                 │
+│  ETAPA 2: Classificar complexidade                              │
+│  ├─ TRIVIAL: tema vinculante direto, fatos incontroversos       │
+│  └─ HARD CASE: questao nova, fatos controversos                 │
+│                                                                 │
+│  ETAPA 3: Pesquisar (Fan-Out)                                   │
+│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐            │
+│  │     BNP     │   │     CJF     │   │    JULIA    │            │
+│  │ (vinculante)│   │ (STJ/STF)   │   │   (TRF5)    │            │
+│  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘            │
+│         └─────────────────┼─────────────────┘                   │
+│                           ▼                                     │
+│                    CONSOLIDADOR                                 │
+│                                                                 │
+│  Output: analise-orientadora.md                                 │
+│  ├─ Classificacao: TRIVIAL | HARD CASE                          │
+│  ├─ Precedentes aplicaveis                                      │
+│  └─ Orientacao para elaboracao                                  │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.5 GATE 3: Checkpoint Decisorio</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  CHECKPOINT DECISORIO (OBRIGATORIO)                             │
+│                                                                 │
+│        [Analise Orientadora]                                    │
+│                │                                                │
+│                ▼                                                │
+│  ┌─────────────────────────────────┐                            │
+│  │      MAGISTRADO DECIDE:         │                            │
+│  │                                 │                            │
+│  │  [ ] Concordo com classificacao │                            │
+│  │  [ ] Concordo com precedentes   │                            │
+│  │  [ ] Orientacao para sentenca:  │                            │
+│  │      _________________________  │                            │
+│  │                                 │                            │
+│  │  ( ) Procedente                 │                            │
+│  │  ( ) Improcedente               │                            │
+│  │  ( ) Parcialmente procedente    │                            │
+│  └─────────────────────────────────┘                            │
+│                                                                 │
+│  SE TRIVIAL + Magistrado concorda → Fluxo automatizado          │
+│  SE HARD CASE ou discorda → Analise aprofundada                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">Este e o unico ponto onde o CLERK espera decisao humana</div>
+                    <p>O magistrado valida a classificacao, confirma os precedentes aplicaveis e orienta a direcao da sentenca.</p>
+                </div>
+
+                <h3>4.6 Fases 4-5: Elaboracao (Pipeline RPI)</h3>
+
+                <p><strong>Objetivo:</strong> Gerar minuta de sentenca.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  FASES 4-5: ELABORACAO                                          │
+│                                                                 │
+│  Orientacao ───► Fundamentar ───► Dispositivo ───► Merge        │
+│                                                                 │
+│  Command: /sentenciar [opcoes]                                  │
+│  ├─ /sentenciar-restrito   (so triviais)                        │
+│  ├─ /sentenciar-irrestrito (qualquer, com red flags)            │
+│  └─ /sentenciar-rapido     (gera tudo do zero)                  │
+│                                                                 │
+│  Skill: elaboracao-minuta                                       │
+│  ├─ MODO FUNDAMENTACAO: regras anti-alucinacao                  │
+│  ├─ Cita apenas precedentes do relatorio orientador             │
+│  ├─ Nao inventa fatos                                           │
+│  └─ Linguagem tecnica formal                                    │
+│                                                                 │
+│  Output:                                                        │
+│  ├─ minuta-fundamentacao.md (Fase 4)                            │
+│  └─ minuta.md (Fase 5 - completa)                               │
+│      ├─ RELATORIO                                               │
+│      ├─ FUNDAMENTACAO                                           │
+│      └─ DISPOSITIVO                                             │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.7 Fase 6: Revisao (Fan-Out Paralelo)</h3>
+
+                <p><strong>Objetivo:</strong> Revisar minuta com multiplas perspectivas.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  FASE 6: REVISAO PARALELA                                       │
+│                                                                 │
+│  Command: /revisar-sentenca [caminho]                           │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │              MINUTA DE SENTENCA                         │    │
+│  └───────────────────────┬─────────────────────────────────┘    │
+│                          │                                      │
+│          ┌───────────────┼───────────────┐                      │
+│          │               │               │                      │
+│          ▼               ▼               ▼                      │
+│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐          │
+│  │   ADVOGADO    │ │ CONSISTENCIA  │ │ CONSISTENCIA  │          │
+│  │   DO DIABO    │ │   INTERNA     │ │   EXTERNA     │          │
+│  │               │ │               │ │               │          │
+│  │ Busca vicios: │ │ Confronta:    │ │ Verifica:     │          │
+│  │ - Omissao     │ │ - Sentenca    │ │ - Precedentes │          │
+│  │ - Contradicao │ │   vs autos    │ │ - Sumulas     │          │
+│  │ - Obscuridade │ │ - Pedidos     │ │ - Leis        │          │
+│  │               │ │ - Argumentos  │ │ (WebSearch)   │          │
+│  └───────┬───────┘ └───────┬───────┘ └───────┬───────┘          │
+│          │               │               │                      │
+│          └───────────────┼───────────────┘                      │
+│                          ▼                                      │
+│                   CONSOLIDADOR                                  │
+│                          │                                      │
+│                          ▼                                      │
+│               minuta-robustecida.md                             │
+│                  (se houver correcoes)                          │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.8 Estrutura de Saida Final</h3>
+
+                <pre class="diagram"><code>processo-XXXXX/
+├── relatorio.md                    (Fase 2)
+├── minuta-fundamentacao.md         (Fase 4)
+├── minuta.md                       (Fase 5)
+├── minuta-robustecida.md           (Fase 6 - se correcoes)
+├── pesquisa/
+│   ├── analise-orientadora.md
+│   ├── bnp/
+│   ├── cjf/
+│   └── julia/
+└── revisao/
+    ├── analise-advogado-diabo.md
+    ├── analise-consistencia-interna.md
+    ├── analise-consistencia-externa.md
+    └── consolidacao.md</code></pre>
+            </section>
+
+            <!-- Bloco 5: Governanca e Explainability -->
+            <section id="bloco5" class="lesson-block">
+                <h2>Bloco 5: Governanca e Explainability</h2>
+                <span class="badge badge-time">35 min</span>
+
+                <h3>5.1 Por Que Governanca Importa</h3>
+
+                <blockquote>
+                    <p>"Cost of error and error discovery - If your errors are going to be high stake and very hard to discover, it's going to be very difficult for you to trust the agent."</p>
+                    <cite>Barry Zhang, Anthropic</cite>
+                </blockquote>
+
+                <p><strong>No contexto judicial:</strong></p>
+                <ul>
+                    <li>Erro = sentenca injusta ou ilegal</li>
+                    <li>Custo = direitos fundamentais violados</li>
+                    <li>Descoberta = dificil (sentenca vira coisa julgada)</li>
+                </ul>
+
+                <p><strong>Conclusao:</strong> Governanca maxima e obrigatoria.</p>
+
+                <h3>5.2 O Modelo de Permissoes em 5 Niveis</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  NIVEIS DE AUTONOMIA                                            │
+│                                                                 │
+│  L1: Pedir permissao para TODA acao                             │
+│      [Mais controle, menos produtividade]                       │
+│                                                                 │
+│  L2: Pedir para acoes sensiveis (escrita, delete)               │
+│      [Padrao recomendado]                                       │
+│                                                                 │
+│  L3: YOLO seletivo (pre-definir permitidos)                     │
+│      [Para tarefas repetitivas bem definidas]                   │
+│                                                                 │
+│  L4: YOLO com restricoes minimas                                │
+│      [NAO recomendado para judicial]                            │
+│                                                                 │
+│  L5: YOLO total                                                 │
+│      [PROIBIDO para judicial]                                   │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <p><strong>Para CLERK:</strong> Usar <strong>L3 Seletivo</strong></p>
+                <ul>
+                    <li>Permitir: leitura, pesquisa, geracao de minutas</li>
+                    <li>Bloquear: exclusao, modificacao de configs, execucao arbitraria</li>
+                </ul>
+
+                <h3>5.3 Gates de Validacao</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  ARQUITETURA DE GATES (5 GATES)                                 │
+│                                                                 │
+│  GATE 1: INPUT VALIDATION                                       │
+│  ├─ Processo esta completo?                                     │
+│  ├─ Formato valido?                                             │
+│  └─ Escopo definido?                                            │
+│                                                                 │
+│  GATE 2: RESEARCH VALIDATION                                    │
+│  ├─ Precedentes encontrados sao aplicaveis?                     │
+│  ├─ Classificacao (TRIVIAL/HARD) esta correta?                  │
+│  └─ [Humano revisa]                                             │
+│                                                                 │
+│  GATE 3: PLAN APPROVAL (CHECKPOINT DECISORIO)                   │
+│  ├─ Magistrado concorda com orientacao?                         │
+│  ├─ Decide: procedente/improcedente/parcial                     │
+│  └─ [Obrigatorio - humano decide]                               │
+│                                                                 │
+│  GATE 4: AUTOMATED VALIDATION (HOOKS)                           │
+│  ├─ Formato correto?                                            │
+│  ├─ Citacoes presentes?                                         │
+│  └─ Linguagem formal?                                           │
+│                                                                 │
+│  GATE 5: QA CHECKPOINT (REVISAO)                                │
+│  ├─ 3 subagentes verificam                                      │
+│  ├─ Consolidador aponta problemas                               │
+│  └─ [Humano revisa final]                                       │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>5.4 Explainability: Rastreabilidade Completa</h3>
+
+                <p><strong>Principio:</strong> Toda decisao deve ser rastreavel ate sua origem.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  RASTREABILIDADE                                                │
+│                                                                 │
+│  Dispositivo: "Julgo PROCEDENTE o pedido..."                    │
+│       │                                                         │
+│       └─► Fundamentacao: "Conforme Tema 173 do STF..."          │
+│               │                                                 │
+│               └─► Pesquisa: analise-orientadora.md              │
+│                       │                                         │
+│                       └─► BNP: tema_173_stf.json                │
+│                                                                 │
+│  CADA ELEMENTO TEM ORIGEM DOCUMENTADA                           │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>5.5 Padrao Crawl-Walk-Run</h3>
+
+                <p><strong>Implantacao gradual para ambientes de alto risco:</strong></p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  CRAWL (100% Human in Loop)                                     │
+│  ├─ Um tipo de caso apenas (BPC)                                │
+│  ├─ Humano aprova TODAS as decisoes                             │
+│  ├─ Auditoria detalhada de cada passo                           │
+│  └─ Gates em INPUT, RESEARCH, PLAN, IMPLEMENTATION              │
+│                                                                 │
+│  WALK (Autonomia Seletiva)                                      │
+│  ├─ 2-3 tipos de caso                                           │
+│  ├─ Humano aprova apenas PLAN                                   │
+│  ├─ Validacao automatica para formato/completude                │
+│  └─ Rollback sempre disponivel                                  │
+│                                                                 │
+│  RUN (Pipeline Confiavel)                                       │
+│  ├─ Todos os tipos de caso                                      │
+│  ├─ Humano aprova PLAN ou amostragem (10%)                      │
+│  ├─ Gates automatizados com monitoramento                       │
+│  └─ Triggers de escalacao claros                                │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <p><strong>Recomendacao:</strong> Comecar em CRAWL, avancar conforme confianca aumenta.</p>
+
+                <h3>5.6 Anti-Padroes a Evitar</h3>
+
+                <pre><code>❌ ANTI-PADRAO 1: Confiar cegamente
+   "A IA disse que esta certo, entao esta."
+   CORRECAO: Sempre verificar, especialmente hard cases.
+
+❌ ANTI-PADRAO 2: Trajectory Poisoning
+   Agente erra → humano corrige → agente erra de novo
+   CORRECAO: Limpar erros do contexto apos 3 tentativas.
+
+❌ ANTI-PADRAO 3: Over-automation
+   Automatizar 100% do processo decisorio.
+   CORRECAO: 90% automatizado + 10% humano = ideal.
+
+❌ ANTI-PADRAO 4: Caixa-preta
+   Nao documentar de onde veio cada elemento.
+   CORRECAO: Rastreabilidade completa.</code></pre>
+            </section>
+
+            <!-- Bloco 6: Revisao com Subagentes -->
+            <section id="bloco6" class="lesson-block">
+                <h2>Bloco 6: Revisao com Subagentes</h2>
+                <span class="badge badge-time">40 min</span>
+
+                <h3>6.1 Por Que Revisao Paralela</h3>
+
+                <p><strong>Problema:</strong> Um unico revisor (humano ou IA) tem pontos cegos.</p>
+                <p><strong>Solucao:</strong> Multiplos revisores com perspectivas diferentes.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  REVISAO TRADICIONAL (Linear)                                   │
+│                                                                 │
+│  Minuta ───► Revisor 1 ───► Revisor 2 ───► Final                │
+│                                                                 │
+│  Problemas:                                                     │
+│  - Sequencial (lento)                                           │
+│  - Revisor 2 pode ser influenciado por Revisor 1                │
+│  - Cada revisor tem os mesmos pontos cegos                      │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  REVISAO PARALELA (Fan-Out)                                     │
+│                                                                 │
+│              ┌───────────────┐                                  │
+│              │    MINUTA     │                                  │
+│              └───────┬───────┘                                  │
+│          ┌───────────┼───────────┐                              │
+│          │           │           │                              │
+│          ▼           ▼           ▼                              │
+│   ┌───────────┐ ┌───────────┐ ┌───────────┐                     │
+│   │ Revisor A │ │ Revisor B │ │ Revisor C │                     │
+│   │(perspect.)│ │(perspect.)│ │(perspect.)│                     │
+│   └─────┬─────┘ └─────┬─────┘ └─────┬─────┘                     │
+│         └─────────────┼─────────────┘                           │
+│                       ▼                                         │
+│               CONSOLIDADOR                                      │
+│                                                                 │
+│  Vantagens:                                                     │
+│  - Paralelo (rapido)                                            │
+│  - Independente (sem influencia mutua)                          │
+│  - Perspectivas complementares                                  │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>6.2 Os Tres Subagentes</h3>
+
+                <h4>Subagente 1: Advogado do Diabo</h4>
+
+                <pre><code class="language-markdown"># Prompt: advogado-diabo.md
+
+Voce e um advogado contratado pela parte sucumbente para
+encontrar TODOS os vicios que permitam recurso.
+
+Busque:
+1. OMISSOES: argumentos nao enfrentados
+2. CONTRADICOES: inconsistencias internas
+3. OBSCURIDADES: trechos confusos ou ambiguos
+
+Para cada vicio encontrado:
+- Localize no texto
+- Explique o problema
+- Sugira correcao
+
+Se NAO encontrar vicios graves, diga explicitamente.</code></pre>
+
+                <h4>Subagente 2: Consistencia Interna</h4>
+
+                <pre><code class="language-markdown"># Prompt: consistencia-interna.md
+
+Voce verifica se a sentenca e consistente com os proprios autos.
+
+Confronte:
+1. PEDIDOS: todos os pedidos foram analisados?
+2. ARGUMENTOS: todos os argumentos foram enfrentados?
+3. PROVAS: todas as provas citadas existem nos autos?
+4. FATOS: os fatos narrados conferem com o relatorio?
+
+Para cada inconsistencia:
+- Identifique o elemento da sentenca
+- Identifique o elemento dos autos
+- Explique a divergencia</code></pre>
+
+                <h4>Subagente 3: Consistencia Externa</h4>
+
+                <pre><code class="language-markdown"># Prompt: consistencia-externa.md
+
+Voce verifica se as citacoes externas estao corretas.
+
+Use WebSearch para verificar:
+1. PRECEDENTES: o tema/sumula existe? A tese esta correta?
+2. LEGISLACAO: o artigo citado existe? O texto confere?
+3. DOUTRINA: a citacao esta correta?
+
+Para cada citacao:
+- Busque a fonte original
+- Compare com o citado na sentenca
+- Indique se confere ou diverge</code></pre>
+
+                <h3>6.3 O Consolidador</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  CONSOLIDADOR                                                   │
+│                                                                 │
+│  Recebe: 3 analises dos subagentes                              │
+│                                                                 │
+│  Executa:                                                       │
+│  1. Remove duplicatas (mesmo problema visto por 2+)             │
+│  2. Prioriza por gravidade:                                     │
+│     - CRITICO: invalida a sentenca                              │
+│     - ALTO: pode gerar reforma                                  │
+│     - MEDIO: melhoria recomendada                               │
+│     - BAIXO: polimento                                          │
+│  3. Gera relatorio consolidado                                  │
+│                                                                 │
+│  Output: consolidacao.md                                        │
+│  ├─ Problemas CRITICOS (se houver)                              │
+│  ├─ Problemas ALTOS                                             │
+│  ├─ Melhorias sugeridas                                         │
+│  └─ Conclusao: APROVAR / REVISAR / REFAZER                      │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>6.4 Fluxo Completo da Revisao</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  /revisar-sentenca processo-XXXXX/minuta.md                     │
+│                                                                 │
+│  1. Carrega minuta                                              │
+│  2. Carrega autos (para consistencia interna)                   │
+│  3. Dispara 3 subagentes em PARALELO                            │
+│  4. Aguarda todos completarem                                   │
+│  5. Consolida resultados                                        │
+│  6. Se problemas criticos:                                      │
+│     └─ Gera minuta-robustecida.md com correcoes                 │
+│  7. Salva em revisao/                                           │
+│  8. Apresenta resumo ao magistrado                              │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>6.5 Exemplo de Output</h3>
+
+                <pre><code class="language-markdown"># Consolidacao da Revisao
+
+Data: 2024-01-15
+Processo: 12345-XX.2024.4.05.8100
+
+## Problemas Encontrados
+
+### CRITICOS
+(nenhum)
+
+### ALTOS
+1. **Omissao de argumento** (Advogado do Diabo)
+   - Autor alegou prescricao intercorrente (p. 45)
+   - Sentenca nao enfrentou o argumento
+   - Sugestao: Adicionar paragrafo sobre prescricao
+
+### MEDIOS
+2. **Citacao imprecisa** (Consistencia Externa)
+   - Tema 173 citado como "idoso acima de 65 anos"
+   - Correto: "idoso acima de 65 anos OU deficiente"
+   - Sugestao: Corrigir texto da tese
+
+### BAIXOS
+3. **Formatacao** (Consistencia Interna)
+   - Dispositivo usa "DEFIRO" em vez de "JULGO PROCEDENTE"
+   - Sugestao: Padronizar linguagem
+
+## Conclusao
+
+**REVISAR** - Ha um problema ALTO que precisa correcao antes de publicar.</code></pre>
+            </section>
+
+            <!-- Bloco 7: Projeto Final e Proximos Passos -->
+            <section id="bloco7" class="lesson-block">
+                <h2>Bloco 7: Projeto Final e Proximos Passos</h2>
+                <span class="badge badge-time">35 min</span>
+
+                <h3>7.1 Opcoes de Projeto Final</h3>
+
+                <h4>Opcao A: Pipeline Completo para BPC</h4>
+
+                <pre class="diagram"><code>Escopo:
+- Baixar processo de BPC do PJE
+- Gerar relatorio estruturado
+- Pesquisar Tema 173 no BNP
+- Classificar como TRIVIAL
+- Gerar minuta de sentenca
+- Revisar com 3 subagentes
+
+Entregaveis:
+- processo-XXXXX/ com todos os artefatos
+- Documentacao do fluxo executado</code></pre>
+
+                <h4>Opcao B: Sistema de Pesquisa Tematica</h4>
+
+                <pre class="diagram"><code>Escopo:
+- Criar skill de pesquisa especializada
+- Implementar busca em BNP + CJF + JULIA
+- Gerar relatorio comparativo de jurisprudencia
+- Incluir analise de evolucao jurisprudencial
+
+Entregaveis:
+- Skill de pesquisa
+- Relatorio tematico sobre tema escolhido</code></pre>
+
+                <h4>Opcao C: Analisador de Contratos</h4>
+
+                <pre class="diagram"><code>Escopo:
+- Criar pipeline para analise de contratos
+- Extrair clausulas-chave
+- Identificar riscos juridicos
+- Gerar relatorio estruturado
+
+Entregaveis:
+- Skill de analise de contratos
+- Relatorio de analise de contrato real</code></pre>
+
+                <h3>7.2 Checklist de Entrega</h3>
+
+                <pre class="diagram"><code>## Projeto Final - Checklist
+
+### Documentacao
+- [ ] CLAUDE.md do projeto atualizado
+- [ ] README com instrucoes de uso
+- [ ] Diagramas de arquitetura
+
+### Artefatos Tecnicos
+- [ ] Pelo menos 1 skill funcional
+- [ ] Pelo menos 2 commands funcionais
+- [ ] Configuracao de MCPs (se aplicavel)
+
+### Demonstracao
+- [ ] Execucao do pipeline com caso real
+- [ ] Output documentado
+- [ ] Analise critica dos resultados
+
+### Reflexao
+- [ ] O que funcionou bem
+- [ ] O que precisa melhorar
+- [ ] Proximos passos planejados</code></pre>
+
+                <h3>7.3 Recursos para Continuar Aprendendo</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Categoria</th>
+                            <th>Recurso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Documentacao Oficial</strong></td>
+                            <td>code.claude.com, docs.anthropic.com</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Comunidade</strong></td>
+                            <td>Discord Anthropic, Forum AI Engineer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Leitura</strong></td>
+                            <td>"Building Effective Agents", "12 Factor Agents"</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>7.4 O Caminho Adiante</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  JORNADA DO JURISTA AGENTICO                                    │
+│                                                                 │
+│  VOCE ESTA AQUI                                                 │
+│       │                                                         │
+│       ▼                                                         │
+│  [Curso completo] ───► Projeto final                            │
+│                             │                                   │
+│                             ▼                                   │
+│                        Uso diario do Claude Code                │
+│                             │                                   │
+│                             ▼                                   │
+│                        Customizacao para seu contexto           │
+│                             │                                   │
+│                             ▼                                   │
+│                        Integracao com PJE                       │
+│                             │                                   │
+│                             ▼                                   │
+│                        Pipeline completo em producao            │
+│                             │                                   │
+│                             ▼                                   │
+│                        Compartilhar com colegas                 │
+│                             │                                   │
+│                             ▼                                   │
+│                        TRANSFORMAR O JUDICIARIO                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>7.5 Mensagem Final</h3>
+
+                <blockquote>
+                    <p>"O CLERK nao substitui o magistrado. Potencializa sua capacidade de fazer justica."</p>
+                </blockquote>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">O Que Voce Aprendeu Neste Curso</div>
+                    <ol>
+                        <li><strong>Conceitos:</strong> O que sao agentes e como funcionam</li>
+                        <li><strong>Ferramentas:</strong> Claude Code, MCPs, Skills, Commands</li>
+                        <li><strong>Arquitetura:</strong> Pipelines, workflows, gates, subagentes</li>
+                        <li><strong>Construcao:</strong> Como criar seus proprios sistemas</li>
+                        <li><strong>Aplicacao:</strong> O sistema CLERK para trabalho juridico</li>
+                    </ol>
+                </div>
+
+                <p>O proximo passo e seu. Comece pequeno, itere rapido, e lembre-se:</p>
+
+                <blockquote>
+                    <p>"Regencia Cognitiva: o humano dirige, a IA executa, juntos chegam mais longe."</p>
+                </blockquote>
+            </section>
+
+            <!-- Sintese -->
+            <section class="lesson-block" id="sintese">
+                <h2>Sintese: O Que Aprendemos</h2>
+
+                <h3>Conceitos-Chave da Aula 5</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Conceito</th>
+                            <th>O Que E</th>
+                            <th>Por Que Importa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Aumentacao</strong></td>
+                            <td>IA potencializa humano</td>
+                            <td>Legitimidade juridica</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scout Agent</strong></td>
+                            <td>Padrao Diagnosis→Codegen→Iteration</td>
+                            <td>Modelo para CLERK</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MCPs Juridicos</strong></td>
+                            <td>Conectores para bases de precedentes</td>
+                            <td>Acesso direto a jurisprudencia</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pipeline CLERK</strong></td>
+                            <td>6 fases com gates</td>
+                            <td>Fluxo completo estruturado</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Governanca</strong></td>
+                            <td>Permissoes em niveis + rastreabilidade</td>
+                            <td>Seguranca em alto risco</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Revisao Paralela</strong></td>
+                            <td>3 subagentes + consolidador</td>
+                            <td>Multiplas perspectivas</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Citacoes para Lembrar</h3>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Sabedoria Destilada</div>
+                    <ul>
+                        <li>"Embedding tools is the key to usage." - Lisa Orr</li>
+                        <li>"Cost of error and error discovery - high stakes need more human-in-the-loop." - Barry Zhang</li>
+                        <li>"Nao e sobre substituir o juiz. E sobre potencializar sua analise." - Filosofia CLERK</li>
+                    </ul>
+                </div>
+
+                <h3>O Pipeline Completo</h3>
+
+                <pre class="diagram"><code>PJE → Download → OCR → Relatorio → Pesquisa → Checkpoint → Minuta → Revisao → Sentenca
+      (Fase 1)  (F2)   (F3)       (GATE)     (F4-5)     (F6)</code></pre>
+            </section>
+
+            <!-- Navegacao entre aulas -->
+            <nav class="lesson-pagination">
+                <a href="aula-4.html" class="pagination-prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>
+                        <small>Anterior</small>
+                        Aula 4: Construindo os Primeiros Agentes
+                    </span>
+                </a>
+                <a href="glossario.html" class="pagination-next">
+                    <span>
+                        <small>Proximo</small>
+                        Glossario de Termos
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </nav>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sistemas Agenticos</h4>
+                    <p>Curso pratico de IA Agentica para profissionais do Direito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navegacao</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="glossario.html">Glossario</a></li>
+                        <li><a href="recursos.html">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Para duvidas sobre o curso, entre em contato com o instrutor.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Curso de Sistemas Agenticos - Material Educacional</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 8: Engenharia de Capacidades | Sistemas Agenticos</title>
+    <meta name="description" content="Anatomia de Commands e Skills, templates, organizacao de arquivos e quando usar cada um">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">S</span>
+                <span class="logo-text">Sistemas Agenticos</span>
+            </a>
+            <nav class="nav-main">
+                <ul>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Aulas</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="aula-0.html">Aula 0: Abertura</a></li>
+                            <li><a href="aula-1.html">Aula 1: Fundamentos</a></li>
+                            <li><a href="aula-2a.html">Aula 2A: Anatomia</a></li>
+                            <li><a href="aula-2b.html">Aula 2B: Claude Code</a></li>
+                            <li><a href="aula-3.html">Aula 3: Arquitetura</a></li>
+                            <li><a href="aula-4.html">Aula 4: Construindo</a></li>
+                            <li><a href="aula-5.html">Aula 5: Sistema CLERK</a></li>
+                            <li class="divider"></li>
+                            <li><a href="aula-6.html">Aula 6: Engenharia de Prompt</a></li>
+                            <li><a href="aula-6b.html">Aula 6B: Prompts Agenticos</a></li>
+                            <li><a href="aula-7.html">Aula 7: Engenharia de Contexto</a></li>
+                            <li><a href="aula-8.html" class="active">Aula 8: Engenharia de Capacidades</a></li>
+                            <li><a href="aula-9.html">Aula 9: Engenharia de Workflows</a></li>
+                            <li><a href="aula-10.html">Aula 10: Engenharia de Conexoes</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="glossario.html">Glossario</a></li>
+                    <li><a href="recursos.html">Recursos</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" aria-label="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+        <div class="container">
+            <span class="badge badge-module">Modulo 2</span>
+            <h1>Engenharia de Capacidades</h1>
+            <p class="lesson-subtitle">Como estruturar Commands e Skills para encapsular expertise e criar capacidades reutilizaveis</p>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    2h
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    5 blocos
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    Commands & Skills
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lesson Content -->
+    <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+            <nav class="lesson-nav">
+                <h4>Nesta Aula</h4>
+                <ul>
+                    <li><a href="#bloco1" class="lesson-nav-link">1. Commands - Atalhos de Prompt</a></li>
+                    <li><a href="#bloco2" class="lesson-nav-link">2. Anatomia da Skill</a></li>
+                    <li><a href="#bloco3" class="lesson-nav-link">3. Command vs Skill</a></li>
+                    <li><a href="#bloco4" class="lesson-nav-link">4. Templates e Exemplos</a></li>
+                    <li><a href="#bloco5" class="lesson-nav-link">5. Organizacao de Arquivos</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lesson-content">
+            <!-- Mobile TOC -->
+            <div class="mobile-toc">
+                <button class="mobile-toc-trigger">
+                    <span>Navegacao</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <nav class="mobile-toc-content">
+                    <ul>
+                        <li><a href="#bloco1">1. Commands - Atalhos de Prompt</a></li>
+                        <li><a href="#bloco2">2. Anatomia da Skill</a></li>
+                        <li><a href="#bloco3">3. Command vs Skill</a></li>
+                        <li><a href="#bloco4">4. Templates e Exemplos</a></li>
+                        <li><a href="#bloco5">5. Organizacao de Arquivos</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Introducao -->
+            <section class="lesson-block" id="intro">
+                <h2>Capacidades Encapsuladas</h2>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Objetivo</div>
+                    <p>Aprender a criar <strong>Commands</strong> e <strong>Skills</strong> - blocos de expertise que o agente pode usar repetidamente com consistencia e qualidade.</p>
+                </div>
+
+                <blockquote>
+                    <p>"Skills are just folders with a SKILL.md file."</p>
+                    <cite>Barry Zhang, Anthropic (AI Engineer Summit 2024)</cite>
+                </blockquote>
+
+                <h3>Hierarquia de Capacidades</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                 HIERARQUIA DE CAPACIDADES                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   PROMPT UNICO                                                  │
+│   └── Instrucao ad-hoc na conversa                              │
+│       (nao reutilizavel, consome tokens toda vez)               │
+│                                                                 │
+│   COMMAND                                                       │
+│   └── Prompt salvo invocado com /                               │
+│       (reutilizavel, consistente, < 50 linhas)                  │
+│                                                                 │
+│   SKILL                                                         │
+│   └── Expertise encapsulada em pasta                            │
+│       (complexa, com exemplos, carregada por contexto)          │
+│                                                                 │
+│   WORKFLOW                                                      │
+│   └── Pipeline de skills e commands                             │
+│       (proxima aula)                                            │
+│                                                                 │
+│   COMPLEXIDADE CRESCENTE ──────────────────────────────────────►│
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>Metafora do Gabinete</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Conceito</th>
+                            <th>Analogia Juridica</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Command</strong></td>
+                            <td>Modelo de despacho padrao</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Skill</strong></td>
+                            <td>Assessor especializado</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Workflow</strong></td>
+                            <td>Fluxo de trabalho do gabinete</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 1: Commands -->
+            <section id="bloco1" class="lesson-block">
+                <h2>Bloco 1: Commands - Atalhos de Prompt</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>1.1 O Que Sao Commands</h3>
+
+                <p>Commands sao <strong>prompts salvos</strong> que voce invoca com o prefixo <code>/</code>. Transformam instrucoes repetitivas em comandos simples.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                       O QUE SAO COMMANDS                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   SEM COMMAND:                                                  │
+│   ─────────────                                                 │
+│   "Analise este documento juridico e crie um resumo com fatos,  │
+│    argumentos e conclusoes. Use formato Markdown com secoes     │
+│    numeradas. Cite a pagina fonte de cada informacao..."        │
+│                                                                 │
+│   (digitado toda vez, tokens gastos repetidamente)              │
+│                                                                 │
+│   COM COMMAND:                                                  │
+│   ─────────────                                                 │
+│   /resumir-processo documento.pdf                               │
+│                                                                 │
+│   (mesmo resultado, invocacao simples)                          │
+│                                                                 │
+│   BENEFICIOS:                                                   │
+│   • Economia de tokens (prompt nao repetido na conversa)        │
+│   • Consistencia (mesmo prompt toda vez)                        │
+│   • Velocidade (menos digitacao)                                │
+│   • Compartilhamento (equipe usa os mesmos commands)            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>1.2 Onde Ficam os Commands</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                  LOCALIZACAO DOS COMMANDS                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   COMMANDS GLOBAIS (disponiveis em qualquer projeto):           │
+│   ~/.claude/commands/                                           │
+│       ├── resumir-documento.md        → /resumir-documento      │
+│       ├── pesquisar-bnp.md            → /pesquisar-bnp          │
+│       └── traduzir-ingles.md          → /traduzir-ingles        │
+│                                                                 │
+│   COMMANDS DO PROJETO (so neste projeto):                       │
+│   ./projeto/.claude/commands/                                   │
+│       ├── relatar-processo.md         → /relatar-processo       │
+│       ├── analisar-caso.md            → /analisar-caso          │
+│       └── elaborar-minuta.md          → /elaborar-minuta        │
+│                                                                 │
+│   REGRA DE NOMENCLATURA:                                        │
+│   • Nome do arquivo = nome do comando (sem extensao)            │
+│   • Use kebab-case (palavras-separadas-por-hifen)               │
+│   • Evite caracteres especiais ou espacos                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>1.3 Variaveis de Command</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Variavel</th>
+                            <th>O que captura</th>
+                            <th>Exemplo de uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>$ARGUMENTS</code></td>
+                            <td>Tudo apos o comando</td>
+                            <td>/resumir <strong>documento.pdf</strong></td>
+                        </tr>
+                        <tr>
+                            <td><code>$FILE</code></td>
+                            <td>Arquivo selecionado no IDE</td>
+                            <td>Arquivo aberto no VS Code</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Exemplo de Command</h4>
+                <pre><code># resumir-documento.md
+
+Analise o documento $ARGUMENTS e gere um resumo estruturado.
+
+## Formato de Saida
+1. FATOS: Lista cronologica
+2. PARTES: Identificacao completa
+3. PEDIDOS: Itemizacao
+4. FUNDAMENTOS: Base legal
+
+SEMPRE citar pagina de referencia.
+NUNCA omitir valores monetarios.</code></pre>
+            </section>
+
+            <!-- Bloco 2: Anatomia da Skill -->
+            <section id="bloco2" class="lesson-block">
+                <h2>Bloco 2: Anatomia da Skill</h2>
+                <span class="badge badge-time">30 min</span>
+
+                <h3>2.1 O Que Sao Skills</h3>
+
+                <blockquote>
+                    <p>"Skills are just folders with a SKILL.md file."</p>
+                    <cite>Barry Zhang, Anthropic</cite>
+                </blockquote>
+
+                <p>Skills sao <strong>pastas com expertise encapsulada</strong>. O Claude detecta automaticamente e carrega quando relevante.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                  ESTRUTURA DE UMA SKILL                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ~/.claude/skills/                                             │
+│       └── relatorio-judicial/          ← Nome da skill          │
+│           └── SKILL.md                 ← Arquivo obrigatorio    │
+│                                                                 │
+│   CONTEUDO DO SKILL.md:                                         │
+│   ─────────────────────                                         │
+│   # Relatorio Judicial                  ← Nome da skill         │
+│                                                                 │
+│   ## Quando Usar                        ← Trigger conditions    │
+│   Quando o usuario pedir para gerar relatorio de processo       │
+│   judicial ou analisar documentos processuais.                  │
+│                                                                 │
+│   ## Como Funciona                      ← Metodologia           │
+│   1. Le o documento inteiro                                     │
+│   2. Extrai fatos cronologicamente                              │
+│   3. Identifica partes e pedidos                                │
+│   4. Mapeia fundamentos legais                                  │
+│                                                                 │
+│   ## Regras                             ← SEMPRE/NUNCA/PREFERIR │
+│   SEMPRE incluir referencia de pagina                           │
+│   NUNCA omitir valores monetarios                               │
+│   PREFERIR citacao direta a parafraseamento                     │
+│                                                                 │
+│   ## Formato de Saida                   ← Template              │
+│   ```                                                           │
+│   # RELATORIO                                                   │
+│   ## FATOS                                                      │
+│   ## PARTES                                                     │
+│   ## PEDIDOS                                                    │
+│   ## FUNDAMENTOS                                                │
+│   ```                                                           │
+│                                                                 │
+│   ## Exemplos                           ← Entrada → Saida       │
+│   [Exemplos concretos]                                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>2.2 Secoes Obrigatorias</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Secao</th>
+                            <th>Funcao</th>
+                            <th>Conteudo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Quando Usar</strong></td>
+                            <td>Trigger conditions</td>
+                            <td>Quando a skill deve ser ativada</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Como Funciona</strong></td>
+                            <td>Metodologia</td>
+                            <td>Passos que o agente deve seguir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Regras</strong></td>
+                            <td>Restricoes</td>
+                            <td>SEMPRE/NUNCA/PREFERIR</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Formato</strong></td>
+                            <td>Template</td>
+                            <td>Estrutura esperada da saida</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Exemplos</strong></td>
+                            <td>Demonstracao</td>
+                            <td>Entrada → Saida esperada</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 3: Command vs Skill -->
+            <section id="bloco3" class="lesson-block">
+                <h2>Bloco 3: Command vs Skill - Quando Usar Cada</h2>
+                <span class="badge badge-time">20 min</span>
+
+                <h3>3.1 Regra Pratica</h3>
+
+                <div class="callout callout-tip">
+                    <div class="callout-title">Regra de 50 Linhas</div>
+                    <p>Se o prompt tem <strong>menos de 50 linhas</strong> e nao precisa de exemplos complexos, use <strong>Command</strong>. Caso contrario, use <strong>Skill</strong>.</p>
+                </div>
+
+                <h3>3.2 Arvore de Decisao</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              COMMAND vs SKILL - ARVORE DE DECISAO               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Pergunta 1: E invocado EXPLICITAMENTE pelo usuario?           │
+│   ├── SIM → Provavelmente COMMAND                               │
+│   └── NAO → Pergunta 2                                          │
+│                                                                 │
+│   Pergunta 2: Precisa de EXEMPLOS complexos (entrada→saida)?    │
+│   ├── SIM → SKILL                                               │
+│   └── NAO → Pergunta 3                                          │
+│                                                                 │
+│   Pergunta 3: Tem MAIS de 50 linhas de instrucoes?              │
+│   ├── SIM → SKILL                                               │
+│   └── NAO → Pergunta 4                                          │
+│                                                                 │
+│   Pergunta 4: Deve ser ativado por CONTEXTO automaticamente?    │
+│   ├── SIM → SKILL                                               │
+│   └── NAO → COMMAND                                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>3.3 Comparacao</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th>Command</th>
+                            <th>Skill</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Invocacao</strong></td>
+                            <td>Explicita (/comando)</td>
+                            <td>Automatica (por contexto)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tamanho</strong></td>
+                            <td>< 50 linhas</td>
+                            <td>Ilimitado</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Exemplos</strong></td>
+                            <td>Simples ou nenhum</td>
+                            <td>Complexos, multiplos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estrutura</strong></td>
+                            <td>Arquivo unico .md</td>
+                            <td>Pasta com SKILL.md</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Uso tipico</strong></td>
+                            <td>Atalhos rapidos</td>
+                            <td>Expertise especializada</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 4: Templates e Exemplos -->
+            <section id="bloco4" class="lesson-block">
+                <h2>Bloco 4: Templates e Exemplos</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>4.1 Por Que Exemplos Sao Essenciais</h3>
+
+                <blockquote>
+                    <p>"LLMs aprendem melhor por exemplos do que por regras. Um bom exemplo vale mais que 100 linhas de instrucoes."</p>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              POR QUE EXEMPLOS FUNCIONAM                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   SEM EXEMPLO:                                                  │
+│   ─────────────                                                 │
+│   "Gere um relatorio com fatos, partes e pedidos"               │
+│   → Agente INTERPRETA o formato                                 │
+│   → Resultado INCONSISTENTE                                     │
+│                                                                 │
+│   COM EXEMPLO:                                                  │
+│   ─────────────                                                 │
+│   "Gere um relatorio seguindo este modelo:                      │
+│                                                                 │
+│   # RELATORIO DO PROCESSO 0000001-00.2024.5.05.0001             │
+│                                                                 │
+│   ## FATOS                                                      │
+│   1. Em 15/01/2024, o autor ajuizou acao (fl. 1-10)             │
+│   2. Citacao realizada em 20/01/2024 (fl. 15)                   │
+│                                                                 │
+│   ## PARTES                                                     │
+│   - AUTOR: Joao da Silva, CPF xxx.xxx.xxx-xx                    │
+│   - REU: INSS"                                                  │
+│                                                                 │
+│   → Agente COPIA a estrutura                                    │
+│   → Resultado CONSISTENTE                                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.2 Estrutura de Exemplos</h3>
+
+                <p>Todo exemplo deve ter:</p>
+                <ul>
+                    <li><strong>Entrada:</strong> O que o usuario fornece</li>
+                    <li><strong>Contexto:</strong> Informacoes relevantes</li>
+                    <li><strong>Saida:</strong> Resultado esperado exato</li>
+                </ul>
+
+                <h3>4.3 Boas Praticas</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pratica</th>
+                            <th>Por que</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Incluir caso simples E complexo</td>
+                            <td>Mostra range de aplicacao</td>
+                        </tr>
+                        <tr>
+                            <td>Mostrar edge cases</td>
+                            <td>Previne erros em situacoes atipicas</td>
+                        </tr>
+                        <tr>
+                            <td>Usar dados realistas</td>
+                            <td>Mais facil de generalizar</td>
+                        </tr>
+                        <tr>
+                            <td>Anotar o raciocinio</td>
+                            <td>Explica o "por que" das escolhas</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 5: Organizacao de Arquivos -->
+            <section id="bloco5" class="lesson-block">
+                <h2>Bloco 5: Organizacao de Arquivos</h2>
+                <span class="badge badge-time">20 min</span>
+
+                <h3>5.1 Estrutura Recomendada</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              ESTRUTURA DE PASTAS RECOMENDADA                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ~/.claude/                        ← Configuracoes GLOBAIS     │
+│       ├── CLAUDE.md                 ← Preferencias gerais       │
+│       ├── commands/                 ← Commands globais          │
+│       │   ├── pesquisar-bnp.md                                  │
+│       │   ├── pesquisar-cjf.md                                  │
+│       │   └── traduzir-ingles.md                                │
+│       └── skills/                   ← Skills globais            │
+│           ├── pesquisa-precedentes/                             │
+│           │   └── SKILL.md                                      │
+│           └── pje-integration/                                  │
+│               └── SKILL.md                                      │
+│                                                                 │
+│   ./projeto/                        ← Raiz do PROJETO           │
+│       ├── CLAUDE.md                 ← Contexto do projeto       │
+│       ├── .claude/                  ← Capacidades do projeto    │
+│       │   ├── commands/                                         │
+│       │   │   ├── relatar-processo.md                           │
+│       │   │   ├── analisar-caso.md                              │
+│       │   │   └── elaborar-minuta.md                            │
+│       │   ├── skills/                                           │
+│       │   │   ├── relatorio-judicial/                           │
+│       │   │   │   └── SKILL.md                                  │
+│       │   │   └── elaboracao-minuta/                            │
+│       │   │       └── SKILL.md                                  │
+│       │   └── prompts/              ← Prompts auxiliares        │
+│       │       └── persona-julgador.md                           │
+│       └── docs/                     ← Documentacao              │
+│           └── templates/                                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>5.2 Convencoes de Nomenclatura</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Convencao</th>
+                            <th>Exemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Pastas</td>
+                            <td>kebab-case</td>
+                            <td>relatorio-judicial/</td>
+                        </tr>
+                        <tr>
+                            <td>Commands</td>
+                            <td>kebab-case</td>
+                            <td>analisar-caso.md</td>
+                        </tr>
+                        <tr>
+                            <td>Skills</td>
+                            <td>kebab-case (pasta)</td>
+                            <td>elaboracao-minuta/</td>
+                        </tr>
+                        <tr>
+                            <td>Arquivo skill</td>
+                            <td>SKILL.md (fixo)</td>
+                            <td>SKILL.md</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Resumo -->
+            <section class="lesson-block" id="resumo">
+                <h2>Resumo da Aula</h2>
+
+                <div class="key-points">
+                    <h4>Conceitos-Chave</h4>
+                    <ul>
+                        <li><strong>Command:</strong> Prompt salvo invocado com / (< 50 linhas)</li>
+                        <li><strong>Skill:</strong> Expertise em pasta com SKILL.md</li>
+                        <li><strong>$ARGUMENTS:</strong> Captura texto apos o comando</li>
+                        <li><strong>Regra 50 linhas:</strong> Criterio para Command vs Skill</li>
+                        <li><strong>Exemplos:</strong> Entrada → Saida (essenciais para Skills)</li>
+                    </ul>
+                </div>
+
+                <div class="expert-quotes">
+                    <h4>Especialistas Citados</h4>
+                    <ul>
+                        <li><strong>Barry Zhang</strong> (Anthropic): "Skills are just folders"</li>
+                        <li><strong>Mahesh Murag</strong> (Anthropic): Arquitetura de Skills</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Navegacao -->
+            <div class="lesson-navigation">
+                <a href="aula-7.html" class="nav-prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Aula 7: Engenharia de Contexto</span>
+                </a>
+                <a href="aula-9.html" class="nav-next">
+                    <span>Aula 9: Engenharia de Workflows</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sistemas Agenticos</h4>
+                    <p>Curso pratico de IA Agentica para profissionais do Direito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navegacao</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="glossario.html">Glossario</a></li>
+                        <li><a href="recursos.html">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Para duvidas sobre o curso, entre em contato com o instrutor.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Curso de Sistemas Agenticos - Material Educacional</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

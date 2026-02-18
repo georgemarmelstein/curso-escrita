@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capa - Desvendando o Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* =============================================
+           PALETA SUPER - Cores do Projeto
+           ============================================= */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            background: var(--super-bg-dark);
+        }
+
+        /* Terminal window container */
+        .terminal-window {
+            width: 90%;
+            max-width: 900px;
+            background: rgba(10, 10, 18, 0.95);
+            border-radius: 12px;
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6),
+                        0 0 60px rgba(190, 156, 109, 0.1);
+            overflow: hidden;
+            animation: windowAppear 0.8s ease-out;
+        }
+
+        @keyframes windowAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Terminal header (traffic lights) */
+        .terminal-header {
+            background: linear-gradient(180deg, #2a2a3a 0%, #1a1a2e 100%);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .traffic-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .traffic-light.red { background: #ff5f56; }
+        .traffic-light.yellow { background: #ffbd2e; }
+        .traffic-light.green { background: #27c93f; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 1px;
+        }
+
+        /* Terminal body */
+        .terminal-body {
+            padding: 30px 40px;
+            min-height: 400px;
+        }
+
+        /* Command line */
+        .command-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .prompt {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--super-green);
+            font-size: 1em;
+        }
+
+        .command {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--super-cream);
+            font-size: 1em;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: var(--super-gold);
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Claude response box */
+        .claude-response {
+            background: rgba(190, 156, 109, 0.05);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 8px;
+            padding: 25px 30px;
+            margin: 20px 0;
+            animation: responseAppear 0.8s ease 0.6s both;
+        }
+
+        @keyframes responseAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Module badge */
+        .module-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: var(--super-gold);
+            opacity: 0.7;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .module-badge::before {
+            content: '// ';
+            opacity: 0.5;
+        }
+
+        /* Title */
+        .title-container {
+            margin-bottom: 20px;
+        }
+
+        .title-small {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.7);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .title-main {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #BE9C6D 0%, #d4b896 40%, #BE9C6D 70%, #9a7d52 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 4s ease infinite;
+            filter: drop-shadow(0 0 20px rgba(190, 156, 109, 0.3));
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Decorative bar */
+        .decorative-bar {
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--super-gold), transparent);
+            margin: 20px 0;
+            animation: expandBar 1s ease 1s both;
+        }
+
+        @keyframes expandBar {
+            from { width: 0; opacity: 0; }
+            to { width: 120px; opacity: 1; }
+        }
+
+        /* Subtitle */
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.6);
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+        }
+
+        .subtitle .highlight {
+            color: var(--super-gold);
+        }
+
+        /* Quote */
+        .quote-section {
+            border-left: 3px solid var(--super-gold);
+            padding-left: 20px;
+            margin: 20px 0;
+            animation: quoteAppear 0.8s ease 1.2s both;
+        }
+
+        @keyframes quoteAppear {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .quote-author {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-gold);
+        }
+
+        /* Footer info */
+        .footer-info {
+            display: flex;
+            gap: 30px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(190, 156, 109, 0.1);
+            animation: footerAppear 0.8s ease 1.5s both;
+        }
+
+        @keyframes footerAppear {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-icon {
+            font-size: 1.2em;
+        }
+
+        .info-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+        }
+
+        .info-label {
+            color: rgba(190, 156, 109, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.7em;
+        }
+
+        .info-value {
+            color: var(--super-cream);
+        }
+
+        /* Glow effect behind terminal */
+        .glow-effect {
+            position: absolute;
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse at center, rgba(190, 156, 109, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Embed mode */
+        body.embed-mode .terminal-window { max-width: 850px; }
+        body.embed-mode .terminal-body { padding: 20px 30px; min-height: 350px; }
+        body.embed-mode .terminal-header { padding: 10px 14px; }
+        body.embed-mode .traffic-light { width: 10px; height: 10px; }
+        body.embed-mode .title-small { font-size: 1.2em; letter-spacing: 6px; }
+        body.embed-mode .title-main { font-size: 2.4em; }
+        body.embed-mode .subtitle { font-size: 0.9em; }
+        body.embed-mode .quote-text { font-size: 1em; }
+        body.embed-mode .quote-author { font-size: 0.8em; }
+        body.embed-mode .footer-info { gap: 20px; margin-top: 20px; padding-top: 15px; }
+        body.embed-mode .info-text { font-size: 0.75em; }
+    </style>
+</head>
+<body>
+    <!-- Glow effect -->
+    <div class="glow-effect"></div>
+
+    <!-- Terminal window -->
+    <div class="terminal-window">
+        <div class="terminal-header">
+            <div class="traffic-light red"></div>
+            <div class="traffic-light yellow"></div>
+            <div class="traffic-light green"></div>
+            <span class="terminal-title">claude -- curso-sistemas-agenticos</span>
+        </div>
+
+        <div class="terminal-body">
+            <!-- Command line -->
+            <div class="command-line">
+                <span class="prompt">$</span>
+                <span class="command">claude</span>
+                <span class="cursor"></span>
+            </div>
+
+            <!-- Claude response -->
+            <div class="claude-response">
+                <div class="module-badge">Aula 02</div>
+
+                <div class="title-container">
+                    <div class="title-small">Desvendando o</div>
+                    <div class="title-main">Claude Code</div>
+                </div>
+
+                <div class="decorative-bar"></div>
+
+                <div class="subtitle">
+                    Uma <span class="highlight">introducao amigavel</span> ao fantasma na maquina
+                </div>
+
+                <div class="quote-section">
+                    <div class="quote-text">
+                        "Claramente, alguma ferramenta alienigena poderosa foi distribuida, exceto que ela vem sem manual."
+                    </div>
+                    <div class="quote-author">-- Andrej Karpathy</div>
+                </div>
+
+                <div class="footer-info">
+                    <div class="info-item">
+                        <span class="info-icon">&#128218;</span>
+                        <div class="info-text">
+                            <div class="info-label">Curso</div>
+                            <div class="info-value">Sistemas Agenticos</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">&#9878;</span>
+                        <div class="info-text">
+                            <div class="info-label">Publico</div>
+                            <div class="info-value">Juristas</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">&#128337;</span>
+                        <div class="info-text">
+                            <div class="info-label">Duracao</div>
+                            <div class="info-value">~120 min</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

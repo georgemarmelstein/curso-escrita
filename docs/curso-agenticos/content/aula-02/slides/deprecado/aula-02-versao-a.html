@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 02 - Desvendando o Claude Code</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    <style>
+        /* ============================================
+           VARIAVEIS CSS - Paleta: SUPER (Institucional)
+           ============================================ */
+        :root {
+            --cor-primaria: #194A68;
+            --cor-secundaria: #BE9C6D;
+            --cor-fundo: #3A3A3A;
+            --cor-accent: #5287A8;
+            --cor-texto: #FFF4E4;
+            --r-main-font: 'IBM Plex Serif', 'Lora', Georgia, serif;
+            --r-heading-font: 'Outfit', 'Montserrat', 'Helvetica Neue', sans-serif;
+            --r-main-color: #FFF4E4;
+            --r-heading-color: #BE9C6D;
+            --r-background-color: #3A3A3A;
+        }
+
+        /* ============================================
+           TIPOGRAFIA
+           ============================================ */
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            text-transform: none;
+            font-weight: 600;
+            font-family: 'Outfit', 'Montserrat', 'Helvetica Neue', sans-serif;
+            color: var(--cor-secundaria);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .reveal p, .reveal li, .reveal blockquote {
+            font-family: 'IBM Plex Serif', 'Lora', Georgia, serif;
+            color: var(--cor-texto);
+        }
+        .reveal pre, .reveal code {
+            font-family: 'IBM Plex Mono', 'Consolas', 'Monaco', monospace;
+        }
+
+        /* ============================================
+           LAYOUT BASE
+           ============================================ */
+        .reveal section {
+            text-align: center;
+        }
+        .reveal ul {
+            list-style-type: none;
+        }
+        .reveal ul li::before {
+            content: "•";
+            color: var(--cor-secundaria);
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        .reveal blockquote {
+            background: none;
+            box-shadow: none;
+            font-family: 'IBM Plex Serif', 'Lora', Georgia, serif;
+        }
+        .reveal pre {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border-radius: 8px;
+        }
+        .reveal pre code {
+            overflow: visible;
+            max-height: none;
+        }
+
+        /* ============================================
+           OVERLAYS - Estilo Vignette
+           ============================================ */
+        .reveal .slides section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(0,0,0,0.3) 0%,
+                rgba(0,0,0,0.5) 50%,
+                rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Titulos acima do overlay */
+        .reveal .slides section h1,
+        .reveal .slides section h2,
+        .reveal .slides section h3,
+        .reveal .slides section h4 {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Conteudo tambem acima do overlay */
+        .reveal .slides section > div,
+        .reveal .slides section > p,
+        .reveal .slides section > ul,
+        .reveal .slides section > blockquote,
+        .reveal .slides section > pre {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ============================================
+           IFRAMES PARA DEMOS
+           ============================================ */
+        .demo-iframe-container {
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0 0 0 -50vw;
+            position: relative;
+            left: 50%;
+        }
+        .demo-iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0;
+        }
+
+        /* ============================================
+           ESTILO PARA SECOES
+           ============================================ */
+        .section-number {
+            position: absolute;
+            bottom: 30px;
+            left: 40px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: rgba(190, 156, 109, 0.35);
+        }
+
+        .section-title {
+            color: #BE9C6D;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.8);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-size: 2.2em;
+        }
+
+        .section-subtitle {
+            color: rgba(255, 244, 228, 0.6);
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+
+        /* ============================================
+           HIGHLIGHTS
+           ============================================ */
+        .highlight-color-pop {
+            color: var(--cor-secundaria);
+            font-weight: 700;
+        }
+        .highlight-box {
+            background: var(--cor-secundaria);
+            color: var(--cor-fundo);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+    <!-- ============================================
+         ACT 1: MUNDO ORDINARIO
+         ============================================ -->
+
+    <!-- SLIDE 1 - CAPA (Demo Interativo) -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-capa-aula02.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- SLIDE 2 - QUOTE: Ferramenta Alienigena -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-quote-karpathy-alien.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- SLIDE 3 - SECAO: Recapitulacao -->
+    <section data-background-image="https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        <div class="section-number">01</div>
+        <h2 class="section-title">A Jornada Ate Aqui</h2>
+        <p class="section-subtitle">Recapitulacao das Aulas 00 e 01</p>
+    </section>
+
+
+    <!-- ============================================
+         ACT 2: O PORTAL
+         ============================================ -->
+
+    <!-- SLIDE 4 - SECAO: O Que E o Claude Code -->
+    <section data-background-image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        <div class="section-number">02</div>
+        <h2 class="section-title">O Que E o Claude Code</h2>
+        <p class="section-subtitle">A Ferramenta Alienigena Explicada</p>
+    </section>
+
+
+    <!-- SLIDE 5 - Demo: O Que E vs Nao E -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-o-que-e-claude-code.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- SLIDE 6 - Demo: Loop Agentico -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-loop-agentico.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- SLIDE 6B - Demo: Cavalo e Arreio -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-cavalo-arreio.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         ACT 3: SUPERANDO O GUARDIAO
+         ============================================ -->
+
+    <!-- SLIDE 7 - SECAO: Desmistificando o Terminal -->
+    <section data-background-image="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        <div class="section-number">03</div>
+        <h2 class="section-title">Desmistificando o Terminal</h2>
+        <p class="section-subtitle">O Medo da Tela Preta</p>
+    </section>
+
+
+    <!-- SLIDE 8 - Demo: Evolucao das Interfaces -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-evolucao.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         ACT 4: CRUZANDO O LIMIAR
+         ============================================ -->
+
+    <!-- SLIDE 9 - SECAO: Instalacao -->
+    <section data-background-image="https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        <div class="section-number">04</div>
+        <h2 class="section-title">Instalando o Claude Code</h2>
+        <p class="section-subtitle">Cruzando o Limiar</p>
+    </section>
+
+
+    <!-- ============================================
+         ACT 5: PRIMEIRAS PROVAS
+         ============================================ -->
+
+    <!-- SLIDE 10 - SECAO: Primeiros Passos -->
+    <section data-background-image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        <div class="section-number">05</div>
+        <h2 class="section-title">Primeiros Passos</h2>
+        <p class="section-subtitle">Slash Commands Essenciais</p>
+    </section>
+
+
+    <!-- SLIDE 11 - Demo: Slash Commands -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-slash-commands.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- SLIDE 11B - Demo: Clear vs Compact -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-clear-compact.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         ACT 6: ALIADOS E ARMAS
+         ============================================ -->
+
+    <!-- SLIDE 12 - SECAO: Permissoes -->
+    <section data-background-image="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        <div class="section-number">06</div>
+        <h2 class="section-title">Configuracoes de Permissao</h2>
+        <p class="section-subtitle">Quanto Poder Dar ao Fantasma?</p>
+    </section>
+
+
+    <!-- SLIDE 13 - Demo: Espectro de Permissoes -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-espectro-permissoes.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- SLIDE 14 - Demo: Sistema de Permissoes (detalhe) -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-permissoes.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- SLIDE 15 - SECAO: Estrutura do Diretorio -->
+    <section data-background-image="https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        <div class="section-number">07</div>
+        <h2 class="section-title">A Estrutura do Diretorio</h2>
+        <p class="section-subtitle">As Armas do Heroi</p>
+    </section>
+
+
+    <!-- SLIDE 16 - Demo: Estrutura de Diretorios -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-estrutura-diretorio.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         ACT 7: MAO NA MASSA
+         ============================================ -->
+
+    <!-- SLIDE 17 - SECAO: Pratica -->
+    <section data-background-image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        <div class="section-number">08</div>
+        <h2 class="section-title">Mao na Massa</h2>
+        <p class="section-subtitle">Primeiros Usos Praticos</p>
+    </section>
+
+
+    <!-- ============================================
+         ACT 8: RETORNO COM O ELIXIR
+         ============================================ -->
+
+    <!-- SLIDE 18 - SECAO: Fechamento -->
+    <section data-background-image="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        <div class="section-number">09</div>
+        <h2 class="section-title">O Fantasma na Maquina</h2>
+        <p class="section-subtitle">Retorno com o Elixir</p>
+    </section>
+
+
+    <!-- SLIDE 19 - Demo: Fantasma na Maquina -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-fantasma.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- SLIDE 20 - Fechamento Final -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div style="position: relative; z-index: 10; padding: 40px;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8em; color: #BE9C6D; margin-bottom: 30px;">
+                Conquistas da Aula 02
+            </h2>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 900px; margin: 0 auto 40px;">
+                <div style="background: rgba(74, 222, 128, 0.15); border: 1px solid #4ade80; border-radius: 10px; padding: 15px 25px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #4ade80;">
+                    &#10003; Superaram o Medo do Terminal
+                </div>
+                <div style="background: rgba(74, 222, 128, 0.15); border: 1px solid #4ade80; border-radius: 10px; padding: 15px 25px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #4ade80;">
+                    &#10003; Instalaram a Ferramenta
+                </div>
+                <div style="background: rgba(74, 222, 128, 0.15); border: 1px solid #4ade80; border-radius: 10px; padding: 15px 25px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #4ade80;">
+                    &#10003; Executaram Primeiros Comandos
+                </div>
+                <div style="background: rgba(74, 222, 128, 0.15); border: 1px solid #4ade80; border-radius: 10px; padding: 15px 25px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #4ade80;">
+                    &#10003; Entenderam a Estrutura
+                </div>
+                <div style="background: rgba(74, 222, 128, 0.15); border: 1px solid #4ade80; border-radius: 10px; padding: 15px 25px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #4ade80;">
+                    &#10003; Configuraram Permissoes
+                </div>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 2px solid rgba(190, 156, 109, 0.5); border-radius: 16px; padding: 30px 50px; max-width: 700px; margin: 0 auto;">
+                <p style="font-family: 'Playfair Display', serif; font-size: 1.3em; font-style: italic; color: #FFF4E4; margin-bottom: 15px;">
+                    "Claramente, alguma ferramenta alienigena poderosa foi distribuida."
+                </p>
+                <p style="font-family: 'Inter', sans-serif; font-size: 0.9em; color: #BE9C6D;">
+                    — Andrej Karpathy
+                </p>
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(190, 156, 109, 0.3);">
+                    <p style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: #BE9C6D; font-weight: 600;">
+                        Agora voces tem o manual.
+                    </p>
+                    <p style="font-family: 'Inter', sans-serif; font-size: 1em; color: rgba(255, 244, 228, 0.7); margin-top: 10px;">
+                        E o fantasma mora na maquina de voces.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            backgroundTransition: 'fade',
+            slideNumber: true,
+            controls: true,
+            progress: true,
+            center: true,
+            keyboard: true,
+        });
+    </script>
+</body>
+</html>

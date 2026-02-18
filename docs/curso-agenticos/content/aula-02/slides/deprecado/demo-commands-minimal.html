@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slash Commands - Minimal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--super-bg-dark);
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-bottom: 60px;
+            animation: fadeIn 0.8s ease both;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 900px;
+        }
+
+        .command-card {
+            text-align: center;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            opacity: 0.3;
+            transform: scale(0.95);
+            transition: all 0.5s ease;
+            cursor: default;
+        }
+
+        .command-card.active {
+            opacity: 1;
+            transform: scale(1.05);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.2);
+        }
+
+        .command-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5em;
+            font-weight: 500;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+        }
+
+        .command-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.6);
+            line-height: 1.5;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 30px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.3);
+            animation: fadeIn 1s ease 1s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Embed mode */
+        body.embed-mode .commands-grid { gap: 25px; }
+        body.embed-mode .command-card { padding: 25px 20px; }
+        body.embed-mode .command-name { font-size: 1.8em; }
+        body.embed-mode .command-desc { font-size: 0.8em; }
+        body.embed-mode .title { font-size: 1.2em; margin-bottom: 40px; }
+    </style>
+</head>
+<body>
+    <div class="title">Os Comandos Essenciais</div>
+
+    <div class="commands-grid">
+        <div class="command-card" data-index="0">
+            <div class="command-name">/clear</div>
+            <div class="command-desc">Limpa o histórico<br>Início fresco</div>
+        </div>
+        <div class="command-card" data-index="1">
+            <div class="command-name">/init</div>
+            <div class="command-desc">Inicializa projeto<br>Cria CLAUDE.md</div>
+        </div>
+        <div class="command-card" data-index="2">
+            <div class="command-name">/help</div>
+            <div class="command-desc">Mostra ajuda<br>Referência rápida</div>
+        </div>
+    </div>
+
+    <div class="hint">Clique para avançar</div>
+
+    <script>
+        const cards = document.querySelectorAll('.command-card');
+        let current = -1;
+
+        function updateDisplay() {
+            cards.forEach((card, i) => {
+                card.classList.toggle('active', i === current || current === 3);
+            });
+        }
+
+        function next() {
+            current++;
+            if (current > 3) current = 0;
+            updateDisplay();
+        }
+
+        // Click to advance
+        document.body.addEventListener('click', next);
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                next();
+            }
+        });
+
+        // Start with first card
+        setTimeout(() => {
+            current = 0;
+            updateDisplay();
+        }, 500);
+
+        // Embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

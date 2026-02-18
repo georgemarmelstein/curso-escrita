@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow vs Agent - Comparacao Visual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        /* Titulo */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Container das duas colunas */
+        .comparison-container {
+            display: flex;
+            gap: 30px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Card base */
+        .model-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .model-card.workflow { animation: cardAppear 0.6s ease 0.2s forwards; }
+        .model-card.agent { animation: cardAppear 0.6s ease 0.4s forwards; }
+
+        @keyframes cardAppear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estados spotlight */
+        .model-card.dimmed {
+            opacity: 0.25;
+            transform: scale(0.95);
+            filter: grayscale(50%);
+        }
+
+        .model-card.spotlight {
+            opacity: 1;
+            transform: scale(1.02);
+            filter: none;
+        }
+
+        .model-card.workflow.spotlight {
+            border-color: var(--super-green);
+            box-shadow: 0 0 50px rgba(74, 222, 128, 0.2);
+        }
+
+        .model-card.agent.spotlight {
+            border-color: var(--super-amber);
+            box-shadow: 0 0 50px rgba(251, 191, 36, 0.2);
+        }
+
+        /* Header do card */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .workflow .card-icon {
+            background: rgba(74, 222, 128, 0.15);
+            border: 2px solid var(--super-green);
+        }
+
+        .agent .card-icon {
+            background: rgba(251, 191, 36, 0.15);
+            border: 2px solid var(--super-amber);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .workflow .card-title { color: var(--super-green); }
+        .agent .card-title { color: var(--super-amber); }
+
+        .card-subtitle {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 3px;
+        }
+
+        /* Diagrama visual */
+        .diagram {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Workflow diagram - linear */
+        .workflow-flow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .flow-node {
+            padding: 10px 15px;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-green);
+        }
+
+        .flow-arrow {
+            color: rgba(74, 222, 128, 0.5);
+            font-size: 1.2em;
+        }
+
+        .flow-label {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-top: 8px;
+        }
+
+        /* Agent diagram - loop */
+        .agent-loop {
+            position: relative;
+            width: 200px;
+            height: 120px;
+        }
+
+        .loop-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 12px 20px;
+            background: rgba(251, 191, 36, 0.15);
+            border: 2px solid var(--super-amber);
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-amber);
+            z-index: 2;
+        }
+
+        .tool-node {
+            position: absolute;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        .tool-node.tool-a { top: 0; left: 0; }
+        .tool-node.tool-b { top: 0; right: 0; }
+        .tool-node.tool-c { bottom: 0; left: 50%; transform: translateX(-50%); }
+
+        .loop-arrow {
+            position: absolute;
+            color: rgba(251, 191, 36, 0.4);
+            font-size: 0.8em;
+        }
+
+        .loop-arrow.arrow-1 { top: 25px; left: 55px; transform: rotate(-45deg); }
+        .loop-arrow.arrow-2 { top: 25px; right: 55px; transform: rotate(45deg); }
+        .loop-arrow.arrow-3 { bottom: 30px; left: 50%; transform: translateX(-50%); }
+
+        /* Caracteristicas */
+        .characteristics {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .char-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            font-size: 0.8em;
+        }
+
+        .char-icon {
+            font-size: 1em;
+        }
+
+        .char-text {
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        /* Convergencia */
+        .convergence-section {
+            margin-top: 25px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .convergence-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .convergence-box {
+            display: inline-block;
+            padding: 15px 30px;
+            background: rgba(190, 156, 109, 0.1);
+            border: 2px solid var(--super-gold);
+            border-radius: 12px;
+        }
+
+        .convergence-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1em;
+            color: var(--super-gold);
+            margin-bottom: 8px;
+        }
+
+        .convergence-text {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .convergence-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Nav dots */
+        .nav-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            border: 1px solid rgba(190, 156, 109, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode h1 { font-size: 1.2em; margin-bottom: 15px; }
+        body.embed-mode .comparison-container { gap: 20px; }
+        body.embed-mode .model-card { padding: 18px; border-radius: 12px; }
+        body.embed-mode .card-header { margin-bottom: 15px; padding-bottom: 12px; }
+        body.embed-mode .card-icon { width: 40px; height: 40px; font-size: 1.2em; }
+        body.embed-mode .card-title { font-size: 1.15em; }
+        body.embed-mode .diagram { padding: 15px; min-height: 120px; margin-bottom: 15px; }
+        body.embed-mode .flow-node { padding: 7px 10px; font-size: 0.6em; }
+        body.embed-mode .char-item { padding: 6px 10px; font-size: 0.7em; }
+        body.embed-mode .convergence-section { margin-top: 15px; }
+        body.embed-mode .convergence-box { padding: 12px 20px; }
+        body.embed-mode .convergence-title { font-size: 0.95em; }
+        body.embed-mode .convergence-text { font-size: 0.75em; }
+    </style>
+</head>
+<body>
+    <h1>A Distincao Fundamental</h1>
+
+    <div class="comparison-container">
+        <!-- WORKFLOW -->
+        <div class="model-card workflow">
+            <div class="card-header">
+                <div class="card-icon">&#9881;</div>
+                <div>
+                    <div class="card-title">WORKFLOW</div>
+                    <div class="card-subtitle">Fluxo DETERMINISTICO com etapas PREDEFINIDAS</div>
+                </div>
+            </div>
+
+            <div class="diagram">
+                <div class="workflow-flow">
+                    <div class="flow-node">LLM 1</div>
+                    <span class="flow-arrow">&#8594;</span>
+                    <div class="flow-node">LLM 2</div>
+                    <span class="flow-arrow">&#8594;</span>
+                    <div class="flow-node">LLM 3</div>
+                    <span class="flow-arrow">&#8594;</span>
+                    <div class="flow-node">LLM 4</div>
+                </div>
+                <div class="flow-label">Cada etapa conhecida de antemao</div>
+            </div>
+
+            <div class="characteristics">
+                <div class="char-item">
+                    <span class="char-icon">&#10003;</span>
+                    <span class="char-text">Previsível e testável</span>
+                </div>
+                <div class="char-item">
+                    <span class="char-icon">&#10003;</span>
+                    <span class="char-text">Custo otimizado (tokens previsíveis)</span>
+                </div>
+                <div class="char-item">
+                    <span class="char-icon">&#10003;</span>
+                    <span class="char-text">Alta observabilidade</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AGENT -->
+        <div class="model-card agent">
+            <div class="card-header">
+                <div class="card-icon">&#129302;</div>
+                <div>
+                    <div class="card-title">AGENT</div>
+                    <div class="card-subtitle">Loop AUTÔNOMO que decide próximas ações</div>
+                </div>
+            </div>
+
+            <div class="diagram">
+                <div class="agent-loop">
+                    <div class="tool-node tool-a">Tool A</div>
+                    <div class="tool-node tool-b">Tool B</div>
+                    <div class="loop-center">MODEL<br>(decide)</div>
+                    <div class="tool-node tool-c">Tool C</div>
+                    <span class="loop-arrow arrow-1">&#8593;</span>
+                    <span class="loop-arrow arrow-2">&#8593;</span>
+                    <span class="loop-arrow arrow-3">&#8595;</span>
+                </div>
+            </div>
+
+            <div class="characteristics">
+                <div class="char-item">
+                    <span class="char-icon">&#10003;</span>
+                    <span class="char-text">Adaptativo e flexível</span>
+                </div>
+                <div class="char-item">
+                    <span class="char-icon">&#10003;</span>
+                    <span class="char-text">Resolve problemas inesperados</span>
+                </div>
+                <div class="char-item">
+                    <span class="char-icon">&#10003;</span>
+                    <span class="char-text">Ideal para exploracao</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Convergencia -->
+    <div class="convergence-section">
+        <div class="convergence-box">
+            <div class="convergence-title">PADRAO EMERGENTE</div>
+            <div class="convergence-text">
+                Workflows com <span class="highlight">"bolsoes agenticos"</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nav dots -->
+    <div class="nav-indicator">
+        <div class="nav-dot" data-stage="0"></div>
+        <div class="nav-dot" data-stage="1"></div>
+        <div class="nav-dot" data-stage="2"></div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Progressive Spotlight System
+        const workflowCard = document.querySelector('.model-card.workflow');
+        const agentCard = document.querySelector('.model-card.agent');
+        const convergence = document.querySelector('.convergence-section');
+        const navDots = document.querySelectorAll('.nav-dot');
+        let currentStage = 0;
+
+        function setStage(stage) {
+            currentStage = stage;
+
+            // Update nav dots
+            navDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === stage);
+            });
+
+            // Reset classes
+            workflowCard.classList.remove('dimmed', 'spotlight');
+            agentCard.classList.remove('dimmed', 'spotlight');
+            convergence.classList.remove('visible');
+
+            if (stage === 0) {
+                // Workflow spotlight
+                workflowCard.classList.add('spotlight');
+                agentCard.classList.add('dimmed');
+            } else if (stage === 1) {
+                // Agent spotlight
+                workflowCard.classList.add('dimmed');
+                agentCard.classList.add('spotlight');
+            } else if (stage === 2) {
+                // Both visible + convergence
+                convergence.classList.add('visible');
+            }
+        }
+
+        function nextStage() {
+            setStage((currentStage + 1) % 3);
+        }
+
+        // Initialize
+        setStage(0);
+
+        // Click handlers
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-dot')) {
+                setStage(parseInt(e.target.closest('.nav-dot').dataset.stage));
+                return;
+            }
+            nextStage();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.body.classList.contains('embed-mode')) return;
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setStage(currentStage <= 0 ? 2 : currentStage - 1);
+            }
+        });
+
+        // Comunicacao com Reveal.js
+        window.addEventListener('message', (e) => {
+            if (e.data.action === 'nextStage') nextStage();
+            if (e.data.action === 'getState') {
+                window.parent.postMessage({
+                    type: 'workflow-vs-agent-state',
+                    currentStage: currentStage,
+                    totalStages: 3
+                }, '*');
+            }
+        });
+    </script>
+</body>
+</html>

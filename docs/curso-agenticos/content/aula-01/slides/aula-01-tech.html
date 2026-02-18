@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Era dos Agentes</title>
+    <!-- Google Fonts - Stack do Superposts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    <style>
+        /* ============================================
+           VARIÁVEIS CSS - Paleta: TECH NOIR (Futurista)
+           ============================================ */
+        :root {
+            --cor-primaria: #7851F2;
+            --cor-secundaria: #00F0FF;
+            --cor-fundo: #1A1A2E;
+            --cor-accent: #2A0E7A;
+            --cor-texto: #C0C0C0;
+            --r-main-font: 'IBM Plex Serif', 'Lora', Georgia, serif;
+            --r-heading-font: 'Outfit', 'Montserrat', 'Helvetica Neue', sans-serif;
+            --r-main-color: #C0C0C0;
+            --r-heading-color: #00F0FF;
+            --r-background-color: #1A1A2E;
+        }
+
+        /* ============================================
+           TIPOGRAFIA
+           ============================================ */
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            text-transform: none;
+            font-weight: 600;
+            font-family: 'Outfit', 'Montserrat', 'Helvetica Neue', sans-serif;
+            color: var(--cor-secundaria);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .reveal p, .reveal li, .reveal blockquote {
+            font-family: 'IBM Plex Serif', 'Lora', Georgia, serif;
+            color: var(--cor-texto);
+        }
+        .reveal pre, .reveal code {
+            font-family: 'IBM Plex Mono', 'Consolas', 'Monaco', monospace;
+        }
+
+        /* ============================================
+           LAYOUT BASE
+           ============================================ */
+        .reveal section {
+            text-align: center;
+        }
+        .reveal ul {
+            list-style-type: none;
+        }
+        .reveal ul li::before {
+            content: "•";
+            color: var(--cor-secundaria);
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        .reveal blockquote {
+            background: none;
+            box-shadow: none;
+            font-family: 'IBM Plex Serif', 'Lora', Georgia, serif;
+        }
+        .reveal pre {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border-radius: 8px;
+        }
+        .reveal pre code {
+            overflow: visible;
+            max-height: none;
+        }
+
+        /* ============================================
+           OVERLAYS - Estilo Vignette (do superposts)
+           ============================================ */
+        .reveal .slides section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(0,0,0,0.3) 0%,
+                rgba(0,0,0,0.5) 50%,
+                rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+        }
+
+        /* ============================================
+           HIGHLIGHTS - Técnicas do superposts
+           ============================================ */
+        .highlight-color-pop {
+            color: var(--cor-secundaria);
+            font-weight: 700;
+        }
+        .highlight-underline {
+            text-decoration: underline;
+            text-decoration-color: var(--cor-secundaria);
+            text-underline-offset: 4px;
+        }
+        .highlight-underline-wavy {
+            text-decoration: underline wavy;
+            text-decoration-color: var(--cor-secundaria);
+        }
+        .highlight-box {
+            background: var(--cor-secundaria);
+            color: var(--cor-fundo);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .highlight-box-gradient {
+            background: linear-gradient(135deg, var(--cor-primaria), var(--cor-accent));
+            color: var(--cor-texto);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .highlight-marker {
+            background: linear-gradient(180deg, transparent 50%, rgba(235,150,5,0.4) 50%);
+            padding: 0 4px;
+        }
+        .highlight-circle {
+            border: 2px solid var(--cor-secundaria);
+            border-radius: 50%;
+            padding: 2px 8px;
+        }
+        .highlight-bold {
+            font-weight: 700;
+        }
+        .highlight-tag {
+            background: var(--cor-accent);
+            color: var(--cor-texto);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           LISTA COM HIGHLIGHT PROGRESSIVO
+           ============================================ */
+        .reveal .highlight-list li.highlight-current-item {
+            opacity: 0.35;
+            transition: opacity 0.4s ease, transform 0.3s ease;
+        }
+        .reveal .highlight-list li.highlight-current-item.visible {
+            opacity: 0.5;
+        }
+        .reveal .highlight-list li.highlight-current-item.current-fragment {
+            opacity: 1;
+            transform: translateX(10px);
+        }
+        .reveal .highlight-list li.highlight-current-item:first-child:not(.visible) {
+            opacity: 1;
+        }
+
+        /* ============================================
+           CARDS E GRIDS
+           ============================================ */
+        .card {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .card-accent {
+            border-left: 4px solid var(--cor-secundaria);
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+    <section data-background-image="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h1 style="color: #00F0FF; font-size: 2.5em;">A Era dos Agentes</h1>
+        <p style="color: #C0C0C0; font-size: 1.2em;">Do Assistente ao Sistema Agêntico</p>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h2 style="color: #00F0FF; font-size: 2em;">A História - Três Paradigmas de Conhecimento</h2>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1537432376769-00f5c2f4c8d2?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h3 style="color: #00F0FF; font-size: 1.2em;">A História - Três Paradigmas de Conhecimento</h3>
+        <pre style="background: rgba(0,0,0,0.6); padding: 15px 20px; font-size: 0.36em; text-align: left; color: #C0C0C0; white-space: pre; max-height: 400px; overflow: auto; border-radius: 8px; margin: 0 auto; max-width: 88%; line-height: 1.4;"><code style="display: block; font-family: 'Consolas', 'Monaco', 'Courier New', monospace;">┌─────────────────────────────────────────────────────────────────┐
+│  A EVOLUÇÃO DAS FONTES DE VERDADE EM IA GENERATIVA              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  2022 - ChatGPT                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  CONHECIMENTO PARAMÉTRICO                                │   │
+│  │  "O que a máquina aprendeu no treino"                   │   │
+│  │  Sem anexo. Conversa pura. Limitado ao que "sabe".      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          ↓                                      │
+│  2023 - Claude (Anthropic)                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  CONHECIMENTO CONTEXTUAL                                 │   │
+│  │  "O que o usuário fornece"                              │   │
+│  │  Botão de anexo. A máquina interpreta e destila.        │   │
+│  │  Mudança de paradigma: fonte de verdade = VOCÊ.         │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          ↓                                      │
+│  2024 - Perplexity                                              │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  CONHECIMENTO EXTERNO                                    │   │
+│  │  "O que a web sabe em tempo real"                       │   │
+│  │  Integração com internet. Pesquisa ao vivo.             │   │
+│  │  Fonte de verdade = O MUNDO ATUALIZADO.                 │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h2 style="color: #00F0FF; font-size: 2em;">O Problema Escondido - A Janela de Contexto</h2>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <blockquote style="color: #C0C0C0; font-style: italic; font-size: 0.85em; border-left: 4px solid #00F0FF; padding-left: 20px; max-width: 85%; margin: 0 auto; text-align: left; line-height: 1.5;">
+            "Imaginem um assessor que você instrui no início do dia. Ele anota tudo. Mas conforme o dia avança e você dá mais instruções, as primeiras anotações vão sendo apagadas. No final do dia, ele esqueceu o que você pediu de manhã. É assim que funciona o modo assistente."
+        </blockquote>
+        <p style="color: #00F0FF; text-align: right; font-size: 0.8em; margin-top: 20px;">— --</p>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h3 style="color: #00F0FF; font-size: 1.2em;">O Problema Escondido - A Janela de Contexto</h3>
+        <pre style="background: rgba(0,0,0,0.6); padding: 15px 20px; font-size: 0.36em; text-align: left; color: #C0C0C0; white-space: pre; max-height: 400px; overflow: auto; border-radius: 8px; margin: 0 auto; max-width: 88%; line-height: 1.4;"><code style="display: block; font-family: 'Consolas', 'Monaco', 'Courier New', monospace;">┌─────────────────────────────────────────────────────────────────┐
+│  QUANDO O CONTEXTO ATINGE O LIMITE                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────┐         ┌─────────────────────┐       │
+│  │     DEGRADAÇÃO      │   ou    │      COLAPSO        │       │
+│  ├─────────────────────┤         ├─────────────────────┤       │
+│  │                     │         │                     │       │
+│  │  Memória móvel      │         │  "Não podemos mais  │       │
+│  │  vai sendo          │         │   prosseguir."      │       │
+│  │  esquecida.         │         │                     │       │
+│  │                     │         │  A conversa         │       │
+│  │  O início da        │         │  simplesmente       │       │
+│  │  conversa se        │         │  PARA.              │       │
+│  │  apaga.             │         │                     │       │
+│  │                     │         │  (Claude antigo)    │       │
+│  └─────────────────────┘         └─────────────────────┘       │
+│                                                                 │
+│  Nos dois casos: PERDA DE INFORMAÇÃO CRÍTICA                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h2 style="color: #00F0FF; font-size: 2em;">As Soluções Agênticas</h2>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <blockquote style="color: #C0C0C0; font-style: italic; font-size: 0.85em; border-left: 4px solid #00F0FF; padding-left: 20px; max-width: 85%; margin: 0 auto; text-align: left; line-height: 1.5;">
+            "Percebem? Agentes não são assistentes com mais memória. São assistentes que trabalham em equipe, cada um com seu próprio contexto, coordenados por um orquestrador que só precisa saber onde está a informação, não toda a informação."
+        </blockquote>
+        <p style="color: #00F0FF; text-align: right; font-size: 0.8em; margin-top: 20px;">— --</p>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h3 style="color: #00F0FF; font-size: 1.2em;">As Soluções Agênticas</h3>
+        <pre style="background: rgba(0,0,0,0.6); padding: 15px 20px; font-size: 0.36em; text-align: left; color: #C0C0C0; white-space: pre; max-height: 400px; overflow: auto; border-radius: 8px; margin: 0 auto; max-width: 88%; line-height: 1.4;"><code style="display: block; font-family: 'Consolas', 'Monaco', 'Courier New', monospace;">┌─────────────────────────────────────────────────────────────────┐
+│  SOLUÇÃO 1: DESTILAÇÃO                                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Em vez de uma janela gigante, criar "batches" (terminais):    │
+│                                                                 │
+│  ┌───────────┐   ┌───────────┐   ┌───────────┐                │
+│  │ Subagente │   │ Subagente │   │ Subagente │                │
+│  │ Context A │   │ Context B │   │ Context C │                │
+│  └─────┬─────┘   └─────┬─────┘   └─────┬─────┘                │
+│        │               │               │                       │
+│        └───────────────┼───────────────┘                       │
+│                        ▼                                        │
+│              ┌─────────────────┐                               │
+│              │  ORQUESTRADOR   │                               │
+│              │                 │                               │
+│              │  Recebe apenas  │                               │
+│              │  CAMINHOS (paths)│                              │
+│              │  não o conteúdo │                               │
+│              └─────────────────┘                               │
+│                                                                 │
+│  Contexto longo → DESTILADO → Essência para o orquestrador    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h2 style="color: #00F0FF; font-size: 2em;">O Claude Web/Desktop em Modo Agêntico</h2>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <div style="display: flex; justify-content: space-around;">
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">Capacidade</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>Artifacts</li>
+<li>Projects</li>
+<li>Conectores</li></ul>
+            </div>
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">Web</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>✅</li>
+<li>✅</li>
+<li>✅</li></ul>
+            </div>
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">Desktop</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>✅</li>
+<li>✅</li>
+<li>✅</li></ul>
+            </div>
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">O que faz</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>Gera documentos, código, visualizações</li>
+<li>Contexto persistente (200K tokens)</li>
+<li>Integrações nativas com serviços</li></ul>
+            </div>
+            
+        </div>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1550684376-efcbd6e3f031?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h3 style="color: #00F0FF;">Categoria</h3>
+        <ul class="highlight-list" style="color: #C0C0C0; text-align: left; font-size: 0.75em;">
+            <li class="fragment highlight-current-item">Google Workspace: Gmail, Drive, Docs, Sheets, Calendar</li>
+<li class="fragment highlight-current-item">Produtividade: Notion, Asana, Linear, Jira</li>
+<li class="fragment highlight-current-item">Comunicação: Slack</li>
+<li class="fragment highlight-current-item">Desenvolvimento: GitHub</li>
+<li class="fragment highlight-current-item">Design: Figma</li>
+<li class="fragment highlight-current-item">Automação: Zapier (3.500+ integrações)</li>
+        </ul>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h2 style="color: #00F0FF; font-size: 2em;">As Limitações</h2>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h3 style="color: #00F0FF;">Limitação</h3>
+        <ul class="highlight-list" style="color: #C0C0C0; text-align: left; font-size: 0.75em;">
+            <li class="fragment highlight-current-item">Sem fluxo contínuo: Cada tarefa é isolada, você é o middleware</li>
+<li class="fragment highlight-current-item">Sem acesso ao filesystem: Não lê/escreve arquivos locais diretamente</li>
+<li class="fragment highlight-current-item">Sem execução de código real: Preview apenas, não roda scripts de produção</li>
+<li class="fragment highlight-current-item">Sem paralelização: Uma tarefa por vez, sem subagentes</li>
+<li class="fragment highlight-current-item">Sem automação completa: Você precisa estar presente e clicar</li>
+<li class="fragment highlight-current-item">Sem subagentes verdadeiros: Não delega para especialistas em paralelo</li>
+        </ul>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1607799279861-4dd421887fb3?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h3 style="color: #00F0FF; font-size: 1.2em;">No Web:</h3>
+        <pre style="background: rgba(0,0,0,0.6); padding: 15px 20px; font-size: 0.36em; text-align: left; color: #C0C0C0; white-space: pre; max-height: 400px; overflow: auto; border-radius: 8px; margin: 0 auto; max-width: 88%; line-height: 1.4;"><code style="display: block; font-family: 'Consolas', 'Monaco', 'Courier New', monospace;">No Web:
+
+1. "Baixe o processo 123 do PJE"
+   → ❌ "Não tenho acesso ao PJE"
+
+2. "Aqui está o PDF" [anexa]
+   → ⚠️ Funciona, mas VOCÊ precisou baixar manualmente
+
+3. "Analise e pesquise precedentes"
+   → ⚠️ Analisa, mas pesquisa é genérica
+
+4. "Agora gere a minuta"
+   → ✅ Gera, mas sem os precedentes reais
+
+5. "Salve no meu computador"
+   → ❌ "Não tenho acesso ao seu sistema de arquivos"
+
+O PROBLEMA: Você é o MIDDLEWARE.
+Cada etapa depende de você copiar, colar, baixar, anexar.</code></pre>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h2 style="color: #00F0FF; font-size: 2em;">Mão na Massa - Mini-Workflow no Projects</h2>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <blockquote style="color: #C0C0C0; font-style: italic; font-size: 0.85em; border-left: 4px solid #00F0FF; padding-left: 20px; max-width: 85%; margin: 0 auto; text-align: left; line-height: 1.5;">
+            "Este é um proto-sistema agêntico. Já se comporta como agente, mas com muitas limitações — em escalabilidade, controle e adaptação."
+        </blockquote>
+        <p style="color: #00F0FF; text-align: right; font-size: 0.8em; margin-top: 20px;">— --</p>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <div style="display: flex; justify-content: space-around;">
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">Aspecto</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>Quem baixa o processo?</li>
+<li>Quem salva os arquivos?</li>
+<li>Pesquisa de precedentes</li></ul>
+            </div>
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">Proto-Sistema (Projects)</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>VOCÊ</li>
+<li>VOCÊ (copiar/colar)</li>
+<li>Genérica (web)</li></ul>
+            </div>
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">Sistema Agêntico Real</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>O agente (via MCP)</li>
+<li>O agente (filesystem)</li>
+<li>Específica (BNP, CJF, JULIA)</li></ul>
+            </div>
+            
+        </div>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h3 style="color: #00F0FF; font-size: 1.2em;">Custom Instructions:</h3>
+        <pre style="background: rgba(0,0,0,0.6); padding: 15px 20px; font-size: 0.36em; text-align: left; color: #C0C0C0; white-space: pre; max-height: 400px; overflow: auto; border-radius: 8px; margin: 0 auto; max-width: 88%; line-height: 1.4;"><code style="display: block; font-family: 'Consolas', 'Monaco', 'Courier New', monospace;">Custom Instructions:
+
+Você é um assessor jurídico especializado em direito previdenciário.
+
+WORKFLOW PADRÃO:
+1. Quando receber um processo, primeiro faça o RELATÓRIO
+2. Depois identifique as QUESTÕES JURÍDICAS
+3. Então pesquise PRECEDENTES relevantes
+4. Por fim, elabore a MINUTA
+
+FORMATO DE SAÍDA:
+- Use headers claros (## Relatório, ## Questões, etc.)
+- Cite artigos de lei com precisão
+- Indique quando precisar de mais informação</code></pre>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h2 style="color: #00F0FF; font-size: 2em;">O Resultado Final - Pipeline Sentença</h2>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h3 style="color: #00F0FF; font-size: 1.2em;">O Resultado Final - Pipeline Sentença</h3>
+        <pre style="background: rgba(0,0,0,0.6); padding: 15px 20px; font-size: 0.36em; text-align: left; color: #C0C0C0; white-space: pre; max-height: 400px; overflow: auto; border-radius: 8px; margin: 0 auto; max-width: 88%; line-height: 1.4;"><code style="display: block; font-family: 'Consolas', 'Monaco', 'Courier New', monospace;">┌─────────────────────────────────────────────────────────────────┐
+│                    PIPELINE SENTENÇA                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Human ──▶ /pipeline-sentenca 0000123-45.2024.4.05.8100        │
+│                        │                                        │
+│                        ▼                                        │
+│              ┌─────────────────┐                               │
+│              │  ORQUESTRADOR   │                               │
+│              │  (calcula paths)│                               │
+│              └────────┬────────┘                               │
+│                       │                                         │
+│         ┌─────────────┼─────────────┐                          │
+│         ▼             ▼             ▼                          │
+│   ┌───────────┐ ┌───────────┐ ┌───────────┐                   │
+│   │ Subagente │ │ Subagente │ │ Subagente │                   │
+│   │ Extração  │ │ Pesquisa  │ │ Pesquisa  │                   │
+│   │ linha-tempo│ │ BNP       │ │ CJF       │  ← EM PARALELO   │
+│   └─────┬─────┘ └─────┬─────┘ └─────┬─────┘                   │
+│         │             │             │                          │
+│         └─────────────┼─────────────┘                          │
+│                       ▼                                         │
+│              ┌─────────────────┐                               │
+│              │  CONSOLIDAÇÃO   │                               │
+│              │  (merge paths)  │                               │
+│              └────────┬────────┘                               │
+│                       ▼                                         │
+│              ┌─────────────────┐                               │
+│              │  FUNDAMENTAÇÃO  │                               │
+│              │  + MINUTA       │                               │
+│              └────────┬────────┘                               │
+│                       ▼                                         │
+│                    ARTEFATO ──▶ Human (revisão)                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h2 style="color: #00F0FF; font-size: 2em;">Fechamento</h2>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <blockquote style="color: #C0C0C0; font-style: italic; font-size: 0.85em; border-left: 4px solid #00F0FF; padding-left: 20px; max-width: 85%; margin: 0 auto; text-align: left; line-height: 1.5;">
+            "Hoje vocês viram o padrão oculto: o problema não era 'falta de poder', era 'arquitetura errada'. Na próxima aula, vamos instalar o Claude Code e entrar no mundo onde assistentes colaboram via filesystem. Onde você não é mais o middleware. Onde você é o regente."
+        </blockquote>
+        <p style="color: #00F0FF; text-align: right; font-size: 0.8em; margin-top: 20px;">— --</p>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h3 style="color: #00F0FF;">O Que Aprendemos</h3>
+        <ul class="highlight-list" style="color: #C0C0C0; text-align: left; font-size: 0.75em;">
+            <li class="fragment highlight-current-item">A evolução: Paramétrico → Contextual → Externo → Convergência</li>
+<li class="fragment highlight-current-item">O problema: Uma janela de contexto que degrada ou colapsa</li>
+<li class="fragment highlight-current-item">A solução: Destilação + Compact + Subagentes</li>
+<li class="fragment highlight-current-item">O que já existe: Projects, Conectores, MCPs (Desktop)</li>
+<li class="fragment highlight-current-item">O que falta: Filesystem, paralelização, automação real</li>
+<li class="fragment highlight-current-item">O resultado: Pipeline com subagentes coordenados por paths</li>
+        </ul>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <div style="display: flex; justify-content: space-around;">
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">Conceito</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>Janela de contexto</li>
+<li>Destilação</li>
+<li>Subagentes</li></ul>
+            </div>
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">Metáfora</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>Assessor que apaga anotações antigas</li>
+<li>Resumo executivo em vez de processo inteiro</li>
+<li>Equipe de assessores especializados</li></ul>
+            </div>
+            
+            <div style="flex: 1; padding: 10px;">
+                <h4 style="color: #00F0FF;">Por que funciona</h4>
+                <ul style="color: #C0C0C0; font-size: 0.6em; text-align: left;"><li>Juristas entendem perda de informação</li>
+<li>Prática comum em gabinetes</li>
+<li>Modelo mental familiar</li></ul>
+            </div>
+            
+        </div>
+        
+    </section>
+    
+
+    <section data-background-image="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&h=1080&fit=crop" data-background-opacity="0.4">
+        
+        <h2 style="color: #00F0FF;">Obrigado!</h2>
+        <p style="color: #C0C0C0;">Curso de Sistemas Agênticos</p>
+        
+    </section>
+    
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            backgroundTransition: 'fade',
+            slideNumber: true,
+            controls: true,
+            progress: true,
+            center: true,
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta C - Web vs Desktop (Foco no Diferencial)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 50px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .subtitle {
+            color: rgba(255, 244, 228, 0.5);
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        /* Layout principal */
+        .main-layout {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            max-width: 1200px;
+        }
+
+        /* Coluna Web (menor) */
+        .web-column {
+            opacity: 0;
+            animation: slideIn 0.5s ease-out 0.2s forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .mini-card {
+            width: 250px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(150, 150, 170, 0.3);
+            border-radius: 15px;
+        }
+
+        .mini-card .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .mini-card .icon {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+        }
+
+        .mini-card .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            color: rgba(200, 200, 220, 0.9);
+        }
+
+        .mini-card .type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+        }
+
+        .mini-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mini-list .item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 0.8em;
+            color: rgba(200, 200, 220, 0.7);
+        }
+
+        /* Seta central */
+        .arrow-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 0.4s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .arrow-section .arrow {
+            font-size: 3em;
+            color: var(--super-gold);
+            animation: pulse-arrow 1.5s ease infinite;
+        }
+
+        @keyframes pulse-arrow {
+            0%, 100% { transform: translateX(0); opacity: 0.5; }
+            50% { transform: translateX(15px); opacity: 1; }
+        }
+
+        .arrow-section .label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Coluna Desktop (maior, destaque) */
+        .desktop-column {
+            opacity: 0;
+            animation: heroIn 0.6s ease-out 0.6s forwards;
+        }
+
+        @keyframes heroIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .hero-card {
+            width: 500px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.1) 0%, rgba(190, 156, 109, 0.03) 100%);
+            border: 2px solid var(--super-gold);
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: 0 0 60px rgba(190, 156, 109, 0.2);
+        }
+
+        .hero-card .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero-card .icon {
+            font-size: 4em;
+            margin-bottom: 12px;
+        }
+
+        .hero-card .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .hero-card .type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 5px;
+        }
+
+        /* Seções de capacidades */
+        .capability-section {
+            margin-bottom: 20px;
+        }
+
+        .capability-section .section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .capability-section .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(190, 156, 109, 0.3);
+        }
+
+        .capability-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .capability-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(74, 222, 128, 0.08);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .capability-item:hover {
+            background: rgba(74, 222, 128, 0.15);
+            transform: translateX(5px);
+        }
+
+        .capability-item .icon {
+            font-size: 1.8em;
+        }
+
+        .capability-item .info .name {
+            font-weight: 500;
+            color: var(--super-cream);
+        }
+
+        .capability-item .info .desc {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 2px;
+        }
+
+        /* Insight box */
+        .insight-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .insight-box .text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--super-cream);
+        }
+
+        .insight-box .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px 30px; }
+        body.embed-mode .title { margin-bottom: 30px; }
+        body.embed-mode .title h1 { font-size: 2.2em; }
+        body.embed-mode .main-layout { gap: 35px; }
+        body.embed-mode .mini-card { width: 200px; padding: 18px; }
+        body.embed-mode .mini-card .icon { font-size: 2em; }
+        body.embed-mode .mini-card .name { font-size: 1.1em; }
+        body.embed-mode .mini-list .item { padding: 6px 10px; font-size: 0.7em; }
+        body.embed-mode .arrow-section .arrow { font-size: 2em; }
+        body.embed-mode .hero-card { width: 380px; padding: 25px; }
+        body.embed-mode .hero-card .icon { font-size: 2.5em; }
+        body.embed-mode .hero-card .name { font-size: 1.5em; }
+        body.embed-mode .capability-grid { gap: 8px; }
+        body.embed-mode .capability-item { padding: 10px; }
+        body.embed-mode .capability-item .icon { font-size: 1.4em; }
+        body.embed-mode .capability-item .info .name { font-size: 0.85em; }
+        body.embed-mode .capability-item .info .desc { font-size: 0.65em; }
+        body.embed-mode .insight-box { padding: 12px; margin-top: 15px; }
+        body.embed-mode .insight-box .text { font-size: 0.95em; }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>O Salto do Desktop</h1>
+        <div class="subtitle">Quando o Claude ganha acesso ao seu computador</div>
+    </div>
+
+    <div class="main-layout">
+        <!-- Web (menor) -->
+        <div class="web-column">
+            <div class="mini-card">
+                <div class="header">
+                    <div class="icon">🌐</div>
+                    <div class="name">Claude Web</div>
+                    <div class="type">claude.ai</div>
+                </div>
+                <div class="mini-list">
+                    <div class="item">
+                        <span>📦</span>
+                        <span>Artefatos</span>
+                    </div>
+                    <div class="item">
+                        <span>💻</span>
+                        <span>Execução de Código</span>
+                    </div>
+                    <div class="item">
+                        <span>🧠</span>
+                        <span>Memória</span>
+                    </div>
+                    <div class="item">
+                        <span>✨</span>
+                        <span>Habilidades</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seta -->
+        <div class="arrow-section">
+            <span class="arrow">→</span>
+            <span class="label">Instalar App</span>
+        </div>
+
+        <!-- Desktop (destaque) -->
+        <div class="desktop-column">
+            <div class="hero-card">
+                <div class="header">
+                    <div class="icon">🖥️</div>
+                    <div class="name">Claude Desktop</div>
+                    <div class="type">App Nativo</div>
+                </div>
+
+                <div class="capability-section">
+                    <div class="section-title">Extensões Exclusivas</div>
+                    <div class="capability-grid">
+                        <div class="capability-item">
+                            <span class="icon">📁</span>
+                            <div class="info">
+                                <div class="name">Filesystem</div>
+                                <div class="desc">Lê e escreve arquivos</div>
+                            </div>
+                        </div>
+                        <div class="capability-item">
+                            <span class="icon">🪟</span>
+                            <div class="info">
+                                <div class="name">Windows-MCP</div>
+                                <div class="desc">Controle do sistema</div>
+                            </div>
+                        </div>
+                        <div class="capability-item">
+                            <span class="icon">🦊</span>
+                            <div class="info">
+                                <div class="name">Firefox</div>
+                                <div class="desc">Automação de browser</div>
+                            </div>
+                        </div>
+                        <div class="capability-item">
+                            <span class="icon">🌐</span>
+                            <div class="info">
+                                <div class="name">Chrome</div>
+                                <div class="desc">Automação de browser</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <div class="text">
+                        O Claude sai do <span class="highlight">sandbox</span> e
+                        entra no <span class="highlight">seu ambiente</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

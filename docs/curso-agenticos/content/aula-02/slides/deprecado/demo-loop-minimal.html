@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Loop Agentico - Minimal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--super-bg-dark);
+            overflow: hidden;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-bottom: 60px;
+            animation: fadeIn 0.8s ease both;
+        }
+
+        .loop-container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .word {
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            font-weight: 700;
+            color: var(--super-cream);
+            opacity: 0.2;
+            transition: all 0.5s ease;
+            cursor: default;
+        }
+
+        .word.active {
+            opacity: 1;
+            color: var(--super-gold);
+            transform: scale(1.1);
+            text-shadow: 0 0 40px rgba(190, 156, 109, 0.4);
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: rgba(190, 156, 109, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .arrow.active {
+            color: var(--super-gold);
+            opacity: 0.8;
+        }
+
+        .loop-arrow {
+            position: absolute;
+            bottom: 100px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            color: rgba(190, 156, 109, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        .loop-arrow svg {
+            width: 200px;
+            height: 40px;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 30px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.3);
+            animation: fadeIn 1s ease 1s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Embed mode */
+        body.embed-mode .word { font-size: 2.5em; }
+        body.embed-mode .loop-container { gap: 25px; }
+        body.embed-mode .title { font-size: 1.2em; margin-bottom: 40px; }
+    </style>
+</head>
+<body>
+    <div class="title">O Loop Agêntico</div>
+
+    <div class="loop-container">
+        <div class="word" data-index="0">Think</div>
+        <div class="arrow">→</div>
+        <div class="word" data-index="1">Act</div>
+        <div class="arrow">→</div>
+        <div class="word" data-index="2">Observe</div>
+        <div class="arrow">→</div>
+        <div class="word" data-index="3">Correct</div>
+    </div>
+
+    <div class="loop-arrow">
+        <svg viewBox="0 0 200 40">
+            <path d="M 10 35 Q 100 0 190 35"
+                  fill="none"
+                  stroke="rgba(190, 156, 109, 0.4)"
+                  stroke-width="2"
+                  stroke-dasharray="5,5"/>
+            <polygon points="190,30 200,35 190,40" fill="rgba(190, 156, 109, 0.4)"/>
+        </svg>
+        <span>até a tarefa estar completa</span>
+    </div>
+
+    <div class="hint">Clique para avançar</div>
+
+    <script>
+        const words = document.querySelectorAll('.word');
+        const arrows = document.querySelectorAll('.arrow');
+        let current = -1;
+
+        function updateDisplay() {
+            words.forEach((word, i) => {
+                word.classList.toggle('active', i === current);
+            });
+            arrows.forEach((arrow, i) => {
+                arrow.classList.toggle('active', i === current);
+            });
+        }
+
+        function next() {
+            current = (current + 1) % 4;
+            updateDisplay();
+        }
+
+        // Auto-play
+        let interval = setInterval(next, 1200);
+
+        // Click to advance
+        document.body.addEventListener('click', () => {
+            clearInterval(interval);
+            next();
+            interval = setInterval(next, 1200);
+        });
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                clearInterval(interval);
+                next();
+                interval = setInterval(next, 1200);
+            }
+        });
+
+        // Start
+        setTimeout(() => {
+            current = 0;
+            updateDisplay();
+        }, 500);
+
+        // Embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instalação Claude Code - Demonstração Viva</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dim: rgba(190, 156, 109, 0.6);
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-green-dim: rgba(74, 222, 128, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+            cursor: pointer;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(10, 10, 18, 0.2) 0%,
+                rgba(10, 10, 18, 0.6) 60%,
+                rgba(10, 10, 18, 0.95) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 40px;
+            max-width: 1200px;
+        }
+
+        /* Título principal */
+        .main-title {
+            width: 100%;
+            text-align: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5em, 5vw, 4em);
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 0.1s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Terminal Window - LADO ESQUERDO */
+        .terminal-container {
+            flex: 1.2;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideIn 0.8s ease 0.3s forwards;
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .terminal {
+            background: #0d0d0d;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.6),
+                0 0 60px rgba(190, 156, 109, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .terminal-header {
+            background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .terminal-btn.red { background: #ff5f56; }
+        .terminal-btn.yellow { background: #ffbd2e; }
+        .terminal-btn.green { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .terminal-body {
+            padding: 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1.1em, 2vw, 1.6em);
+            min-height: 280px;
+            line-height: 1.7;
+        }
+
+        .terminal-line {
+            opacity: 0;
+            transform: translateY(10px);
+            margin-bottom: 8px;
+        }
+
+        .terminal-line.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.4s ease;
+        }
+
+        .prompt { color: var(--super-gold); }
+        .command { color: var(--super-cream); }
+        .output { color: rgba(255, 255, 255, 0.5); }
+        .success { color: var(--super-green); }
+        .highlight { color: var(--super-gold-light); font-weight: 600; }
+
+        /* Cursor piscando */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--super-gold);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        .cursor.hidden { display: none; }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Typing animation */
+        .typing {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 1.5s steps(40, end);
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* Progress bar */
+        .progress-container {
+            margin: 15px 0;
+            opacity: 0;
+        }
+
+        .progress-container.visible {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--super-gold), var(--super-green));
+            border-radius: 2px;
+            transition: width 2s ease-out;
+        }
+
+        .progress-fill.complete {
+            width: 100%;
+        }
+
+        /* LADO DIREITO - Status */
+        .status-container {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            opacity: 0;
+            transform: translateX(30px);
+            animation: slideIn 0.8s ease 0.5s forwards;
+        }
+
+        /* Stage indicators */
+        .stage {
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(190, 156, 109, 0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            opacity: 0.3;
+            transform: scale(0.96);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stage.active {
+            opacity: 1;
+            transform: scale(1);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.15);
+            background: rgba(190, 156, 109, 0.05);
+        }
+
+        .stage.complete {
+            opacity: 0.6;
+            transform: scale(0.98);
+        }
+
+        .stage.complete .stage-icon {
+            background: var(--super-green);
+            color: var(--super-bg-dark);
+        }
+
+        .stage-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            transition: all 0.4s ease;
+        }
+
+        .stage.active .stage-icon {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.5);
+        }
+
+        .stage-content h3 {
+            font-size: clamp(1.2em, 2vw, 1.6em);
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 4px;
+        }
+
+        .stage-content p {
+            font-size: clamp(0.95em, 1.5vw, 1.2em);
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .stage.active .stage-content p {
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        /* Auth options */
+        .auth-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .auth-option {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .auth-option.recommended {
+            background: rgba(190, 156, 109, 0.15);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.2);
+        }
+
+        .auth-badge {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            font-size: 0.55em;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-label {
+            display: block;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 2px;
+        }
+
+        .auth-option.recommended .auth-label {
+            color: var(--super-gold-light);
+        }
+
+        .auth-desc {
+            display: block;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Final message */
+        .final-message {
+            text-align: center;
+            padding: 30px 35px;
+            background: rgba(190, 156, 109, 0.08);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .final-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.15);
+        }
+
+        .final-quote {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.2em, 2vw, 1.7em);
+            font-weight: 400;
+            color: var(--super-cream);
+            line-height: 1.6;
+        }
+
+        .highlight-gold {
+            color: var(--super-gold-light);
+            font-weight: 600;
+        }
+
+        /* Click hint */
+        .click-hint {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.2);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            z-index: 20;
+            transition: opacity 0.4s ease;
+        }
+
+        .click-hint.hidden { opacity: 0; }
+
+        /* Embed mode - AUMENTADO para projeção em sala */
+        body.embed-mode { height: 100vh; overflow: hidden; }
+        body.embed-mode .container { padding: 20px 30px; gap: 25px; max-height: 100vh; }
+        body.embed-mode .main-title { font-size: clamp(2em, 3.5vw, 2.8em); margin-bottom: 10px; }
+        body.embed-mode .terminal-container { flex: 1.1; }
+        body.embed-mode .terminal-body { padding: 20px 25px; min-height: 200px; font-size: clamp(1em, 1.6vw, 1.3em); line-height: 1.6; }
+        body.embed-mode .terminal-line { margin-bottom: 5px; }
+        body.embed-mode .status-container { flex: 0.9; gap: 15px; }
+        body.embed-mode .stage { padding: 14px 18px; gap: 12px; }
+        body.embed-mode .stage-icon { width: 40px; height: 40px; font-size: 1.2em; }
+        body.embed-mode .stage-content h3 { font-size: clamp(1.1em, 1.7vw, 1.4em); margin-bottom: 2px; }
+        body.embed-mode .stage-content p { font-size: clamp(0.9em, 1.3vw, 1.1em); }
+        body.embed-mode .auth-options { gap: 8px; margin-top: 6px; }
+        body.embed-mode .auth-option { padding: 8px 10px; }
+        body.embed-mode .auth-label { font-size: clamp(0.85em, 1.2vw, 1em); }
+        body.embed-mode .auth-desc { font-size: clamp(0.7em, 1vw, 0.85em); }
+        body.embed-mode .auth-badge { font-size: 0.55em; top: -6px; padding: 2px 6px; }
+        body.embed-mode .final-message { padding: 18px 22px; }
+        body.embed-mode .final-quote { font-size: clamp(1.1em, 1.7vw, 1.4em); line-height: 1.5; }
+        body.embed-mode .click-hint { bottom: 15px; font-size: 0.65em; }
+    </style>
+</head>
+<body>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <!-- Título -->
+        <h1 class="main-title">Instalando o Claude Code</h1>
+        <!-- Terminal -->
+        <div class="terminal-container">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <span class="terminal-btn red"></span>
+                        <span class="terminal-btn yellow"></span>
+                        <span class="terminal-btn green"></span>
+                    </div>
+                    <span class="terminal-title">Terminal</span>
+                </div>
+                <div class="terminal-body" id="terminalBody">
+                    <div class="terminal-line" id="line1">
+                        <span class="prompt">$</span> <span class="command" id="cmd1"></span><span class="cursor" id="cursor1"></span>
+                    </div>
+                    <div class="progress-container" id="progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                    <div class="terminal-line" id="line2">
+                        <span class="output" id="out1"></span>
+                    </div>
+                    <div class="terminal-line" id="line3">
+                        <span class="success" id="out2"></span>
+                    </div>
+                    <div class="terminal-line" id="line4">
+                        <span class="prompt">$</span> <span class="command" id="cmd2"></span><span class="cursor hidden" id="cursor2"></span>
+                    </div>
+                    <div class="terminal-line" id="line5">
+                        <span class="highlight" id="out3"></span>
+                    </div>
+                    <div class="terminal-line" id="line6">
+                        <span class="prompt">></span> <span class="command" id="cmd3"></span><span class="cursor hidden" id="cursor3"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="status-container">
+            <div class="stage" id="stage1">
+                <div class="stage-icon">📥</div>
+                <div class="stage-content">
+                    <h3>Instalar</h3>
+                    <p>Um único comando</p>
+                </div>
+            </div>
+
+            <div class="stage" id="stage2">
+                <div class="stage-icon">🔐</div>
+                <div class="stage-content">
+                    <h3>Autenticar</h3>
+                    <div class="auth-options">
+                        <div class="auth-option recommended">
+                            <span class="auth-badge">Recomendado</span>
+                            <span class="auth-label">Assinatura Claude</span>
+                            <span class="auth-desc">Pro, Max, Teams</span>
+                        </div>
+                        <div class="auth-option">
+                            <span class="auth-label">API Console</span>
+                            <span class="auth-desc">Pré-pago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage" id="stage3">
+                <div class="stage-icon">💬</div>
+                <div class="stage-content">
+                    <h3>Conversar</h3>
+                    <p>Em linguagem natural</p>
+                </div>
+            </div>
+
+            <div class="final-message" id="finalMessage">
+                <p class="final-quote">O Claude Code é basicamente um <span class="highlight-gold">chat no seu terminal</span>, só que com superpoderes de <span class="highlight-gold">pensamento</span> e de <span class="highlight-gold">ação</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="click-hint" id="hint">Clique para continuar</div>
+
+    <script>
+        let stage = 0;
+        const TOTAL_STAGES = 4;
+
+        // Elements
+        const elements = {
+            line1: document.getElementById('line1'),
+            line2: document.getElementById('line2'),
+            line3: document.getElementById('line3'),
+            line4: document.getElementById('line4'),
+            line5: document.getElementById('line5'),
+            line6: document.getElementById('line6'),
+            cmd1: document.getElementById('cmd1'),
+            cmd2: document.getElementById('cmd2'),
+            cmd3: document.getElementById('cmd3'),
+            out1: document.getElementById('out1'),
+            out2: document.getElementById('out2'),
+            out3: document.getElementById('out3'),
+            cursor1: document.getElementById('cursor1'),
+            cursor2: document.getElementById('cursor2'),
+            cursor3: document.getElementById('cursor3'),
+            progress: document.getElementById('progress'),
+            progressFill: document.getElementById('progressFill'),
+            stage1: document.getElementById('stage1'),
+            stage2: document.getElementById('stage2'),
+            stage3: document.getElementById('stage3'),
+            finalMessage: document.getElementById('finalMessage'),
+            hint: document.getElementById('hint')
+        };
+
+        // Typing effect
+        function typeText(element, text, speed = 30) {
+            return new Promise(resolve => {
+                let i = 0;
+                element.textContent = '';
+                const interval = setInterval(() => {
+                    element.textContent += text[i];
+                    i++;
+                    if (i >= text.length) {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, speed);
+            });
+        }
+
+        // Stage transitions
+        async function nextStage() {
+            stage++;
+
+            if (stage === 1) {
+                // Stage 1: Comando de instalação
+                elements.stage1.classList.add('active');
+                elements.line1.classList.add('visible');
+                await typeText(elements.cmd1, 'curl -fsSL https://claude.ai/install.sh | bash', 25);
+                elements.cursor1.classList.add('hidden');
+
+                // Progress bar
+                elements.progress.classList.add('visible');
+                setTimeout(() => {
+                    elements.progressFill.classList.add('complete');
+                }, 100);
+
+            } else if (stage === 2) {
+                // Stage 2: Instalação completa, autenticação
+                elements.stage1.classList.remove('active');
+                elements.stage1.classList.add('complete');
+                elements.stage2.classList.add('active');
+
+                elements.line2.classList.add('visible');
+                elements.out1.textContent = 'Downloading Claude Code...';
+
+                setTimeout(() => {
+                    elements.line3.classList.add('visible');
+                    elements.out2.textContent = '✓ Claude Code instalado com sucesso!';
+                }, 400);
+
+                setTimeout(async () => {
+                    elements.line4.classList.add('visible');
+                    elements.cursor2.classList.remove('hidden');
+                    await typeText(elements.cmd2, 'claude', 50);
+                    elements.cursor2.classList.add('hidden');
+                }, 1000);
+
+            } else if (stage === 3) {
+                // Stage 3: Login e primeira conversa
+                elements.stage2.classList.remove('active');
+                elements.stage2.classList.add('complete');
+                elements.stage3.classList.add('active');
+
+                elements.line5.classList.add('visible');
+                elements.out3.textContent = '> Olá! Como posso ajudar?';
+
+                setTimeout(async () => {
+                    elements.line6.classList.add('visible');
+                    elements.cursor3.classList.remove('hidden');
+                    await typeText(elements.cmd3, 'o que esse projeto faz?', 40);
+                    elements.cursor3.classList.add('hidden');
+                }, 600);
+
+            } else if (stage === 4) {
+                // Final
+                elements.stage3.classList.remove('active');
+                elements.stage3.classList.add('complete');
+                elements.finalMessage.classList.add('visible');
+                elements.hint.classList.add('hidden');
+
+            } else if (stage > TOTAL_STAGES) {
+                stage = TOTAL_STAGES; // Stay at final
+            }
+        }
+
+        // Event listeners
+        document.body.addEventListener('click', nextStage);
+        document.body.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') {
+                nextStage();
+            }
+        });
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Cross-iframe communication
+        window.addEventListener('message', (e) => {
+            if (e.data.action === 'nextStage') nextStage();
+        });
+    </script>
+</body>
+</html>

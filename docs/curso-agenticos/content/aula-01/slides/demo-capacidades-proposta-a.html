@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capacidades Agênticas do Claude</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --accent-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 50px;
+            overflow: hidden;
+        }
+
+        /* Ambient glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 80%;
+            background: radial-gradient(ellipse, rgba(190, 156, 109, 0.06) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            font-weight: 600;
+            color: var(--super-gold);
+            opacity: 0;
+            animation: fadeDown 0.6s ease-out 0.1s forwards;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 0.3s forwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: rgba(255, 244, 228, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .tab:first-child {
+            border-radius: 12px 0 0 12px;
+            border-right: none;
+        }
+
+        .tab:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.2) 0%, rgba(190, 156, 109, 0.1) 100%);
+            border-color: var(--super-gold);
+            color: var(--super-cream);
+        }
+
+        .tab:first-child.active {
+            border-right: 1px solid var(--super-gold);
+        }
+
+        .tab .icon {
+            font-size: 1.3em;
+        }
+
+        .tab .count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            padding: 3px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        .tab.active .count {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+        }
+
+        /* Desktop tab special styling when active */
+        .tab.desktop-tab.active {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%);
+            border-color: var(--accent-green);
+        }
+
+        .tab.desktop-tab.active .count {
+            background: var(--accent-green);
+        }
+
+        /* Main Container */
+        .capabilities-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 28px;
+            padding: 35px;
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            animation: containerReveal 0.7s ease-out 0.3s forwards;
+            transition: border-color 0.4s ease;
+        }
+
+        .capabilities-container.desktop-mode {
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        @keyframes containerReveal {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Capabilities Grid */
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        /* Capability Item */
+        .capability-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 22px 15px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+        }
+
+        .capability-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: transparent;
+            transition: background 0.3s ease;
+        }
+
+        .capability-item:hover {
+            transform: translateY(-5px);
+            background: rgba(190, 156, 109, 0.08);
+            border-color: rgba(190, 156, 109, 0.3);
+        }
+
+        .capability-item:hover::before {
+            background: var(--super-gold);
+        }
+
+        /* Exclusive styling */
+        .capability-item.exclusive {
+            background: linear-gradient(180deg, rgba(74, 222, 128, 0.1) 0%, rgba(74, 222, 128, 0.03) 100%);
+            border-color: rgba(74, 222, 128, 0.3);
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+            pointer-events: none;
+        }
+
+        .capability-item.exclusive::before {
+            background: var(--accent-green);
+        }
+
+        .capability-item.exclusive:hover {
+            background: linear-gradient(180deg, rgba(74, 222, 128, 0.18) 0%, rgba(74, 222, 128, 0.06) 100%);
+            border-color: rgba(74, 222, 128, 0.5);
+        }
+
+        /* Visible state for exclusive items */
+        .capability-item.exclusive.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        .capability-icon {
+            font-size: 2.2em;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 14px;
+        }
+
+        .capability-name {
+            font-weight: 500;
+            font-size: 0.88em;
+            color: var(--super-cream);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .capability-desc {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.45);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* Badge for exclusive */
+        .exclusive-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5em;
+            padding: 4px 8px;
+            background: rgba(74, 222, 128, 0.25);
+            border: 1px solid rgba(74, 222, 128, 0.6);
+            border-radius: 5px;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer-insight {
+            margin-top: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            height: 40px;
+        }
+
+        .insight-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            color: var(--super-cream);
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .insight-text.visible {
+            opacity: 1;
+        }
+
+        .insight-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .insight-text .green {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px 30px; }
+        body.embed-mode .header { margin-bottom: 18px; }
+        body.embed-mode .header h1 { font-size: 2em; }
+        body.embed-mode .header .subtitle { font-size: 0.9em; margin-top: 6px; }
+        body.embed-mode .tabs-container { margin-bottom: 20px; }
+        body.embed-mode .tab { padding: 10px 22px; font-size: 0.8em; }
+        body.embed-mode .tab .icon { font-size: 1.1em; }
+        body.embed-mode .tab .count { font-size: 0.6em; padding: 2px 6px; }
+        body.embed-mode .capabilities-container { padding: 22px; border-radius: 20px; }
+        body.embed-mode .capabilities-grid { gap: 10px; }
+        body.embed-mode .capability-item { padding: 16px 10px; border-radius: 12px; gap: 8px; }
+        body.embed-mode .capability-icon { font-size: 1.6em; width: 42px; height: 42px; border-radius: 10px; }
+        body.embed-mode .capability-name { font-size: 0.75em; }
+        body.embed-mode .capability-desc { font-size: 0.6em; }
+        body.embed-mode .exclusive-badge { font-size: 0.45em; padding: 3px 6px; top: 5px; right: 5px; }
+        body.embed-mode .footer-insight { margin-top: 18px; height: 30px; }
+        body.embed-mode .insight-text { font-size: 0.95em; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Capacidades Agênticas</h1>
+        <div class="subtitle">Tudo que o Claude pode fazer por você</div>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tab active" data-mode="web">
+            <span class="icon">🌐</span>
+            <span>Claude Web</span>
+            <span class="count">12</span>
+        </div>
+        <div class="tab desktop-tab" data-mode="desktop">
+            <span class="icon">🖥️</span>
+            <span>Claude Desktop</span>
+            <span class="count">16</span>
+        </div>
+    </div>
+
+    <div class="capabilities-container">
+        <div class="capabilities-grid">
+            <!-- Common capabilities (Web + Desktop) - Always visible -->
+            <div class="capability-item common">
+                <div class="capability-icon">📦</div>
+                <div class="capability-name">Artefatos</div>
+                <div class="capability-desc">Código, docs, diagramas</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">💻</div>
+                <div class="capability-name">Execução de Código</div>
+                <div class="capability-desc">Python sandbox</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">🧠</div>
+                <div class="capability-name">Memória</div>
+                <div class="capability-desc">Lembra preferências</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">📁</div>
+                <div class="capability-name">Projects</div>
+                <div class="capability-desc">Contexto organizado</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">📄</div>
+                <div class="capability-name">Análise de Arquivos</div>
+                <div class="capability-desc">PDFs, imagens, docs</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">🔍</div>
+                <div class="capability-name">Busca na Web</div>
+                <div class="capability-desc">Pesquisa em tempo real</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">🤔</div>
+                <div class="capability-name">Extended Thinking</div>
+                <div class="capability-desc">Raciocínio profundo</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">✨</div>
+                <div class="capability-name">Skills</div>
+                <div class="capability-desc">Integrações prontas</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">🔬</div>
+                <div class="capability-name">Deep Research</div>
+                <div class="capability-desc">Pesquisa aprofundada</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">🎨</div>
+                <div class="capability-name">Artefatos com IA</div>
+                <div class="capability-desc">Geração visual assistida</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">💭</div>
+                <div class="capability-name">Pesquisar Memória</div>
+                <div class="capability-desc">Busca em conversas</div>
+            </div>
+
+            <div class="capability-item common">
+                <div class="capability-icon">🔗</div>
+                <div class="capability-name">Conectores</div>
+                <div class="capability-desc">Google, Notion, GitHub...</div>
+            </div>
+
+            <!-- Exclusive Desktop capabilities - Hidden by default -->
+            <div class="capability-item exclusive">
+                <span class="exclusive-badge">+ Desktop</span>
+                <div class="capability-icon">📂</div>
+                <div class="capability-name">Filesystem</div>
+                <div class="capability-desc">Lê/escreve arquivos locais</div>
+            </div>
+
+            <div class="capability-item exclusive">
+                <span class="exclusive-badge">+ Desktop</span>
+                <div class="capability-icon">🪟</div>
+                <div class="capability-name">Windows-MCP</div>
+                <div class="capability-desc">Controle do sistema</div>
+            </div>
+
+            <div class="capability-item exclusive">
+                <span class="exclusive-badge">+ Desktop</span>
+                <div class="capability-icon">🦊</div>
+                <div class="capability-name">Firefox Control</div>
+                <div class="capability-desc">Automação de browser</div>
+            </div>
+
+            <div class="capability-item exclusive">
+                <span class="exclusive-badge">+ Desktop</span>
+                <div class="capability-icon">🌐</div>
+                <div class="capability-name">Chrome Control</div>
+                <div class="capability-desc">Automação de browser</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-insight">
+        <div class="insight-text web-insight visible">
+            Ferramentas disponíveis em <span class="highlight">claude.ai</span>
+        </div>
+        <div class="insight-text desktop-insight">
+            O Desktop adiciona <span class="green">acesso ao seu computador</span>
+        </div>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const exclusiveItems = document.querySelectorAll('.capability-item.exclusive');
+        const container = document.querySelector('.capabilities-container');
+        const webInsight = document.querySelector('.web-insight');
+        const desktopInsight = document.querySelector('.desktop-insight');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const mode = tab.dataset.mode;
+
+                // Update tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update container border
+                container.classList.toggle('desktop-mode', mode === 'desktop');
+
+                // Show/hide exclusive items with staggered animation
+                exclusiveItems.forEach((item, index) => {
+                    if (mode === 'desktop') {
+                        setTimeout(() => {
+                            item.classList.add('visible');
+                        }, index * 80);
+                    } else {
+                        item.classList.remove('visible');
+                    }
+                });
+
+                // Update footer insight
+                if (mode === 'desktop') {
+                    webInsight.classList.remove('visible');
+                    setTimeout(() => {
+                        desktopInsight.classList.add('visible');
+                    }, 200);
+                } else {
+                    desktopInsight.classList.remove('visible');
+                    setTimeout(() => {
+                        webInsight.classList.add('visible');
+                    }, 200);
+                }
+            });
+        });
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

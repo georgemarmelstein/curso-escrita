@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotes 4x - Proposta B (Timeline Vertical)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--super-bg-dark);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Fundo */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 30% 50%, rgba(190, 156, 109, 0.05) 0%, transparent 50%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        /* Layout: Sidebar esquerda + Conteúdo direita */
+        .layout {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Sidebar com título e navegação */
+        .sidebar {
+            width: 280px;
+            padding: 50px 30px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(190, 156, 109, 0.1);
+        }
+
+        .sidebar-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-cream);
+            line-height: 1.3;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 40px;
+        }
+
+        /* Timeline navigation */
+        .timeline-nav {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 20px 0 20px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(190, 156, 109, 0.2);
+        }
+
+        .timeline-item:last-child::before {
+            height: 50%;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 24px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--super-bg-dark);
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--super-gold);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 15px rgba(190, 156, 109, 0.5);
+        }
+
+        .timeline-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item.active .timeline-label {
+            color: var(--super-cream);
+            font-weight: 500;
+        }
+
+        .timeline-author {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            opacity: 0.5;
+            margin-top: 4px;
+        }
+
+        .timeline-item.active .timeline-author {
+            opacity: 1;
+        }
+
+        /* Área principal de conteúdo */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+        }
+
+        /* Card de quote principal */
+        .quote-display {
+            max-width: 650px;
+            text-align: center;
+        }
+
+        .quote-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 4em;
+            font-weight: 700;
+            color: var(--super-gold);
+            opacity: 0.15;
+            margin-bottom: -20px;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.5;
+            margin-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .quote-translation {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.5);
+            line-height: 1.6;
+            margin-bottom: 40px;
+            padding: 0 30px;
+        }
+
+        /* Autor */
+        .quote-author {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--super-gold-dark), var(--super-gold));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2em;
+            color: var(--super-bg-dark);
+            font-weight: 600;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        .author-role {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            opacity: 0.7;
+        }
+
+        /* Instrução inferior */
+        .click-hint {
+            position: fixed;
+            bottom: 25px;
+            right: 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            opacity: 0.4;
+        }
+
+        /* Embed mode */
+        body.embed-mode .sidebar { width: 220px; padding: 30px 20px; }
+        body.embed-mode .sidebar-title { font-size: 1.2em; }
+        body.embed-mode .main-content { padding: 30px; }
+        body.embed-mode .quote-number { font-size: 3em; }
+        body.embed-mode .quote-text { font-size: 1.4em; }
+        body.embed-mode .quote-translation { font-size: 0.85em; }
+        body.embed-mode .author-avatar { width: 45px; height: 45px; font-size: 1em; }
+        body.embed-mode .click-hint { display: none; }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+
+    <div class="layout">
+        <div class="sidebar">
+            <h2 class="sidebar-title">Por Que Abraçar o Terminal?</h2>
+            <p class="sidebar-subtitle">Clique para navegar entre as citações</p>
+
+            <nav class="timeline-nav">
+                <div class="timeline-item active" data-index="0">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-label">O Fantasma na Máquina</div>
+                    <div class="timeline-author">Karpathy</div>
+                </div>
+                <div class="timeline-item" data-index="1">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-label">Sem Jeito Único</div>
+                    <div class="timeline-author">Boris Cherny</div>
+                </div>
+                <div class="timeline-item" data-index="2">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-label">5 Claudes em Paralelo</div>
+                    <div class="timeline-author">Boris Cherny</div>
+                </div>
+                <div class="timeline-item" data-index="3">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-label">10X Mais Poderoso</div>
+                    <div class="timeline-author">Karpathy</div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div class="quote-display" id="quoteDisplay">
+                <!-- Conteúdo dinâmico -->
+            </div>
+        </div>
+    </div>
+
+    <div class="click-hint">[ ← → ou clique ]</div>
+
+    <script>
+        const quotes = [
+            {
+                number: '01',
+                text: '"It\'s a <span class="highlight">ghost in your computer</span> that can do things for you."',
+                translation: '"É um fantasma no seu computador que pode fazer coisas por você."',
+                author: 'Andrej Karpathy',
+                role: 'Ex-Director of AI @ Tesla',
+                initials: 'AK'
+            },
+            {
+                number: '02',
+                text: '"There is <span class="highlight">no one correct way</span> to use Claude Code: we intentionally build it so you can <span class="highlight">hack it however you like</span>."',
+                translation: '"Não há uma única forma correta de usar: construímos intencionalmente para você hackear como quiser."',
+                author: 'Boris Cherny',
+                role: 'Criador do Claude Code',
+                initials: 'BC'
+            },
+            {
+                number: '03',
+                text: '"I run <span class="highlight">5 Claudes in parallel</span> in my terminal. I number my tabs 1-5 and use notifications to know when one needs input."',
+                translation: '"Eu rodo 5 Claudes em paralelo no meu terminal. Numero minhas abas de 1-5."',
+                author: 'Boris Cherny',
+                role: 'Criador do Claude Code',
+                initials: 'BC'
+            },
+            {
+                number: '04',
+                text: '"I could be <span class="highlight">10X more powerful</span> if I just properly string together what has become available over the last year."',
+                translation: '"Eu poderia ser 10X mais poderoso se conectasse corretamente o que se tornou disponível."',
+                author: 'Andrej Karpathy',
+                role: 'Ex-Director of AI @ Tesla',
+                initials: 'AK'
+            }
+        ];
+
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        const quoteDisplay = document.getElementById('quoteDisplay');
+        let currentIndex = 0;
+
+        function renderQuote(index) {
+            const q = quotes[index];
+            quoteDisplay.innerHTML = `
+                <div class="quote-number">${q.number}</div>
+                <p class="quote-text">${q.text}</p>
+                <p class="quote-translation">${q.translation}</p>
+                <div class="quote-author">
+                    <div class="author-avatar">${q.initials}</div>
+                    <div class="author-name">${q.author}</div>
+                    <div class="author-role">${q.role}</div>
+                </div>
+            `;
+        }
+
+        function goToQuote(index) {
+            currentIndex = index;
+
+            timelineItems.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+
+            renderQuote(index);
+        }
+
+        function nextQuote() {
+            goToQuote((currentIndex + 1) % quotes.length);
+        }
+
+        function prevQuote() {
+            goToQuote((currentIndex - 1 + quotes.length) % quotes.length);
+        }
+
+        // Clique na timeline
+        timelineItems.forEach(item => {
+            item.addEventListener('click', () => {
+                goToQuote(parseInt(item.dataset.index));
+            });
+        });
+
+        // Clique na área principal avança
+        document.querySelector('.main-content').addEventListener('click', nextQuote);
+
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextQuote();
+            } else if (e.key === 'ArrowLeft') {
+                prevQuote();
+            }
+        });
+
+        // Inicializar
+        renderQuote(0);
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

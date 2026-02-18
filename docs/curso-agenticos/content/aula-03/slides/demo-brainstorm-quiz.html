@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Mini-Sistema Brainstorm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Background */
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 50% 50% at 30% 30%, rgba(251, 191, 36, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 50% at 70% 70%, rgba(74, 222, 128, 0.06) 0%, transparent 50%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            gap: 30px;
+            height: 100vh;
+            width: 100%;
+            max-width: 1100px;
+            padding: 30px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           QUIZ PANEL (Left)
+           ═══════════════════════════════════════════════════════════ */
+        .quiz-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-header {
+            margin-bottom: 20px;
+        }
+
+        .quiz-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: var(--super-amber);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .quiz-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--super-cream);
+        }
+
+        .quiz-progress {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 244, 228, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.completed {
+            background: var(--super-green);
+        }
+
+        .progress-dot.current {
+            background: var(--super-amber);
+            box-shadow: 0 0 10px var(--super-amber);
+        }
+
+        /* Question card */
+        .question-card {
+            flex: 1;
+            background: rgba(20, 20, 30, 0.8);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .question-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-amber);
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: var(--super-cream);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .question-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        /* Options */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .option-btn {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 244, 228, 0.2);
+            border-radius: 10px;
+            color: rgba(255, 244, 228, 0.8);
+            font-size: 0.95em;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-btn:hover {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: var(--super-amber);
+        }
+
+        .option-btn.selected {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: var(--super-amber);
+            color: var(--super-cream);
+        }
+
+        .option-key {
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 244, 228, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            flex-shrink: 0;
+        }
+
+        .option-btn.selected .option-key {
+            background: var(--super-amber);
+            color: var(--super-bg-dark);
+        }
+
+        /* Navigation */
+        .quiz-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 244, 228, 0.3);
+            background: transparent;
+            border-radius: 8px;
+            color: var(--super-cream);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 244, 228, 0.1);
+        }
+
+        .nav-btn.primary {
+            background: rgba(190, 156, 109, 0.2);
+            border-color: var(--super-gold);
+            color: var(--super-gold);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SPEC PANEL (Right)
+           ═══════════════════════════════════════════════════════════ */
+        .spec-panel {
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .spec-header {
+            margin-bottom: 15px;
+        }
+
+        .spec-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: var(--super-green);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .spec-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        .spec-card {
+            flex: 1;
+            background: rgba(20, 20, 30, 0.8);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .spec-section {
+            margin-bottom: 20px;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+
+        .spec-section.revealed {
+            opacity: 1;
+        }
+
+        .spec-section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .spec-section-title::before {
+            content: '●';
+            color: var(--super-green);
+        }
+
+        .spec-section.revealed .spec-section-title::before {
+            content: '✓';
+        }
+
+        .spec-content {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+        }
+
+        .spec-content strong {
+            color: var(--super-cream);
+        }
+
+        .spec-content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--super-cyan);
+        }
+
+        /* Final spec reveal */
+        .final-spec {
+            display: none;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid var(--super-green);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: auto;
+        }
+
+        .final-spec.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .final-spec-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .final-spec-text {
+            font-size: 0.9em;
+            color: var(--super-cream);
+            line-height: 1.6;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .container { padding: 15px; gap: 20px; }
+        body.embed-mode .quiz-title { font-size: 1.2em; }
+        body.embed-mode .question-card { padding: 18px; }
+        body.embed-mode .question-text { font-size: 1em; }
+        body.embed-mode .option-btn { padding: 12px 15px; font-size: 0.85em; }
+        body.embed-mode .spec-panel { width: 320px; }
+        body.embed-mode .spec-card { padding: 15px; }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <!-- Quiz Panel -->
+        <div class="quiz-panel">
+            <div class="quiz-header">
+                <div class="quiz-label">Sessão de Brainstorm</div>
+                <h2 class="quiz-title">Verificador de Completude</h2>
+                <div class="quiz-progress" id="progressDots">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number" id="questionNumber">Pergunta 1 de 5</div>
+                <div class="question-text" id="questionText">
+                    <span class="question-icon">&#128172;</span>
+                    O que o sistema deve verificar?
+                </div>
+                <div class="options-container" id="optionsContainer">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <div class="quiz-nav">
+                <button class="nav-btn" id="prevBtn" disabled>&#8592; Anterior</button>
+                <button class="nav-btn primary" id="nextBtn">Próxima &#8594;</button>
+            </div>
+        </div>
+
+        <!-- Spec Panel -->
+        <div class="spec-panel">
+            <div class="spec-header">
+                <div class="spec-label">Especificação Emergente</div>
+                <h3 class="spec-title">Design em Construção</h3>
+            </div>
+
+            <div class="spec-card">
+                <div class="spec-section" id="spec-0">
+                    <div class="spec-section-title">Objetivo</div>
+                    <div class="spec-content" id="specContent-0">Aguardando resposta...</div>
+                </div>
+
+                <div class="spec-section" id="spec-1">
+                    <div class="spec-section-title">Input</div>
+                    <div class="spec-content" id="specContent-1">Aguardando resposta...</div>
+                </div>
+
+                <div class="spec-section" id="spec-2">
+                    <div class="spec-section-title">Validações</div>
+                    <div class="spec-content" id="specContent-2">Aguardando resposta...</div>
+                </div>
+
+                <div class="spec-section" id="spec-3">
+                    <div class="spec-section-title">Output</div>
+                    <div class="spec-content" id="specContent-3">Aguardando resposta...</div>
+                </div>
+
+                <div class="spec-section" id="spec-4">
+                    <div class="spec-section-title">Integração</div>
+                    <div class="spec-content" id="specContent-4">Aguardando resposta...</div>
+                </div>
+
+                <div class="final-spec" id="finalSpec">
+                    <div class="final-spec-title">&#9989; Spec Completa</div>
+                    <div class="final-spec-text">
+                        Sistema de verificação de completude pronto para <code>/superpowers:write-plan</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Questions data
+        const questions = [
+            {
+                icon: '&#128172;',
+                text: 'O que o sistema deve verificar?',
+                options: [
+                    { key: 'A', text: 'Completude de elementos da sentença judicial', spec: '<strong>Verificador de Completude de Sentença</strong><br>Valida presença dos elementos estruturais obrigatórios.' },
+                    { key: 'B', text: 'Ortografia e gramática do texto', spec: '<strong>Corretor Ortográfico</strong><br>Verifica erros de escrita no documento.' },
+                    { key: 'C', text: 'Conformidade com jurisprudência', spec: '<strong>Verificador de Conformidade</strong><br>Compara com precedentes do tribunal.' }
+                ]
+            },
+            {
+                icon: '&#128195;',
+                text: 'Qual será o formato de entrada?',
+                options: [
+                    { key: 'A', text: 'Documento estruturado (HTML/XML)', spec: '<strong>Documento estruturado</strong><br>Parser extrai seções por tags: <code>&lt;relatorio&gt;</code>, <code>&lt;fundamentacao&gt;</code>, <code>&lt;dispositivo&gt;</code>' },
+                    { key: 'B', text: 'Texto livre (plain text)', spec: '<strong>Texto livre</strong><br>Usa NLP para identificar seções por padrões textuais.' },
+                    { key: 'C', text: 'PDF do processo', spec: '<strong>PDF</strong><br>Extração de texto com OCR quando necessário.' }
+                ]
+            },
+            {
+                icon: '&#9989;',
+                text: 'Quais elementos são obrigatórios?',
+                options: [
+                    { key: 'A', text: 'Apenas Relatório, Fundamentação e Dispositivo', spec: '<strong>3 elementos obrigatórios:</strong><br>• Relatório (narrativa dos fatos)<br>• Fundamentação (razões de decidir)<br>• Dispositivo (decisão final)' },
+                    { key: 'B', text: 'Todos + Ementa e Autenticação', spec: '<strong>5 elementos obrigatórios:</strong><br>• Ementa, Relatório, Fundamentação, Dispositivo, Autenticação' },
+                    { key: 'C', text: 'Configurável pelo usuário', spec: '<strong>Elementos configuráveis:</strong><br>Lista de elementos definida em config. Permite personalização por tipo de sentença.' }
+                ]
+            },
+            {
+                icon: '&#128200;',
+                text: 'Como apresentar o resultado?',
+                options: [
+                    { key: 'A', text: 'Checklist visual com status por elemento', spec: '<strong>Checklist Visual</strong><br>UI mostra cada elemento com status: ✓ presente, ✗ ausente, ⚠ incompleto.<br>Cor coding: verde/vermelho/amarelo.' },
+                    { key: 'B', text: 'JSON estruturado para API', spec: '<strong>JSON Response</strong><br><code>{ "complete": false, "missing": ["dispositivo"], "warnings": [] }</code>' },
+                    { key: 'C', text: 'Relatório textual detalhado', spec: '<strong>Relatório Textual</strong><br>Documento markdown com análise completa de cada elemento.' }
+                ]
+            },
+            {
+                icon: '&#128268;',
+                text: 'Como integrar com o workflow existente?',
+                options: [
+                    { key: 'A', text: 'Plugin para editor de sentenças', spec: '<strong>Plugin de Editor</strong><br>Integração via extensão. Validação em tempo real enquanto magistrado escreve.' },
+                    { key: 'B', text: 'Serviço standalone (API REST)', spec: '<strong>Microserviço</strong><br>API REST independente.<br><code>POST /api/validate</code> → retorna análise' },
+                    { key: 'C', text: 'Parte do pipeline de assinatura', spec: '<strong>Gate de Assinatura</strong><br>Validação automática antes da assinatura digital. Bloqueia se incompleto.' }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+
+        const progressDots = document.getElementById('progressDots');
+        const questionNumber = document.getElementById('questionNumber');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const finalSpec = document.getElementById('finalSpec');
+
+        // Generate progress dots
+        function renderProgress() {
+            progressDots.innerHTML = questions.map((_, i) => {
+                let className = 'progress-dot';
+                if (answers[i] !== undefined) className += ' completed';
+                if (i === currentQuestion) className += ' current';
+                return `<div class="${className}"></div>`;
+            }).join('');
+        }
+
+        // Render question
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+
+            questionNumber.textContent = `Pergunta ${currentQuestion + 1} de ${questions.length}`;
+            questionText.innerHTML = `<span class="question-icon">${q.icon}</span> ${q.text}`;
+
+            optionsContainer.innerHTML = q.options.map((opt, i) => `
+                <button class="option-btn ${answers[currentQuestion] === i ? 'selected' : ''}" data-index="${i}">
+                    <span class="option-key">${opt.key}</span>
+                    ${opt.text}
+                </button>
+            `).join('');
+
+            // Add click handlers
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', () => selectOption(parseInt(btn.dataset.index)));
+            });
+
+            // Update nav buttons
+            prevBtn.disabled = currentQuestion === 0;
+            nextBtn.textContent = currentQuestion === questions.length - 1 ? 'Finalizar ✓' : 'Próxima →';
+
+            renderProgress();
+        }
+
+        // Select option
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+
+            // Update spec panel
+            const section = document.getElementById(`spec-${currentQuestion}`);
+            const content = document.getElementById(`specContent-${currentQuestion}`);
+            section.classList.add('revealed');
+            content.innerHTML = questions[currentQuestion].options[index].spec;
+
+            // Update UI
+            document.querySelectorAll('.option-btn').forEach((btn, i) => {
+                btn.classList.toggle('selected', i === index);
+            });
+
+            renderProgress();
+        }
+
+        // Navigation
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                // Finish - show final spec
+                finalSpec.classList.add('visible');
+                nextBtn.disabled = true;
+                nextBtn.textContent = 'Completo ✓';
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '3') {
+                selectOption(parseInt(e.key) - 1);
+            }
+            if (e.key === 'a' || e.key === 'A') selectOption(0);
+            if (e.key === 'b' || e.key === 'B') selectOption(1);
+            if (e.key === 'c' || e.key === 'C') selectOption(2);
+            if (e.key === 'ArrowRight' || e.key === 'Enter') {
+                if (!nextBtn.disabled) nextBtn.click();
+            }
+            if (e.key === 'ArrowLeft') {
+                if (!prevBtn.disabled) prevBtn.click();
+            }
+        });
+
+        // Initialize
+        renderQuestion();
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

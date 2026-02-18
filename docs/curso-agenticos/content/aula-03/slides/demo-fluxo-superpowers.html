@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Fluxo Superpowers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Background */
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 50% 50%, rgba(190, 156, 109, 0.06) 0%, transparent 50%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            max-width: 1100px;
+            padding: 25px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .header-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: var(--super-cream);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           PIPELINE VISUALIZATION
+           ═══════════════════════════════════════════════════════════ */
+        .pipeline-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .pipeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pipeline-step:hover {
+            transform: translateY(-5px);
+        }
+
+        .pipeline-step.active {
+            transform: scale(1.05);
+        }
+
+        .step-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .pipeline-step.active .step-circle {
+            box-shadow: 0 0 30px currentColor;
+        }
+
+        .step-1 .step-circle {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: var(--super-amber);
+            color: var(--super-amber);
+        }
+
+        .step-2 .step-circle {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: var(--super-blue);
+            color: var(--super-blue);
+        }
+
+        .step-3 .step-circle {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: var(--super-green);
+            color: var(--super-green);
+        }
+
+        .step-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.6);
+            text-align: center;
+            max-width: 100px;
+        }
+
+        .pipeline-step.active .step-label {
+            color: var(--super-cream);
+            font-weight: 600;
+        }
+
+        .pipeline-arrow {
+            font-size: 1.5em;
+            color: rgba(190, 156, 109, 0.5);
+        }
+
+        /* Gate indicator */
+        .gate-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .gate-icon {
+            width: 30px;
+            height: 30px;
+            border: 2px dashed var(--super-gold);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            color: var(--super-gold);
+        }
+
+        .gate-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55em;
+            color: var(--super-gold);
+            opacity: 0.7;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TERMINAL
+           ═══════════════════════════════════════════════════════════ */
+        .terminal-container {
+            flex: 1;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .terminal {
+            background: #1a1a2e;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-header {
+            background: #252540;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-btn.close { background: #ff5f56; }
+        .terminal-btn.minimize { background: #ffbd2e; }
+        .terminal-btn.maximize { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .terminal-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        /* Terminal content styles */
+        .prompt {
+            color: var(--super-green);
+        }
+
+        .command {
+            color: var(--super-cream);
+        }
+
+        .comment {
+            color: rgba(255, 244, 228, 0.4);
+            font-style: italic;
+        }
+
+        .output {
+            color: rgba(255, 244, 228, 0.7);
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .highlight-amber { color: var(--super-amber); }
+        .highlight-blue { color: var(--super-blue); }
+        .highlight-green { color: var(--super-green); }
+        .highlight-purple { color: var(--super-purple); }
+        .highlight-cyan { color: var(--super-cyan); }
+
+        .section-divider {
+            border-top: 1px dashed rgba(255, 244, 228, 0.2);
+            margin: 15px 0;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--super-green);
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Question styling */
+        .question-block {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 3px solid var(--super-amber);
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .question-text {
+            color: var(--super-amber);
+            margin-bottom: 8px;
+        }
+
+        .question-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .option {
+            padding: 4px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .option.selected {
+            border-color: var(--super-amber);
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--super-amber);
+        }
+
+        /* Task styling */
+        .task-block {
+            background: rgba(96, 165, 250, 0.1);
+            border-left: 3px solid var(--super-blue);
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 5px 0;
+        }
+
+        .task-checkbox {
+            color: var(--super-blue);
+        }
+
+        .task-text {
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        /* Execution styling */
+        .exec-block {
+            background: rgba(74, 222, 128, 0.1);
+            border-left: 3px solid var(--super-green);
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .exec-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px 0;
+        }
+
+        .status-icon {
+            width: 16px;
+            text-align: center;
+        }
+
+        .status-done { color: var(--super-green); }
+        .status-running { color: var(--super-amber); animation: spin 1s linear infinite; }
+        .status-pending { color: rgba(255, 244, 228, 0.3); }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .container { padding: 15px; }
+        body.embed-mode .header-title { font-size: 1.3em; }
+        body.embed-mode .step-circle { width: 55px; height: 55px; font-size: 1.4em; }
+        body.embed-mode .terminal-body { font-size: 0.75em; padding: 15px; }
+        body.embed-mode .pipeline-container { gap: 12px; }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Superpowers Pack</div>
+            <h1 class="header-title">O Fluxo de Desenvolvimento Disciplinado</h1>
+        </div>
+
+        <div class="pipeline-container">
+            <div class="pipeline-step step-1 active" data-step="1">
+                <div class="step-circle">&#128161;</div>
+                <div class="step-label">brainstorm</div>
+            </div>
+
+            <div class="gate-indicator">
+                <div class="gate-icon">&#9888;</div>
+                <div class="gate-text">Gate</div>
+            </div>
+
+            <div class="pipeline-arrow">&#8594;</div>
+
+            <div class="pipeline-step step-2" data-step="2">
+                <div class="step-circle">&#128203;</div>
+                <div class="step-label">write-plan</div>
+            </div>
+
+            <div class="gate-indicator">
+                <div class="gate-icon">&#9888;</div>
+                <div class="gate-text">Gate</div>
+            </div>
+
+            <div class="pipeline-arrow">&#8594;</div>
+
+            <div class="pipeline-step step-3" data-step="3">
+                <div class="step-circle">&#9889;</div>
+                <div class="step-label">execute-plan</div>
+            </div>
+        </div>
+
+        <div class="terminal-container">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <div class="terminal-btn close"></div>
+                        <div class="terminal-btn minimize"></div>
+                        <div class="terminal-btn maximize"></div>
+                    </div>
+                    <div class="terminal-title">superpowers-workflow — claude-code</div>
+                </div>
+                <div class="terminal-body" id="terminalBody">
+                    <!-- Content generated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Content for each step
+        const stepContent = {
+            1: `
+<span class="comment"># Fase 1: Ideação - Perguntas refinam a visão</span>
+
+<span class="prompt">$</span> <span class="command highlight-amber">/superpowers:brainstorm</span>
+
+<div class="question-block">
+    <div class="question-text">&#128172; O que você quer construir?</div>
+    <div class="output">Um verificador de completude de sentença judicial</div>
+</div>
+
+<div class="question-block">
+    <div class="question-text">&#128172; Qual o input principal do sistema?</div>
+    <div class="question-options">
+        <span class="option">Texto livre</span>
+        <span class="option selected">Documento estruturado</span>
+        <span class="option">PDF</span>
+    </div>
+</div>
+
+<div class="question-block">
+    <div class="question-text">&#128172; Quais elementos são obrigatórios?</div>
+    <div class="question-options">
+        <span class="option selected">Relatório</span>
+        <span class="option selected">Fundamentação</span>
+        <span class="option selected">Dispositivo</span>
+        <span class="option">Ementa</span>
+    </div>
+</div>
+
+<div class="question-block">
+    <div class="question-text">&#128172; Como apresentar os resultados?</div>
+    <div class="question-options">
+        <span class="option selected">Checklist visual</span>
+        <span class="option">Relatório textual</span>
+        <span class="option">JSON API</span>
+    </div>
+</div>
+
+<span class="output highlight-green">&#9989; Design validado. Pronto para planejamento.</span>
+<span class="output comment">Clique na próxima etapa ou pressione &#8594;</span>
+            `,
+            2: `
+<span class="comment"># Fase 2: Planejamento - Tarefas atômicas e contexto completo</span>
+
+<span class="prompt">$</span> <span class="command highlight-blue">/superpowers:write-plan</span>
+
+<div class="task-block">
+    <div class="output highlight-blue">&#128203; Plano de Implementação</div>
+
+    <div class="task-item">
+        <span class="task-checkbox">[ ]</span>
+        <span class="task-text"><strong>Task 1:</strong> Criar parser de documento estruturado</span>
+    </div>
+    <div class="output" style="margin-left: 30px; font-size: 0.9em; color: rgba(255,244,228,0.5);">
+        Contexto: Recebe string, extrai seções por regex<br>
+        Arquivo: src/parser.ts<br>
+        Critério: Testes passando para 3 formatos
+    </div>
+
+    <div class="task-item">
+        <span class="task-checkbox">[ ]</span>
+        <span class="task-text"><strong>Task 2:</strong> Implementar validadores por elemento</span>
+    </div>
+    <div class="output" style="margin-left: 30px; font-size: 0.9em; color: rgba(255,244,228,0.5);">
+        Contexto: Cada elemento tem regras específicas<br>
+        Arquivos: src/validators/*.ts<br>
+        Critério: 100% cobertura de casos de borda
+    </div>
+
+    <div class="task-item">
+        <span class="task-checkbox">[ ]</span>
+        <span class="task-text"><strong>Task 3:</strong> Criar componente visual de checklist</span>
+    </div>
+    <div class="output" style="margin-left: 30px; font-size: 0.9em; color: rgba(255,244,228,0.5);">
+        Contexto: UI que mostra status de cada elemento<br>
+        Arquivo: src/components/Checklist.tsx<br>
+        Critério: Acessível, responsivo
+    </div>
+
+    <div class="task-item">
+        <span class="task-checkbox">[ ]</span>
+        <span class="task-text"><strong>Task 4:</strong> Integrar parser + validadores + UI</span>
+    </div>
+</div>
+
+<span class="output highlight-green">&#9989; Plano aprovado. Pronto para execução.</span>
+<span class="output comment">Clique na próxima etapa ou pressione &#8594;</span>
+            `,
+            3: `
+<span class="comment"># Fase 3: Execução - Subagentes trabalham em paralelo</span>
+
+<span class="prompt">$</span> <span class="command highlight-green">/superpowers:execute-plan</span>
+
+<div class="exec-block">
+    <div class="output highlight-green">&#9889; Executando com subagentes...</div>
+
+    <div class="exec-status">
+        <span class="status-icon status-done">&#9989;</span>
+        <span>Task 1: Parser implementado</span>
+        <span class="comment" style="margin-left: auto;">+147 lines</span>
+    </div>
+
+    <div class="exec-status">
+        <span class="status-icon status-done">&#9989;</span>
+        <span>Task 2: Validadores criados</span>
+        <span class="comment" style="margin-left: auto;">+312 lines</span>
+    </div>
+
+    <div class="exec-status">
+        <span class="status-icon status-running">&#9881;</span>
+        <span>Task 3: Componente visual em progresso...</span>
+    </div>
+
+    <div class="exec-status">
+        <span class="status-icon status-pending">&#9675;</span>
+        <span style="color: rgba(255,244,228,0.4);">Task 4: Aguardando dependências</span>
+    </div>
+</div>
+
+<div class="section-divider"></div>
+
+<span class="output highlight-cyan">&#128269; Code Review automático após cada task</span>
+<span class="output">Verificando: types, edge cases, test coverage...</span>
+
+<div class="section-divider"></div>
+
+<span class="output highlight-purple">&#128202; Progresso: 2/4 tasks completas (50%)</span>
+<span class="output comment">Subagentes executam, humano rege.</span>
+            `
+        };
+
+        let currentStep = 1;
+        const terminalBody = document.getElementById('terminalBody');
+        const steps = document.querySelectorAll('.pipeline-step');
+
+        function showStep(step) {
+            currentStep = step;
+
+            // Update pipeline UI
+            steps.forEach(s => {
+                s.classList.remove('active');
+                if (parseInt(s.dataset.step) === step) {
+                    s.classList.add('active');
+                }
+            });
+
+            // Update terminal content with typing effect
+            terminalBody.innerHTML = '';
+            typeContent(stepContent[step]);
+        }
+
+        function typeContent(content) {
+            terminalBody.innerHTML = content;
+        }
+
+        // Click handlers
+        steps.forEach(step => {
+            step.addEventListener('click', () => {
+                showStep(parseInt(step.dataset.step));
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                const nextStep = currentStep < 3 ? currentStep + 1 : 1;
+                showStep(nextStep);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                const prevStep = currentStep > 1 ? currentStep - 1 : 3;
+                showStep(prevStep);
+            } else if (e.key >= '1' && e.key <= '3') {
+                showStep(parseInt(e.key));
+            }
+        });
+
+        // Initialize
+        showStep(1);
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

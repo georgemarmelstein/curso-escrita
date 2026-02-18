@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Fantasma na Máquina</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-gold-dim: rgba(190, 156, 109, 0.6);
+            --super-gold-subtle: rgba(190, 156, 109, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 100%);
+            color: var(--super-cream);
+            min-height: 100vh;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        body.embed-mode {
+            padding: 20px 30px;
+        }
+
+        /* TÍTULO */
+        .title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--super-gold);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        body.embed-mode .title h1 {
+            font-size: 1.8em;
+        }
+
+        body.embed-mode .title p {
+            font-size: 0.9em;
+        }
+
+        /* CASA (COMPUTADOR) */
+        .house-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .house {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .house-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            color: var(--super-gold);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .house-path {
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: var(--super-gold-dim);
+            margin-bottom: 35px;
+        }
+
+        /* CÔMODOS (PASTAS) */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .room {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            opacity: 0;
+            animation: fadeUp 0.5s ease-out forwards;
+        }
+
+        .room:nth-child(1) { animation-delay: 0.1s; }
+        .room:nth-child(2) { animation-delay: 0.2s; }
+        .room:nth-child(3) { animation-delay: 0.3s; }
+        .room:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .room:hover {
+            transform: translateY(-5px);
+            border-color: var(--super-gold-subtle);
+            box-shadow: 0 8px 25px rgba(190, 156, 109, 0.15);
+        }
+
+        .room.visited {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.08);
+        }
+
+        .room-icon {
+            font-size: 3em;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .room-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            color: var(--super-gold);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .room-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: var(--super-gold-dim);
+            margin-bottom: 12px;
+        }
+
+        .room-desc {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.6);
+            line-height: 1.4;
+        }
+
+        /* FANTASMA */
+        .ghost {
+            position: absolute;
+            font-size: 2.5em;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 0 15px rgba(190, 156, 109, 0.5));
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        body.embed-mode .rooms-grid {
+            gap: 15px;
+        }
+
+        body.embed-mode .room {
+            padding: 20px;
+        }
+
+        body.embed-mode .room-icon {
+            font-size: 2.2em;
+        }
+
+        body.embed-mode .room-name {
+            font-size: 1.05em;
+        }
+
+        body.embed-mode .ghost {
+            font-size: 2em;
+        }
+
+        /* LEGENDA */
+        .legend {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .legend-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1em;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .legend-text {
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .highlight {
+            color: var(--super-gold-light);
+            font-weight: 600;
+        }
+
+        body.embed-mode .legend {
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        body.embed-mode .legend-text {
+            font-size: 0.88em;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>O Fantasma na Máquina</h1>
+        <p>Clique nos cômodos para mover o fantasma (Claude)</p>
+    </div>
+
+    <div class="house-container">
+        <div class="house">
+            <div class="house-title">Seu Computador</div>
+            <div class="house-path" id="current-path">C:\Users\Juiz\</div>
+
+            <div class="ghost" id="ghost">👻</div>
+
+            <div class="rooms-grid" id="rooms-grid">
+                <div class="room" data-room="docs" data-icon="📄">
+                    <span class="room-icon">📄</span>
+                    <div class="room-name">Documentos</div>
+                    <div class="room-path">/docs</div>
+                    <div class="room-desc">Seus arquivos pessoais e de trabalho</div>
+                </div>
+
+                <div class="room" data-room="processos" data-icon="⚖️">
+                    <span class="room-icon">⚖️</span>
+                    <div class="room-name">Processos</div>
+                    <div class="room-path">/processos</div>
+                    <div class="room-desc">Processos judiciais organizados</div>
+                </div>
+
+                <div class="room" data-room="sentenca" data-icon="📝">
+                    <span class="room-icon">📝</span>
+                    <div class="room-name">Sentença</div>
+                    <div class="room-path">/sentenca</div>
+                    <div class="room-desc">Minutas e decisões</div>
+                </div>
+
+                <div class="room" data-room="pesquisa" data-icon="🔍">
+                    <span class="room-icon">🔍</span>
+                    <div class="room-name">Pesquisa</div>
+                    <div class="room-path">/pesquisa</div>
+                    <div class="room-desc">Jurisprudência e precedentes</div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-title">Como Funciona</div>
+                <div class="legend-text">
+                    O fantasma (Claude) pode <span class="highlight">navegar por todos os cômodos</span>
+                    da sua casa (computador). Ele pode ler documentos, organizar arquivos,
+                    escrever relatórios e executar tarefas. No <span class="highlight">Claude Web</span>,
+                    você leva documentos até o Claude. No <span class="highlight">Claude Code</span>,
+                    Claude vai até os documentos.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Detecção de embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Movimentação do fantasma
+        const ghost = document.getElementById('ghost');
+        const rooms = document.querySelectorAll('.room');
+        const currentPath = document.getElementById('current-path');
+
+        // Posiciona fantasma inicialmente no centro
+        function centerGhost() {
+            const house = document.querySelector('.house');
+            const houseRect = house.getBoundingClientRect();
+            ghost.style.left = (houseRect.width / 2 - 25) + 'px';
+            ghost.style.top = '40px';
+        }
+
+        centerGhost();
+        window.addEventListener('resize', centerGhost);
+
+        rooms.forEach(room => {
+            room.addEventListener('click', function() {
+                const roomName = this.dataset.room;
+                const roomIcon = this.dataset.icon;
+                const rect = this.getBoundingClientRect();
+                const houseRect = this.closest('.house').getBoundingClientRect();
+
+                // Calcula posição relativa ao container .house
+                const x = rect.left - houseRect.left + rect.width / 2 - 25;
+                const y = rect.top - houseRect.top + rect.height / 2 - 25;
+
+                // Move o fantasma
+                ghost.style.left = x + 'px';
+                ghost.style.top = y + 'px';
+
+                // Marca como visitado
+                this.classList.add('visited');
+
+                // Atualiza path
+                currentPath.textContent = `C:\\Users\\Juiz\\${roomName}\\`;
+            });
+        });
+    </script>
+</body>
+</html>

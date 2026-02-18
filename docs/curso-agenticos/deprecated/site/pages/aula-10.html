@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 10: Engenharia de Conexoes | Sistemas Agenticos</title>
+    <meta name="description" content="Como conectar agentes ao mundo externo via MCP, Web Search e APIs REST">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">S</span>
+                <span class="logo-text">Sistemas Agenticos</span>
+            </a>
+            <nav class="nav-main">
+                <ul>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Aulas</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="aula-0.html">Aula 0: Abertura</a></li>
+                            <li><a href="aula-1.html">Aula 1: Fundamentos</a></li>
+                            <li><a href="aula-2a.html">Aula 2A: Anatomia</a></li>
+                            <li><a href="aula-2b.html">Aula 2B: Claude Code</a></li>
+                            <li><a href="aula-3.html">Aula 3: Arquitetura</a></li>
+                            <li><a href="aula-4.html">Aula 4: Construindo</a></li>
+                            <li><a href="aula-5.html">Aula 5: Sistema CLERK</a></li>
+                            <li class="divider"></li>
+                            <li><a href="aula-6.html">Aula 6: Engenharia de Prompt</a></li>
+                            <li><a href="aula-6b.html">Aula 6B: Prompts Agenticos</a></li>
+                            <li><a href="aula-7.html">Aula 7: Engenharia de Contexto</a></li>
+                            <li><a href="aula-8.html">Aula 8: Engenharia de Capacidades</a></li>
+                            <li><a href="aula-9.html">Aula 9: Engenharia de Workflows</a></li>
+                            <li><a href="aula-10.html" class="active">Aula 10: Engenharia de Conexoes</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="glossario.html">Glossario</a></li>
+                    <li><a href="recursos.html">Recursos</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" aria-label="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+        <div class="container">
+            <span class="badge badge-module">Modulo 2</span>
+            <h1>Engenharia de Conexoes</h1>
+            <p class="lesson-subtitle">Como conectar agentes Claude Code com sistemas externos via MCP, Web Search, APIs, Automacao Web e Browser Automation</p>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    75-90 min
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    7 blocos
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
+                    Integracoes
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lesson Content -->
+    <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+            <nav class="lesson-nav">
+                <h4>Nesta Aula</h4>
+                <ul>
+                    <li><a href="#bloco1" class="lesson-nav-link">1. O Problema da Ilha</a></li>
+                    <li><a href="#bloco2" class="lesson-nav-link">2. MCP - Model Context Protocol</a></li>
+                    <li><a href="#bloco3" class="lesson-nav-link">3. Web Search Nativo</a></li>
+                    <li><a href="#bloco4" class="lesson-nav-link">4. Bash e API REST</a></li>
+                    <li><a href="#bloco5" class="lesson-nav-link">5. Matriz de Decisao</a></li>
+                    <li><a href="#bloco6" class="lesson-nav-link">6. Automacao Web</a></li>
+                    <li><a href="#bloco7" class="lesson-nav-link">7. Claude in Chrome</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lesson-content">
+            <!-- Mobile TOC -->
+            <div class="mobile-toc">
+                <button class="mobile-toc-trigger">
+                    <span>Navegacao</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <nav class="mobile-toc-content">
+                    <ul>
+                        <li><a href="#bloco1">1. O Problema da Ilha</a></li>
+                        <li><a href="#bloco2">2. MCP - Model Context Protocol</a></li>
+                        <li><a href="#bloco3">3. Web Search Nativo</a></li>
+                        <li><a href="#bloco4">4. Bash e API REST</a></li>
+                        <li><a href="#bloco5">5. Matriz de Decisao</a></li>
+                        <li><a href="#bloco6">6. Automacao Web</a></li>
+                        <li><a href="#bloco7">7. Claude in Chrome</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Introducao -->
+            <section class="lesson-block" id="intro">
+                <h2>Conectando ao Mundo Externo</h2>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Objetivo</div>
+                    <p>Capacitar o aluno a conectar agentes Claude Code com sistemas externos usando as cinco principais abordagens: <strong>MCP</strong>, <strong>Web Search</strong>, <strong>Bash/API</strong>, <strong>Selenium/Playwright</strong> e <strong>Computer Use</strong>.</p>
+                </div>
+
+                <blockquote>
+                    <p>"Think of MCP like a USB-C port for AI applications. Just as USB-C provides a standardized way to connect electronic devices, MCP provides a standardized way to connect AI applications to external systems."</p>
+                    <cite>Anthropic, Model Context Protocol Docs</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌───────────────────────────────────────────────────────────────────────────────┐
+│                        AS CINCO PORTAS DE SAIDA                                │
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                                │
+│        ┌─────────────────────────────────────────────────────────────┐         │
+│        │                   NUCLEO DO AGENTE                          │         │
+│        │                                                             │         │
+│        │       Skills | Commands | Prompts | Context                 │         │
+│        │                                                             │         │
+│        └───┬─────────┬─────────┬─────────┬─────────┬─────────────────┘         │
+│            │         │         │         │         │                           │
+│            ▼         ▼         ▼         ▼         ▼                           │
+│       ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐                   │
+│       │  MCP   │ │  Web   │ │ Bash/  │ │Selenium│ │ Chrome │                   │
+│       │Servers │ │ Search │ │  API   │ │Playwrt │ │  Auto  │                   │
+│       └───┬────┘ └───┬────┘ └───┬────┘ └───┬────┘ └───┬────┘                   │
+│           │          │          │          │          │                        │
+│           ▼          ▼          ▼          ▼          ▼                        │
+│       Sistemas    Internet    Scripts    Sites     Browser                     │
+│       Externos    Publica     & APIs    sem API    Visual                      │
+│                                                                                │
+└───────────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>Por que Conexoes Sao Essenciais</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sem Conexoes</th>
+                            <th>Com Conexoes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Conhecimento estatico</td>
+                            <td>Dados em tempo real</td>
+                        </tr>
+                        <tr>
+                            <td>Responde "nao sei"</td>
+                            <td>Busca e encontra</td>
+                        </tr>
+                        <tr>
+                            <td>Isolado do contexto</td>
+                            <td>Integrado ao workflow</td>
+                        </tr>
+                        <tr>
+                            <td>Limitado a texto</td>
+                            <td>Executa acoes reais</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 1: O Problema da Ilha -->
+            <section id="bloco1" class="lesson-block">
+                <h2>Bloco 1: O Problema da Ilha</h2>
+                <span class="badge badge-time">10 min</span>
+
+                <h3>1.1 O Agente Isolado</h3>
+
+                <p>Um agente sem conexoes externas e como um especialista brilhante trancado numa sala sem telefone, internet ou acesso a documentos atualizados.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    AGENTE ISOLADO                               │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                   Claude Code                           │   │
+│   │                                                         │   │
+│   │   • Conhecimento ate data de corte                      │   │
+│   │   • Sem acesso a dados em tempo real                    │   │
+│   │   • Sem acesso a sistemas internos                      │   │
+│   │   • Sem acesso a APIs privadas                          │   │
+│   │                                                         │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                           │                                     │
+│                           │  ?????                              │
+│                           ▼                                     │
+│   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
+│   │   PJE    │  │  Bancos  │  │   APIs   │  │   Web    │       │
+│   │          │  │  Dados   │  │          │  │          │       │
+│   └──────────┘  └──────────┘  └──────────┘  └──────────┘       │
+│                                                                 │
+│   "Como o agente acessa esses recursos?"                        │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>1.2 Analogia Juridica</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">O Juiz sem Assessoria</div>
+                    <p>Imagine um juiz que precisa decidir uma causa, mas nao tem acesso ao sistema de jurisprudencia, nao pode consultar precedentes do STJ, e nao consegue verificar se uma sumula ainda esta vigente. E assim que um agente sem conexoes se sente.</p>
+                </div>
+
+                <h3>1.3 As Limitacoes Concretas</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Limitacao</th>
+                            <th>Impacto</th>
+                            <th>Solucao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Knowledge cutoff</td>
+                            <td>Nao sabe eventos recentes</td>
+                            <td>Web Search</td>
+                        </tr>
+                        <tr>
+                            <td>Dados internos</td>
+                            <td>Nao acessa sistemas corporativos</td>
+                            <td>MCP</td>
+                        </tr>
+                        <tr>
+                            <td>APIs privadas</td>
+                            <td>Nao integra com servicos</td>
+                            <td>MCP ou Bash</td>
+                        </tr>
+                        <tr>
+                            <td>Acoes no mundo</td>
+                            <td>Nao executa tarefas reais</td>
+                            <td>Bash/API</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 2: MCP -->
+            <section id="bloco2" class="lesson-block">
+                <h2>Bloco 2: MCP - Model Context Protocol</h2>
+                <span class="badge badge-time">15 min</span>
+
+                <h3>2.1 O Padrao Universal</h3>
+
+                <p>MCP e o protocolo aberto da Anthropic para conectar LLMs a ferramentas externas de forma padronizada. Funciona como um "USB-C para IA" - uma interface universal.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    ARQUITETURA MCP                              │
+│                                                                 │
+│   ┌──────────────┐         ┌──────────────┐                     │
+│   │              │         │              │                     │
+│   │  MCP CLIENT  │◄───────►│  MCP SERVER  │                     │
+│   │ (Claude Code)│  JSON   │  (Sua Tool)  │                     │
+│   │              │   RPC   │              │                     │
+│   └──────────────┘         └──────────────┘                     │
+│                                   │                             │
+│                                   ▼                             │
+│                            ┌──────────────┐                     │
+│                            │   RECURSO    │                     │
+│                            │   EXTERNO    │                     │
+│                            │  (API, BD,   │                     │
+│                            │   Arquivo)   │                     │
+│                            └──────────────┘                     │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>2.2 Tres Transportes</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transporte</th>
+                            <th>Uso</th>
+                            <th>Quando Usar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>STDIO</strong></td>
+                            <td>Local</td>
+                            <td>Scripts, ferramentas do sistema</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HTTP</strong></td>
+                            <td>Remoto</td>
+                            <td>APIs cloud, servicos web</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SSE</strong></td>
+                            <td>Streaming</td>
+                            <td>Dados em tempo real (legado)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2.3 Anatomia de um MCP Server</h3>
+
+                <pre><code class="language-python"># mcp_exemplo.py - Servidor MCP minimo com FastMCP
+from fastmcp import FastMCP
+
+mcp = FastMCP("Meu Servidor")
+
+@mcp.tool()
+def buscar_dados(termo: str) -> str:
+    """
+    Busca dados no sistema externo.
+
+    Args:
+        termo: O termo a ser buscado
+
+    Returns:
+        Resultado da busca formatado
+    """
+    resultado = api_externa.buscar(termo)
+    return f"Encontrado: {resultado}"
+
+if __name__ == "__main__":
+    mcp.run()</code></pre>
+
+                <h3>2.4 Configuracao no Claude Code</h3>
+
+                <pre><code class="language-json">// ~/.claude/settings.json
+{
+  "mcpServers": {
+    "meu-servidor": {
+      "command": "python",
+      "args": ["~/.claude/mcp-servers/meu-servidor/server.py"],
+      "env": {
+        "API_KEY": "sua-chave"
+      }
+    }
+  }
+}</code></pre>
+
+                <h3>2.5 Exemplo Real: MCPs Juridicos</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              MCPs JURIDICOS DO CLERK                            │
+│                                                                 │
+│   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐           │
+│   │   BNP-API   │   │     CJF     │   │ JULIA-TRF5  │           │
+│   │             │   │             │   │             │           │
+│   │ Precedentes │   │ Jurisprud.  │   │  1o e 2o    │           │
+│   │ Vinculantes │   │  Unificada  │   │   Grau      │           │
+│   │  (STF/STJ)  │   │   (TRFs)    │   │   (TRF5)    │           │
+│   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘           │
+│          │                 │                 │                  │
+│          └─────────────────┼─────────────────┘                  │
+│                            │                                    │
+│                            ▼                                    │
+│                    ┌───────────────┐                            │
+│                    │  Claude Code  │                            │
+│                    │               │                            │
+│                    │ "Busque sobre │                            │
+│                    │  pensao BPC"  │                            │
+│                    └───────────────┘                            │
+│                                                                 │
+│   USO: Linguagem natural, sem comando explicito                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>2.6 Cinco Regras de Ouro</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Regra</th>
+                            <th>Descricao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Outcomes</strong></td>
+                            <td>Descreva o que a tool faz, nao como usar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Args Planos</strong></td>
+                            <td>Parametros simples (strings, numeros)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Instructions</strong></td>
+                            <td>Use description para contexto rico</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Token Budget</strong></td>
+                            <td>Respeite limites, trunce outputs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Curadoria</strong></td>
+                            <td>Menos tools = melhor escolha do agente</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 3: Web Search -->
+            <section id="bloco3" class="lesson-block">
+                <h2>Bloco 3: Web Search - Busca Nativa</h2>
+                <span class="badge badge-time">10 min</span>
+
+                <h3>3.1 Acesso Direto a Internet</h3>
+
+                <p>O Claude Code possui ferramenta nativa de busca web, sem necessidade de configurar MCP. E ativada automaticamente quando o agente detecta necessidade de informacao atual.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    WEB SEARCH NATIVO                            │
+│                                                                 │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │                    Claude Code                           │  │
+│   │                                                          │  │
+│   │   User: "Qual a ultima decisao do STF sobre FGTS?"       │  │
+│   │                                                          │  │
+│   │   Claude:                                                │  │
+│   │   1. Detecta necessidade de informacao atual             │  │
+│   │   2. Executa WebSearch automaticamente                   │  │
+│   │   3. Analisa resultados                                  │  │
+│   │   4. Responde com citacoes                               │  │
+│   │                                                          │  │
+│   └──────────────────────────────────────────────────────────┘  │
+│                            │                                    │
+│                            ▼                                    │
+│                     ┌─────────────┐                             │
+│                     │  Internet   │                             │
+│                     │  (via API)  │                             │
+│                     └─────────────┘                             │
+│                                                                 │
+│   CUSTO: $10 por 1.000 buscas (alem dos tokens)                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>3.2 Comportamento Agentico</h3>
+
+                <p>O Web Search pode operar de forma agentica, realizando multiplas buscas progressivas:</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              BUSCA PROGRESSIVA (AGENTICA)                       │
+│                                                                 │
+│   Pergunta: "Qual o entendimento atual sobre teletrabalho?"     │
+│                                                                 │
+│   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐     │
+│   │ Search 1 │──►│ Analisa  │──►│ Search 2 │──►│ Search 3 │     │
+│   │ "tele-   │   │ resulta- │   │ "CLT     │   │ "STF     │     │
+│   │ trabalho │   │ dos      │   │ tele-    │   │ home     │     │
+│   │ lei"     │   │          │   │ trabalho"│   │ office"  │     │
+│   └──────────┘   └──────────┘   └──────────┘   └──────────┘     │
+│                                                                 │
+│   CONTROLE: Parametro max_uses limita numero de buscas          │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>3.3 Quando Usar Web Search</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cenario</th>
+                            <th>Web Search?</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Informacao pos-knowledge cutoff</td>
+                            <td><strong>SIM</strong></td>
+                            <td>Unica forma de obter dados recentes</td>
+                        </tr>
+                        <tr>
+                            <td>Verificar citacoes/fontes</td>
+                            <td><strong>SIM</strong></td>
+                            <td>Validar se sumula ainda vigora</td>
+                        </tr>
+                        <tr>
+                            <td>Dados de sistemas internos</td>
+                            <td><strong>NAO</strong></td>
+                            <td>Use MCP</td>
+                        </tr>
+                        <tr>
+                            <td>APIs privadas</td>
+                            <td><strong>NAO</strong></td>
+                            <td>Use MCP ou Bash</td>
+                        </tr>
+                        <tr>
+                            <td>Documentacao tecnica atual</td>
+                            <td><strong>SIM</strong></td>
+                            <td>Docs mudam frequentemente</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>3.4 Citacoes Automaticas</h3>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Fontes Verificaveis</div>
+                    <p>O Web Search retorna fontes automaticamente com links clicaveis, permitindo que o usuario verifique as informacoes diretamente na origem.</p>
+                </div>
+            </section>
+
+            <!-- Bloco 4: Bash e API REST -->
+            <section id="bloco4" class="lesson-block">
+                <h2>Bloco 4: Bash e API REST</h2>
+                <span class="badge badge-time">10 min</span>
+
+                <h3>4.1 A Terceira Via</h3>
+
+                <p>Quando MCP e demais e Web Search nao resolve, use Bash/API. E a abordagem mais flexivel, porem menos estruturada.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              CONEXAO VIA BASH/SCRIPTS                           │
+│                                                                 │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │                    Claude Code                           │  │
+│   │                                                          │  │
+│   │   # Chamada direta via curl                              │  │
+│   │   curl -X GET "https://api.exemplo.com/dados" \          │  │
+│   │        -H "Authorization: Bearer $TOKEN"                 │  │
+│   │                                                          │  │
+│   │   # Script Python para integracao                        │  │
+│   │   python scripts/integrar_sistema.py --acao buscar       │  │
+│   │                                                          │  │
+│   └──────────────────────────────────────────────────────────┘  │
+│                            │                                    │
+│                            ▼                                    │
+│               ┌─────────────────────────┐                       │
+│               │   API REST / Sistema    │                       │
+│               └─────────────────────────┘                       │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.2 Casos de Uso para Bash/API</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cenario</th>
+                            <th>Por que Bash/API?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Integracao pontual</td>
+                            <td>MCP seria overhead desnecessario</td>
+                        </tr>
+                        <tr>
+                            <td>Teste rapido de API</td>
+                            <td>Sem necessidade de infraestrutura</td>
+                        </tr>
+                        <tr>
+                            <td>Scripts existentes</td>
+                            <td>Reaproveitar codigo ja pronto</td>
+                        </tr>
+                        <tr>
+                            <td>Autenticacao complexa</td>
+                            <td>Controle total do fluxo</td>
+                        </tr>
+                        <tr>
+                            <td>Transformacao de dados</td>
+                            <td>Pipes do Unix sao poderosos</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>4.3 Exemplo: Integracao PJE</h3>
+
+                <pre><code class="language-bash"># Baixar processo do PJE (exemplo simplificado)
+#!/bin/bash
+
+PROCESSO="0000123-45.2024.4.05.8100"
+TOKEN="seu_token_aqui"
+
+# Chamada a API do PJE
+curl -X GET "https://pje.trf5.jus.br/api/processos/${PROCESSO}" \
+     -H "Authorization: Bearer ${TOKEN}" \
+     -H "Content-Type: application/json" \
+     -o "processo_${PROCESSO}.json"
+
+# Processar resultado
+python processar_pje.py "processo_${PROCESSO}.json"</code></pre>
+
+                <h3>4.4 Trade-offs</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th>MCP</th>
+                            <th>Bash/API</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Setup inicial</td>
+                            <td>Maior</td>
+                            <td>Menor</td>
+                        </tr>
+                        <tr>
+                            <td>Reutilizacao</td>
+                            <td>Alta</td>
+                            <td>Baixa</td>
+                        </tr>
+                        <tr>
+                            <td>Documentacao</td>
+                            <td>Automatica</td>
+                            <td>Manual</td>
+                        </tr>
+                        <tr>
+                            <td>Manutencao</td>
+                            <td>Centralizada</td>
+                            <td>Dispersa</td>
+                        </tr>
+                        <tr>
+                            <td>Flexibilidade</td>
+                            <td>Estruturada</td>
+                            <td>Total</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 5: Matriz de Decisao -->
+            <section id="bloco5" class="lesson-block">
+                <h2>Bloco 5: Matriz de Decisao</h2>
+                <span class="badge badge-time">10 min</span>
+
+                <h3>5.1 Arvore de Decisao</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              ARVORE DE DECISAO: CONEXOES                        │
+│                                                                 │
+│                    ┌─────────────────┐                          │
+│                    │ Preciso acessar │                          │
+│                    │ dados externos? │                          │
+│                    └────────┬────────┘                          │
+│                             │                                   │
+│              ┌──────────────┴──────────────┐                    │
+│              ▼                             ▼                    │
+│    ┌─────────────────┐           ┌─────────────────┐            │
+│    │ Dados publicos  │           │ Sistema privado │            │
+│    │ da internet?    │           │ ou API interna? │            │
+│    └────────┬────────┘           └────────┬────────┘            │
+│             │                             │                     │
+│      ┌──────┴──────┐              ┌───────┴───────┐             │
+│      ▼             ▼              ▼               ▼             │
+│ ┌─────────┐  ┌─────────┐   ┌──────────┐   ┌──────────┐          │
+│ │   Web   │  │   MCP   │   │   MCP    │   │  Bash/   │          │
+│ │ Search  │  │ publico │   │ privado  │   │   API    │          │
+│ └─────────┘  └─────────┘   └──────────┘   └──────────┘          │
+│                                                                 │
+│ • Noticias   • GitHub      • BD interno   • Teste rapido        │
+│ • Docs       • Slack       • PJE          • Script unico        │
+│ • Artigos    • Figma       • Sistemas     • Integracao          │
+│                              corporativos   pontual             │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>5.2 Comparativo Completo</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Criterio</th>
+                            <th>Web Search</th>
+                            <th>MCP</th>
+                            <th>Bash/API</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Setup</strong></td>
+                            <td>Zero</td>
+                            <td>Medio</td>
+                            <td>Baixo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custo</strong></td>
+                            <td>$10/1k buscas</td>
+                            <td>Infraestrutura</td>
+                            <td>Variavel</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Escopo</strong></td>
+                            <td>Internet publica</td>
+                            <td>Definido pelo server</td>
+                            <td>Ilimitado</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reutilizacao</strong></td>
+                            <td>Automatica</td>
+                            <td>Alta</td>
+                            <td>Baixa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Seguranca</strong></td>
+                            <td>Sandboxed</td>
+                            <td>Controlada</td>
+                            <td>Sua responsabilidade</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>5.3 Padrao Hibrido: Sistema CLERK</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              EXEMPLO: SISTEMA CLERK                             │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                    Claude Code                          │   │
+│   │                                                         │   │
+│   │   FASE 1: Preparacao                                    │   │
+│   │   └── Bash: curl para baixar PDF do PJE                 │   │
+│   │                                                         │   │
+│   │   FASE 3: Pesquisa                                      │   │
+│   │   └── MCP: BNP, CJF, JULIA para precedentes             │   │
+│   │                                                         │   │
+│   │   FASE 6: Revisao                                       │   │
+│   │   └── Web Search: verificar citacoes externas           │   │
+│   │                                                         │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│   PRINCIPIO: Use a ferramenta certa para cada tarefa            │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>5.4 Seguranca: Alerta Importante</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">Aviso da Anthropic</div>
+                    <p>"Use third party MCP servers at your own risk - Anthropic has not verified the correctness or security of all these servers. Make sure you trust MCP servers you are installing."</p>
+                </div>
+
+                <h4>Checklist de Seguranca</h4>
+                <ul>
+                    <li>MCP server vem de fonte confiavel?</li>
+                    <li>Codigo foi auditado?</li>
+                    <li>Credenciais estao em variaveis de ambiente?</li>
+                    <li>Permissoes sao minimas necessarias?</li>
+                    <li>Logs nao expoem dados sensiveis?</li>
+                </ul>
+            </section>
+
+            <!-- Bloco 6: Automacao Web -->
+            <section id="bloco6" class="lesson-block">
+                <h2>Bloco 6: Automacao Web (Selenium/Playwright)</h2>
+                <span class="badge badge-time">15 min</span>
+
+                <h3>6.1 O Problema: Sites Sem API</h3>
+
+                <p>Muitos sistemas legados ou sites publicos nao oferecem API. A solucao e <strong>automacao de browser</strong>: controlar um navegador como se fosse um humano.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              O DILEMA DA AUTOMACAO                              │
+│                                                                 │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │                SITE SEM API                              │  │
+│   │                                                          │  │
+│   │   • Formularios HTML                                     │  │
+│   │   • Login com CAPTCHA                                    │  │
+│   │   • Navegacao complexa                                   │  │
+│   │   • Dados em tabelas dinamicas                           │  │
+│   │   • JavaScript pesado                                    │  │
+│   │                                                          │  │
+│   └──────────────────────────────────────────────────────────┘  │
+│                           │                                     │
+│                           │  Solucao?                           │
+│                           ▼                                     │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │          AUTOMACAO DE BROWSER                            │  │
+│   │                                                          │  │
+│   │   Selenium | Playwright | Puppeteer                      │  │
+│   │                                                          │  │
+│   │   "Controlar um navegador como se fosse um humano"       │  │
+│   └──────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>6.2 Frameworks de Automacao</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Framework</th>
+                            <th>Linguagens</th>
+                            <th>Vantagens</th>
+                            <th>Desvantagens</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Selenium</strong></td>
+                            <td>Python, Java, JS, C#</td>
+                            <td>Maduro, documentacao vasta</td>
+                            <td>Lento, setup complexo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Playwright</strong></td>
+                            <td>Python, JS, .NET</td>
+                            <td>Rapido, multi-browser</td>
+                            <td>Mais recente</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Puppeteer</strong></td>
+                            <td>JavaScript/Node</td>
+                            <td>Nativo Chrome, leve</td>
+                            <td>So Chrome/Chromium</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>6.3 Exemplo: Playwright (Moderno)</h3>
+
+                <pre><code class="language-python"># automacao_playwright.py - Exemplo com Playwright
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    # Lancar navegador (headless ou visivel)
+    browser = p.chromium.launch(headless=False)
+    page = browser.new_page()
+
+    # Navegar
+    page.goto("https://pje.trf5.jus.br/pje")
+
+    # Preencher com seletores mais simples
+    page.fill("#numeroProcesso", "0000123-45.2024.4.05.8100")
+
+    # Clicar e aguardar navegacao
+    page.click("#btnPesquisar")
+    page.wait_for_selector(".resultadoPesquisa")
+
+    # Extrair texto
+    dados = page.text_content(".resultadoPesquisa")
+
+    browser.close()</code></pre>
+
+                <h3>6.4 Integracao com Claude Code</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              CLAUDE CODE + SELENIUM                             │
+│                                                                 │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │                    Claude Code                           │  │
+│   │                                                          │  │
+│   │   User: "Baixe os dados do processo 123 do PJE"          │  │
+│   │                                                          │  │
+│   │   Claude:                                                │  │
+│   │   1. Prepara parametros                                  │  │
+│   │   2. Executa: python automacao_pje.py --processo 123     │  │
+│   │   3. Le arquivo de saida                                 │  │
+│   │   4. Analisa e responde                                  │  │
+│   │                                                          │  │
+│   └──────────────────────────────────────────────────────────┘  │
+│                            │                                    │
+│                            ▼                                    │
+│               ┌─────────────────────────┐                       │
+│               │   Script Selenium       │                       │
+│               │   (execucao externa)    │                       │
+│               └─────────────────────────┘                       │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>6.5 Quando Usar Automacao Web</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cenario</th>
+                            <th>Automacao Web?</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Site sem API</td>
+                            <td><strong>SIM</strong></td>
+                            <td>Unica opcao</td>
+                        </tr>
+                        <tr>
+                            <td>Sistema legado com interface web</td>
+                            <td><strong>SIM</strong></td>
+                            <td>Simular usuario</td>
+                        </tr>
+                        <tr>
+                            <td>Scraping de dados publicos</td>
+                            <td><strong>SIM</strong></td>
+                            <td>Extrair informacoes</td>
+                        </tr>
+                        <tr>
+                            <td>API disponivel e documentada</td>
+                            <td><strong>NAO</strong></td>
+                            <td>Use MCP ou Bash</td>
+                        </tr>
+                        <tr>
+                            <td>Dados em tempo real</td>
+                            <td><strong>NAO</strong></td>
+                            <td>Lento demais</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">Aviso</div>
+                    <p>Automacao web pode violar termos de servico de alguns sites. Sempre verifique as politicas antes de automatizar. Desafios comuns: CAPTCHAs, JavaScript pesado, mudancas frequentes na estrutura HTML.</p>
+                </div>
+            </section>
+
+            <!-- Bloco 7: Claude in Chrome -->
+            <section id="bloco7" class="lesson-block">
+                <h2>Bloco 7: Browser Automation - Claude in Chrome</h2>
+                <span class="badge badge-time">20 min</span>
+
+                <h3>7.1 A Fronteira: Computer Use</h3>
+
+                <p>O Claude in Chrome representa a evolucao maxima da automacao: o agente <strong>ve</strong> e <strong>interage</strong> com o navegador como um humano.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              COMPUTER USE - A NOVA FRONTEIRA                    │
+│                                                                 │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │           AUTOMACAO TRADICIONAL vs COMPUTER USE          │  │
+│   │                                                          │  │
+│   │   SELENIUM/PLAYWRIGHT            COMPUTER USE            │  │
+│   │   ┌─────────────────┐          ┌─────────────────┐       │  │
+│   │   │ Seletores CSS   │          │  Visao + Acao   │       │  │
+│   │   │ IDs/Classes     │          │  Screenshot     │       │  │
+│   │   │ XPath           │          │  Click (x,y)    │       │  │
+│   │   │                 │          │  Type           │       │  │
+│   │   │ FRAGIL          │          │  ROBUSTO        │       │  │
+│   │   │ (depende HTML)  │          │  (visual)       │       │  │
+│   │   └─────────────────┘          └─────────────────┘       │  │
+│   │                                                          │  │
+│   └──────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│   "O agente ve a tela como voce ve"                             │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>7.2 Arquitetura do Claude in Chrome</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              CLAUDE IN CHROME - ARQUITETURA                     │
+│                                                                 │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │                    Claude Code (CLI)                     │  │
+│   │                          │                               │  │
+│   │                          │ MCP Protocol                  │  │
+│   │                          ▼                               │  │
+│   │   ┌──────────────────────────────────────────────────┐   │  │
+│   │   │            Chrome Extension (MCP Server)         │   │  │
+│   │   │                                                  │   │  │
+│   │   │   Tools disponiveis:                             │   │  │
+│   │   │   • read_page - Ler arvore de acessibilidade     │   │  │
+│   │   │   • computer - Screenshots, clicks, typing       │   │  │
+│   │   │   • navigate - Ir para URLs                      │   │  │
+│   │   │   • find - Buscar elementos por descricao        │   │  │
+│   │   │   • form_input - Preencher formularios           │   │  │
+│   │   │   • javascript_tool - Executar JS                │   │  │
+│   │   │                                                  │   │  │
+│   │   └──────────────────────────────────────────────────┘   │  │
+│   │                          │                               │  │
+│   │                          ▼                               │  │
+│   │   ┌──────────────────────────────────────────────────┐   │  │
+│   │   │              Chrome Browser                      │   │  │
+│   │   │                                                  │   │  │
+│   │   │   Qualquer site, qualquer aplicacao web          │   │  │
+│   │   │                                                  │   │  │
+│   │   └──────────────────────────────────────────────────┘   │  │
+│   │                                                          │  │
+│   └──────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>7.3 Ferramentas Disponiveis</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tool</th>
+                            <th>Funcao</th>
+                            <th>Exemplo de Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>read_page</code></td>
+                            <td>Ler estrutura da pagina</td>
+                            <td>Entender layout, encontrar elementos</td>
+                        </tr>
+                        <tr>
+                            <td><code>computer</code></td>
+                            <td>Acoes de mouse/teclado</td>
+                            <td>Cliques, digitacao, scroll</td>
+                        </tr>
+                        <tr>
+                            <td><code>navigate</code></td>
+                            <td>Navegar para URL</td>
+                            <td>Abrir sites, voltar/avancar</td>
+                        </tr>
+                        <tr>
+                            <td><code>find</code></td>
+                            <td>Buscar por descricao</td>
+                            <td>"Encontre o botao de login"</td>
+                        </tr>
+                        <tr>
+                            <td><code>form_input</code></td>
+                            <td>Preencher campos</td>
+                            <td>Input de texto, selects</td>
+                        </tr>
+                        <tr>
+                            <td><code>javascript_tool</code></td>
+                            <td>Executar JavaScript</td>
+                            <td>Extrair dados, manipular DOM</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>7.4 Fluxo Tipico de Uso</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              FLUXO: CLAUDE IN CHROME                            │
+│                                                                 │
+│   1. CONTEXTO                                                   │
+│      └── tabs_context_mcp: "Quais abas estao abertas?"          │
+│                                                                 │
+│   2. NAVEGAR                                                    │
+│      └── navigate: "Va para https://site.com"                   │
+│                                                                 │
+│   3. OBSERVAR                                                   │
+│      └── computer(screenshot) ou read_page                      │
+│      └── "O que ha na pagina?"                                  │
+│                                                                 │
+│   4. ENCONTRAR                                                  │
+│      └── find: "Encontre o campo de busca"                      │
+│      └── Retorna: ref_1, ref_2... (referencias)                 │
+│                                                                 │
+│   5. INTERAGIR                                                  │
+│      └── form_input(ref_1, "meu texto")                         │
+│      └── computer(left_click, [x, y])                           │
+│                                                                 │
+│   6. VERIFICAR                                                  │
+│      └── computer(screenshot): "Funcionou?"                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>7.5 Vantagens e Limitacoes</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vantagens</th>
+                            <th>Limitacoes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nao depende de seletores CSS/XPath</td>
+                            <td>Mais lento que APIs diretas</td>
+                        </tr>
+                        <tr>
+                            <td>Funciona em qualquer site</td>
+                            <td>Screenshots consomem tokens</td>
+                        </tr>
+                        <tr>
+                            <td>Interacao visual como humano</td>
+                            <td>Nao digita senhas automaticamente</td>
+                        </tr>
+                        <tr>
+                            <td>Menos quebra com mudancas de layout</td>
+                            <td>Nao resolve CAPTCHAs</td>
+                        </tr>
+                        <tr>
+                            <td>Usa arvore de acessibilidade</td>
+                            <td>Depende da extensao estar ativa</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>7.6 Quando Usar Cada Abordagem</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              MATRIZ: SELENIUM vs COMPUTER USE                   │
+│                                                                 │
+│   ┌────────────────────────┬────────────────────────┐           │
+│   │       SELENIUM         │     COMPUTER USE       │           │
+│   ├────────────────────────┼────────────────────────┤           │
+│   │ • Tarefas repetitivas  │ • Tarefas exploratorias│           │
+│   │ • Estrutura conhecida  │ • Sites desconhecidos  │           │
+│   │ • Alta performance     │ • Flexibilidade maxima │           │
+│   │ • Ambiente controlado  │ • Ambiente variavel    │           │
+│   │ • Scripts batch        │ • Interacao ad-hoc     │           │
+│   └────────────────────────┴────────────────────────┘           │
+│                                                                 │
+│   REGRA PRATICA:                                                │
+│   • Conhece a estrutura + repetitivo → Selenium/Playwright      │
+│   • Exploratorio + visual + ad-hoc → Computer Use               │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Dica Pratica</div>
+                    <p>O Claude in Chrome e ideal para tarefas exploratorias e interacao ad-hoc. Para tarefas repetitivas em larga escala, prefira Selenium/Playwright com scripts dedicados.</p>
+                </div>
+            </section>
+
+            <!-- Resumo -->
+            <section class="lesson-block" id="resumo">
+                <h2>Resumo da Aula</h2>
+
+                <div class="key-points">
+                    <h4>Conceitos-Chave</h4>
+                    <ul>
+                        <li><strong>Problema da Ilha:</strong> Agentes isolados sao severamente limitados</li>
+                        <li><strong>MCP:</strong> Padrao universal "USB-C para IA" - use para integracoes recorrentes</li>
+                        <li><strong>Web Search:</strong> Busca nativa sem setup - use para informacao publica</li>
+                        <li><strong>Bash/API:</strong> Flexibilidade total - use para integracoes pontuais</li>
+                        <li><strong>Selenium/Playwright:</strong> Automacao via seletores - use para sites sem API, tarefas repetitivas</li>
+                        <li><strong>Computer Use:</strong> Automacao visual (Claude in Chrome) - use para exploracao, sites desconhecidos</li>
+                        <li><strong>Hibrido:</strong> Combine conexoes conforme a necessidade de cada tarefa</li>
+                    </ul>
+                </div>
+
+                <div class="expert-quotes">
+                    <h4>Recursos Complementares</h4>
+                    <ul>
+                        <li><a href="https://code.claude.com/docs/en/mcp" target="_blank">MCP - Claude Code Docs</a></li>
+                        <li><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool" target="_blank">Web Search Tool - Claude Docs</a></li>
+                        <li><a href="https://www.anthropic.com/news/model-context-protocol" target="_blank">Introducing MCP - Anthropic</a></li>
+                        <li><a href="https://www.selenium.dev/documentation/" target="_blank">Selenium Documentation</a></li>
+                        <li><a href="https://playwright.dev/docs/intro" target="_blank">Playwright Documentation</a></li>
+                        <li><a href="https://www.anthropic.com/news/developing-computer-use" target="_blank">Computer Use - Anthropic</a></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Navegacao -->
+            <div class="lesson-navigation">
+                <a href="aula-9.html" class="nav-prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Aula 9: Engenharia de Workflows</span>
+                </a>
+                <a href="../index.html" class="nav-next">
+                    <span>Voltar ao Inicio</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sistemas Agenticos</h4>
+                    <p>Curso pratico de IA Agentica para profissionais do Direito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navegacao</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="glossario.html">Glossario</a></li>
+                        <li><a href="recursos.html">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Para duvidas sobre o curso, entre em contato com o instrutor.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Curso de Sistemas Agenticos - Material Educacional</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

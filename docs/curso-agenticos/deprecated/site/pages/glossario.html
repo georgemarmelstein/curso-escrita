@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossario e Taxonomia - Sistemas Agenticos</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">&#9670;</span>
+        <span>Sistemas Agenticos</span>
+      </a>
+      <nav class="nav-main">
+        <a href="../index.html">Inicio</a>
+        <a href="aula-0.html">Aulas</a>
+        <a href="glossario.html" class="active">Glossario</a>
+        <a href="recursos.html">Recursos</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Alternar tema">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Glossary Hero -->
+  <section class="lesson-hero">
+    <div class="container">
+      <div class="lesson-hero-content">
+        <span class="lesson-badge">Referencia</span>
+        <h1>Glossario e Taxonomia</h1>
+        <p class="lesson-subtitle">Sistematizacao dos conceitos emergentes (2024-2025) do ecossistema Claude Code</p>
+        <div class="lesson-meta">
+          <span class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            Material de Consulta
+          </span>
+          <span class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Janeiro 2026
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+      <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+        <nav class="lesson-nav">
+          <h3>Navegacao</h3>
+          <ul>
+            <li><a href="#visao-hierarquica" class="lesson-nav-link">Visao Hierarquica</a></li>
+            <li><a href="#definicoes-fundamentais" class="lesson-nav-link">Definicoes Fundamentais</a></li>
+            <li><a href="#componentes" class="lesson-nav-link">Componentes Claude Code</a></li>
+            <li><a href="#padroes" class="lesson-nav-link">Padroes Arquiteturais</a></li>
+            <li><a href="#taxonomia" class="lesson-nav-link">Taxonomia Comparativa</a></li>
+            <li><a href="#mapeamento" class="lesson-nav-link">Mapeamento para o Curso</a></li>
+            <li><a href="#referencias" class="lesson-nav-link">Referencias</a></li>
+          </ul>
+          <div class="nav-divider"></div>
+          <h3>Glossarios</h3>
+          <ul>
+            <li><a href="glossario.html" class="lesson-nav-link active">Taxonomia Completa</a></li>
+            <li><a href="glossario-precisao.html" class="lesson-nav-link">Precisao Terminologica</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Content -->
+      <div class="lesson-content">
+
+        <!-- Link para outro glossario -->
+        <div class="callout callout-tip">
+          <div class="callout-title">Veja Tambem</div>
+          <p>Este glossario apresenta a <strong>taxonomia hierarquica</strong> dos conceitos. Para <strong>definicoes exatas com citacoes dos especialistas</strong>, consulte o <a href="glossario-precisao.html">Glossario de Precisao Terminologica</a>.</p>
+        </div>
+
+        <!-- Visao Hierarquica -->
+        <section id="visao-hierarquica" class="lesson-block">
+          <h2>Visao Hierarquica</h2>
+
+          <div class="callout callout-context">
+            <div class="callout-title">Ferramenta Alienigena</div>
+            <p>"Ferramenta alienigena sem manual" (Karpathy) - recursos em busca de sistematizacao.</p>
+          </div>
+
+          <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                        ECOSSISTEMA ANTHROPIC                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │                       AGENT HARNESS                                 │   │
+│   │   "Framework que gerencia como agentes de IA operam"                │   │
+│   │   (gerenciamento de contexto, compactacao, ferramentas)             │   │
+│   │                                                                     │   │
+│   │   ┌─────────────────────┐     ┌─────────────────────┐               │   │
+│   │   │    CLAUDE CODE      │     │  CLAUDE AGENT SDK   │               │   │
+│   │   │   (para PESSOAS)    │     │  (para PRODUTOS)    │               │   │
+│   │   │                     │     │                     │               │   │
+│   │   │  * Contexto rico    │     │  * Prompt fixo      │               │   │
+│   │   │  * Interativo       │     │  * Programatico     │               │   │
+│   │   │  * Ferramentas      │     │  * API/SDK          │               │   │
+│   │   │    on-the-fly       │     │  * Escala           │               │   │
+│   │   └─────────────────────┘     └─────────────────────┘               │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │                     MODEL CONTEXT PROTOCOL (MCP)                    │   │
+│   │              Protocolo universal de conexao com ferramentas         │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘</code></pre>
+        </section>
+
+        <!-- Definicoes Fundamentais -->
+        <section id="definicoes-fundamentais" class="lesson-block">
+          <h2>Definicoes Fundamentais</h2>
+
+          <h3>Agent Harness (Arnes do Agente)</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao Oficial (Anthropic)</div>
+            <p>"A framework that manages how AI agents operate, including context management and compaction."</p>
+          </div>
+
+          <p><strong>Em portugues:</strong> Estrutura que gerencia como agentes de IA operam.</p>
+
+          <p><strong>O que faz:</strong></p>
+          <ul>
+            <li>Gerencia o contexto (o que o agente "sabe")</li>
+            <li>Controla a compactacao (resumir para caber na janela)</li>
+            <li>Coordena ferramentas disponiveis</li>
+            <li>Implementa o loop agentico</li>
+          </ul>
+
+          <div class="callout callout-insight">
+            <div class="callout-title">Analogia</div>
+            <p>O harness esta para o agente assim como o sistema operacional esta para os programas. Ele nao e a inteligencia, mas a infraestrutura que permite a inteligencia operar.</p>
+          </div>
+
+          <blockquote>
+            "The harness doesn't make Claude smarter. Claude IS smart. The harness just removes friction."
+            <cite>— Barry Zhang, AI Engineer</cite>
+          </blockquote>
+
+          <h3>Claude Code</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao Oficial (Anthropic)</div>
+            <p>"A powerful, general-purpose agent harness adept at coding, as well as other tasks."</p>
+          </div>
+
+          <p><strong>O que e:</strong> Implementacao do Anthropic de um Agent Harness, disponibilizado como CLI.</p>
+
+          <pre class="diagram"><code>┌────────────────────────────────────────────────────────┐
+│                     CLAUDE CODE                        │
+├────────────────────────────────────────────────────────┤
+│  LOOP AGENTICO (while True)                            │
+│  ├── Recebe input do usuario                           │
+│  ├── Processa com Claude (modelo)                      │
+│  ├── Executa ferramentas (Tools)                       │
+│  ├── Verifica resultado                                │
+│  └── Repete ou retorna                                 │
+├────────────────────────────────────────────────────────┤
+│  FERRAMENTAS NATIVAS                                   │
+│  ├── Bash (execucao de comandos)                       │
+│  ├── Read/Write/Edit (arquivos)                        │
+│  ├── Glob/Grep (busca)                                 │
+│  ├── WebSearch/WebFetch (internet)                     │
+│  ├── Task Tool (subagentes)                            │
+│  └── MCP Tools (via protocolo)                         │
+├────────────────────────────────────────────────────────┤
+│  CONFIGURACAO                                          │
+│  ├── CLAUDE.md (instrucoes persistentes)               │
+│  ├── settings.json (permissoes)                        │
+│  ├── Skills (expertise reutilizavel)                   │
+│  └── Commands (prompts salvos)                         │
+└────────────────────────────────────────────────────────┘</code></pre>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Nao Confundir</div>
+            <p>Claude Code NAO e apenas uma interface de linha de comando. E um agente completo com loop de execucao autonomo, auto-correcao quando falha, criacao de ferramentas on-the-fly e delegacao para subagentes.</p>
+          </div>
+
+          <h3>Claude Agent SDK</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao Oficial (Anthropic)</div>
+            <p>"Previously called Claude Code SDK, a toolkit for building custom AI agents."</p>
+          </div>
+
+          <h4>Diferenca Crucial</h4>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Aspecto</th>
+                <th>Claude Code</th>
+                <th>Claude Agent SDK</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Usuario</strong></td>
+                <td>Humanos (interativo)</td>
+                <td>Desenvolvedores (programatico)</td>
+              </tr>
+              <tr>
+                <td><strong>Prompt</strong></td>
+                <td>Contexto rico, adaptativo</td>
+                <td>Fixo, definido no codigo</td>
+              </tr>
+              <tr>
+                <td><strong>Uso</strong></td>
+                <td>Terminal, conversacional</td>
+                <td>API, aplicacoes</td>
+              </tr>
+              <tr>
+                <td><strong>Escala</strong></td>
+                <td>Um usuario</td>
+                <td>Milhares de requests</td>
+              </tr>
+              <tr>
+                <td><strong>Criacao de tools</strong></td>
+                <td>On-the-fly</td>
+                <td>Pre-definidas</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Quando Usar Cada Um</div>
+            <ul>
+              <li><strong>Claude Code:</strong> Uso pessoal, exploracao, maximo do LLM</li>
+              <li><strong>Agent SDK:</strong> Produtos, APIs, escala, previsibilidade</li>
+            </ul>
+          </div>
+
+          <h3>Model Context Protocol (MCP)</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao</div>
+            <p>Protocolo aberto para conectar agentes de IA a ferramentas externas.</p>
+          </div>
+
+          <p><strong>Analogia:</strong> USB para IA - padrao universal de conexao.</p>
+
+          <p><strong>Componentes:</strong></p>
+          <ul>
+            <li><strong>MCP Server:</strong> Fornece ferramentas (ex: busca jurisprudencia)</li>
+            <li><strong>MCP Client:</strong> Consome ferramentas (ex: Claude Code)</li>
+            <li><strong>MCP Tools:</strong> Funcoes expostas pelo servidor</li>
+          </ul>
+
+          <pre class="diagram"><code>┌──────────────┐     MCP      ┌──────────────┐
+│  Claude Code │◄────────────►│   BNP API    │
+│   (client)   │              │   (server)   │
+└──────────────┘              └──────────────┘
+                                    │
+                              buscar_precedentes()
+                              gerar_relatorio()</code></pre>
+        </section>
+
+        <!-- Componentes do Claude Code -->
+        <section id="componentes" class="lesson-block">
+          <h2>Componentes do Claude Code</h2>
+
+          <h3>Task Tool</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao Oficial</div>
+            <p>"Mechanism to invoke subagents with isolated context windows."</p>
+          </div>
+
+          <p><strong>O que faz:</strong> Cria um "prompt isolado" que executa em paralelo, com contexto proprio.</p>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Esclarecimento Conceitual</div>
+            <p>A Task Tool NAO cria "agentes reais" no sentido classico. Ela cria <strong>prompts isolados</strong> que recebem contexto especifico, executam uma tarefa, retornam resultado e sao descartados.</p>
+          </div>
+
+          <blockquote>
+            "Keep agent single-threaded. Parallelism OUTSIDE."
+            <cite>— Dex Horthy, AI Engineer</cite>
+          </blockquote>
+
+          <h4>Subagent Types Disponiveis</h4>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Descricao</th>
+                <th>Ferramentas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Explore</code></td>
+                <td>Busca rapida em codebase (read-only)</td>
+                <td>Glob, Grep, Read</td>
+              </tr>
+              <tr>
+                <td><code>Plan</code></td>
+                <td>Pesquisa para planejamento</td>
+                <td>Todas exceto Edit/Write</td>
+              </tr>
+              <tr>
+                <td><code>general-purpose</code></td>
+                <td>Tarefas complexas multi-step</td>
+                <td>Todas</td>
+              </tr>
+              <tr>
+                <td><code>Bash</code></td>
+                <td>Execucao de comandos</td>
+                <td>Bash</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Skills</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao Oficial (Anthropic)</div>
+            <p>"Organized folders of instructions, scripts, and resources that agents can discover and load dynamically."</p>
+          </div>
+
+          <blockquote>
+            "Skills are just folders. That's it. A folder with a SKILL.md file."
+            <cite>— Barry Zhang, AI Engineer</cite>
+          </blockquote>
+
+          <h4>Estrutura</h4>
+
+          <pre><code>~/.claude/skills/
+└── minha-skill/
+    ├── SKILL.md          # Instrucoes (OBRIGATORIO)
+    ├── exemplos/         # Opcional
+    └── templates/        # Opcional</code></pre>
+
+          <h4>Diferenca de Commands</h4>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Aspecto</th>
+                <th>Command</th>
+                <th>Skill</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Invocacao</strong></td>
+                <td>Explicita (<code>/comando</code>)</td>
+                <td>Automatica por contexto</td>
+              </tr>
+              <tr>
+                <td><strong>Escopo</strong></td>
+                <td>Uma tarefa</td>
+                <td>Expertise reutilizavel</td>
+              </tr>
+              <tr>
+                <td><strong>Localizacao</strong></td>
+                <td><code>.claude/commands/</code></td>
+                <td><code>.claude/skills/</code></td>
+              </tr>
+              <tr>
+                <td><strong>Parametros</strong></td>
+                <td>Sim (<code>$ARGUMENTS</code>)</td>
+                <td>Nao</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Quando Usar Cada Um</div>
+            <ul>
+              <li><strong>Skill:</strong> Expertise que se aplica a multiplos contextos, metodologias reutilizaveis, conhecimento de dominio</li>
+              <li><strong>Command:</strong> Acao especifica com parametros, atalho para tarefa comum, invocacao explicita desejada</li>
+            </ul>
+          </div>
+
+          <h3>Commands</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao</div>
+            <p>Prompts salvos invocados explicitamente com <code>/</code>.</p>
+          </div>
+
+          <h4>Estrutura</h4>
+
+          <pre><code>---
+description: Descricao curta para autocompletar
+model: sonnet (opcional)
+---
+
+Prompt que sera executado.
+
+$ARGUMENTS sera substituido pelos argumentos passados.</code></pre>
+
+          <p><strong>Localizacao:</strong></p>
+          <ul>
+            <li><strong>Projeto:</strong> <code>.claude/commands/</code></li>
+            <li><strong>Global:</strong> <code>~/.claude/commands/</code></li>
+          </ul>
+
+          <h3>CLAUDE.md</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao</div>
+            <p>Arquivo de instrucoes persistentes carregado automaticamente.</p>
+          </div>
+
+          <h4>Hierarquia de Precedencia</h4>
+
+          <pre><code>1. ~/.claude/CLAUDE.md        (global - preferencias pessoais)
+2. ./CLAUDE.md                (projeto - regras do projeto)
+3. ./subpasta/CLAUDE.md       (local - especifico da pasta)</code></pre>
+
+          <div class="callout callout-insight">
+            <div class="callout-title">Analogia Juridica</div>
+            <p>Constituicao > Lei Federal > Lei Estadual</p>
+          </div>
+
+          <p><strong>O que colocar:</strong></p>
+          <ul>
+            <li>Convencoes do projeto</li>
+            <li>Glossario de termos</li>
+            <li>Fluxos de trabalho</li>
+            <li>Regras de formatacao</li>
+            <li><strong>NAO colocar:</strong> dados sensiveis, prompts completos</li>
+          </ul>
+
+          <h3>Tools (Ferramentas)</h3>
+
+          <h4>Ferramentas Nativas do Claude Code</h4>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Ferramenta</th>
+                <th>Funcao</th>
+                <th>Exemplo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Bash</code></td>
+                <td>Executa comandos shell</td>
+                <td><code>git status</code></td>
+              </tr>
+              <tr>
+                <td><code>Read</code></td>
+                <td>Le arquivos</td>
+                <td>Ler codigo-fonte</td>
+              </tr>
+              <tr>
+                <td><code>Write</code></td>
+                <td>Cria arquivos</td>
+                <td>Criar novo arquivo</td>
+              </tr>
+              <tr>
+                <td><code>Edit</code></td>
+                <td>Edita arquivos</td>
+                <td>Modificar codigo</td>
+              </tr>
+              <tr>
+                <td><code>Glob</code></td>
+                <td>Busca por padrao</td>
+                <td><code>**/*.py</code></td>
+              </tr>
+              <tr>
+                <td><code>Grep</code></td>
+                <td>Busca em conteudo</td>
+                <td>Encontrar funcao</td>
+              </tr>
+              <tr>
+                <td><code>WebSearch</code></td>
+                <td>Busca na internet</td>
+                <td>Pesquisar documentacao</td>
+              </tr>
+              <tr>
+                <td><code>WebFetch</code></td>
+                <td>Baixa pagina web</td>
+                <td>Ler artigo</td>
+              </tr>
+              <tr>
+                <td><code>Task</code></td>
+                <td>Cria subagente</td>
+                <td>Paralelizar trabalho</td>
+              </tr>
+              <tr>
+                <td><code>TodoWrite</code></td>
+                <td>Gerencia tarefas</td>
+                <td>Tracking de progresso</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Background Tasks</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao</div>
+            <p>Tarefas executadas em segundo plano sem bloquear a sessao.</p>
+          </div>
+
+          <p><strong>Uso:</strong></p>
+          <pre><code>Task(run_in_background=True, prompt="Analise todos os arquivos...")</code></pre>
+
+          <p><strong>Quando usar:</strong></p>
+          <ul>
+            <li>Tarefas demoradas (analise extensiva)</li>
+            <li>Processamento em lote</li>
+            <li>Nao precisa do resultado imediatamente</li>
+          </ul>
+
+          <p><strong>Verificar resultado:</strong></p>
+          <pre><code>/tasks                    # Lista tarefas em background
+TaskOutput(task_id="...")  # Obtem resultado</code></pre>
+        </section>
+
+        <!-- Padroes Arquiteturais -->
+        <section id="padroes" class="lesson-block">
+          <h2>Padroes Arquiteturais</h2>
+
+          <h3>Workflow vs Agent</h3>
+
+          <div class="callout callout-context">
+            <div class="callout-title">Distincao Fundamental (Anthropic Best Practices)</div>
+            <p>Compreender essa diferenca e essencial para escolher a abordagem correta para cada problema.</p>
+          </div>
+
+          <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                           WORKFLOW                                      │
+│         Fluxo DETERMINISTICO com etapas PREDEFINIDAS                    │
+│                                                                         │
+│   ┌─────┐    ┌─────┐    ┌─────┐    ┌─────┐                              │
+│   │ LLM │───►│ LLM │───►│ LLM │───►│ LLM │                              │
+│   │  1  │    │  2  │    │  3  │    │  4  │                              │
+│   └─────┘    └─────┘    └─────┘    └─────┘                              │
+│      │          │          │          │                                 │
+│   prompt     prompt     prompt     prompt                               │
+│   fixo 1     fixo 2     fixo 3     fixo 4                               │
+│                                                                         │
+│   ► Cada etapa conhecida de antemao                                     │
+│   ► Fluxo previsivel e testavel                                         │
+│   ► Sem decisoes autonomas                                              │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                            AGENT                                        │
+│         Loop AUTONOMO que decide proximas acoes                         │
+│                                                                         │
+│                      ┌─────────────┐                                    │
+│              ┌──────►│    MODEL    │◄──────┐                            │
+│              │       │  (decide)   │       │                            │
+│              │       └──────┬──────┘       │                            │
+│              │              │              │                            │
+│              │              ▼              │                            │
+│         ┌────┴────┐   ┌─────────┐   ┌─────┴─────┐                       │
+│         │ Tool A  │   │ Tool B  │   │  Tool C   │                       │
+│         └─────────┘   └─────────┘   └───────────┘                       │
+│                                                                         │
+│   ► Modelo decide qual tool usar                                        │
+│   ► Fluxo adaptativo e imprevisivel                                     │
+│   ► Autonomia para resolver problemas                                   │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+          <h4>Quando Usar Cada Um</h4>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Cenario</th>
+                <th>Workflow</th>
+                <th>Agent</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tarefa repetitiva, previsivel</td>
+                <td>Sim</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Resultado deve ser auditavel</td>
+                <td>Sim</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Tarefa exploratoria</td>
+                <td></td>
+                <td>Sim</td>
+              </tr>
+              <tr>
+                <td>Precisa adaptar ao inesperado</td>
+                <td></td>
+                <td>Sim</td>
+              </tr>
+              <tr>
+                <td>Producao com escala</td>
+                <td>Sim</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Uso pessoal/interativo</td>
+                <td></td>
+                <td>Sim</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Orchestrator (Orquestrador)</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao</div>
+            <p>Coordenador central que determina sequencia de execucao.</p>
+          </div>
+
+          <h4>Padroes de Orquestracao</h4>
+
+          <pre class="diagram"><code>1. SEQUENCIAL (Pipeline)
+   ┌─────┐    ┌─────┐    ┌─────┐
+   │  A  │───►│  B  │───►│  C  │
+   └─────┘    └─────┘    └─────┘
+
+2. PARALELO (Fan-out)
+              ┌─────┐
+         ┌───►│  B  │───┐
+   ┌─────┤    └─────┘   ├─────┐
+   │  A  │    ┌─────┐   │  D  │
+   └─────┼───►│  C  │───┼─────┘
+         │    └─────┘   │
+         └──────────────┘
+
+3. ROUTER (Decisao)
+              ┌─────┐
+         ┌───►│  B  │
+   ┌─────┤    └─────┘
+   │  A  │    ┌─────┐
+   │ ??? ├───►│  C  │
+   └─────┤    └─────┘
+         │    ┌─────┐
+         └───►│  D  │
+              └─────┘</code></pre>
+
+          <h3>Pipeline (Cadeia de Prompts)</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao</div>
+            <p>Sequencia linear de transformacoes onde saida de um e entrada do proximo.</p>
+          </div>
+
+          <h4>Padrao RPI (Read - Process - Insert)</h4>
+
+          <pre class="diagram"><code>┌──────────┐     ┌───────────┐     ┌──────────┐
+│   READ   │────►│  PROCESS  │────►│  INSERT  │
+│ arquivo  │     │  com LLM  │     │ resultado│
+└──────────┘     └───────────┘     └──────────┘</code></pre>
+
+          <p><strong>Exemplo juridico:</strong></p>
+          <pre><code>processo.pdf → relatorio.md → analise.md → minuta.md → sentenca.md</code></pre>
+
+          <h3>Agentic Loop (Loop Agentico)</h3>
+
+          <div class="callout callout-definition">
+            <div class="callout-title">Definicao Oficial (Anthropic)</div>
+            <p>"Gather context - Take action - Verify work - Repeat"</p>
+          </div>
+
+          <h4>Implementacao no Claude Code</h4>
+
+          <pre><code>while True:
+    # 1. GATHER CONTEXT
+    contexto = receber_input() + ler_CLAUDE_md() + carregar_skills()
+
+    # 2. TAKE ACTION
+    acao = modelo.decidir(contexto)
+    resultado = executar(acao)
+
+    # 3. VERIFY WORK
+    if verificar(resultado):
+        break  # Sucesso
+    else:
+        contexto += f"Erro: {resultado}. Tentando novamente..."
+        # Volta para o inicio do loop</code></pre>
+        </section>
+
+        <!-- Taxonomia Comparativa -->
+        <section id="taxonomia" class="lesson-block">
+          <h2>Taxonomia Comparativa</h2>
+
+          <h3>Niveis de Autonomia</h3>
+
+          <pre class="diagram"><code>┌────────────────────────────────────────────────────────────────────────┐
+│                    ESPECTRO DE AUTONOMIA                               │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  ASSISTENTE          PROTOAGENTE           AGENTE                      │
+│      │                    │                   │                        │
+│      ▼                    ▼                   ▼                        │
+│  ┌───────┐           ┌───────┐           ┌───────┐                     │
+│  │ Chat  │           │Claude │           │Claude │                     │
+│  │ Web   │           │ Code  │           │ Code  │                     │
+│  │       │           │(semi) │           │(YOLO) │                     │
+│  └───────┘           └───────┘           └───────┘                     │
+│                                                                        │
+│  * Responde          * Executa           * Decide                      │
+│  * Nao age           * Pede permissao    * Age sozinho                 │
+│  * Uma troca         * Multiplas         * Loop autonomo               │
+│                        trocas                                          │
+│                                                                        │
+│  "O que e X?"        "Faca X"            "Resolva X"                   │
+│                      (confirma cada      (sem supervisao)              │
+│                       passo)                                           │
+└────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+          <h3>Claude Code vs Agent SDK vs MCP</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Dimensao</th>
+                <th>Claude Code</th>
+                <th>Agent SDK</th>
+                <th>MCP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Natureza</strong></td>
+                <td>Harness completo</td>
+                <td>SDK/Toolkit</td>
+                <td>Protocolo</td>
+              </tr>
+              <tr>
+                <td><strong>Usuario</strong></td>
+                <td>Humanos</td>
+                <td>Desenvolvedores</td>
+                <td>Qualquer</td>
+              </tr>
+              <tr>
+                <td><strong>Interface</strong></td>
+                <td>CLI/Terminal</td>
+                <td>API/Codigo</td>
+                <td>Standard</td>
+              </tr>
+              <tr>
+                <td><strong>Loop</strong></td>
+                <td>Embutido</td>
+                <td>Voce implementa</td>
+                <td>N/A</td>
+              </tr>
+              <tr>
+                <td><strong>Ferramentas</strong></td>
+                <td>Nativas + MCP</td>
+                <td>Voce define</td>
+                <td>Voce expoe</td>
+              </tr>
+              <tr>
+                <td><strong>Contexto</strong></td>
+                <td>CLAUDE.md + conversa</td>
+                <td>Prompt fixo</td>
+                <td>N/A</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Skill vs Command vs Prompt vs Tool</h3>
+
+          <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    HIERARQUIA DE ABSTRACAO                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   SKILL                                                                 │
+│   "Expertise reutilizavel"                                              │
+│   └── Carregada automaticamente por contexto                            │
+│       └── Pode conter multiplos prompts e metodologias                  │
+│                                                                         │
+│   COMMAND                                                               │
+│   "Atalho para tarefa"                                                  │
+│   └── Invocado explicitamente com /                                     │
+│       └── Um prompt com possiveis argumentos                            │
+│                                                                         │
+│   PROMPT                                                                │
+│   "Instrucao para o modelo"                                             │
+│   └── Texto que direciona comportamento                                 │
+│       └── Unidade basica de comunicacao                                 │
+│                                                                         │
+│   TOOL                                                                  │
+│   "Capacidade de acao"                                                  │
+│   └── Funcao que o agente pode executar                                 │
+│       └── Ex: Bash, Read, WebSearch                                     │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+        </section>
+
+        <!-- Mapeamento para o Curso -->
+        <section id="mapeamento" class="lesson-block">
+          <h2>Mapeamento para o Curso</h2>
+
+          <h3>Onde Cada Conceito e Tratado</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Conceito</th>
+                <th>Aula</th>
+                <th>Profundidade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Assistente vs Agente</td>
+                <td><a href="aula-0.html">Aula 0</a></td>
+                <td>Introducao</td>
+              </tr>
+              <tr>
+                <td>Agent Harness</td>
+                <td><a href="aula-0.html">Aula 0</a></td>
+                <td>Conceitual</td>
+              </tr>
+              <tr>
+                <td>Claude Code (visao geral)</td>
+                <td><a href="aula-1.html">Aula 1</a></td>
+                <td>Demonstracao</td>
+              </tr>
+              <tr>
+                <td>Instalacao e configuracao</td>
+                <td><a href="aula-2a.html">Aula 2A</a></td>
+                <td>Pratica</td>
+              </tr>
+              <tr>
+                <td>CLAUDE.md</td>
+                <td><a href="aula-2a.html">Aula 2A</a></td>
+                <td>Pratica</td>
+              </tr>
+              <tr>
+                <td>Skills e Commands</td>
+                <td><a href="aula-2b.html">Aula 2B</a></td>
+                <td>Pratica</td>
+              </tr>
+              <tr>
+                <td>Task Tool e Subagentes</td>
+                <td><a href="aula-2b.html">Aula 2B</a></td>
+                <td>Pratica</td>
+              </tr>
+              <tr>
+                <td>Workflow vs Agent</td>
+                <td><a href="aula-3.html">Aula 3</a></td>
+                <td>Arquitetural</td>
+              </tr>
+              <tr>
+                <td>Orchestrator patterns</td>
+                <td><a href="aula-3.html">Aula 3</a></td>
+                <td>Arquitetural</td>
+              </tr>
+              <tr>
+                <td>Pipeline</td>
+                <td><a href="aula-3.html">Aula 3</a></td>
+                <td>Arquitetural</td>
+              </tr>
+              <tr>
+                <td>MCP</td>
+                <td><a href="aula-4.html">Aula 4</a></td>
+                <td>Construcao</td>
+              </tr>
+              <tr>
+                <td>Extended Thinking</td>
+                <td><a href="aula-4.html">Aula 4</a></td>
+                <td>Avancado</td>
+              </tr>
+              <tr>
+                <td>Agent SDK</td>
+                <td><a href="aula-5.html">Aula 5</a></td>
+                <td>Referencia</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Referencias -->
+        <section id="referencias" class="lesson-block">
+          <h2>Fontes e Referencias</h2>
+
+          <h3>Documentacao Oficial Anthropic</h3>
+          <ul>
+            <li><a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank">Claude Code Documentation</a></li>
+            <li><a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank">Agent Best Practices</a></li>
+            <li><a href="https://docs.anthropic.com/en/docs/claude-agent-sdk" target="_blank">Claude Agent SDK</a></li>
+          </ul>
+
+          <h3>AI Engineer Summit 2024-2025</h3>
+          <ul>
+            <li><strong>Barry Zhang (Anthropic)</strong> - "Claude Code Internals"</li>
+            <li><strong>Dex Horthy (Anthropic)</strong> - "Agent Architecture"</li>
+            <li><strong>Jared Zoneraich</strong> - "MCP Deep Dive"</li>
+          </ul>
+
+          <h3>Citacoes-Chave</h3>
+
+          <div class="quote-collection">
+            <blockquote>
+              "Skills are just folders. That's it."
+              <cite>— Barry Zhang</cite>
+            </blockquote>
+
+            <blockquote>
+              "Keep agent single-threaded. Parallelism OUTSIDE."
+              <cite>— Dex Horthy</cite>
+            </blockquote>
+
+            <blockquote>
+              "The harness doesn't make Claude smarter. Claude IS smart. The harness just removes friction."
+              <cite>— Barry Zhang</cite>
+            </blockquote>
+
+            <blockquote>
+              "A diferenca nao e de grau. E de natureza."
+              <cite>— Manifesto Regencia Cognitiva</cite>
+            </blockquote>
+          </div>
+        </section>
+
+        <!-- Navigation -->
+        <nav class="lesson-nav-footer">
+          <a href="aula-5.html" class="nav-prev">
+            <span class="nav-label">Anterior</span>
+            <span class="nav-title">Aula 5: Sistema Juridico Agentico</span>
+          </a>
+          <a href="recursos.html" class="nav-next">
+            <span class="nav-label">Proximo</span>
+            <span class="nav-title">Recursos e Materiais</span>
+          </a>
+        </nav>
+
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Sistemas Agenticos</h4>
+          <p>Curso pratico de Claude Code para profissionais do Direito</p>
+        </div>
+        <div class="footer-section">
+          <h4>Navegacao</h4>
+          <ul>
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="aula-0.html">Aulas</a></li>
+            <li><a href="glossario.html">Glossario</a></li>
+            <li><a href="recursos.html">Recursos</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Filosofia</h4>
+          <p>Regencia Cognitiva: O humano dirige, a IA executa</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Janeiro 2026 - Material Educacional</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

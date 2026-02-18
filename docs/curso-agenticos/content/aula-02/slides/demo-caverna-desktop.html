@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desktop/Web - As Sombras na Parede</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-red: #f87171;
+            --shadow-color: rgba(80, 70, 90, 0.6);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* Imagem de fundo - Caverna escura */
+        .bg-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('../../../site/assets/20260125_1105_Image Generation_simple_compose_01kftqh504f8hv46ba4smtz2c6.png');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.3) saturate(0.7);
+            z-index: 1;
+        }
+
+        /* Overlay pesado - profundidade na escuridão */
+        .bg-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg,
+                rgba(10, 10, 18, 0.85) 0%,
+                rgba(20, 15, 30, 0.80) 50%,
+                rgba(10, 10, 18, 0.90) 100%);
+            z-index: 2;
+        }
+
+        /* Container principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        /* Barra de progresso lateral */
+        .progress-bar {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 20;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .progress-line {
+            width: 2px;
+            height: 40px;
+            background: rgba(190, 156, 109, 0.2);
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.2);
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--shadow-color);
+            border-color: var(--shadow-color);
+            box-shadow: 0 0 15px var(--shadow-color);
+        }
+
+        .progress-dot.future {
+            opacity: 0.4;
+        }
+
+        .progress-label {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+        }
+
+        .progress-label.active {
+            color: var(--super-cream);
+        }
+
+        /* Conteúdo central */
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Título */
+        .title-section {
+            text-align: center;
+        }
+
+        .main-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 2.8em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 0 0 40px rgba(80, 70, 90, 0.8);
+        }
+
+        .subtitle {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.4em;
+            font-style: italic;
+            color: var(--shadow-color);
+            letter-spacing: 2px;
+        }
+
+        /* Screenshot real com tratamento de sombra/projeção */
+        .interface-mock {
+            position: relative;
+            width: 550px;
+            opacity: 0;
+            animation: shadowAppear 1.5s ease 0.8s forwards;
+        }
+
+        @keyframes shadowAppear {
+            0% { opacity: 0; filter: blur(20px) brightness(0.5); transform: scale(0.9); }
+            100% { opacity: 0.75; filter: blur(1px) brightness(0.7) saturate(0.6); transform: scale(1); }
+        }
+
+        .screenshot-container {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 90, 120, 0.3);
+            box-shadow:
+                0 0 80px rgba(80, 70, 90, 0.5),
+                inset 0 0 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .screenshot-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg,
+                rgba(80, 70, 90, 0.3) 0%,
+                rgba(40, 30, 50, 0.2) 50%,
+                rgba(80, 70, 90, 0.3) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .screenshot-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Efeito de projeção na parede */
+        .projection-effect {
+            position: absolute;
+            top: -30px; left: -30px; right: -30px; bottom: -30px;
+            background: radial-gradient(ellipse at center,
+                rgba(80, 70, 90, 0.2) 0%,
+                transparent 70%);
+            z-index: -1;
+            animation: projectionPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes projectionPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        /* Correntes visuais */
+        .chains {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 100px;
+            opacity: 0;
+            animation: chainsAppear 1s ease 1.5s forwards;
+        }
+
+        @keyframes chainsAppear {
+            to { opacity: 0.6; }
+        }
+
+        .chain {
+            font-size: 2em;
+            color: rgba(100, 90, 120, 0.6);
+            animation: chainSwing 3s ease-in-out infinite;
+        }
+
+        .chain:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes chainSwing {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* Nuvem pulsante */
+        .cloud-icon {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5em;
+            color: rgba(100, 90, 120, 0.5);
+            opacity: 0;
+            animation: cloudPulse 2s ease 2s infinite, fadeIn 1s ease 1.8s forwards;
+        }
+
+        @keyframes cloudPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.5; }
+            50% { transform: translateX(-50%) scale(1.1); opacity: 0.7; }
+        }
+
+        /* Lista de características */
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.2s forwards;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            background: rgba(30, 25, 40, 0.5);
+            border-radius: 8px;
+            border-left: 3px solid;
+        }
+
+        .feature.pro {
+            border-color: var(--super-green);
+        }
+
+        .feature.con {
+            border-color: var(--super-red);
+        }
+
+        .feature-icon {
+            font-size: 1.2em;
+        }
+
+        .feature-text {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .feature.con .feature-text {
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Seta indicando "há mais" */
+        .next-hint {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeIn 1s ease 2.5s forwards;
+        }
+
+        .next-arrow {
+            font-size: 2em;
+            color: rgba(190, 156, 109, 0.4);
+            animation: arrowPulse 2s ease infinite;
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { transform: translateX(0); opacity: 0.4; }
+            50% { transform: translateX(10px); opacity: 0.7; }
+        }
+
+        .next-text {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            writing-mode: vertical-rl;
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 25px; gap: 40px; }
+        body.embed-mode .main-title { font-size: 2em; }
+        body.embed-mode .subtitle { font-size: 1.1em; }
+        body.embed-mode .interface-mock { width: 400px; }
+        body.embed-mode .progress-bar { left: 25px; }
+        body.embed-mode .next-hint { right: 25px; }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- Barra de progresso -->
+    <div class="progress-bar">
+        <div class="progress-step">
+            <div class="progress-dot active"></div>
+            <span class="progress-label active">Sombras</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            <div class="progress-dot future"></div>
+            <span class="progress-label">Caminho</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            <div class="progress-dot future"></div>
+            <span class="progress-label">Luz</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div class="title-section">
+                <h1 class="main-title">Desktop / Web</h1>
+                <p class="subtitle">"As sombras na parede"</p>
+            </div>
+
+            <div class="interface-mock">
+                <div class="cloud-icon">☁️</div>
+                <div class="chains">
+                    <span class="chain">⛓️</span>
+                    <span class="chain">⛓️</span>
+                </div>
+                <div class="projection-effect"></div>
+                <div class="screenshot-container">
+                    <img src="../../../site/assets/claude-desktop-screenshot.png" alt="Claude Desktop Interface">
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature pro">
+                    <span class="feature-icon">☁️</span>
+                    <span class="feature-text">Acesso de qualquer lugar</span>
+                </div>
+                <div class="feature con">
+                    <span class="feature-icon">⛓️</span>
+                    <span class="feature-text">Conectado ao GitHub, não à sua máquina</span>
+                </div>
+                <div class="feature con">
+                    <span class="feature-icon">🐛</span>
+                    <span class="feature-text">Mais instável — mais bugs</span>
+                </div>
+                <div class="feature con">
+                    <span class="feature-icon">🚫</span>
+                    <span class="feature-text">Sem multi-terminais reais</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seta para próximo -->
+    <div class="next-hint">
+        <span class="next-arrow">→</span>
+        <span class="next-text">Há mais além...</span>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

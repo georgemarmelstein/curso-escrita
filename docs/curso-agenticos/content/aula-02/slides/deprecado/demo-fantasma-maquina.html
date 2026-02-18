@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: O Fantasma na Maquina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-purple: #a78bfa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        /* Titulo */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Container principal */
+        .main-container {
+            position: relative;
+            width: 900px;
+            height: 450px;
+        }
+
+        /* Computador */
+        .computer {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+        }
+
+        .computer-screen {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a12 100%);
+            border: 3px solid rgba(190, 156, 109, 0.4);
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.1);
+        }
+
+        .screen-content {
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-green);
+        }
+
+        .screen-line {
+            padding: 2px 0;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .screen-line.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .screen-line .prompt { color: var(--super-gold); }
+        .screen-line .cmd { color: var(--super-cream); }
+        .screen-line .output { color: rgba(255, 244, 228, 0.7); }
+        .screen-line .success { color: var(--super-green); }
+
+        .computer-stand {
+            width: 120px;
+            height: 60px;
+            background: linear-gradient(180deg, #2a2a3a 0%, #1a1a2e 100%);
+            margin: 0 auto;
+            border-radius: 0 0 8px 8px;
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            border-top: none;
+        }
+
+        .computer-base {
+            width: 200px;
+            height: 15px;
+            background: linear-gradient(180deg, #3a3a4a 0%, #2a2a3a 100%);
+            margin: 0 auto;
+            border-radius: 0 0 4px 4px;
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            border-top: none;
+        }
+
+        /* Fantasma */
+        .ghost {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .ghost.visible {
+            opacity: 1;
+        }
+
+        .ghost-icon {
+            font-size: 5em;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(190, 156, 109, 0.5));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .ghost-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-gold);
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* Capacidades */
+        .capabilities {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .capabilities.left {
+            left: 20px;
+            top: 80px;
+        }
+
+        .capabilities.right {
+            right: 20px;
+            top: 80px;
+        }
+
+        .capability {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 10px;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s ease;
+        }
+
+        .capabilities.right .capability {
+            transform: translateX(20px);
+        }
+
+        .capability.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .capability:hover {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .capability-icon {
+            font-size: 1.5em;
+            width: 40px;
+            text-align: center;
+        }
+
+        .capability-text {
+            font-size: 0.9em;
+            color: var(--super-cream);
+        }
+
+        /* Linhas de conexao */
+        .connection {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--super-gold), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .connection.visible {
+            opacity: 0.5;
+        }
+
+        .connection.left-1 { top: 105px; left: 220px; width: 130px; }
+        .connection.left-2 { top: 155px; left: 220px; width: 130px; }
+        .connection.left-3 { top: 205px; left: 220px; width: 130px; }
+        .connection.right-1 { top: 105px; right: 220px; width: 130px; }
+        .connection.right-2 { top: 155px; right: 220px; width: 130px; }
+        .connection.right-3 { top: 205px; right: 220px; width: 130px; }
+
+        /* Quote */
+        .quote-section {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .quote-section.visible {
+            opacity: 1;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.2em;
+            color: var(--super-cream);
+            margin-bottom: 10px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .quote-author {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-gold);
+        }
+
+        /* Stage indicator */
+        .stage-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .stage-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            border: 2px solid rgba(190, 156, 109, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stage-dot.active {
+            background: var(--super-gold);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode h1 { font-size: 1.3em; margin-bottom: 20px; }
+        body.embed-mode .main-container { width: 800px; height: 380px; }
+        body.embed-mode .computer { width: 340px; }
+        body.embed-mode .computer-screen { height: 180px; }
+        body.embed-mode .screen-content { padding: 12px; font-size: 0.7em; }
+        body.embed-mode .computer-stand { width: 100px; height: 50px; }
+        body.embed-mode .computer-base { width: 170px; height: 12px; }
+        body.embed-mode .ghost { top: 40px; }
+        body.embed-mode .ghost-icon { font-size: 4em; }
+        body.embed-mode .ghost-label { font-size: 0.8em; }
+        body.embed-mode .capabilities { gap: 12px; }
+        body.embed-mode .capabilities.left { left: 10px; top: 60px; }
+        body.embed-mode .capabilities.right { right: 10px; top: 60px; }
+        body.embed-mode .capability { padding: 10px 14px; }
+        body.embed-mode .capability-icon { font-size: 1.2em; width: 32px; }
+        body.embed-mode .capability-text { font-size: 0.8em; }
+        body.embed-mode .connection.left-1 { top: 85px; left: 180px; width: 110px; }
+        body.embed-mode .connection.left-2 { top: 130px; left: 180px; width: 110px; }
+        body.embed-mode .connection.left-3 { top: 175px; left: 180px; width: 110px; }
+        body.embed-mode .connection.right-1 { top: 85px; right: 180px; width: 110px; }
+        body.embed-mode .connection.right-2 { top: 130px; right: 180px; width: 110px; }
+        body.embed-mode .connection.right-3 { top: 175px; right: 180px; width: 110px; }
+        body.embed-mode .quote-section { bottom: -60px; }
+        body.embed-mode .quote-text { font-size: 1em; }
+        body.embed-mode .quote-author { font-size: 0.8em; }
+        body.embed-mode .stage-indicator { bottom: 15px; }
+    </style>
+</head>
+<body>
+    <h1>O Fantasma na Maquina</h1>
+
+    <div class="main-container">
+        <!-- Fantasma central -->
+        <div class="ghost" id="ghost">
+            <div class="ghost-icon">&#128123;</div>
+            <div class="ghost-label">CLAUDE CODE</div>
+        </div>
+
+        <!-- Capacidades esquerda -->
+        <div class="capabilities left">
+            <div class="capability" id="cap-1">
+                <span class="capability-icon">&#128193;</span>
+                <span class="capability-text">Acessa seus arquivos</span>
+            </div>
+            <div class="capability" id="cap-2">
+                <span class="capability-icon">&#128187;</span>
+                <span class="capability-text">Executa comandos</span>
+            </div>
+            <div class="capability" id="cap-3">
+                <span class="capability-icon">&#128295;</span>
+                <span class="capability-text">Edita codigo</span>
+            </div>
+        </div>
+
+        <!-- Capacidades direita -->
+        <div class="capabilities right">
+            <div class="capability" id="cap-4">
+                <span class="capability-icon">&#128270;</span>
+                <span class="capability-text">Pesquisa na web</span>
+            </div>
+            <div class="capability" id="cap-5">
+                <span class="capability-icon">&#128230;</span>
+                <span class="capability-text">Gerencia git</span>
+            </div>
+            <div class="capability" id="cap-6">
+                <span class="capability-icon">&#129302;</span>
+                <span class="capability-text">Orquestra agentes</span>
+            </div>
+        </div>
+
+        <!-- Conexoes -->
+        <div class="connection left-1" id="conn-1"></div>
+        <div class="connection left-2" id="conn-2"></div>
+        <div class="connection left-3" id="conn-3"></div>
+        <div class="connection right-1" id="conn-4"></div>
+        <div class="connection right-2" id="conn-5"></div>
+        <div class="connection right-3" id="conn-6"></div>
+
+        <!-- Computador -->
+        <div class="computer">
+            <div class="computer-screen">
+                <div class="screen-content" id="screen-content">
+                    <div class="screen-line visible"><span class="prompt">$</span> <span class="cmd">claude</span></div>
+                    <div class="screen-line" id="line-1"><span class="output">Iniciando Claude Code...</span></div>
+                    <div class="screen-line" id="line-2"><span class="success">&#10003; Conectado ao localhost</span></div>
+                    <div class="screen-line" id="line-3"><span class="success">&#10003; Ambiente carregado</span></div>
+                    <div class="screen-line" id="line-4"><span class="output">Pronto para ajudar!</span></div>
+                    <div class="screen-line" id="line-5"><span class="prompt">></span> _</div>
+                </div>
+            </div>
+            <div class="computer-stand"></div>
+            <div class="computer-base"></div>
+        </div>
+
+        <!-- Quote -->
+        <div class="quote-section" id="quote">
+            <div class="quote-text">
+                "Um <span class="highlight">fantasma no seu computador</span> que pode fazer coisas por voce"
+            </div>
+            <div class="quote-author">-- Andrej Karpathy</div>
+        </div>
+    </div>
+
+    <!-- Stage indicator -->
+    <div class="stage-indicator">
+        <div class="stage-dot" data-stage="0"></div>
+        <div class="stage-dot" data-stage="1"></div>
+        <div class="stage-dot" data-stage="2"></div>
+        <div class="stage-dot" data-stage="3"></div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Elements
+        const ghost = document.getElementById('ghost');
+        const capabilities = document.querySelectorAll('.capability');
+        const connections = document.querySelectorAll('.connection');
+        const screenLines = document.querySelectorAll('.screen-line');
+        const quote = document.getElementById('quote');
+        const stageDots = document.querySelectorAll('.stage-dot');
+
+        let currentStage = 0;
+        const TOTAL_STAGES = 4;
+
+        function setStage(stage) {
+            currentStage = stage;
+
+            // Update dots
+            stageDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === stage);
+            });
+
+            // Reset all
+            ghost.classList.remove('visible');
+            capabilities.forEach(cap => cap.classList.remove('visible'));
+            connections.forEach(conn => conn.classList.remove('visible'));
+            screenLines.forEach((line, i) => {
+                if (i > 0) line.classList.remove('visible');
+            });
+            quote.classList.remove('visible');
+
+            // Stage 0: Computador + ghost
+            if (stage >= 0) {
+                ghost.classList.add('visible');
+                // Animate screen lines
+                for (let i = 1; i <= 5; i++) {
+                    setTimeout(() => {
+                        const line = document.getElementById('line-' + i);
+                        if (line) line.classList.add('visible');
+                    }, i * 200);
+                }
+            }
+
+            // Stage 1: Left capabilities
+            if (stage >= 1) {
+                setTimeout(() => document.getElementById('cap-1').classList.add('visible'), 100);
+                setTimeout(() => document.getElementById('cap-2').classList.add('visible'), 200);
+                setTimeout(() => document.getElementById('cap-3').classList.add('visible'), 300);
+                setTimeout(() => document.getElementById('conn-1').classList.add('visible'), 400);
+                setTimeout(() => document.getElementById('conn-2').classList.add('visible'), 500);
+                setTimeout(() => document.getElementById('conn-3').classList.add('visible'), 600);
+            }
+
+            // Stage 2: Right capabilities
+            if (stage >= 2) {
+                setTimeout(() => document.getElementById('cap-4').classList.add('visible'), 100);
+                setTimeout(() => document.getElementById('cap-5').classList.add('visible'), 200);
+                setTimeout(() => document.getElementById('cap-6').classList.add('visible'), 300);
+                setTimeout(() => document.getElementById('conn-4').classList.add('visible'), 400);
+                setTimeout(() => document.getElementById('conn-5').classList.add('visible'), 500);
+                setTimeout(() => document.getElementById('conn-6').classList.add('visible'), 600);
+            }
+
+            // Stage 3: Quote
+            if (stage >= 3) {
+                quote.classList.add('visible');
+            }
+        }
+
+        function nextStage() {
+            setStage((currentStage + 1) % TOTAL_STAGES);
+        }
+
+        // Initialize
+        setStage(0);
+
+        // Click handler
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.stage-dot')) {
+                setStage(parseInt(e.target.closest('.stage-dot').dataset.stage));
+                return;
+            }
+            nextStage();
+        });
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (document.body.classList.contains('embed-mode')) return;
+
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setStage(currentStage <= 0 ? TOTAL_STAGES - 1 : currentStage - 1);
+            }
+        });
+
+        // Communication with parent
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data.action === 'nextStage') {
+                if (currentStage < TOTAL_STAGES - 1) {
+                    nextStage();
+                    window.parent.postMessage({ type: 'fantasma-state', currentStage, totalStages: TOTAL_STAGES, completed: currentStage >= TOTAL_STAGES - 1 }, '*');
+                } else {
+                    window.parent.postMessage({ type: 'fantasma-state', currentStage, totalStages: TOTAL_STAGES, completed: true, canProceed: true }, '*');
+                }
+            } else if (data.action === 'prevStage') {
+                if (currentStage > 0) {
+                    setStage(currentStage - 1);
+                    window.parent.postMessage({ type: 'fantasma-state', currentStage, totalStages: TOTAL_STAGES, completed: false }, '*');
+                } else {
+                    window.parent.postMessage({ type: 'fantasma-state', currentStage, totalStages: TOTAL_STAGES, completed: false, canGoBack: true }, '*');
+                }
+            } else if (data.action === 'reset') {
+                setStage(0);
+            }
+        });
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'fantasma-ready', currentStage, totalStages: TOTAL_STAGES }, '*');
+        }
+    </script>
+</body>
+</html>

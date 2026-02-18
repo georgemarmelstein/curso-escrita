@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Fantasma na Maquina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--super-bg-dark);
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        .ghost-icon {
+            font-size: 5em;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.2s both, float 3s ease-in-out 1s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .main-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--super-cream);
+            text-align: center;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .main-text .highlight {
+            color: var(--super-gold);
+            font-style: italic;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.3em;
+            color: rgba(255, 244, 228, 0.5);
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 1s ease 0.8s both;
+        }
+
+        .quote-final {
+            max-width: 700px;
+            padding: 40px 50px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            text-align: center;
+            animation: scaleIn 0.8s ease 1s both;
+        }
+
+        .quote-final p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .quote-final .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .quote-final .author {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            color: var(--super-gold);
+        }
+
+        .terminal-prompt {
+            position: absolute;
+            bottom: 40px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            color: var(--super-gold);
+            opacity: 0.6;
+            animation: fadeIn 1s ease 1.5s both;
+        }
+
+        .terminal-prompt .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Embed mode */
+        body.embed-mode .main-text { font-size: 2.2em; }
+        body.embed-mode .ghost-icon { font-size: 3em; }
+        body.embed-mode .quote-final { padding: 25px 35px; }
+        body.embed-mode .quote-final p { font-size: 1.1em; }
+    </style>
+</head>
+<body>
+    <div class="ghost-icon">👻</div>
+
+    <div class="main-text">
+        O <span class="highlight">Fantasma</span><br>
+        na Máquina
+    </div>
+
+    <div class="subtitle">
+        Agora mora no seu computador.
+    </div>
+
+    <div class="quote-final">
+        <p>
+            "A linguagem de programação mais quente é o <span class="highlight">inglês</span>."
+        </p>
+        <div class="author">— Andrej Karpathy</div>
+    </div>
+
+    <div class="terminal-prompt">
+        $ claude<span class="cursor">_</span>
+    </div>
+
+    <script>
+        // Embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

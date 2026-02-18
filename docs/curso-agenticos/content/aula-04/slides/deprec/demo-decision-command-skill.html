@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Command vs Skill: Quando usar qual?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --amber: #fbbf24;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+            --cyan: #22d3ee;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        .bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 30% 40%, rgba(251, 191, 36, 0.04) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 60%, rgba(74, 222, 128, 0.04) 0%, transparent 40%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 3vh 4vw;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3vh;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .header p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 0.8vh;
+        }
+
+        /* Decision Tree */
+        .tree-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2vh;
+        }
+
+        /* Nodes */
+        .node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .question-box {
+            background: rgba(190, 156, 109, 0.15);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 2vh 3vw;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            max-width: 350px;
+        }
+
+        .question-box:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.2);
+        }
+
+        .question-box.active {
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.3);
+        }
+
+        .question-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.9rem, 1.3vw, 1.1rem);
+            color: var(--cream);
+            margin-bottom: 0.5vh;
+        }
+
+        .question-hint {
+            font-size: clamp(0.7rem, 0.9vw, 0.8rem);
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Branches */
+        .branches {
+            display: flex;
+            gap: 8vw;
+            margin-top: 2vh;
+            position: relative;
+        }
+
+        .branches::before {
+            content: '';
+            position: absolute;
+            top: -2vh;
+            left: 50%;
+            width: 2px;
+            height: 2vh;
+            background: var(--gold);
+            opacity: 0.3;
+        }
+
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5vh;
+        }
+
+        .branch-line {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+
+        .branch-connector {
+            width: 4vw;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold) 50%, transparent);
+            opacity: 0.3;
+        }
+
+        .branch.right .branch-connector {
+            background: linear-gradient(270deg, var(--gold) 50%, transparent);
+        }
+
+        .answer-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            font-weight: 600;
+            padding: 0.8vh 1.5vw;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .answer-yes {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--green);
+            border: 1px solid rgba(74, 222, 128, 0.4);
+        }
+
+        .answer-no {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .answer-label:hover {
+            transform: scale(1.1);
+        }
+
+        /* Result boxes */
+        .result-box {
+            padding: 2vh 2.5vw;
+            border-radius: 12px;
+            text-align: center;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .result-box.highlight {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .result-command {
+            background: rgba(251, 191, 36, 0.15);
+            border: 2px solid var(--amber);
+        }
+
+        .result-skill {
+            background: rgba(74, 222, 128, 0.15);
+            border: 2px solid var(--green);
+        }
+
+        .result-icon {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            margin-bottom: 1vh;
+        }
+
+        .result-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1rem, 1.4vw, 1.2rem);
+            font-weight: 600;
+        }
+
+        .result-command .result-title { color: var(--amber); }
+        .result-skill .result-title { color: var(--green); }
+
+        .result-desc {
+            font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.6);
+            margin-top: 0.5vh;
+        }
+
+        /* Second level */
+        .level-2 {
+            margin-top: 3vh;
+        }
+
+        .level-2 .question-box {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: var(--blue);
+            max-width: 280px;
+        }
+
+        .level-2 .branches {
+            gap: 6vw;
+        }
+
+        /* Quick guide */
+        .quick-guide {
+            display: flex;
+            justify-content: center;
+            gap: 3vw;
+            margin-top: 3vh;
+            padding-top: 2vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .guide-item {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            padding: 1vh 2vw;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .guide-icon {
+            font-size: clamp(1.5rem, 2vw, 1.8rem);
+        }
+
+        .guide-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+        }
+
+        .guide-item.command .guide-text { color: var(--amber); }
+        .guide-item.skill .guide-text { color: var(--green); }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 2vh 3vw; }
+        body.embed-mode .question-box { padding: 1.5vh 2vw; }
+        body.embed-mode .branches { gap: 5vw; }
+        body.embed-mode .result-box { padding: 1.5vh 2vw; }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Command vs Skill: Quando usar qual?</h1>
+            <p>A escolha certa para cada situação</p>
+        </div>
+
+        <div class="tree-container">
+            <!-- Level 1 -->
+            <div class="node level-1">
+                <div class="question-box active" onclick="highlightPath('simple')">
+                    <div class="question-text">A tarefa é simples?</div>
+                    <div class="question-hint">(menos de 50 linhas de instrução)</div>
+                </div>
+
+                <div class="branches">
+                    <div class="branch left">
+                        <div class="branch-line">
+                            <span class="branch-connector"></span>
+                            <span class="answer-label answer-yes" onclick="showResult('command-simple')">SIM</span>
+                        </div>
+                        <div class="result-box result-command" id="result-command-simple">
+                            <div class="result-icon">⚡</div>
+                            <div class="result-title">COMMAND</div>
+                            <div class="result-desc">Atalho rápido</div>
+                        </div>
+                    </div>
+
+                    <div class="branch right">
+                        <div class="branch-line">
+                            <span class="answer-label answer-no" onclick="expandLevel2()">NÃO</span>
+                            <span class="branch-connector"></span>
+                        </div>
+
+                        <!-- Level 2 -->
+                        <div class="node level-2" id="level2">
+                            <div class="question-box" onclick="highlightPath('examples')">
+                                <div class="question-text">Precisa de exemplos?</div>
+                                <div class="question-hint">(metodologia detalhada)</div>
+                            </div>
+
+                            <div class="branches">
+                                <div class="branch left">
+                                    <div class="branch-line">
+                                        <span class="branch-connector"></span>
+                                        <span class="answer-label answer-yes" onclick="showResult('skill-examples')">SIM</span>
+                                    </div>
+                                    <div class="result-box result-skill" id="result-skill-examples">
+                                        <div class="result-icon">📚</div>
+                                        <div class="result-title">SKILL</div>
+                                        <div class="result-desc">Expertise completa</div>
+                                    </div>
+                                </div>
+
+                                <div class="branch right">
+                                    <div class="branch-line">
+                                        <span class="answer-label answer-no" onclick="showResult('command-invoke')">NÃO</span>
+                                        <span class="branch-connector"></span>
+                                    </div>
+                                    <div class="result-box result-command" id="result-command-invoke">
+                                        <div class="result-icon">⚡</div>
+                                        <div class="result-title">COMMAND</div>
+                                        <div class="result-desc">Invocação direta</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-guide">
+            <div class="guide-item command">
+                <span class="guide-icon">⚡</span>
+                <span class="guide-text">Command = Atalho invocável com /</span>
+            </div>
+            <div class="guide-item skill">
+                <span class="guide-icon">📚</span>
+                <span class="guide-text">Skill = Expertise auto-detectada</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showResult(id) {
+            // Remove all highlights
+            document.querySelectorAll('.result-box').forEach(box => {
+                box.classList.remove('highlight');
+            });
+            // Add highlight to selected
+            const resultBox = document.getElementById('result-' + id);
+            if (resultBox) {
+                resultBox.classList.add('highlight');
+            }
+        }
+
+        function expandLevel2() {
+            const level2 = document.getElementById('level2');
+            level2.style.opacity = '1';
+        }
+
+        function highlightPath(path) {
+            // Visual feedback for clicking questions
+        }
+
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

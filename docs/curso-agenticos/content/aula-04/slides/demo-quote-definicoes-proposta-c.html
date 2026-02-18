@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definições - Proposta C: Teatro de Revelação</title>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #030305;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Libre Baskerville', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* Névoa de fundo */
+        .fog {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 100% 80% at 50% 100%, rgba(10, 10, 20, 0.9) 0%, transparent 70%),
+                radial-gradient(ellipse 80% 50% at 20% 50%, rgba(20, 20, 35, 0.5) 0%, transparent 50%),
+                radial-gradient(ellipse 80% 50% at 80% 50%, rgba(20, 20, 35, 0.5) 0%, transparent 50%);
+            z-index: 1;
+            animation: fogMove 20s ease-in-out infinite;
+        }
+
+        @keyframes fogMove {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Spotlight central */
+        .spotlight {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(ellipse at center,
+                rgba(190, 156, 109, 0.15) 0%,
+                rgba(190, 156, 109, 0.05) 30%,
+                transparent 70%);
+            z-index: 2;
+            opacity: 0;
+            animation: spotlightOn 2s ease 1.5s forwards;
+        }
+
+        @keyframes spotlightOn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Fantasmas nas laterais */
+        .ghost-quotes {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+        }
+
+        .ghost {
+            position: absolute;
+            font-family: 'Libre Baskerville', serif;
+            font-style: italic;
+            line-height: 1.4;
+            opacity: 0;
+            filter: blur(1px);
+            animation: ghostAppear 1.5s ease forwards;
+        }
+
+        .ghost:nth-child(1) {
+            top: 15%;
+            left: -5%;
+            width: 350px;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.06);
+            transform: perspective(500px) rotateY(15deg);
+            animation-delay: 0.3s;
+        }
+
+        .ghost:nth-child(2) {
+            top: 25%;
+            right: -5%;
+            width: 320px;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.05);
+            transform: perspective(500px) rotateY(-15deg);
+            text-align: right;
+            animation-delay: 0.5s;
+        }
+
+        .ghost:nth-child(3) {
+            bottom: 20%;
+            left: 2%;
+            width: 300px;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.04);
+            transform: perspective(500px) rotateY(10deg);
+            animation-delay: 0.7s;
+        }
+
+        @keyframes ghostAppear {
+            0% { opacity: 0; filter: blur(8px); }
+            100% { opacity: 1; filter: blur(2px); }
+        }
+
+        /* Fade out dos fantasmas */
+        .ghost {
+            animation: ghostAppear 1.5s ease forwards, ghostFade 1s ease 2s forwards;
+        }
+
+        @keyframes ghostFade {
+            to { opacity: 0.3; filter: blur(4px); }
+        }
+
+        /* Revelação central */
+        .central-revelation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            animation: revealCenter 1.5s cubic-bezier(0.16, 1, 0.3, 1) 1.8s forwards;
+        }
+
+        @keyframes revealCenter {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); filter: blur(10px); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+        }
+
+        /* Aspas decorativas gigantes */
+        .quote-mark {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 15em;
+            color: rgba(190, 156, 109, 0.08);
+            position: absolute;
+            line-height: 0.6;
+            user-select: none;
+        }
+
+        .quote-mark.open {
+            top: -80px;
+            left: -60px;
+        }
+
+        .quote-mark.close {
+            bottom: -40px;
+            right: -60px;
+        }
+
+        /* Texto principal */
+        .main-text {
+            position: relative;
+            z-index: 5;
+        }
+
+        .main-text p {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.4em;
+            font-weight: 400;
+            color: var(--super-cream);
+            line-height: 1.4;
+            text-shadow:
+                0 0 30px rgba(190, 156, 109, 0.5),
+                0 0 60px rgba(190, 156, 109, 0.3),
+                0 0 90px rgba(190, 156, 109, 0.15);
+        }
+
+        .main-text .gold {
+            color: var(--super-gold);
+            font-weight: 700;
+        }
+
+        .main-text .whisper {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.6em;
+            font-style: italic;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Linha luminosa */
+        .light-bar {
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg,
+                transparent,
+                var(--super-gold) 20%,
+                var(--super-cream) 50%,
+                var(--super-gold) 80%,
+                transparent);
+            margin: 35px auto;
+            opacity: 0;
+            animation: lightBarGlow 0.8s ease 2.8s forwards;
+        }
+
+        @keyframes lightBarGlow {
+            0% { opacity: 0; width: 0; }
+            100% { opacity: 1; width: 200px; }
+        }
+
+        /* Autor com efeito de luz */
+        .author-spotlight {
+            opacity: 0;
+            animation: authorReveal 0.8s ease 3.1s forwards;
+        }
+
+        @keyframes authorReveal {
+            to { opacity: 1; }
+        }
+
+        .author-spotlight .name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4em;
+            letter-spacing: 8px;
+            color: var(--super-gold);
+            text-shadow: 0 0 20px rgba(190, 156, 109, 0.5);
+        }
+
+        .author-spotlight .title {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65em;
+            letter-spacing: 2px;
+            color: rgba(255, 244, 228, 0.4);
+            margin-top: 5px;
+        }
+
+        /* Badge final com glow */
+        .glow-badge {
+            margin-top: 40px;
+            opacity: 0;
+            animation: badgeGlow 0.8s ease 3.5s forwards;
+        }
+
+        @keyframes badgeGlow {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .glow-badge span {
+            display: inline-block;
+            padding: 12px 35px;
+            background: transparent;
+            border: 2px solid var(--super-green);
+            color: var(--super-green);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7em;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            box-shadow:
+                0 0 20px rgba(74, 222, 128, 0.3),
+                inset 0 0 20px rgba(74, 222, 128, 0.1);
+            animation: pulseGlow 2s ease-in-out infinite 4s;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.3), inset 0 0 20px rgba(74, 222, 128, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(74, 222, 128, 0.5), inset 0 0 30px rgba(74, 222, 128, 0.2); }
+        }
+
+        /* ============================================
+           EMBED MODE
+           ============================================ */
+        body.embed-mode .main-text p { font-size: 2.9em; }
+        body.embed-mode .ghost:nth-child(1) { font-size: 1em; width: 400px; }
+        body.embed-mode .ghost:nth-child(2) { font-size: 0.95em; width: 380px; }
+        body.embed-mode .ghost:nth-child(3) { font-size: 0.9em; width: 350px; }
+        body.embed-mode .author-spotlight .name { font-size: 1.6em; }
+        body.embed-mode .glow-badge span { font-size: 0.8em; padding: 14px 40px; }
+    </style>
+</head>
+<body>
+    <div class="fog"></div>
+    <div class="spotlight"></div>
+
+    <div class="container">
+        <!-- Fantasmas nas laterais -->
+        <div class="ghost-quotes">
+            <div class="ghost">
+                "Sistemas autônomos que percebem seu ambiente através de sensores e agem sobre ele através de atuadores para maximizar uma função de utilidade."
+            </div>
+            <div class="ghost">
+                "Modelos usando ferramentas em loop, com base em feedback do ambiente para guiar ações subsequentes."
+            </div>
+            <div class="ghost">
+                "Sistema que usa um LLM para raciocinar, planejar e executar ações de forma iterativa."
+            </div>
+        </div>
+
+        <!-- Revelação central -->
+        <div class="central-revelation">
+            <div class="quote-mark open">"</div>
+            <div class="quote-mark close">"</div>
+
+            <div class="main-text">
+                <p>
+                    Agentes são<br>
+                    <span class="gold">algumas linhas de texto</span><br>
+                    em linguagem natural.
+                    <span class="whisper">Também conhecidos como prompts.</span>
+                </p>
+            </div>
+
+            <div class="light-bar"></div>
+
+            <div class="author-spotlight">
+                <div class="name">GEORGE MARMELSTEIN</div>
+                <div class="title">Instrutor do Curso</div>
+            </div>
+
+            <div class="glow-badge">
+                <span>Simplicidade é Poder</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

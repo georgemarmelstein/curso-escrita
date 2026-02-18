@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradigmas - Proposta B: Timeline Editorial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        /* Título */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Timeline container */
+        .timeline-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            max-width: 1100px;
+            position: relative;
+        }
+
+        /* Linha conectora */
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 45px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: linear-gradient(90deg,
+                var(--super-gold) 0%,
+                var(--super-gold) 33%,
+                rgba(190, 156, 109, 0.3) 33%,
+                rgba(190, 156, 109, 0.3) 66%,
+                rgba(190, 156, 109, 0.2) 66%);
+            z-index: 1;
+        }
+
+        /* Card timeline */
+        .timeline-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Marker do ano */
+        .year-marker {
+            width: 90px;
+            height: 90px;
+            background: var(--super-bg-dark);
+            border: 3px solid var(--super-gold);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            transition: all 0.4s ease;
+        }
+
+        .year-marker .icon {
+            font-size: 1.8em;
+            margin-bottom: 2px;
+        }
+
+        .year-marker .year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+        }
+
+        /* Estados spotlight */
+        .timeline-card.dimmed {
+            opacity: 0.2;
+            transform: scale(0.9);
+        }
+
+        .timeline-card.dimmed .year-marker {
+            border-color: rgba(190, 156, 109, 0.3);
+        }
+
+        .timeline-card.spotlight .year-marker {
+            background: var(--super-gold);
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.5);
+        }
+
+        .timeline-card.spotlight .year-marker .icon {
+            filter: grayscale(1) brightness(0.2);
+        }
+
+        .timeline-card.spotlight .year-marker .year {
+            color: var(--super-bg-dark);
+        }
+
+        /* Conteúdo do card */
+        .card-content {
+            text-align: center;
+            max-width: 280px;
+        }
+
+        .card-product {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 5px;
+        }
+
+        .card-company {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .knowledge-type {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid var(--super-gold);
+            color: var(--super-gold);
+            font-size: 0.7em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+
+        .card-quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Features minimalistas */
+        .features-mini {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .feature-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        .feature-mini .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--super-gold);
+            border-radius: 50%;
+        }
+
+        /* Convergência */
+        .convergence-section {
+            margin-top: 50px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .convergence-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .convergence-line {
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--super-gold), transparent);
+            margin: 0 auto 20px;
+        }
+
+        .convergence-content {
+            padding: 30px 50px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.1), transparent);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            max-width: 700px;
+        }
+
+        .convergence-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .convergence-title::before,
+        .convergence-title::after {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--super-gold);
+        }
+
+        .convergence-text {
+            font-size: 0.95em;
+            color: var(--super-cream);
+            line-height: 1.6;
+        }
+
+        .convergence-question {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(190, 156, 109, 0.2);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1em;
+            color: var(--super-gold);
+        }
+
+        /* Stage indicator */
+        .stage-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .stage-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            border: 2px solid rgba(190, 156, 109, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stage-dot.active {
+            background: var(--super-gold);
+            border-color: var(--super-gold);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode h1 { font-size: 1.4em; margin-bottom: 10px; }
+        body.embed-mode .subtitle { margin-bottom: 25px; font-size: 0.8em; }
+        body.embed-mode .year-marker { width: 70px; height: 70px; }
+        body.embed-mode .year-marker .icon { font-size: 1.4em; }
+        body.embed-mode .card-product { font-size: 1.3em; }
+        body.embed-mode .card-content { max-width: 240px; }
+        body.embed-mode .convergence-section { margin-top: 30px; }
+        body.embed-mode .convergence-content { padding: 20px 30px; }
+    </style>
+</head>
+<body>
+    <h1>Três Paradigmas de Conhecimento</h1>
+    <p class="subtitle">A evolução da IA generativa</p>
+
+    <div class="timeline-container">
+        <!-- ChatGPT -->
+        <div class="timeline-card">
+            <div class="year-marker">
+                <span class="icon">💬</span>
+                <span class="year">2022</span>
+            </div>
+            <div class="card-content">
+                <div class="card-product">ChatGPT</div>
+                <div class="card-company">OpenAI</div>
+                <div class="knowledge-type">PARAMÉTRICO</div>
+                <div class="card-quote">"O que a máquina aprendeu no treino"</div>
+                <div class="features-mini">
+                    <div class="feature-mini"><span class="dot"></span> Conversa pura</div>
+                    <div class="feature-mini"><span class="dot"></span> Limitado ao que "sabe"</div>
+                    <div class="feature-mini"><span class="dot"></span> Fonte: treino do modelo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Claude -->
+        <div class="timeline-card">
+            <div class="year-marker">
+                <span class="icon">📎</span>
+                <span class="year">2023</span>
+            </div>
+            <div class="card-content">
+                <div class="card-product">Claude</div>
+                <div class="card-company">Anthropic</div>
+                <div class="knowledge-type">CONTEXTUAL</div>
+                <div class="card-quote">"O que o usuário fornece"</div>
+                <div class="features-mini">
+                    <div class="feature-mini"><span class="dot"></span> Botão de anexo</div>
+                    <div class="feature-mini"><span class="dot"></span> Fonte = VOCÊ</div>
+                    <div class="feature-mini"><span class="dot"></span> 200K tokens</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Perplexity -->
+        <div class="timeline-card">
+            <div class="year-marker">
+                <span class="icon">🌐</span>
+                <span class="year">2023</span>
+            </div>
+            <div class="card-content">
+                <div class="card-product">Perplexity</div>
+                <div class="card-company">Perplexity AI</div>
+                <div class="knowledge-type">EXTERNO</div>
+                <div class="card-quote">"O que a web sabe em tempo real"</div>
+                <div class="features-mini">
+                    <div class="feature-mini"><span class="dot"></span> Pesquisa ao vivo</div>
+                    <div class="feature-mini"><span class="dot"></span> Fonte = O MUNDO</div>
+                    <div class="feature-mini"><span class="dot"></span> Tempo real</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Convergência -->
+    <div class="convergence-section">
+        <div class="convergence-line"></div>
+        <div class="convergence-content">
+            <div class="convergence-title">CONVERGÊNCIA</div>
+            <div class="convergence-text">
+                Hoje, todos têm <strong>anexos</strong>, <strong>busca na web</strong> e <strong>raciocínio expandido</strong>.
+            </div>
+            <div class="convergence-question">
+                "Se todos já têm tudo... o que os agentes trazem de novo?"
+            </div>
+        </div>
+    </div>
+
+    <!-- Stage indicator -->
+    <div class="stage-indicator">
+        <div class="stage-dot" data-stage="0"></div>
+        <div class="stage-dot" data-stage="1"></div>
+        <div class="stage-dot" data-stage="2"></div>
+        <div class="stage-dot" data-stage="3"></div>
+    </div>
+
+    <script>
+        // Embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Progressive Spotlight
+        const cards = document.querySelectorAll('.timeline-card');
+        const convergence = document.querySelector('.convergence-section');
+        const stageDots = document.querySelectorAll('.stage-dot');
+        let currentStage = 0;
+
+        function setStage(stage) {
+            currentStage = stage;
+
+            stageDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === stage);
+            });
+
+            cards.forEach((card, i) => {
+                card.classList.remove('dimmed', 'spotlight');
+                if (stage < 3) {
+                    if (i === stage) {
+                        card.classList.add('spotlight');
+                    } else {
+                        card.classList.add('dimmed');
+                    }
+                }
+            });
+
+            convergence.classList.toggle('visible', stage === 3);
+        }
+
+        function nextStage() {
+            setStage((currentStage + 1) % 4);
+        }
+
+        setStage(0);
+
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.stage-dot')) {
+                setStage(parseInt(e.target.closest('.stage-dot').dataset.stage));
+                return;
+            }
+            nextStage();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setStage(currentStage <= 0 ? 3 : currentStage - 1);
+            }
+        });
+    </script>
+</body>
+</html>

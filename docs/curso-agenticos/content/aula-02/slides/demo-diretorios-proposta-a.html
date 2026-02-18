@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Os Dois Mundos do Claude - Proposta A: Abas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(190, 156, 109, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 25px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════ */
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TABS - O CORAÇÃO DA PROPOSTA A
+           ═══════════════════════════════════════════════════════════ */
+        .zone-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 15px;
+        }
+
+        .zone-tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 35px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .zone-tab:first-child {
+            border-radius: 8px 0 0 8px;
+            border-right: none;
+        }
+
+        .zone-tab:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .zone-tab .tab-icon {
+            font-size: 1.3em;
+        }
+
+        .zone-tab .tab-label {
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .zone-tab .tab-hint {
+            font-size: 0.65em;
+            opacity: 0.5;
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Tab ZONA 1 - Azul */
+        .zone-tab[data-zone="home"] {
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .zone-tab[data-zone="home"].active {
+            background: rgba(96, 165, 250, 0.15);
+            border-color: var(--super-blue);
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.2);
+        }
+
+        .zone-tab[data-zone="home"].active .tab-label {
+            color: var(--super-blue);
+        }
+
+        /* Tab ZONA 2 - Verde */
+        .zone-tab[data-zone="work"] {
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .zone-tab[data-zone="work"].active {
+            background: rgba(74, 222, 128, 0.15);
+            border-color: var(--super-green);
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.2);
+        }
+
+        .zone-tab[data-zone="work"].active .tab-label {
+            color: var(--super-green);
+        }
+
+        .zone-tab:not(.active):hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN LAYOUT
+           ═══════════════════════════════════════════════════════════ */
+        .main-content {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 20px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TERMINAL
+           ═══════════════════════════════════════════════════════════ */
+        .terminal-container {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.3s ease;
+        }
+
+        .terminal-container.zone-home {
+            border-color: rgba(96, 165, 250, 0.4);
+        }
+
+        .terminal-container.zone-work {
+            border-color: rgba(74, 222, 128, 0.4);
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .terminal-body {
+            padding: 12px 16px;
+            overflow-y: auto;
+            flex: 1;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        /* Tree structure */
+        .tree-line {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+            margin: 1px 0;
+        }
+
+        .tree-line:hover {
+            background: rgba(190, 156, 109, 0.15);
+        }
+
+        .tree-line.active {
+            background: rgba(190, 156, 109, 0.25);
+        }
+
+        .tree-prefix {
+            color: rgba(255, 244, 228, 0.25);
+            white-space: pre;
+        }
+
+        .tree-name { flex: 1; }
+        .tree-name.folder { color: var(--super-gold); }
+        .tree-name.file { color: var(--super-cream); }
+        .tree-name.special { color: var(--super-green); }
+        .tree-name.local { color: var(--super-amber); }
+        .tree-name.secret { color: var(--super-red); }
+
+        .tree-tag {
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+
+        .tag-home { background: rgba(96, 165, 250, 0.2); color: var(--super-blue); }
+        .tag-work { background: rgba(74, 222, 128, 0.2); color: var(--super-green); }
+        .tag-essential { background: rgba(190, 156, 109, 0.3); color: var(--super-gold); }
+
+        /* Zone content visibility */
+        .zone-content {
+            display: none;
+        }
+
+        .zone-content.active {
+            display: block;
+        }
+
+        /* Zone header inside terminal */
+        .zone-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            margin: -12px -16px 12px -16px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .zone-header.home {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .zone-header.work {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .zone-header .zone-icon {
+            font-size: 1.2em;
+        }
+
+        .zone-header .zone-title {
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .zone-header.home .zone-title { color: var(--super-blue); }
+        .zone-header.work .zone-title { color: var(--super-green); }
+
+        .zone-header .zone-desc {
+            font-size: 0.65em;
+            opacity: 0.6;
+            margin-left: auto;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           DESCRIPTION PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .description-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .panel-icon {
+            font-size: 1.5em;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 8px;
+        }
+
+        .panel-meta { flex: 1; }
+
+        .panel-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 4px;
+        }
+
+        .panel-type {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .panel-zone {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.65em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .zone-home-badge {
+            background: rgba(96, 165, 250, 0.15);
+            color: var(--super-blue);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+        }
+
+        .zone-work-badge {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--super-green);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .panel-description {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .panel-description strong {
+            color: var(--super-gold);
+        }
+
+        .features-title {
+            font-size: 0.65em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .panel-features {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 5px;
+            border-left: 2px solid var(--super-gold);
+        }
+
+        .feature-bullet { color: var(--super-gold); }
+
+        .feature-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.85);
+        }
+
+        .example-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .example-title {
+            font-size: 0.6em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+
+        .example-code {
+            font-size: 0.75em;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px 10px;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+
+        .example-code .comment { color: rgba(255, 244, 228, 0.4); }
+        .example-code .key { color: var(--super-gold); }
+        .example-code .string { color: var(--super-green); }
+
+        .info-box {
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.25);
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .info-icon { color: var(--super-gold); }
+
+        .info-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.4;
+        }
+
+        /* Default panel */
+        .default-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            padding: 25px;
+        }
+
+        .default-icon {
+            font-size: 2.5em;
+            color: var(--super-gold);
+            opacity: 0.2;
+            margin-bottom: 12px;
+        }
+
+        .default-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 6px;
+        }
+
+        .default-hint {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode { height: 100vh; overflow: hidden; }
+        body.embed-mode .container { padding: 12px 18px; }
+        body.embed-mode h1 { font-size: clamp(1.2em, 1.8vw, 1.5em); }
+        body.embed-mode .subtitle { font-size: 0.65em; }
+        body.embed-mode .zone-tabs { margin-bottom: 12px; }
+        body.embed-mode .zone-tab { padding: 10px 28px; }
+        body.embed-mode .zone-tab .tab-label { font-size: 0.8em; }
+        body.embed-mode .main-content { gap: 15px; grid-template-columns: 380px 1fr; }
+        body.embed-mode .terminal-body { font-size: 0.8em; padding: 10px 14px; }
+        body.embed-mode .tree-line { padding: 3px 6px; }
+        body.embed-mode .zone-header { padding: 8px 10px; margin: -10px -14px 10px -14px; }
+        body.embed-mode .description-panel { padding: 16px; }
+        body.embed-mode .panel-title { font-size: 1em; }
+        body.embed-mode .panel-description { font-size: 0.8em; }
+        body.embed-mode .feature-text { font-size: 0.75em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Os Dois Mundos do Claude</h1>
+            <div class="subtitle">// Proposta A: Sistema de Abas</div>
+        </header>
+
+        <!-- TABS -->
+        <div class="zone-tabs">
+            <div class="zone-tab active" data-zone="home">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-label">Zona 1: Casa Global</span>
+            </div>
+            <div class="zone-tab" data-zone="work">
+                <span class="tab-icon">💼</span>
+                <span class="tab-label">Zona 2: Projeto</span>
+            </div>
+        </div>
+
+        <main class="main-content">
+            <!-- Terminal -->
+            <div class="terminal-container zone-home" id="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                    </div>
+                    <span class="terminal-title">tree --claude-view</span>
+                </div>
+                <div class="terminal-body">
+                    <!-- ZONA 1: Casa Global -->
+                    <div class="zone-content active" id="zone-home">
+                        <div class="zone-header home">
+                            <span class="zone-icon">🏠</span>
+                            <span class="zone-title">Casa Global</span>
+                            <span class="zone-desc">Configurações para todos os projetos</span>
+                        </div>
+
+                        <div class="tree-line" data-item="home">
+                            <span class="tree-prefix"></span>
+                            <span class="tree-name folder">~/</span>
+                            <span class="tree-tag tag-home">home</span>
+                        </div>
+                        <div class="tree-line" data-item="dotclaude-global">
+                            <span class="tree-prefix">├── </span>
+                            <span class="tree-name folder">.claude/</span>
+                            <span class="tree-tag tag-essential">global</span>
+                        </div>
+                        <div class="tree-line" data-item="settings-global">
+                            <span class="tree-prefix">│   ├── </span>
+                            <span class="tree-name file">settings.json</span>
+                        </div>
+                        <div class="tree-line" data-item="credentials">
+                            <span class="tree-prefix">│   ├── </span>
+                            <span class="tree-name secret">credentials.json</span>
+                        </div>
+                        <div class="tree-line" data-item="commands-global">
+                            <span class="tree-prefix">│   ├── </span>
+                            <span class="tree-name folder">commands/</span>
+                        </div>
+                        <div class="tree-line" data-item="skills-global">
+                            <span class="tree-prefix">│   ├── </span>
+                            <span class="tree-name folder">skills/</span>
+                        </div>
+                        <div class="tree-line" data-item="plugins-global">
+                            <span class="tree-prefix">│   └── </span>
+                            <span class="tree-name folder">plugins/</span>
+                        </div>
+                        <div class="tree-line" data-item="claudemd-global">
+                            <span class="tree-prefix">└── </span>
+                            <span class="tree-name special">CLAUDE.md</span>
+                            <span class="tree-tag tag-essential">pessoal</span>
+                        </div>
+                    </div>
+
+                    <!-- ZONA 2: Projeto -->
+                    <div class="zone-content" id="zone-work">
+                        <div class="zone-header work">
+                            <span class="zone-icon">💼</span>
+                            <span class="zone-title">Projeto Atual</span>
+                            <span class="zone-desc">Sobrescreve configurações globais</span>
+                        </div>
+
+                        <div class="tree-line" data-item="projeto">
+                            <span class="tree-prefix"></span>
+                            <span class="tree-name folder">~/projetos/meu-projeto/</span>
+                            <span class="tree-tag tag-work">trabalho</span>
+                        </div>
+                        <div class="tree-line" data-item="claudemd-projeto">
+                            <span class="tree-prefix">├── </span>
+                            <span class="tree-name special">CLAUDE.md</span>
+                            <span class="tree-tag tag-essential">projeto</span>
+                        </div>
+                        <div class="tree-line" data-item="claudelocal">
+                            <span class="tree-prefix">├── </span>
+                            <span class="tree-name local">CLAUDE.local.md</span>
+                        </div>
+                        <div class="tree-line" data-item="dotclaude-projeto">
+                            <span class="tree-prefix">├── </span>
+                            <span class="tree-name folder">.claude/</span>
+                        </div>
+                        <div class="tree-line" data-item="commands">
+                            <span class="tree-prefix">│   ├── </span>
+                            <span class="tree-name folder">commands/</span>
+                        </div>
+                        <div class="tree-line" data-item="skills">
+                            <span class="tree-prefix">│   └── </span>
+                            <span class="tree-name folder">skills/</span>
+                        </div>
+                        <div class="tree-line" data-item="docs">
+                            <span class="tree-prefix">├── </span>
+                            <span class="tree-name folder">docs/</span>
+                        </div>
+                        <div class="tree-line" data-item="plans">
+                            <span class="tree-prefix">│   ├── </span>
+                            <span class="tree-name folder">plans/</span>
+                        </div>
+                        <div class="tree-line" data-item="specs">
+                            <span class="tree-prefix">│   └── </span>
+                            <span class="tree-name folder">specs/</span>
+                        </div>
+                        <div class="tree-line" data-item="src">
+                            <span class="tree-prefix">├── </span>
+                            <span class="tree-name folder">src/</span>
+                        </div>
+                        <div class="tree-line" data-item="env">
+                            <span class="tree-prefix">├── </span>
+                            <span class="tree-name secret">.env</span>
+                        </div>
+                        <div class="tree-line" data-item="readme">
+                            <span class="tree-prefix">└── </span>
+                            <span class="tree-name file">README.md</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Panel -->
+            <div class="description-panel" id="panel">
+                <div class="default-panel" id="default-panel">
+                    <div class="default-icon">📂</div>
+                    <div class="default-text">Selecione um item na árvore</div>
+                    <div class="default-hint">Use as abas para alternar entre as zonas</div>
+                </div>
+                <div id="panel-content" style="display: none;"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Embed mode detection
+        (function() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        })();
+
+        // Item data
+        const items = {
+            'home': {
+                icon: '~', title: '~/ (Home)', type: 'Diretório Raiz',
+                zone: 'home',
+                desc: 'A <strong>morada do Claude</strong> no seu computador. Configurações globais que se aplicam a todos os projetos.',
+                features: [
+                    { text: 'Ponto de partida para toda navegação' },
+                    { text: 'Configurações globais valem para TODOS os projetos' }
+                ]
+            },
+            'dotclaude-global': {
+                icon: '.claude/', title: '~/.claude/', type: 'Configurações Globais',
+                zone: 'home',
+                desc: 'O <strong>quarto pessoal do Claude</strong>. Contém configurações que se aplicam a TODOS os projetos.',
+                features: [
+                    { text: 'Suas preferências pessoais' },
+                    { text: 'Permissões globais de ferramentas' }
+                ]
+            },
+            'settings-global': {
+                icon: 'settings.json', title: '~/.claude/settings.json', type: 'Configurações JSON',
+                zone: 'home',
+                desc: 'Configurações globais em JSON. Define permissões padrão e modelo preferido.',
+                features: [
+                    { text: 'Permissões allow/deny padrão' },
+                    { text: 'Modelo preferido (sonnet, opus)' }
+                ]
+            },
+            'credentials': {
+                icon: 'credentials', title: 'credentials.json', type: 'Autenticação',
+                zone: 'home',
+                desc: 'Credenciais de autenticação com a Anthropic. <strong>Criado automaticamente</strong> pelo login.',
+                features: [
+                    { text: 'Criado por "claude login"' },
+                    { text: 'NÃO edite manualmente' }
+                ]
+            },
+            'commands-global': {
+                icon: 'commands/', title: '~/.claude/commands/', type: 'Slash Commands Globais',
+                zone: 'home',
+                desc: 'Comandos que funcionam em <strong>qualquer projeto</strong>.',
+                features: [
+                    { text: 'Disponíveis em qualquer projeto' },
+                    { text: 'Seus atalhos pessoais' }
+                ]
+            },
+            'skills-global': {
+                icon: 'skills/', title: '~/.claude/skills/', type: 'Skills Globais',
+                zone: 'home',
+                desc: 'Skills pessoais disponíveis em <strong>qualquer projeto</strong>.',
+                features: [
+                    { text: 'Suas especialidades favoritas' },
+                    { text: 'Sempre disponíveis' }
+                ]
+            },
+            'plugins-global': {
+                icon: 'plugins/', title: '~/.claude/plugins/', type: 'Plugins Globais',
+                zone: 'home',
+                desc: 'Extensões que adicionam <strong>funcionalidades extras</strong> ao Claude Code.',
+                features: [
+                    { text: 'Extensões do Claude Code' },
+                    { text: 'Disponíveis globalmente' }
+                ]
+            },
+            'claudemd-global': {
+                icon: 'CLAUDE.md', title: '~/CLAUDE.md', type: 'Memória Pessoal Global',
+                zone: 'home',
+                desc: 'Sua <strong>carta pessoal para o Claude</strong> que ele lê em QUALQUER projeto.',
+                features: [
+                    { text: 'Carregado em TODOS os projetos' },
+                    { text: 'Suas preferências de trabalho' }
+                ],
+                info: 'Este arquivo é pessoal e NÃO deve ser versionado.'
+            },
+            'projeto': {
+                icon: 'meu-projeto/', title: 'meu-projeto/', type: 'Diretório do Projeto',
+                zone: 'work',
+                desc: 'O <strong>escritório do Claude</strong> para este trabalho. Configurações aqui sobrescrevem as globais.',
+                features: [
+                    { text: 'Área de trabalho focada' },
+                    { text: 'Inicie aqui: cd projeto && claude' }
+                ]
+            },
+            'claudemd-projeto': {
+                icon: 'CLAUDE.md', title: 'CLAUDE.md (Projeto)', type: 'Memória Principal',
+                zone: 'work',
+                desc: '<strong>O arquivo mais importante!</strong> Manual de instruções deste projeto.',
+                features: [
+                    { text: 'Carregado automaticamente' },
+                    { text: 'Sobrevive ao /compact' },
+                    { text: 'Versionado no Git' }
+                ]
+            },
+            'claudelocal': {
+                icon: 'CLAUDE.local.md', title: 'CLAUDE.local.md', type: 'Memória Pessoal',
+                zone: 'work',
+                desc: 'Suas configurações <strong>pessoais e privadas</strong>. Ignorado pelo Git.',
+                features: [
+                    { text: 'Privado (não vai pro repo)' },
+                    { text: 'Caminhos locais' }
+                ]
+            },
+            'dotclaude-projeto': {
+                icon: '.claude/', title: '.claude/ (Projeto)', type: 'Configurações do Projeto',
+                zone: 'work',
+                desc: 'O <strong>armário de ferramentas</strong> deste projeto. Versionado no Git.',
+                features: [
+                    { text: 'Configurações específicas' },
+                    { text: 'Equipe compartilha' }
+                ]
+            },
+            'commands': {
+                icon: 'commands/', title: '.claude/commands/', type: 'Slash Commands',
+                zone: 'work',
+                desc: 'Cada arquivo .md vira um <strong>slash command</strong>!',
+                features: [
+                    { text: 'arquivo.md → /arquivo' },
+                    { text: 'Atalhos para workflows' }
+                ]
+            },
+            'skills': {
+                icon: 'skills/', title: '.claude/skills/', type: 'Capacidades Modulares',
+                zone: 'work',
+                desc: 'Skills são <strong>especialidades reutilizáveis</strong> com SKILL.md como entrypoint.',
+                features: [
+                    { text: 'Expertise encapsulada' },
+                    { text: 'SKILL.md obrigatório' }
+                ]
+            },
+            'docs': {
+                icon: 'docs/', title: 'docs/', type: 'Documentação',
+                zone: 'work',
+                desc: 'Documentação técnica do projeto.',
+                features: [
+                    { text: 'Guias e tutoriais' },
+                    { text: 'ADRs e diagramas' }
+                ]
+            },
+            'plans': {
+                icon: 'plans/', title: 'docs/plans/', type: 'Planos de Implementação',
+                zone: 'work',
+                desc: 'Planos de implementação para tarefas complexas. O Claude pode criar e seguir planos aqui.',
+                features: [
+                    { text: 'Planos estruturados' },
+                    { text: 'Roadmaps e milestones' }
+                ]
+            },
+            'specs': {
+                icon: 'specs/', title: 'docs/specs/', type: 'Especificações',
+                zone: 'work',
+                desc: 'Templates e especificações para padronizar artefatos.',
+                features: [
+                    { text: 'Templates para criação' },
+                    { text: 'Checklists de validação' }
+                ]
+            },
+            'src': {
+                icon: 'src/', title: 'src/', type: 'Código-Fonte',
+                zone: 'work',
+                desc: 'O <strong>código principal</strong> do projeto.',
+                features: [
+                    { text: 'Lógica de negócios' },
+                    { text: 'Onde o Claude mais atua' }
+                ]
+            },
+            'env': {
+                icon: '.env', title: '.env', type: 'Variáveis de Ambiente',
+                zone: 'work',
+                desc: '<strong>NUNCA versione!</strong> Contém API keys e segredos.',
+                features: [
+                    { text: 'Deve estar no .gitignore' },
+                    { text: 'Claude lê mas não expõe' }
+                ]
+            },
+            'readme': {
+                icon: 'README.md', title: 'README.md', type: 'Documentação Humana',
+                zone: 'work',
+                desc: 'Documentação para desenvolvedores humanos. Diferente do CLAUDE.md.',
+                features: [
+                    { text: 'Para pessoas' },
+                    { text: 'Instruções de uso' }
+                ]
+            }
+        };
+
+        // DOM elements
+        const tabs = document.querySelectorAll('.zone-tab');
+        const zoneContents = document.querySelectorAll('.zone-content');
+        const terminal = document.getElementById('terminal');
+        const defaultPanel = document.getElementById('default-panel');
+        const panelContent = document.getElementById('panel-content');
+
+        // Tab switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const zone = tab.dataset.zone;
+
+                // Update tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update terminal border color
+                terminal.className = 'terminal-container zone-' + zone;
+
+                // Show correct zone content
+                zoneContents.forEach(z => {
+                    z.classList.toggle('active', z.id === 'zone-' + zone);
+                });
+
+                // Reset panel
+                defaultPanel.style.display = 'flex';
+                panelContent.style.display = 'none';
+                document.querySelectorAll('.tree-line').forEach(l => l.classList.remove('active'));
+            });
+        });
+
+        // Item selection
+        document.querySelectorAll('.tree-line').forEach(line => {
+            line.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const itemId = line.dataset.item;
+                const data = items[itemId];
+                if (!data) return;
+
+                // Highlight
+                document.querySelectorAll('.tree-line').forEach(l => l.classList.remove('active'));
+                line.classList.add('active');
+
+                // Show panel
+                defaultPanel.style.display = 'none';
+                panelContent.style.display = 'block';
+
+                const zoneBadge = data.zone === 'home'
+                    ? '<span class="panel-zone zone-home-badge">🏠 Casa Global</span>'
+                    : '<span class="panel-zone zone-work-badge">💼 Projeto</span>';
+
+                let html = `
+                    <div class="panel-header">
+                        <div class="panel-icon">${data.icon.charAt(0)}</div>
+                        <div class="panel-meta">
+                            <div class="panel-title">${data.title}</div>
+                            <div class="panel-type">${data.type}</div>
+                            ${zoneBadge}
+                        </div>
+                    </div>
+                    <div class="panel-description">${data.desc}</div>
+                `;
+
+                if (data.info) {
+                    html += `<div class="info-box"><span class="info-icon">ℹ</span><span class="info-text">${data.info}</span></div>`;
+                }
+
+                if (data.features) {
+                    html += `<div class="features-title">Características</div><div class="panel-features">`;
+                    data.features.forEach(f => {
+                        html += `<div class="feature-item"><span class="feature-bullet">›</span><span class="feature-text">${f.text}</span></div>`;
+                    });
+                    html += `</div>`;
+                }
+
+                panelContent.innerHTML = html;
+            });
+        });
+    </script>
+</body>
+</html>

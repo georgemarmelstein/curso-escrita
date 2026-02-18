@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citação - Por que Terminal?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Spectral:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           PALETA SUPER - Sistema de Cores Unificado
+           ============================================ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+            --super-gold-dim: rgba(190, 156, 109, 0.6);
+            --super-gold-subtle: rgba(190, 156, 109, 0.3);
+            --super-gold-ghost: rgba(190, 156, 109, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Spectral', Georgia, serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* ============================================
+           ATMOSPHERIC LAYERS
+           ============================================ */
+
+        /* Film grain overlay */
+        .grain {
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 100;
+            animation: grainShift 0.5s steps(1) infinite;
+        }
+
+        @keyframes grainShift {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-2%, -2%); }
+            50% { transform: translate(2%, 2%); }
+            75% { transform: translate(-1%, 1%); }
+        }
+
+        /* Central glow */
+        .ambient-glow {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle,
+                rgba(190, 156, 109, 0.08) 0%,
+                rgba(190, 156, 109, 0.03) 40%,
+                transparent 70%);
+            z-index: 0;
+            animation: glowPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatUp 15s infinite ease-out;
+        }
+
+        .particle:nth-child(1) { left: 15%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 35%; animation-delay: 3s; }
+        .particle:nth-child(3) { left: 55%; animation-delay: 6s; }
+        .particle:nth-child(4) { left: 75%; animation-delay: 2s; }
+        .particle:nth-child(5) { left: 85%; animation-delay: 5s; }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.15; }
+            100% {
+                transform: translateY(-20vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 0%,
+                rgba(10, 10, 18, 0.3) 50%,
+                rgba(10, 10, 18, 0.9) 100%);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* Cage border */
+        .cage-border {
+            position: fixed;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            border: 1px solid rgba(190, 156, 109, 0.06);
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        /* ============================================
+           QUOTE CONTAINER
+           ============================================ */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 100px;
+            max-width: 1100px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Opening quote mark */
+        .quote-mark {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 8em;
+            font-weight: 400;
+            color: var(--super-gold);
+            opacity: 0.15;
+            line-height: 0.5;
+            margin-bottom: -30px;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 0.15; }
+        }
+
+        /* Main quote */
+        .quote-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 2.4em;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.5;
+            margin-bottom: 40px;
+            max-width: 900px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1s ease 0.5s forwards;
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .quote-text .highlight-green {
+            color: var(--super-green);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        /* Translation */
+        .quote-translation {
+            font-family: 'Spectral', Georgia, serif;
+            font-size: 1.1em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.5);
+            line-height: 1.6;
+            margin-bottom: 50px;
+            max-width: 800px;
+            padding: 0 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 1s ease 0.8s forwards;
+        }
+
+        .quote-translation .highlight {
+            color: var(--super-gold-light);
+        }
+
+        /* Author */
+        .quote-author {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: fadeInAuthor 1s ease 1.1s forwards;
+        }
+
+        @keyframes fadeInAuthor {
+            to { opacity: 1; }
+        }
+
+        .author-line {
+            width: 60px;
+            height: 1px;
+            background: var(--super-gold-subtle);
+            margin-bottom: 10px;
+        }
+
+        .author-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: var(--super-gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .author-role {
+            font-family: 'Spectral', Georgia, serif;
+            font-size: 0.85em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .author-context {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.25);
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* ============================================
+           EMBED MODE
+           ============================================ */
+        body.embed-mode .container {
+            padding: 40px 60px;
+        }
+        body.embed-mode .quote-mark { font-size: 5em; margin-bottom: -20px; }
+        body.embed-mode .quote-text { font-size: 1.7em; margin-bottom: 30px; }
+        body.embed-mode .quote-translation { font-size: 0.95em; margin-bottom: 35px; }
+        body.embed-mode .author-name { font-size: 0.8em; }
+        body.embed-mode .author-role { font-size: 0.75em; }
+        body.embed-mode .cage-border { top: 15px; left: 15px; right: 15px; bottom: 15px; }
+        body.embed-mode .ambient-glow { width: 500px; height: 500px; }
+    </style>
+</head>
+<body>
+    <!-- Atmospheric layers -->
+    <div class="grain"></div>
+    <div class="ambient-glow"></div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="vignette"></div>
+    <div class="cage-border"></div>
+
+    <div class="container">
+        <div class="quote-mark">"</div>
+
+        <p class="quote-text">
+            Code is not just a use case but the <span class="highlight">universal interface</span> to the digital world. After we built Claude Code, we realized that Claude Code is actually a <span class="highlight-green">general purpose agent</span>.
+        </p>
+
+        <p class="quote-translation">
+            "Código não é apenas um caso de uso, mas a <span class="highlight">interface universal</span> para o mundo digital. Depois de construirmos o Claude Code, percebemos que ele é, na verdade, um agente de propósito geral."
+        </p>
+
+        <div class="quote-author">
+            <div class="author-line"></div>
+            <span class="author-name">Barry Zhang</span>
+            <span class="author-role">Anthropic — Claude Code Team</span>
+            <span class="author-context">AI Engineer Summit 2025</span>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

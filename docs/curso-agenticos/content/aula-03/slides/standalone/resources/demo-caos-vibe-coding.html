@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - O Caos do Vibe Coding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Background with warning pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 50%, rgba(239, 68, 68, 0.08) 0%, transparent 50%),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 30px,
+                    rgba(239, 68, 68, 0.02) 30px,
+                    rgba(239, 68, 68, 0.02) 60px
+                ),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100%;
+            max-width: 900px;
+            padding: 30px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-warning {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-red);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .header-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--super-cream);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           CHAT CONTAINER
+           ═══════════════════════════════════════════════════════════ */
+        .chat-wrapper {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .chat-container {
+            background: rgba(20, 20, 30, 0.8);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar styling */
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+        .chat-container::-webkit-scrollbar-thumb {
+            background: rgba(239, 68, 68, 0.4);
+            border-radius: 3px;
+        }
+
+        /* Chat message */
+        .message {
+            display: flex;
+            gap: 12px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: messageAppear 0.3s ease forwards;
+        }
+
+        @keyframes messageAppear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .message.user .avatar {
+            background: rgba(96, 165, 250, 0.2);
+        }
+
+        .message.assistant .avatar {
+            background: rgba(167, 139, 250, 0.2);
+        }
+
+        .bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .message.user .bubble {
+            background: rgba(96, 165, 250, 0.15);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: var(--super-cream);
+            border-top-right-radius: 4px;
+        }
+
+        .message.assistant .bubble {
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            color: rgba(255, 244, 228, 0.8);
+            border-top-left-radius: 4px;
+        }
+
+        /* Error message */
+        .message.error .bubble {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: var(--super-red);
+        }
+
+        .message.error .avatar {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Code in bubble */
+        .bubble code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Typing indicator */
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 8px 0;
+        }
+
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: var(--super-purple);
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           COUNTER & WARNING
+           ═══════════════════════════════════════════════════════════ */
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(20, 20, 30, 0.8);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .stat-value.iterations {
+            color: var(--super-amber);
+        }
+
+        .stat-value.cost {
+            color: var(--super-red);
+        }
+
+        .stat-value.time {
+            color: var(--super-cyan);
+        }
+
+        /* Warning badge */
+        .warning-badge {
+            display: none;
+            padding: 8px 16px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--super-red);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .warning-badge.active {
+            display: block;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 244, 228, 0.3);
+            background: transparent;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            color: var(--super-cream);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 244, 228, 0.1);
+            border-color: var(--super-cream);
+        }
+
+        .btn.primary {
+            background: rgba(190, 156, 109, 0.2);
+            border-color: var(--super-gold);
+            color: var(--super-gold);
+        }
+
+        .btn.primary:hover {
+            background: rgba(190, 156, 109, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .chat-container { height: 320px; }
+        body.embed-mode .header-title { font-size: 1.4em; }
+        body.embed-mode .bubble { font-size: 0.8em; }
+        body.embed-mode .avatar { width: 30px; height: 30px; font-size: 1em; }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-warning">
+                <span>&#9888;</span>
+                <span>Padrão Anti-Pattern Detectado</span>
+                <span>&#9888;</span>
+            </div>
+            <h1 class="header-title">O Caos do Vibe Coding</h1>
+        </div>
+
+        <div class="chat-wrapper">
+            <div class="chat-container" id="chatContainer">
+                <!-- Messages will be added by JS -->
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-label">Iterações</span>
+                    <span class="stat-value iterations" id="iterations">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Tokens</span>
+                    <span class="stat-value cost" id="tokens">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Tempo</span>
+                    <span class="stat-value time" id="timeElapsed">00:00</span>
+                </div>
+                <div class="warning-badge" id="warningBadge">&#9850; Spaghetti Chat</div>
+            </div>
+
+            <div class="controls">
+                <button class="btn primary" id="startBtn">Iniciar Demo</button>
+                <button class="btn" id="resetBtn">Reset</button>
+                <button class="btn" id="skipBtn">Pular para o Caos</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Conversation script
+        const conversation = [
+            { type: 'user', text: 'Faz um sistema de gestão de processos judiciais para mim' },
+            { type: 'assistant', text: 'Claro! Vou criar um sistema completo. Aqui está o código base com listagem de processos e busca...' },
+            { type: 'user', text: 'Legal, mas precisa ter login' },
+            { type: 'assistant', text: 'Adicionei autenticação com JWT. Agora cada usuário precisa fazer login antes de acessar...' },
+            { type: 'user', text: 'Opa, agora a listagem de processos quebrou' },
+            { type: 'assistant', text: 'Desculpe! O middleware de auth estava bloqueando. Corrigi o problema...' },
+            { type: 'user', text: 'Agora quero que mostre o status do processo' },
+            { type: 'assistant', text: 'Adicionei campo de status. Pode ser: pendente, em_analise, julgado...' },
+            { type: 'user', text: 'Mas quando mudo o status dá erro no banco' },
+            { type: 'assistant', text: 'O schema do banco não tinha a coluna status. Adicionei uma migration...' },
+            { type: 'user', text: 'A migration rodou mas perdeu os dados antigos' },
+            { type: 'error', text: '&#9888; ALERTA: Dados de 47 processos perdidos durante migration' },
+            { type: 'assistant', text: 'Vou restaurar do backup e refazer a migration com preservação de dados...' },
+            { type: 'user', text: 'Precisa ter relatório também' },
+            { type: 'assistant', text: 'Criei módulo de relatórios com exportação para PDF...' },
+            { type: 'user', text: 'O PDF está vindo em branco' },
+            { type: 'assistant', text: 'Problema na biblioteca de PDF. Troquei por outra e agora funciona...' },
+            { type: 'user', text: 'Mas agora o login parou de funcionar' },
+            { type: 'assistant', text: 'A nova biblioteca conflitou com o JWT. Ajustando dependências...' },
+            { type: 'error', text: '&#9888; ALERTA: 12 testes falhando após mudanças' },
+            { type: 'user', text: 'Esquece os testes, só faz funcionar' },
+            { type: 'assistant', text: 'OK, desabilitei os testes. Sistema está rodando...' },
+            { type: 'user', text: 'Agora precisa ter permissões por perfil' },
+            { type: 'assistant', text: 'Implementei RBAC básico: admin, juiz, servidor...' },
+            { type: 'user', text: 'Servidor não está conseguindo ver os processos dele' },
+            { type: 'assistant', text: 'Era um bug na query de filtragem. Corrigido...' },
+            { type: 'user', text: 'Agora o admin também não vê nada' },
+            { type: 'error', text: '&#128165; CRÍTICO: Sistema inacessível para todos os usuários' },
+            { type: 'assistant', text: 'A lógica de permissões estava invertida. Refatorando...' },
+            { type: 'user', text: '...' },
+            { type: 'assistant', text: 'Quer que eu continue?' },
+            { type: 'user', text: 'Quanto já gastamos de tokens?' },
+            { type: 'system', text: '&#9850; <strong>SPAGHETTI CHAT DETECTADO</strong><br><br>Este padrão de desenvolvimento "vibing" resulta em:<br>• Drift de requisitos<br>• Contexto perdido<br>• Código espaguete<br>• Débito técnico invisível<br>• Custo exponencial' }
+        ];
+
+        let currentIndex = 0;
+        let iterationCount = 0;
+        let tokenCount = 0;
+        let startTime = null;
+        let timerInterval = null;
+        let isPlaying = false;
+
+        const chatContainer = document.getElementById('chatContainer');
+        const iterationsEl = document.getElementById('iterations');
+        const tokensEl = document.getElementById('tokens');
+        const timeEl = document.getElementById('timeElapsed');
+        const warningBadge = document.getElementById('warningBadge');
+
+        function addMessage(msg) {
+            const div = document.createElement('div');
+            div.className = `message ${msg.type}`;
+
+            let avatar = '';
+            if (msg.type === 'user') {
+                avatar = '&#128100;';
+            } else if (msg.type === 'assistant') {
+                avatar = '&#129302;';
+            } else if (msg.type === 'error') {
+                avatar = '&#9888;';
+            } else if (msg.type === 'system') {
+                avatar = '&#128165;';
+            }
+
+            div.innerHTML = `
+                <div class="avatar">${avatar}</div>
+                <div class="bubble">${msg.text}</div>
+            `;
+
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Update stats
+            if (msg.type === 'user') {
+                iterationCount++;
+                iterationsEl.textContent = iterationCount;
+            }
+
+            tokenCount += Math.floor(msg.text.length * 1.3);
+            tokensEl.textContent = tokenCount.toLocaleString();
+
+            // Show warning after many iterations
+            if (iterationCount >= 8) {
+                warningBadge.classList.add('active');
+            }
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'message assistant';
+            div.id = 'typingIndicator';
+            div.innerHTML = `
+                <div class="avatar">&#129302;</div>
+                <div class="bubble">
+                    <div class="typing">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function removeTyping() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        function playNext() {
+            if (currentIndex >= conversation.length) {
+                isPlaying = false;
+                stopTimer();
+                return;
+            }
+
+            const msg = conversation[currentIndex];
+
+            if (msg.type === 'assistant' || msg.type === 'error' || msg.type === 'system') {
+                showTyping();
+                setTimeout(() => {
+                    removeTyping();
+                    addMessage(msg);
+                    currentIndex++;
+                    if (isPlaying) {
+                        setTimeout(playNext, 1200);
+                    }
+                }, 1500);
+            } else {
+                addMessage(msg);
+                currentIndex++;
+                if (isPlaying) {
+                    setTimeout(playNext, 800);
+                }
+            }
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                const secs = (elapsed % 60).toString().padStart(2, '0');
+                timeEl.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        }
+
+        function reset() {
+            chatContainer.innerHTML = '';
+            currentIndex = 0;
+            iterationCount = 0;
+            tokenCount = 0;
+            isPlaying = false;
+            stopTimer();
+            iterationsEl.textContent = '0';
+            tokensEl.textContent = '0';
+            timeEl.textContent = '00:00';
+            warningBadge.classList.remove('active');
+        }
+
+        function skipToEnd() {
+            reset();
+            conversation.forEach(msg => addMessage(msg));
+            iterationCount = conversation.filter(m => m.type === 'user').length;
+            iterationsEl.textContent = iterationCount;
+            warningBadge.classList.add('active');
+        }
+
+        // Event listeners
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if (!isPlaying) {
+                if (currentIndex === 0) {
+                    startTimer();
+                }
+                isPlaying = true;
+                playNext();
+            }
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', reset);
+        document.getElementById('skipBtn').addEventListener('click', skipToEnd);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (!isPlaying) {
+                    if (currentIndex === 0) {
+                        startTimer();
+                    }
+                    isPlaying = true;
+                    playNext();
+                } else {
+                    isPlaying = false;
+                }
+            }
+            if (e.key === 'r') {
+                reset();
+            }
+        });
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

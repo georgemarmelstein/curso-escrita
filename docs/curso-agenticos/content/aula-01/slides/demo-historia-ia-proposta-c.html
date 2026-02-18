@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta C - Narrativa Tipográfica</title>
+
+    <!-- Google Fonts - Paleta SUPER -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           PALETA SUPER
+           ============================================ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        /* ============================================
+           LAYOUT BASE
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background com imagem abstrata */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&h=1080&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: blur(10px) brightness(0.2);
+            z-index: 0;
+        }
+
+        /* Overlay com gradiente radial */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(10, 10, 18, 0.5) 0%,
+                rgba(10, 10, 18, 0.8) 50%,
+                rgba(10, 10, 18, 0.95) 100%);
+            z-index: 1;
+        }
+
+        /* ============================================
+           CONTAINER PRINCIPAL
+           ============================================ */
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 1100px;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+        }
+
+        /* ============================================
+           TIPOGRAFIA NARRATIVA
+           ============================================ */
+        .intro-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.8em;
+            color: rgba(255, 244, 228, 0.6);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .main-statement {
+            font-family: 'Playfair Display', serif;
+            font-size: 5em;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--super-gold);
+            text-shadow: 2px 2px 12px rgba(0,0,0,0.9),
+                         0 0 30px rgba(190, 156, 109, 0.3);
+            letter-spacing: 2px;
+            margin: 20px 0;
+        }
+
+        .word-different {
+            display: block;
+            color: var(--super-gold-light);
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        /* ============================================
+           GRID DE PARADIGMAS
+           ============================================ */
+        .paradigms-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin: 30px 0;
+            width: 100%;
+        }
+
+        .paradigm-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .paradigm-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 400;
+        }
+
+        .paradigm-term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--super-gold);
+            text-shadow: 0 0 15px rgba(190, 156, 109, 0.4);
+            letter-spacing: 1px;
+        }
+
+        /* ============================================
+           LINHA DECORATIVA
+           ============================================ */
+        .divider {
+            width: 300px;
+            height: 2px;
+            background: linear-gradient(90deg,
+                transparent,
+                var(--super-gold),
+                transparent);
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.3);
+        }
+
+        /* ============================================
+           CONCLUSÃO NARRATIVA
+           ============================================ */
+        .conclusion-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5em;
+            color: rgba(255, 244, 228, 0.7);
+            font-weight: 400;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .conclusion-emphasis {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        /* ============================================
+           SUBTÍTULO FINAL
+           ============================================ */
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.3);
+            letter-spacing: 2px;
+            font-weight: 300;
+            text-transform: uppercase;
+            margin-top: 30px;
+        }
+
+        /* ============================================
+           EMBED MODE (para Reveal.js)
+           ============================================ */
+        body.embed-mode {
+            min-height: 550px;
+        }
+
+        body.embed-mode .container {
+            padding: 35px 30px;
+            gap: 30px;
+        }
+
+        body.embed-mode .intro-text {
+            font-size: 1.2em;
+        }
+
+        body.embed-mode .main-statement {
+            font-size: 3em;
+            margin: 15px 0;
+        }
+
+        body.embed-mode .word-different {
+            font-size: 1em;
+        }
+
+        body.embed-mode .paradigms-row {
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        body.embed-mode .paradigm-label {
+            font-size: 0.7em;
+        }
+
+        body.embed-mode .paradigm-term {
+            font-size: 1em;
+        }
+
+        body.embed-mode .divider {
+            width: 200px;
+            margin: 15px 0;
+        }
+
+        body.embed-mode .conclusion-text {
+            font-size: 1.1em;
+        }
+
+        body.embed-mode .subtitle {
+            font-size: 0.75em;
+            margin-top: 20px;
+        }
+
+        /* ============================================
+           ANIMAÇÕES SUTIS
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .intro-text,
+        .main-statement,
+        .paradigms-row,
+        .conclusion-text,
+        .subtitle {
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .main-statement {
+            animation-delay: 0.2s;
+        }
+
+        .paradigms-row {
+            animation-delay: 0.4s;
+        }
+
+        .conclusion-text {
+            animation-delay: 0.6s;
+        }
+
+        .subtitle {
+            animation-delay: 0.8s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="intro-text">De 2022 a 2025...</p>
+
+        <h1 class="main-statement">
+            TRÊS APOSTAS<br>
+            <span class="word-different">DIFERENTES</span>
+        </h1>
+
+        <div class="paradigms-row">
+            <div class="paradigm-col">
+                <span class="paradigm-label">Conhecimento</span>
+                <span class="paradigm-term">PARAMÉTRICO</span>
+            </div>
+
+            <div class="paradigm-col">
+                <span class="paradigm-label">Conhecimento</span>
+                <span class="paradigm-term">CONTEXTUAL</span>
+            </div>
+
+            <div class="paradigm-col">
+                <span class="paradigm-label">Conhecimento</span>
+                <span class="paradigm-term">EXTERNO</span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <p class="conclusion-text">
+            ...que convergiram em <span class="conclusion-emphasis">uma só</span>
+        </p>
+
+        <p class="subtitle">A história da IA generativa</p>
+    </div>
+
+    <script>
+        // Detectar se está em iframe (embed mode)
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

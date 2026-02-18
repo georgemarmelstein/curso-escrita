@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context Window - Zonas de Performance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 10px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Container principal */
+        .context-container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Barra de contexto */
+        .context-bar {
+            position: relative;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        /* Zonas coloridas */
+        .zone {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+            opacity: 0.3;
+        }
+
+        .zone.active {
+            opacity: 1;
+        }
+
+        .zone.smart {
+            left: 0;
+            width: 40%;
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0.3) 0%, rgba(74, 222, 128, 0.1) 100%);
+            border-right: 2px dashed rgba(74, 222, 128, 0.5);
+        }
+
+        .zone.diminishing {
+            left: 40%;
+            width: 40%;
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.3) 100%);
+            border-right: 2px dashed rgba(251, 191, 36, 0.5);
+        }
+
+        .zone.dumb {
+            left: 80%;
+            width: 20%;
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.3) 0%, rgba(239, 68, 68, 0.5) 100%);
+        }
+
+        .zone-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 15px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .zone.smart .zone-label { color: var(--super-green); }
+        .zone.diminishing .zone-label { color: var(--super-amber); }
+        .zone.dumb .zone-label { color: var(--super-red); }
+
+        /* Marcadores de porcentagem */
+        .markers {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            margin-bottom: 30px;
+        }
+
+        .marker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .marker.highlight { color: var(--super-gold); font-weight: 600; }
+
+        /* Info cards */
+        .info-cards {
+            display: flex;
+            gap: 20px;
+        }
+
+        .info-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            opacity: 0.3;
+            transform: scale(0.95);
+            transition: all 0.5s ease;
+        }
+
+        .info-card.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .info-card.smart.active {
+            border-color: var(--super-green);
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.15);
+        }
+
+        .info-card.diminishing.active {
+            border-color: var(--super-amber);
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.15);
+        }
+
+        .info-card.dumb.active {
+            border-color: var(--super-red);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon {
+            font-size: 1.5em;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .info-card.smart .card-title { color: var(--super-green); }
+        .info-card.diminishing .card-title { color: var(--super-amber); }
+        .info-card.dumb .card-title { color: var(--super-red); }
+
+        .card-range {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 12px;
+        }
+
+        .card-description {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+        }
+
+        /* Recomendacao */
+        .recommendation {
+            margin-top: 25px;
+            padding: 15px 25px;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 10px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .recommendation.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .recommendation-text {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        .recommendation-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .recommendation-text code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--super-green);
+        }
+
+        /* Nav indicator */
+        .nav-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode h1 { font-size: 1.2em; margin-bottom: 5px; }
+        body.embed-mode .subtitle { font-size: 0.75em; margin-bottom: 20px; }
+        body.embed-mode .context-bar { height: 60px; margin-bottom: 15px; }
+        body.embed-mode .zone-label { font-size: 0.6em; padding: 5px 10px; }
+        body.embed-mode .markers { margin-bottom: 20px; }
+        body.embed-mode .info-cards { gap: 12px; }
+        body.embed-mode .info-card { padding: 15px; }
+        body.embed-mode .card-header { margin-bottom: 10px; padding-bottom: 10px; }
+        body.embed-mode .card-icon { font-size: 1.2em; }
+        body.embed-mode .card-title { font-size: 0.95em; }
+        body.embed-mode .card-range { font-size: 0.7em; margin-bottom: 8px; }
+        body.embed-mode .card-description { font-size: 0.75em; }
+        body.embed-mode .recommendation { margin-top: 15px; padding: 12px 18px; }
+        body.embed-mode .recommendation-text { font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <h1>O "Orcamento" do Modelo</h1>
+    <p class="subtitle">Dex Horthy: "Around the 40% line is where you'll start to see some diminishing returns."</p>
+
+    <div class="context-container">
+        <!-- Context bar -->
+        <div class="context-bar">
+            <div class="zone smart" id="zoneSmart">
+                <span class="zone-label">SMART ZONE</span>
+            </div>
+            <div class="zone diminishing" id="zoneDiminishing">
+                <span class="zone-label">DIMINISHING</span>
+            </div>
+            <div class="zone dumb" id="zoneDumb">
+                <span class="zone-label">DUMB ZONE</span>
+            </div>
+        </div>
+
+        <!-- Markers -->
+        <div class="markers">
+            <span class="marker">0%</span>
+            <span class="marker highlight">40%</span>
+            <span class="marker highlight">80%</span>
+            <span class="marker">100%</span>
+        </div>
+
+        <!-- Info cards -->
+        <div class="info-cards">
+            <div class="info-card smart" id="cardSmart">
+                <div class="card-header">
+                    <span class="card-icon">&#10003;</span>
+                    <span class="card-title">SMART ZONE</span>
+                </div>
+                <div class="card-range">0% - 40%</div>
+                <div class="card-description">
+                    Modelo opera com <strong>performance otima</strong>. Zona segura para tarefas complexas.
+                </div>
+            </div>
+
+            <div class="info-card diminishing" id="cardDiminishing">
+                <div class="card-header">
+                    <span class="card-icon">&#9888;</span>
+                    <span class="card-title">DIMINISHING RETURNS</span>
+                </div>
+                <div class="card-range">40% - 80%</div>
+                <div class="card-description">
+                    Performance <strong>degrada gradualmente</strong>. Considere compactar o contexto.
+                </div>
+            </div>
+
+            <div class="info-card dumb" id="cardDumb">
+                <div class="card-header">
+                    <span class="card-icon">&#10007;</span>
+                    <span class="card-title">DUMB ZONE</span>
+                </div>
+                <div class="card-range">80% - 100%</div>
+                <div class="card-description">
+                    Resultados <strong>imprevisíveis</strong>. Compacte imediatamente ou use subagentes.
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendation -->
+        <div class="recommendation" id="recommendation">
+            <div class="recommendation-text">
+                Recomendacao: Use <code>/compact</code> a <span class="highlight">~70%</span> para evitar compactacao disruptiva automatica
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-indicator">
+        <div class="nav-dot" data-stage="0"></div>
+        <div class="nav-dot" data-stage="1"></div>
+        <div class="nav-dot" data-stage="2"></div>
+        <div class="nav-dot" data-stage="3"></div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        const zones = {
+            smart: document.getElementById('zoneSmart'),
+            diminishing: document.getElementById('zoneDiminishing'),
+            dumb: document.getElementById('zoneDumb')
+        };
+
+        const cards = {
+            smart: document.getElementById('cardSmart'),
+            diminishing: document.getElementById('cardDiminishing'),
+            dumb: document.getElementById('cardDumb')
+        };
+
+        const recommendation = document.getElementById('recommendation');
+        const navDots = document.querySelectorAll('.nav-dot');
+        let currentStage = 0;
+
+        function setStage(stage) {
+            currentStage = stage;
+
+            navDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === stage);
+            });
+
+            // Reset all
+            Object.values(zones).forEach(z => z.classList.remove('active'));
+            Object.values(cards).forEach(c => c.classList.remove('active'));
+            recommendation.classList.remove('visible');
+
+            if (stage === 0) {
+                zones.smart.classList.add('active');
+                cards.smart.classList.add('active');
+            } else if (stage === 1) {
+                zones.diminishing.classList.add('active');
+                cards.diminishing.classList.add('active');
+            } else if (stage === 2) {
+                zones.dumb.classList.add('active');
+                cards.dumb.classList.add('active');
+            } else if (stage === 3) {
+                Object.values(zones).forEach(z => z.classList.add('active'));
+                Object.values(cards).forEach(c => c.classList.add('active'));
+                recommendation.classList.add('visible');
+            }
+        }
+
+        function nextStage() {
+            setStage((currentStage + 1) % 4);
+        }
+
+        setStage(0);
+
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-dot')) {
+                setStage(parseInt(e.target.closest('.nav-dot').dataset.stage));
+                return;
+            }
+            nextStage();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (document.body.classList.contains('embed-mode')) return;
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setStage(currentStage <= 0 ? 3 : currentStage - 1);
+            }
+        });
+
+        window.addEventListener('message', (e) => {
+            if (e.data.action === 'nextStage') nextStage();
+        });
+    </script>
+</body>
+</html>

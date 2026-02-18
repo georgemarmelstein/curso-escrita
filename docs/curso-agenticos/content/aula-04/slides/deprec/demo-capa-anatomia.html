@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Anatomia de um Sistema Agêntico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --gold: #BE9C6D;
+            --gold-light: #d4b896;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --pink: #f472b6;
+            --amber: #fbbf24;
+            --blue: #60a5fa;
+            --red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Deep space background */
+        .space-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 30% 30%, rgba(190, 156, 109, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 70% 70%, rgba(167, 139, 250, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 50%, rgba(74, 222, 128, 0.03) 0%, transparent 50%),
+                linear-gradient(180deg, #030308 0%, #0a0a14 50%, #080812 100%);
+            z-index: 0;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 30%,
+                rgba(10, 10, 18, 0.5) 60%,
+                rgba(5, 5, 10, 0.95) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Grid sutil de fundo */
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(190, 156, 109, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(190, 156, 109, 0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            z-index: 1;
+        }
+
+        /* Container principal */
+        .container {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           COMPONENTES FLUTUANTES EXPLODIDOS
+           ═══════════════════════════════════════════════════════════ */
+        .components-explosion {
+            position: relative;
+            width: 900px;
+            height: 450px;
+            margin-bottom: 40px;
+        }
+
+        .floating-component {
+            position: absolute;
+            padding: 20px 28px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            cursor: default;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .floating-component:hover {
+            transform: translate(-50%, -50%) scale(1.1) !important;
+        }
+
+        .component-icon {
+            font-size: 2.5rem;
+        }
+
+        .component-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .component-role {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            text-align: center;
+        }
+
+        /* Tipos de componentes com suas cores */
+        .comp-orchestrator {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.3), rgba(190, 156, 109, 0.1));
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.3);
+            color: var(--gold-light);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: floatOrchestrator 1s ease 0.2s forwards, pulseGlow 3s ease-in-out infinite 1.2s;
+            z-index: 10;
+        }
+
+        .comp-worker {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.08));
+            border: 2px solid var(--blue);
+            box-shadow: 0 0 25px rgba(96, 165, 250, 0.2);
+            color: var(--blue);
+        }
+
+        .comp-skill {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.25), rgba(74, 222, 128, 0.08));
+            border: 2px solid var(--green);
+            box-shadow: 0 0 25px rgba(74, 222, 128, 0.2);
+            color: var(--green);
+        }
+
+        .comp-tool {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.25), rgba(167, 139, 250, 0.08));
+            border: 2px solid var(--purple);
+            box-shadow: 0 0 25px rgba(167, 139, 250, 0.2);
+            color: var(--purple);
+        }
+
+        .comp-memory {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.25), rgba(34, 211, 238, 0.08));
+            border: 2px solid var(--cyan);
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.2);
+            color: var(--cyan);
+        }
+
+        .comp-command {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(251, 191, 36, 0.08));
+            border: 2px solid var(--amber);
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
+            color: var(--amber);
+        }
+
+        /* Posições dos componentes ao redor do orquestrador */
+        .worker-1 {
+            top: 15%;
+            left: 25%;
+            animation: floatIn1 1s ease 0.4s forwards, floatY 6s ease-in-out infinite 1.4s;
+        }
+        .worker-2 {
+            top: 15%;
+            left: 75%;
+            animation: floatIn2 1s ease 0.5s forwards, floatY 7s ease-in-out infinite 1.5s;
+        }
+        .skill-1 {
+            top: 75%;
+            left: 15%;
+            animation: floatIn3 1s ease 0.6s forwards, floatY 5s ease-in-out infinite 1.6s;
+        }
+        .skill-2 {
+            top: 75%;
+            left: 45%;
+            animation: floatIn4 1s ease 0.7s forwards, floatY 6.5s ease-in-out infinite 1.7s;
+        }
+        .tool-1 {
+            top: 75%;
+            left: 85%;
+            animation: floatIn5 1s ease 0.8s forwards, floatY 5.5s ease-in-out infinite 1.8s;
+        }
+        .memory-1 {
+            top: 50%;
+            left: 92%;
+            animation: floatIn6 1s ease 0.9s forwards, floatY 7.5s ease-in-out infinite 1.9s;
+        }
+        .command-1 {
+            top: 50%;
+            left: 8%;
+            animation: floatIn7 1s ease 1s forwards, floatY 6.2s ease-in-out infinite 2s;
+        }
+
+        @keyframes floatOrchestrator {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 40px rgba(190, 156, 109, 0.3); }
+            50% { box-shadow: 0 0 60px rgba(190, 156, 109, 0.5), 0 0 80px rgba(190, 156, 109, 0.2); }
+        }
+
+        @keyframes floatIn1 {
+            from { opacity: 0; transform: translate(-50%, -50%) translateY(-50px); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        @keyframes floatIn2 {
+            from { opacity: 0; transform: translate(-50%, -50%) translateY(-50px); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        @keyframes floatIn3 {
+            from { opacity: 0; transform: translate(-50%, -50%) translateY(50px); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        @keyframes floatIn4 {
+            from { opacity: 0; transform: translate(-50%, -50%) translateY(50px); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        @keyframes floatIn5 {
+            from { opacity: 0; transform: translate(-50%, -50%) translateY(50px); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        @keyframes floatIn6 {
+            from { opacity: 0; transform: translate(-50%, -50%) translateX(50px); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        @keyframes floatIn7 {
+            from { opacity: 0; transform: translate(-50%, -50%) translateX(-50px); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        @keyframes floatY {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+            50% { transform: translate(-50%, -50%) translateY(-12px); }
+        }
+
+        /* Linhas de conexão pontilhadas */
+        .connection-lines {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .connection-lines svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .conn-line {
+            stroke: var(--gold);
+            stroke-width: 1.5;
+            stroke-dasharray: 8 6;
+            fill: none;
+            opacity: 0;
+            animation: lineAppear 0.5s ease 1.2s forwards;
+        }
+
+        @keyframes lineAppear {
+            to { opacity: 0.25; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TÍTULO
+           ═══════════════════════════════════════════════════════════ */
+        .title-container {
+            text-align: center;
+            z-index: 20;
+            opacity: 0;
+            animation: titleFade 1s ease 1.5s forwards;
+        }
+
+        @keyframes titleFade {
+            to { opacity: 1; }
+        }
+
+        .title-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .title-main {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: var(--cream);
+            letter-spacing: 2px;
+            text-shadow: 0 0 60px rgba(190, 156, 109, 0.4);
+            margin-bottom: 12px;
+        }
+
+        .title-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.15rem;
+            color: rgba(255, 244, 228, 0.5);
+            font-weight: 300;
+        }
+
+        /* Equação de componentes */
+        .equation {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            animation: eqAppear 1s ease 2s forwards;
+        }
+
+        @keyframes eqAppear {
+            to { opacity: 0.7; }
+        }
+
+        .eq-block {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .eq-block.orchestrator { background: rgba(190, 156, 109, 0.2); color: var(--gold); }
+        .eq-block.workers { background: rgba(96, 165, 250, 0.2); color: var(--blue); }
+        .eq-block.skills { background: rgba(74, 222, 128, 0.2); color: var(--green); }
+        .eq-block.tools { background: rgba(167, 139, 250, 0.2); color: var(--purple); }
+        .eq-block.result { background: rgba(255, 244, 228, 0.1); color: var(--cream); border: 1px solid rgba(255, 244, 228, 0.2); }
+
+        .eq-operator {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: rgba(255, 244, 228, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .title-main { font-size: 2.8rem; }
+        body.embed-mode .components-explosion { width: 750px; height: 380px; }
+        body.embed-mode .floating-component { padding: 14px 20px; }
+        body.embed-mode .component-icon { font-size: 2rem; }
+        body.embed-mode .component-name { font-size: 0.75rem; }
+        body.embed-mode .equation { bottom: 20px; gap: 10px; }
+        body.embed-mode .eq-block { padding: 6px 10px; font-size: 0.6rem; }
+    </style>
+</head>
+<body>
+    <div class="space-bg"></div>
+    <div class="grid-bg"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="components-explosion">
+            <!-- Linhas de conexão SVG -->
+            <svg class="connection-lines" viewBox="0 0 900 450">
+                <!-- Orquestrador para Workers -->
+                <path class="conn-line" d="M 450 225 Q 350 150 225 70" />
+                <path class="conn-line" d="M 450 225 Q 550 150 675 70" />
+                <!-- Orquestrador para Skills/Tools -->
+                <path class="conn-line" d="M 450 225 Q 300 300 135 340" />
+                <path class="conn-line" d="M 450 225 Q 450 320 405 340" />
+                <path class="conn-line" d="M 450 225 Q 600 300 765 340" />
+                <!-- Orquestrador para Memory/Command -->
+                <path class="conn-line" d="M 450 225 L 828 225" />
+                <path class="conn-line" d="M 450 225 L 72 225" />
+            </svg>
+
+            <!-- Componentes flutuantes -->
+            <div class="floating-component comp-orchestrator">
+                <span class="component-icon">🎯</span>
+                <span class="component-name">ORQUESTRADOR</span>
+                <span class="component-role">coordena tudo</span>
+            </div>
+
+            <div class="floating-component comp-worker worker-1">
+                <span class="component-icon">🔍</span>
+                <span class="component-name">EXPLORER</span>
+                <span class="component-role">pesquisa</span>
+            </div>
+
+            <div class="floating-component comp-worker worker-2">
+                <span class="component-icon">📝</span>
+                <span class="component-name">WRITER</span>
+                <span class="component-role">redige</span>
+            </div>
+
+            <div class="floating-component comp-skill skill-1">
+                <span class="component-icon">📚</span>
+                <span class="component-name">SKILL</span>
+                <span class="component-role">expertise</span>
+            </div>
+
+            <div class="floating-component comp-skill skill-2">
+                <span class="component-icon">📚</span>
+                <span class="component-name">SKILL</span>
+                <span class="component-role">expertise</span>
+            </div>
+
+            <div class="floating-component comp-tool tool-1">
+                <span class="component-icon">🔧</span>
+                <span class="component-name">TOOLS</span>
+                <span class="component-role">capacidades</span>
+            </div>
+
+            <div class="floating-component comp-memory memory-1">
+                <span class="component-icon">🧠</span>
+                <span class="component-name">MEMORY</span>
+                <span class="component-role">contexto</span>
+            </div>
+
+            <div class="floating-component comp-command command-1">
+                <span class="component-icon">⚡</span>
+                <span class="component-name">COMMAND</span>
+                <span class="component-role">atalhos</span>
+            </div>
+        </div>
+
+        <div class="title-container">
+            <div class="title-label">Aula 04</div>
+            <h1 class="title-main">Anatomia de um Sistema Agêntico</h1>
+            <p class="title-sub">As peças do quebra-cabeça</p>
+        </div>
+
+        <div class="equation">
+            <span class="eq-block orchestrator">Orquestrador</span>
+            <span class="eq-operator">+</span>
+            <span class="eq-block workers">Workers</span>
+            <span class="eq-operator">+</span>
+            <span class="eq-block skills">Skills</span>
+            <span class="eq-operator">+</span>
+            <span class="eq-block tools">Tools</span>
+            <span class="eq-operator">=</span>
+            <span class="eq-block result">Sistema Agêntico</span>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

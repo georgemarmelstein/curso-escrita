@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plugin Shop - Arsenal do Iniciante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-terminal: #0d1117;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-purple: #a78bfa;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-cyan: #22d3ee;
+            --super-pink: #f472b6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Ambient glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(190, 156, 109, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(74, 222, 128, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TERMINAL CONTAINER
+           ═══════════════════════════════════════════════════════════ */
+        .terminal {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1100px;
+            background: var(--super-bg-terminal);
+            border-radius: 12px;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 100px rgba(190, 156, 109, 0.1);
+            overflow: hidden;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TERMINAL HEADER
+           ═══════════════════════════════════════════════════════════ */
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Mac dots */
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-controls.mac .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .window-controls.mac .dot.red { background: #ff5f57; }
+        .window-controls.mac .dot.yellow { background: #febc2e; }
+        .window-controls.mac .dot.green { background: #28c840; }
+
+        /* Windows buttons */
+        .window-controls.windows {
+            gap: 0;
+        }
+        .window-controls.windows .win-btn {
+            width: 46px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 244, 228, 0.6);
+            font-size: 0.7em;
+            transition: background 0.15s ease;
+        }
+        .window-controls.windows .win-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .window-controls.windows .win-btn.close:hover { background: #e81123; color: white; }
+
+        .terminal-title {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 1px;
+        }
+
+        /* OS Toggle */
+        .os-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 4px;
+        }
+
+        .os-btn {
+            padding: 4px 10px;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.5);
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .os-btn.active {
+            background: rgba(190, 156, 109, 0.3);
+            color: var(--super-gold);
+        }
+
+        .os-btn:hover:not(.active) {
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TERMINAL BODY
+           ═══════════════════════════════════════════════════════════ */
+        .terminal-body {
+            padding: 25px 30px;
+        }
+
+        /* Command line */
+        .command-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .prompt {
+            color: var(--super-green);
+            font-weight: 500;
+        }
+
+        .command {
+            color: var(--super-cream);
+        }
+
+        .command .cmd { color: var(--super-amber); }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: var(--super-gold);
+            opacity: 0.7;
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0; }
+        }
+
+        /* Section title */
+        .section-title {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+        }
+
+        .section-title span {
+            color: var(--super-gold);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           PLUGIN GRID
+           ═══════════════════════════════════════════════════════════ */
+        .plugin-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        /* Plugin Card */
+        .plugin-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plugin-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--card-accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .plugin-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(190, 156, 109, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .plugin-card:hover::before {
+            opacity: 1;
+        }
+
+        .plugin-card.active {
+            background: rgba(190, 156, 109, 0.08);
+            border-color: rgba(190, 156, 109, 0.4);
+        }
+
+        .plugin-card.active::before {
+            opacity: 1;
+        }
+
+        /* Card accent colors */
+        .plugin-card[data-plugin="superpowers"] { --card-accent: var(--super-amber); }
+        .plugin-card[data-plugin="feature-dev"] { --card-accent: var(--super-blue); }
+        .plugin-card[data-plugin="frontend"] { --card-accent: var(--super-pink); }
+        .plugin-card[data-plugin="chrome"] { --card-accent: var(--super-green); }
+        .plugin-card[data-plugin="mcp"] { --card-accent: var(--super-purple); }
+        .plugin-card[data-plugin="skill-creator"] { --card-accent: var(--super-cyan); }
+
+        /* Card header */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--card-accent);
+            flex-shrink: 0;
+        }
+
+        .card-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-name {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 2px;
+        }
+
+        .card-source {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Card tagline */
+        .card-tagline {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.45;
+        }
+
+        /* Featured badge */
+        .featured-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.55em;
+            padding: 3px 8px;
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 4px;
+            color: var(--super-amber);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           DETAIL PANEL (appears when card clicked)
+           ═══════════════════════════════════════════════════════════ */
+        .detail-panel {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(190, 156, 109, 0.15);
+            display: none;
+        }
+
+        .detail-panel.visible {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .detail-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6em;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--detail-accent);
+            color: var(--detail-accent);
+            flex-shrink: 0;
+        }
+
+        .detail-meta { flex: 1; }
+
+        .detail-name {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 4px;
+        }
+
+        .detail-tagline {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            color: var(--detail-accent);
+        }
+
+        .detail-description {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        /* Skills list */
+        .skills-section {
+            margin-bottom: 18px;
+        }
+
+        .skills-title {
+            font-size: 0.65em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            font-size: 0.75em;
+            padding: 5px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 5px;
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        .skill-tag .slash {
+            color: var(--super-gold);
+        }
+
+        /* Install command */
+        .install-section {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+
+        .install-title {
+            font-size: 0.6em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .install-command {
+            font-size: 0.85em;
+            color: var(--super-cream);
+        }
+
+        .install-command .prompt { color: var(--super-green); }
+        .install-command .cmd { color: var(--super-amber); }
+        .install-command .arg { color: var(--super-cyan); }
+
+        /* ═══════════════════════════════════════════════════════════
+           FOOTER TIP
+           ═══════════════════════════════════════════════════════════ */
+        .terminal-footer {
+            margin-top: 25px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(190, 156, 109, 0.1);
+            text-align: center;
+        }
+
+        .footer-tip {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78em;
+            color: rgba(255, 244, 228, 0.5);
+            font-style: italic;
+        }
+
+        .footer-tip strong {
+            color: var(--super-gold);
+            font-weight: 500;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE - AUMENTADO para projeção em sala
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode { padding: 10px; height: 100vh; overflow: hidden; }
+        body.embed-mode .terminal { max-width: 1050px; max-height: 100vh; }
+        body.embed-mode .terminal-header { padding: 10px 14px; }
+        body.embed-mode .terminal-body { padding: 18px 22px; }
+        body.embed-mode .command-line { margin-bottom: 15px; padding-bottom: 12px; font-size: clamp(0.9em, 1.3vw, 1.1em); }
+        body.embed-mode .section-title { font-size: clamp(0.7em, 1vw, 0.85em); margin-bottom: 12px; }
+        body.embed-mode .plugin-grid { gap: 10px; }
+        body.embed-mode .plugin-card { padding: 14px; }
+        body.embed-mode .card-header { margin-bottom: 8px; gap: 10px; }
+        body.embed-mode .card-icon { width: 36px; height: 36px; font-size: clamp(1em, 1.4vw, 1.2em); }
+        body.embed-mode .card-name { font-size: clamp(0.9em, 1.3vw, 1.1em); }
+        body.embed-mode .card-source { font-size: clamp(0.65em, 0.9vw, 0.8em); }
+        body.embed-mode .card-tagline { font-size: clamp(0.8em, 1.1vw, 0.95em); }
+        body.embed-mode .featured-badge { font-size: 0.5em; padding: 2px 6px; top: 8px; right: 8px; }
+        body.embed-mode .detail-panel { margin-top: 15px; padding-top: 15px; }
+        body.embed-mode .detail-header { margin-bottom: 12px; gap: 14px; }
+        body.embed-mode .detail-icon { width: 48px; height: 48px; font-size: clamp(1.4em, 2vw, 1.7em); }
+        body.embed-mode .detail-name { font-size: clamp(1.1em, 1.6vw, 1.35em); }
+        body.embed-mode .detail-tagline { font-size: clamp(0.9em, 1.3vw, 1.1em); }
+        body.embed-mode .detail-description { font-size: clamp(0.9em, 1.3vw, 1.1em); line-height: 1.5; margin-bottom: 12px; }
+        body.embed-mode .skills-section { margin-bottom: 12px; }
+        body.embed-mode .skills-title { font-size: clamp(0.65em, 0.9vw, 0.8em); margin-bottom: 8px; }
+        body.embed-mode .skills-list { gap: 6px; }
+        body.embed-mode .skill-tag { font-size: clamp(0.75em, 1.05vw, 0.9em); padding: 4px 10px; }
+        body.embed-mode .install-section { padding: 10px 12px; }
+        body.embed-mode .install-title { font-size: clamp(0.6em, 0.85vw, 0.75em); }
+        body.embed-mode .install-command { font-size: clamp(0.85em, 1.2vw, 1em); }
+        body.embed-mode .terminal-footer { margin-top: 15px; padding-top: 12px; }
+        body.embed-mode .footer-tip { font-size: clamp(0.8em, 1.1vw, 0.95em); }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <!-- Terminal Header -->
+        <div class="terminal-header">
+            <div class="window-controls mac" id="window-controls">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="terminal-title">claude-code</div>
+            <div class="os-toggle">
+                <button class="os-btn active" data-os="mac">Mac</button>
+                <button class="os-btn" data-os="windows">Win</button>
+            </div>
+        </div>
+
+        <!-- Terminal Body -->
+        <div class="terminal-body">
+            <!-- Command Line -->
+            <div class="command-line">
+                <span class="prompt" id="prompt">$</span>
+                <span class="command"><span class="cmd">/plugin</span> --recommended <span style="color: rgba(255,244,228,0.4);">(by george-marmelstein)</span></span>
+                <span class="cursor"></span>
+            </div>
+
+            <!-- Section Title -->
+            <div class="section-title">
+                <span>//</span> Arsenal do Iniciante - Plugins Recomendados
+            </div>
+
+            <!-- Plugin Grid -->
+            <div class="plugin-grid">
+                <!-- SuperPowers -->
+                <div class="plugin-card" data-plugin="superpowers">
+                    <div class="featured-badge">Essencial</div>
+                    <div class="card-header">
+                        <div class="card-icon">SP</div>
+                        <div class="card-meta">
+                            <div class="card-name">SuperPowers</div>
+                            <div class="card-source">obra/superpowers</div>
+                        </div>
+                    </div>
+                    <div class="card-tagline">Pack de skills de produtividade. Brainstorm, TDD, debugging sistemático.</div>
+                </div>
+
+                <!-- Feature Dev -->
+                <div class="plugin-card" data-plugin="feature-dev">
+                    <div class="card-header">
+                        <div class="card-icon">FD</div>
+                        <div class="card-meta">
+                            <div class="card-name">feature-dev</div>
+                            <div class="card-source">@anthropics/claude-code-plugins</div>
+                        </div>
+                    </div>
+                    <div class="card-tagline">Desenvolvimento guiado. Arquitetura antes do código.</div>
+                </div>
+
+                <!-- Frontend Design -->
+                <div class="plugin-card" data-plugin="frontend">
+                    <div class="card-header">
+                        <div class="card-icon">UI</div>
+                        <div class="card-meta">
+                            <div class="card-name">frontend-design</div>
+                            <div class="card-source">@anthropics/claude-code-plugins</div>
+                        </div>
+                    </div>
+                    <div class="card-tagline">Interfaces distintivas. Design profissional, não genérico.</div>
+                </div>
+
+                <!-- Chrome -->
+                <div class="plugin-card" data-plugin="chrome">
+                    <div class="card-header">
+                        <div class="card-icon">CR</div>
+                        <div class="card-meta">
+                            <div class="card-name">claude-in-chrome</div>
+                            <div class="card-source">anthropic/browser-mcp</div>
+                        </div>
+                    </div>
+                    <div class="card-tagline">Automação de browser. Testes end-to-end no terminal.</div>
+                </div>
+
+                <!-- MCP Builder -->
+                <div class="plugin-card" data-plugin="mcp">
+                    <div class="card-header">
+                        <div class="card-icon">MCP</div>
+                        <div class="card-meta">
+                            <div class="card-name">mcp-builder</div>
+                            <div class="card-source">skill nativo</div>
+                        </div>
+                    </div>
+                    <div class="card-tagline">Criar servidores MCP. Expanda as capacidades do Claude.</div>
+                </div>
+
+                <!-- Skill Creator -->
+                <div class="plugin-card" data-plugin="skill-creator">
+                    <div class="card-header">
+                        <div class="card-icon">SK</div>
+                        <div class="card-meta">
+                            <div class="card-name">skill-creator</div>
+                            <div class="card-source">skill nativo</div>
+                        </div>
+                    </div>
+                    <div class="card-tagline">Crie suas próprias skills. Conhecimento reutilizável.</div>
+                </div>
+            </div>
+
+            <!-- Detail Panel -->
+            <div class="detail-panel" id="detail-panel"></div>
+
+            <!-- Footer -->
+            <div class="terminal-footer">
+                <div class="footer-tip">
+                    <strong>Dica:</strong> Comece com SuperPowers para estabelecer boas práticas desde o início
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // Embed Mode Detection
+        // ═══════════════════════════════════════════════════════════
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // ═══════════════════════════════════════════════════════════
+        // Plugin Data
+        // ═══════════════════════════════════════════════════════════
+        const plugins = {
+            superpowers: {
+                icon: 'SP',
+                name: 'SuperPowers',
+                tagline: 'Framework de Skills Agênticas',
+                accent: '#fbbf24',
+                description: 'Um framework que transforma Claude Code em um assistente disciplinado com workflows estruturados. Implementa padrões de produção comprovados.',
+                skills: ['/brainstorm', '/test-driven-development', '/systematic-debugging', '/execute-plan', '/verification-before-completion'],
+                install: '<span class="prompt">$</span> <span class="cmd">/plugin</span> marketplace add <span class="arg">obra/superpowers-marketplace</span>'
+            },
+            'feature-dev': {
+                icon: 'FD',
+                name: 'feature-dev',
+                tagline: 'Desenvolvimento Guiado de Features',
+                accent: '#60a5fa',
+                description: 'Guia você através do desenvolvimento completo de features com agentes especializados: Explorer analisa o código, Architect projeta a solução, Reviewer valida.',
+                skills: ['code-explorer', 'code-architect', 'code-reviewer'],
+                install: '<span class="prompt">$</span> <span class="cmd">npx</span> claude-plugins install <span class="arg">@anthropics/claude-code-plugins/feature-dev</span>'
+            },
+            frontend: {
+                icon: 'UI',
+                name: 'frontend-design',
+                tagline: 'UI Distintiva e Profissional',
+                accent: '#f472b6',
+                description: 'Cria interfaces frontend de alta qualidade que fogem da estética genérica de IA. Tipografia, cores, animações e layouts com personalidade.',
+                skills: ['design-thinking', 'typography', 'animations', 'layouts'],
+                install: '<span class="prompt">$</span> <span class="cmd">npx</span> claude-plugins install <span class="arg">@anthropics/claude-code-plugins/frontend-design</span>'
+            },
+            chrome: {
+                icon: 'CR',
+                name: 'claude-in-chrome',
+                tagline: 'Automação de Browser',
+                accent: '#4ade80',
+                description: 'Integra Claude Code com seu Chrome. Navegue páginas, preencha formulários, capture screenshots, grave GIFs de ações. Testes end-to-end sem sair do terminal.',
+                skills: ['navigate', 'form_input', 'read_page', 'gif_creator', 'tabs_context'],
+                install: '<span class="prompt">$</span> <span class="cmd">/chrome</span> <span class="comment"># verificar conexão</span>'
+            },
+            mcp: {
+                icon: 'MCP',
+                name: 'mcp-builder',
+                tagline: 'Crie Servidores MCP',
+                accent: '#a78bfa',
+                description: 'Skill que guia a criação de servidores MCP (Model Context Protocol). Expanda as capacidades do Claude conectando-o a APIs e serviços externos.',
+                skills: ['FastMCP (Python)', 'MCP SDK (Node)', 'tool design', 'resource handling'],
+                install: '<span class="prompt">$</span> <span class="cmd">/skill</span> mcp-builder <span class="comment"># skill nativo</span>'
+            },
+            'skill-creator': {
+                icon: 'SK',
+                name: 'skill-creator',
+                tagline: 'Crie Suas Próprias Skills',
+                accent: '#22d3ee',
+                description: 'Guia a criação de skills personalizadas - pacotes de conhecimento reutilizável que ensinam Claude a executar tarefas específicas do seu domínio.',
+                skills: ['SKILL.md structure', 'prompt engineering', 'examples & patterns', 'skill testing'],
+                install: '<span class="prompt">$</span> <span class="cmd">/skill</span> skill-creator <span class="comment"># skill nativo</span>'
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // DOM Elements
+        // ═══════════════════════════════════════════════════════════
+        const cards = document.querySelectorAll('.plugin-card');
+        const detailPanel = document.getElementById('detail-panel');
+        const windowControls = document.getElementById('window-controls');
+        const prompt = document.getElementById('prompt');
+        const osBtns = document.querySelectorAll('.os-btn');
+
+        // ═══════════════════════════════════════════════════════════
+        // OS Toggle
+        // ═══════════════════════════════════════════════════════════
+        function setOS(os) {
+            osBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.os === os));
+
+            if (os === 'mac') {
+                windowControls.className = 'window-controls mac';
+                windowControls.innerHTML = `
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                `;
+                prompt.textContent = '$';
+            } else {
+                windowControls.className = 'window-controls windows';
+                windowControls.innerHTML = `
+                    <div class="win-btn">─</div>
+                    <div class="win-btn">□</div>
+                    <div class="win-btn close">✕</div>
+                `;
+                prompt.textContent = '>';
+            }
+
+            localStorage.setItem('preferred-os', os);
+        }
+
+        // Load saved preference
+        const savedOS = localStorage.getItem('preferred-os');
+        if (savedOS) setOS(savedOS);
+
+        osBtns.forEach(btn => {
+            btn.addEventListener('click', () => setOS(btn.dataset.os));
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // Card Selection
+        // ═══════════════════════════════════════════════════════════
+        function showDetail(pluginId) {
+            const data = plugins[pluginId];
+            if (!data) return;
+
+            detailPanel.style.setProperty('--detail-accent', data.accent);
+            detailPanel.innerHTML = `
+                <div class="detail-header">
+                    <div class="detail-icon" style="border-color: ${data.accent}; color: ${data.accent};">${data.icon}</div>
+                    <div class="detail-meta">
+                        <div class="detail-name">${data.name}</div>
+                        <div class="detail-tagline" style="color: ${data.accent};">${data.tagline}</div>
+                    </div>
+                </div>
+                <div class="detail-description">${data.description}</div>
+                <div class="skills-section">
+                    <div class="skills-title">Skills / Ferramentas</div>
+                    <div class="skills-list">
+                        ${data.skills.map(s => `<div class="skill-tag">${s.startsWith('/') ? `<span class="slash">/</span>${s.slice(1)}` : s}</div>`).join('')}
+                    </div>
+                </div>
+                <div class="install-section">
+                    <div class="install-title">Instalação</div>
+                    <div class="install-command">${data.install}</div>
+                </div>
+            `;
+
+            detailPanel.classList.add('visible');
+
+            // Update card states
+            cards.forEach(card => {
+                card.classList.toggle('active', card.dataset.plugin === pluginId);
+            });
+        }
+
+        function hideDetail() {
+            detailPanel.classList.remove('visible');
+            cards.forEach(card => card.classList.remove('active'));
+        }
+
+        // Event listeners
+        cards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const pluginId = card.dataset.plugin;
+                if (card.classList.contains('active')) {
+                    hideDetail();
+                } else {
+                    showDetail(pluginId);
+                }
+            });
+        });
+
+        // Click outside to close
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.plugin-card') && !e.target.closest('.detail-panel')) {
+                hideDetail();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hideDetail();
+            }
+        });
+
+        // Communication with parent
+        window.addEventListener('message', (e) => {
+            if (e.data.action === 'selectPlugin') {
+                showDetail(e.data.plugin);
+            } else if (e.data.action === 'reset') {
+                hideDetail();
+            }
+        });
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'plugin-shop-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

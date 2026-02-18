@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Três Paradigmas de Conhecimento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        /* Título */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Container dos cards */
+        .paradigms-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1100px;
+        }
+
+        /* Card base */
+        .paradigm-card {
+            width: 310px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 16px;
+            padding: 20px 22px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Número grande de fundo */
+        .paradigm-card::before {
+            content: attr(data-number);
+            position: absolute;
+            bottom: -25px;
+            right: -5px;
+            font-family: 'Playfair Display', serif;
+            font-size: 8em;
+            font-weight: 700;
+            color: rgba(190, 156, 109, 0.06);
+            line-height: 1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Estados do spotlight */
+        .paradigm-card.dimmed {
+            opacity: 0.2;
+            transform: scale(0.92);
+            filter: grayscale(0.5);
+        }
+
+        .paradigm-card.spotlight {
+            transform: scale(1.02);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 60px rgba(190, 156, 109, 0.3),
+                        0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Header do card */
+        .card-header {
+            text-align: center;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(190, 156, 109, 0.15);
+            border: 2px solid var(--super-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.5em;
+        }
+
+        .card-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+
+        .card-product {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 3px;
+        }
+
+        .card-company {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Label tipo de conhecimento */
+        .knowledge-label {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        /* Badge do tipo */
+        .knowledge-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        /* Quote */
+        .card-quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.9);
+            text-align: center;
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+
+        /* Features */
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--super-gold);
+        }
+
+        .feature-icon {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        .feature-text {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        /* Convergência */
+        .convergence-section {
+            margin-top: 25px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .convergence-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .convergence-arrows {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-bottom: 12px;
+        }
+
+        .convergence-arrows span {
+            color: var(--super-gold);
+            font-size: 1.2em;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        .convergence-box {
+            display: inline-block;
+            padding: 15px 40px;
+            background: rgba(190, 156, 109, 0.1);
+            border: 2px solid var(--super-gold);
+            border-radius: 12px;
+        }
+
+        .convergence-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            color: var(--super-gold);
+            margin-bottom: 8px;
+        }
+
+        .convergence-text {
+            font-size: 0.92em;
+            color: var(--super-cream);
+            margin-bottom: 10px;
+        }
+
+        .convergence-question {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.25em;
+            font-weight: 600;
+            color: var(--super-gold);
+            padding-top: 14px;
+            margin-top: 5px;
+            border-top: 1px solid rgba(190, 156, 109, 0.3);
+            text-shadow: 0 0 20px rgba(190, 156, 109, 0.6),
+                         0 0 40px rgba(190, 156, 109, 0.4);
+            opacity: 0;
+            transform: scale(0.9);
+            animation: questionReveal 0.8s ease 0.6s forwards,
+                       glowPulse 2.5s ease-in-out 1.4s infinite;
+        }
+
+        @keyframes questionReveal {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(190, 156, 109, 0.6),
+                             0 0 40px rgba(190, 156, 109, 0.4);
+            }
+            50% {
+                text-shadow: 0 0 30px rgba(190, 156, 109, 0.9),
+                             0 0 60px rgba(190, 156, 109, 0.6),
+                             0 0 80px rgba(190, 156, 109, 0.3);
+            }
+        }
+
+        /* Stage dots */
+        .stage-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .stage-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            border: 2px solid rgba(190, 156, 109, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stage-dot.active {
+            background: var(--super-gold);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Embed mode - compacto para caber na viewport ~1100x550px */
+        body.embed-mode { padding: 8px 15px; }
+        body.embed-mode h1 { font-size: 1.15em; margin-bottom: 10px; }
+        body.embed-mode .paradigms-container { gap: 12px; }
+        body.embed-mode .paradigm-card { width: 280px; padding: 12px 14px; border-radius: 12px; }
+        body.embed-mode .paradigm-card::before { font-size: 4.5em; bottom: -15px; right: -3px; }
+        body.embed-mode .card-header { margin-bottom: 10px; }
+        body.embed-mode .card-icon { width: 36px; height: 36px; font-size: 1.1em; margin-bottom: 6px; }
+        body.embed-mode .card-year { font-size: 0.7em; margin-bottom: 3px; }
+        body.embed-mode .card-product { font-size: 1.15em; margin-bottom: 2px; }
+        body.embed-mode .card-company { font-size: 0.7em; }
+        body.embed-mode .knowledge-label { font-size: 0.6em; margin-bottom: 4px; }
+        body.embed-mode .knowledge-badge { padding: 4px 12px; font-size: 0.7em; margin-bottom: 8px; }
+        body.embed-mode .card-quote { font-size: 0.9em; margin-bottom: 8px; line-height: 1.4; }
+        body.embed-mode .features { gap: 5px; }
+        body.embed-mode .feature { padding: 5px 8px; border-radius: 6px; }
+        body.embed-mode .feature-icon { font-size: 0.85em; }
+        body.embed-mode .feature-text { font-size: 0.8em; }
+        body.embed-mode .convergence-section { margin-top: 12px; }
+        body.embed-mode .convergence-arrows { gap: 60px; margin-bottom: 8px; }
+        body.embed-mode .convergence-arrows span { font-size: 1em; }
+        body.embed-mode .convergence-box { padding: 10px 20px; border-radius: 10px; }
+        body.embed-mode .convergence-title { font-size: 1.05em; margin-bottom: 5px; }
+        body.embed-mode .convergence-text { font-size: 0.85em; margin-bottom: 6px; }
+        body.embed-mode .convergence-question { font-size: 1.1em; padding-top: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Três Paradigmas de Conhecimento</h1>
+
+    <div class="paradigms-container">
+        <!-- ChatGPT -->
+        <div class="paradigm-card" data-number="01">
+            <div class="card-header">
+                <div class="card-icon">💬</div>
+                <div class="card-year">2023</div>
+                <div class="card-product">ChatGPT</div>
+                <div class="card-company">OpenAI</div>
+            </div>
+            <div class="knowledge-label">tipo de conhecimento</div>
+            <div class="knowledge-badge">PARAMÉTRICO</div>
+            <div class="card-quote">"O LLM como um Grande Oráculo"</div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">💬</span>
+                    <span class="feature-text">Conversa como interface principal</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">⏳</span>
+                    <span class="feature-text">Anexos e contexto vieram depois</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🧠</span>
+                    <span class="feature-text">Fonte: treino do modelo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Claude -->
+        <div class="paradigm-card" data-number="02">
+            <div class="card-header">
+                <div class="card-icon">📎</div>
+                <div class="card-year">2023</div>
+                <div class="card-product">Claude</div>
+                <div class="card-company">Anthropic</div>
+            </div>
+            <div class="knowledge-label">tipo de conhecimento</div>
+            <div class="knowledge-badge">CONTEXTUAL</div>
+            <div class="card-quote">"O usuário como curador do conhecimento"</div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">📎</span>
+                    <span class="feature-text">Anexos desde a origem</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📐</span>
+                    <span class="feature-text">100K → 200K tokens de contexto</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">👤</span>
+                    <span class="feature-text">Fonte de verdade = VOCÊ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Google -->
+        <div class="paradigm-card" data-number="03">
+            <div class="card-header">
+                <div class="card-icon">🌐</div>
+                <div class="card-year">2023</div>
+                <div class="card-product">Bard | Gemini</div>
+                <div class="card-company">Google</div>
+            </div>
+            <div class="knowledge-label">tipo de conhecimento</div>
+            <div class="knowledge-badge">EXTERNO</div>
+            <div class="card-quote">"A web é a fonte de verdade"</div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">🔍</span>
+                    <span class="feature-text">Liderança em busca</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📐</span>
+                    <span class="feature-text">Contextos longos (atenção esparsa)</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🌐</span>
+                    <span class="feature-text">Fonte = web</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Convergência -->
+    <div class="convergence-section">
+        <div class="convergence-arrows">
+            <span>↓</span>
+            <span>↓</span>
+            <span>↓</span>
+        </div>
+        <div class="convergence-box">
+            <div class="convergence-title">CONVERGÊNCIA 2025</div>
+            <div class="convergence-text">
+                Hoje todos têm <strong>anexos</strong>, <strong>busca na web</strong>, <strong>deep research</strong>, <strong>raciocínio expandido</strong>, <strong>longas janelas de contexto</strong>, <strong>vision</strong> etc.
+            </div>
+            <div class="convergence-question">
+                "Se todos já têm tudo... o que os agentes trazem de novo?"
+            </div>
+        </div>
+    </div>
+
+    <!-- Stage indicator -->
+    <div class="stage-indicator">
+        <div class="stage-dot" data-stage="0"></div>
+        <div class="stage-dot" data-stage="1"></div>
+        <div class="stage-dot" data-stage="2"></div>
+        <div class="stage-dot" data-stage="3"></div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Progressive Spotlight System
+        const cards = document.querySelectorAll('.paradigm-card');
+        const convergence = document.querySelector('.convergence-section');
+        const stageDots = document.querySelectorAll('.stage-dot');
+        let currentStage = 0;
+
+        function setStage(stage) {
+            currentStage = stage;
+
+            stageDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === stage);
+            });
+
+            cards.forEach((card, i) => {
+                card.classList.remove('dimmed', 'spotlight');
+                if (stage < 3) {
+                    if (i === stage) {
+                        card.classList.add('spotlight');
+                    } else {
+                        card.classList.add('dimmed');
+                    }
+                }
+            });
+
+            convergence.classList.toggle('visible', stage === 3);
+        }
+
+        function nextStage() {
+            setStage((currentStage + 1) % 4);
+        }
+
+        // Initialize
+        setStage(0);
+
+        // Click handler
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.stage-dot')) {
+                setStage(parseInt(e.target.closest('.stage-dot').dataset.stage));
+                return;
+            }
+            nextStage();
+        });
+
+        // Keyboard (quando standalone, não embebido)
+        document.addEventListener('keydown', (e) => {
+            // Se estiver em embed mode, deixar o parent controlar
+            if (document.body.classList.contains('embed-mode')) return;
+
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setStage(currentStage <= 0 ? 3 : currentStage - 1);
+            }
+        });
+
+        // ============================================
+        // COMUNICAÇÃO COM REVEAL.JS (Parent Frame)
+        // ============================================
+        const TOTAL_STAGES = 4; // 0, 1, 2, 3
+
+        // Escutar mensagens do parent
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+
+            if (data.action === 'nextStage') {
+                // Avançar para o próximo stage
+                if (currentStage < TOTAL_STAGES - 1) {
+                    nextStage();
+                    // Reportar novo estado
+                    window.parent.postMessage({
+                        type: 'paradigmas-state',
+                        currentStage: currentStage,
+                        totalStages: TOTAL_STAGES,
+                        completed: currentStage >= TOTAL_STAGES - 1
+                    }, '*');
+                } else {
+                    // Já está no último stage, informar que pode prosseguir
+                    window.parent.postMessage({
+                        type: 'paradigmas-state',
+                        currentStage: currentStage,
+                        totalStages: TOTAL_STAGES,
+                        completed: true,
+                        canProceed: true
+                    }, '*');
+                }
+            } else if (data.action === 'prevStage') {
+                // Voltar para o stage anterior
+                if (currentStage > 0) {
+                    setStage(currentStage - 1);
+                    window.parent.postMessage({
+                        type: 'paradigmas-state',
+                        currentStage: currentStage,
+                        totalStages: TOTAL_STAGES,
+                        completed: false
+                    }, '*');
+                } else {
+                    // Já está no primeiro stage, informar que pode voltar slide
+                    window.parent.postMessage({
+                        type: 'paradigmas-state',
+                        currentStage: currentStage,
+                        totalStages: TOTAL_STAGES,
+                        completed: false,
+                        canGoBack: true
+                    }, '*');
+                }
+            } else if (data.action === 'getState') {
+                // Retornar estado atual
+                window.parent.postMessage({
+                    type: 'paradigmas-state',
+                    currentStage: currentStage,
+                    totalStages: TOTAL_STAGES,
+                    completed: currentStage >= TOTAL_STAGES - 1
+                }, '*');
+            } else if (data.action === 'reset') {
+                // Resetar para o stage 0
+                setStage(0);
+                window.parent.postMessage({
+                    type: 'paradigmas-state',
+                    currentStage: 0,
+                    totalStages: TOTAL_STAGES,
+                    completed: false
+                }, '*');
+            }
+        });
+
+        // Notificar parent que o iframe está pronto
+        if (window.self !== window.top) {
+            window.parent.postMessage({
+                type: 'paradigmas-ready',
+                currentStage: currentStage,
+                totalStages: TOTAL_STAGES
+            }, '*');
+        }
+    </script>
+</body>
+</html>

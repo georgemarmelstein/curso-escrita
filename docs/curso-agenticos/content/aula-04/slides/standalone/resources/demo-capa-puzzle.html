@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Anatomia de um Sistema Agêntico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #12121e;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           BACKGROUND IMAGE
+           ═══════════════════════════════════════════════════════════ */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../../../site/assets/20260128_1754_Image Generation_simple_compose_01kg3658xnefx90j6jvc6bvm4c.png');
+            background-size: cover;
+            background-position: center 60%;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+
+        /* Dark overlay for readability */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg,
+                rgba(10, 10, 18, 0.75) 0%,
+                rgba(10, 10, 18, 0.5) 40%,
+                rgba(10, 10, 18, 0.6) 60%,
+                rgba(10, 10, 18, 0.85) 100%);
+            z-index: 1;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 20%,
+                rgba(10, 10, 18, 0.3) 50%,
+                rgba(10, 10, 18, 0.7) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN CONTAINER
+           ═══════════════════════════════════════════════════════════ */
+        .container {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           COMPONENT BADGES - Floating labels
+           ═══════════════════════════════════════════════════════════ */
+        .components-container {
+            position: relative;
+            width: 800px;
+            height: 280px;
+            margin-bottom: 20px;
+        }
+
+        .component-badge {
+            position: absolute;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .component-badge:hover {
+            transform: scale(1.08) translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Individual badges with colors and positions */
+        .badge-orchestrator {
+            background: rgba(190, 156, 109, 0.25);
+            border-color: rgba(190, 156, 109, 0.5);
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.3);
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85em;
+            padding: 12px 28px;
+            animation: badgeAppear 0.8s ease 0.3s forwards, glowPulse 3s ease-in-out 1.5s infinite;
+        }
+
+        .badge-skills {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: rgba(74, 222, 128, 0.4);
+            top: 30px;
+            left: 80px;
+            animation: badgeAppear 0.8s ease 0.5s forwards, floatBadge 6s ease-in-out 1.7s infinite;
+        }
+
+        .badge-commands {
+            background: rgba(34, 211, 238, 0.2);
+            border-color: rgba(34, 211, 238, 0.4);
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: badgeAppear 0.8s ease 0.7s forwards, floatBadge 7s ease-in-out 1.9s infinite;
+        }
+
+        .badge-tools {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.4);
+            top: 35px;
+            right: 80px;
+            animation: badgeAppear 0.8s ease 0.9s forwards, floatBadge 5.5s ease-in-out 2.1s infinite;
+        }
+
+        .badge-workers {
+            background: rgba(167, 139, 250, 0.2);
+            border-color: rgba(167, 139, 250, 0.4);
+            bottom: 40px;
+            left: 100px;
+            animation: badgeAppear 0.8s ease 1.1s forwards, floatBadge 6.5s ease-in-out 2.3s infinite;
+        }
+
+        .badge-mcp {
+            background: rgba(244, 114, 182, 0.2);
+            border-color: rgba(244, 114, 182, 0.4);
+            bottom: 30px;
+            right: 100px;
+            animation: badgeAppear 0.8s ease 1.3s forwards, floatBadge 7.5s ease-in-out 2.5s infinite;
+        }
+
+        .badge-memory {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: rgba(96, 165, 250, 0.4);
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: badgeAppear 0.8s ease 1.5s forwards, floatBadge 8s ease-in-out 2.7s infinite;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════════════════════════ */
+        @keyframes badgeAppear {
+            0% {
+                opacity: 0;
+                filter: blur(10px);
+            }
+            100% {
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        @keyframes floatBadge {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(190, 156, 109, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(190, 156, 109, 0.5); }
+        }
+
+        /* Connection lines */
+        .connection-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(190, 156, 109, 0.3),
+                transparent);
+            opacity: 0;
+            animation: lineAppear 1s ease 2s forwards;
+        }
+
+        @keyframes lineAppear {
+            to { opacity: 1; }
+        }
+
+        .line-1 { width: 100px; top: 85px; left: 180px; transform: rotate(35deg); }
+        .line-2 { width: 80px; top: 70px; left: 380px; transform: rotate(90deg); }
+        .line-3 { width: 100px; top: 85px; right: 180px; transform: rotate(-35deg); }
+        .line-4 { width: 80px; top: 180px; left: 220px; transform: rotate(-40deg); }
+        .line-5 { width: 80px; top: 180px; right: 220px; transform: rotate(40deg); }
+        .line-6 { width: 60px; top: 195px; left: 380px; transform: rotate(90deg); }
+
+        /* ═══════════════════════════════════════════════════════════
+           TITLE SECTION
+           ═══════════════════════════════════════════════════════════ */
+        .title-container {
+            text-align: center;
+            z-index: 20;
+            opacity: 0;
+            animation: titleFade 1s ease 1.8s forwards;
+        }
+
+        @keyframes titleFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .module-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: rgba(190, 156, 109, 0.9);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .module-label::before {
+            content: '// ';
+            color: rgba(190, 156, 109, 0.5);
+        }
+
+        .title-main {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3.2em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .title-highlight {
+            background: linear-gradient(135deg, var(--super-gold) 0%, var(--super-gold-light) 50%, var(--super-gold) 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .title-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.15em;
+            color: rgba(255, 244, 228, 0.6);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .title-sub::before {
+            content: '> ';
+            color: var(--super-gold);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EQUATION BAR
+           ═══════════════════════════════════════════════════════════ */
+        .equation-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 40px;
+            opacity: 0;
+            animation: eqAppear 1s ease 2.2s forwards;
+        }
+
+        @keyframes eqAppear {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+
+        .eq-piece {
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .eq-piece:hover {
+            transform: translateY(-2px);
+        }
+
+        .eq-piece.skill { background: rgba(74, 222, 128, 0.15); color: var(--super-green); border-color: rgba(74, 222, 128, 0.3); }
+        .eq-piece.command { background: rgba(34, 211, 238, 0.15); color: var(--super-cyan); border-color: rgba(34, 211, 238, 0.3); }
+        .eq-piece.tool { background: rgba(251, 191, 36, 0.15); color: var(--super-amber); border-color: rgba(251, 191, 36, 0.3); }
+        .eq-piece.mcp { background: rgba(244, 114, 182, 0.15); color: var(--super-pink); border-color: rgba(244, 114, 182, 0.3); }
+        .eq-piece.result { background: rgba(190, 156, 109, 0.2); color: var(--super-gold); border-color: rgba(190, 156, 109, 0.4); font-weight: 600; }
+
+        .eq-operator {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════════ */
+        .footer-bar {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            opacity: 0;
+            animation: footerAppear 1s ease 2.5s forwards;
+        }
+
+        @keyframes footerAppear {
+            to { opacity: 1; }
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .footer-item .label {
+            color: rgba(190, 156, 109, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .container { padding: 20px; }
+        body.embed-mode .components-container { width: 700px; height: 240px; margin-bottom: 15px; }
+        body.embed-mode .component-badge { padding: 8px 14px; font-size: 0.65em; }
+        body.embed-mode .badge-orchestrator { padding: 10px 22px; font-size: 0.75em; }
+        body.embed-mode .title-main { font-size: 2.5em; }
+        body.embed-mode .title-sub { font-size: 1em; }
+        body.embed-mode .equation-bar { gap: 8px; margin-top: 30px; }
+        body.embed-mode .eq-piece { padding: 6px 10px; font-size: 0.6em; }
+        body.embed-mode .footer-bar { bottom: 15px; gap: 25px; }
+        body.embed-mode .footer-item { font-size: 0.6em; }
+    </style>
+</head>
+<body>
+    <!-- Background Image -->
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <!-- Component Badges -->
+        <div class="components-container">
+            <!-- Connection lines -->
+            <div class="connection-line line-1"></div>
+            <div class="connection-line line-2"></div>
+            <div class="connection-line line-3"></div>
+            <div class="connection-line line-4"></div>
+            <div class="connection-line line-5"></div>
+            <div class="connection-line line-6"></div>
+
+            <!-- Badges -->
+            <div class="component-badge badge-skills">SKILLS</div>
+            <div class="component-badge badge-commands">COMMANDS</div>
+            <div class="component-badge badge-tools">TOOLS</div>
+            <div class="component-badge badge-orchestrator">ORQUESTRADOR</div>
+            <div class="component-badge badge-workers">WORKERS</div>
+            <div class="component-badge badge-mcp">MCP</div>
+            <div class="component-badge badge-memory">MEMORY</div>
+        </div>
+
+        <!-- Title Section -->
+        <div class="title-container">
+            <div class="module-label">Aula 04</div>
+            <h1 class="title-main">
+                <span class="title-highlight">Anatomia</span> de um Sistema Agêntico
+            </h1>
+            <p class="title-sub">As peças do quebra-cabeças</p>
+        </div>
+
+        <!-- Equation Bar -->
+        <div class="equation-bar">
+            <span class="eq-piece skill">Skill</span>
+            <span class="eq-operator">+</span>
+            <span class="eq-piece command">Command</span>
+            <span class="eq-operator">+</span>
+            <span class="eq-piece tool">Tool</span>
+            <span class="eq-operator">+</span>
+            <span class="eq-piece mcp">MCP</span>
+            <span class="eq-operator">=</span>
+            <span class="eq-piece result">Sistema</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-bar">
+        <div class="footer-item">
+            <span class="label">Curso</span>
+            <span>Sistemas Agênticos</span>
+        </div>
+        <div class="footer-item">
+            <span class="label">Público</span>
+            <span>Juristas</span>
+        </div>
+        <div class="footer-item">
+            <span class="label">Instrutor</span>
+            <span>George Marmelstein</span>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // EMBED MODE DETECTION
+        // ═══════════════════════════════════════════════════════════
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // ═══════════════════════════════════════════════════════════
+        // BADGE INTERACTION
+        // ═══════════════════════════════════════════════════════════
+        const badges = document.querySelectorAll('.component-badge');
+        const orchestrator = document.querySelector('.badge-orchestrator');
+
+        badges.forEach(badge => {
+            badge.addEventListener('mouseenter', () => {
+                if (badge !== orchestrator) {
+                    orchestrator.style.boxShadow = '0 0 60px rgba(190, 156, 109, 0.6)';
+                }
+            });
+
+            badge.addEventListener('mouseleave', () => {
+                orchestrator.style.boxShadow = '';
+            });
+        });
+    </script>
+</body>
+</html>

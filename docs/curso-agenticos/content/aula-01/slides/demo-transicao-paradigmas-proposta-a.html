@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transição: Três Paradigmas - Proposta A (Tipográfica)</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background com gradiente sutil */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                ellipse at 50% 30%,
+                rgba(190, 156, 109, 0.08) 0%,
+                transparent 50%
+            );
+            pointer-events: none;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            padding: 60px;
+        }
+
+        /* Número GIGANTE como elemento central */
+        .giant-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 28rem;
+            font-weight: 900;
+            line-height: 1;
+            color: transparent;
+            background: linear-gradient(
+                135deg,
+                var(--super-gold) 0%,
+                var(--super-gold-light) 50%,
+                var(--super-gold) 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 0 80px rgba(190, 156, 109, 0.3);
+            margin-bottom: -100px;
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Borda decorativa ao redor do número */
+        .giant-number::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            height: 420px;
+            border: 2px solid rgba(190, 156, 109, 0.15);
+            border-radius: 50%;
+            animation: pulse-border 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.05);
+                opacity: 0.3;
+            }
+        }
+
+        /* Título principal */
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--super-gold);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-shadow:
+                2px 2px 8px rgba(0, 0, 0, 0.9),
+                0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Palavra "Paradigmas" com destaque */
+        .title .highlight {
+            display: block;
+            font-size: 4.2rem;
+            margin-top: 10px;
+            background: linear-gradient(
+                90deg,
+                var(--super-gold) 0%,
+                var(--super-cream) 50%,
+                var(--super-gold) 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Subtítulo */
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.6);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 30px;
+        }
+
+        /* Pequenos marcadores decorativos */
+        .decorative-line {
+            width: 120px;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                var(--super-gold) 50%,
+                transparent 100%
+            );
+            margin: 25px auto;
+        }
+
+        /* EMBED MODE - ajustes para caber em iframe do Reveal.js */
+        body.embed-mode .giant-number {
+            font-size: 18rem;
+            margin-bottom: -60px;
+        }
+
+        body.embed-mode .giant-number::before {
+            width: 280px;
+            height: 280px;
+        }
+
+        body.embed-mode .title {
+            font-size: 2.2rem;
+        }
+
+        body.embed-mode .title .highlight {
+            font-size: 2.8rem;
+        }
+
+        body.embed-mode .subtitle {
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+        }
+
+        body.embed-mode .container {
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Número GIGANTE como protagonista -->
+        <div class="giant-number">3</div>
+
+        <!-- Título com palavra "Paradigmas" destacada -->
+        <h1 class="title">
+            Três
+            <span class="highlight">Paradigmas</span>
+            de Conhecimento
+        </h1>
+
+        <div class="decorative-line"></div>
+
+        <!-- Subtítulo -->
+        <p class="subtitle">A história da IA generativa</p>
+    </div>
+
+    <script>
+        // Detectar se está em iframe (embed mode)
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

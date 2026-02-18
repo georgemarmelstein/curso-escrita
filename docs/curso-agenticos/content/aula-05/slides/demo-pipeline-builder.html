@@ -1,0 +1,4384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Builder - Montador de Pipelines Agênticos</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================
+           VARIÁVEIS - Paleta Pastel + SUPER
+           ========================================== */
+        :root {
+            /* Paleta Pastel (elementos principais) */
+            --bg-canvas: #F5F0E8;
+            --bg-library: #EDE8E0;
+            --folder-entrada: #FFF8E7;
+            --folder-entrada-border: #E8D9B8;
+            --folder-tarefa: #E3F2FD;
+            --folder-tarefa-border: #90CAF9;
+            --folder-docs: #E8F5E9;
+            --folder-docs-border: #A5D6A7;
+            --folder-saida: #FFF3E0;
+            --folder-saida-border: #FFCC80;
+
+            /* Paleta SUPER (acentos) */
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+
+            /* Cores semânticas */
+            --color-success: #4ade80;
+            --color-warning: #fbbf24;
+            --color-danger: #f87171;
+
+            /* Texto */
+            --text-primary: #2c2c2c;
+            --text-secondary: #666;
+            --text-muted: #999;
+        }
+
+        /* ==========================================
+           TEMA ESCURO
+           ========================================== */
+        :root.dark-theme {
+            /* Paleta Escura */
+            --bg-canvas: #1a1a2e;
+            --bg-library: #16162b;
+            --folder-entrada: #2d2d44;
+            --folder-entrada-border: #4a4a6a;
+            --folder-tarefa: #1e3a5f;
+            --folder-tarefa-border: #2d5a8a;
+            --folder-docs: #1e3d2e;
+            --folder-docs-border: #2d5a44;
+            --folder-saida: #3d2d1e;
+            --folder-saida-border: #5a4a2d;
+
+            /* Texto escuro */
+            --text-primary: #e8e8f0;
+            --text-secondary: #b0b0c0;
+            --text-muted: #707088;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-canvas);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-primary);
+        }
+
+        /* ==========================================
+           HEADER / MENU SUPERIOR
+           ========================================== */
+        .header {
+            background: var(--super-bg-dark);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--super-gold);
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .patterns-menu {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pattern-btn {
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            color: var(--super-cream);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pattern-btn:hover {
+            background: rgba(190, 156, 109, 0.3);
+            border-color: var(--super-gold);
+        }
+
+        .pattern-btn.active {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: var(--super-gold);
+            border: none;
+            color: var(--super-bg-dark);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(190, 156, 109, 0.4);
+        }
+
+        .action-btn.reset {
+            background: transparent;
+            border: 1px solid rgba(190, 156, 109, 0.5);
+            color: var(--super-cream);
+        }
+
+        .action-btn.reset:hover {
+            background: rgba(190, 156, 109, 0.2);
+        }
+
+        /* Toggle de layout e modo */
+        .layout-toggle, .mode-toggle-header {
+            display: flex;
+            background: rgba(10, 10, 18, 0.5);
+            border-radius: 6px;
+            padding: 3px;
+            border: 1px solid rgba(190, 156, 109, 0.3);
+        }
+
+        .layout-btn, .mode-btn-header {
+            padding: 6px 10px;
+            border: none;
+            background: transparent;
+            color: var(--super-cream);
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .layout-btn:hover, .mode-btn-header:hover {
+            opacity: 0.9;
+        }
+
+        .layout-btn.active, .mode-btn-header.active {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            opacity: 1;
+        }
+
+        .mode-btn-header.livre.active {
+            background: #50B878;
+        }
+
+        /* Toggle de tema */
+        .theme-toggle {
+            display: flex;
+            background: rgba(10, 10, 18, 0.5);
+            border-radius: 6px;
+            padding: 3px;
+            border: 1px solid rgba(190, 156, 109, 0.3);
+        }
+
+        .theme-btn {
+            padding: 6px 10px;
+            border: none;
+            background: transparent;
+            color: var(--super-cream);
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .theme-btn:hover {
+            opacity: 0.9;
+        }
+
+        .theme-btn.active {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            opacity: 1;
+        }
+
+        /* Ajustes para tema escuro */
+        :root.dark-theme .library {
+            border-right-color: #333;
+        }
+
+        :root.dark-theme .tree-item:hover {
+            background: rgba(190, 156, 109, 0.25);
+        }
+
+        :root.dark-theme .canvas-node {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        :root.dark-theme .canvas-node:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        :root.dark-theme .node-header {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        :root.dark-theme .node-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        :root.dark-theme .node-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        :root.dark-theme .mode-badge {
+            background: rgba(26, 26, 46, 0.95);
+        }
+
+        :root.dark-theme .mascote-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: rgba(190, 156, 109, 0.3);
+        }
+
+        :root.dark-theme .canvas {
+            background:
+                radial-gradient(circle, rgba(190,156,109,0.2) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        :root.dark-theme .prompt-selector {
+            background: #1a1a2e;
+            border-color: #333;
+        }
+
+        :root.dark-theme .prompt-option:hover {
+            background: rgba(190, 156, 109, 0.2);
+        }
+
+        :root.dark-theme .tooltip {
+            background: rgba(0, 0, 0, 0.95);
+        }
+
+        :root.dark-theme .zoom-control {
+            background: rgba(26, 26, 46, 0.95);
+        }
+
+        :root.dark-theme .add-btn,
+        :root.dark-theme .remove-btn {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        :root.dark-theme .add-btn:hover {
+            background: rgba(74, 222, 128, 0.3);
+        }
+
+        :root.dark-theme .remove-btn:hover {
+            background: rgba(248, 113, 113, 0.3);
+        }
+
+        /* ==========================================
+           MAIN LAYOUT
+           ========================================== */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ==========================================
+           BIBLIOTECA (sidebar esquerda)
+           ========================================== */
+        .library {
+            width: 260px;
+            background: var(--bg-library);
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .library-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            font-size: 1em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ==========================================
+           ÁRVORE EXPANDÍVEL DA BIBLIOTECA
+           ========================================== */
+        .explorer-tree {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 5px 0;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px 6px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .tree-item:hover {
+            background: rgba(190, 156, 109, 0.15);
+            border-left-color: rgba(190, 156, 109, 0.5);
+        }
+
+        .tree-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+
+        .tree-indent {
+            width: 16px;
+            flex-shrink: 0;
+        }
+
+        .tree-chevron {
+            width: 16px;
+            font-size: 0.65em;
+            color: rgba(190, 156, 109, 0.6);
+            transition: transform 0.2s ease, color 0.2s ease;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .tree-chevron.expanded {
+            transform: rotate(90deg);
+            color: var(--super-gold);
+        }
+
+        .tree-chevron.empty {
+            visibility: hidden;
+        }
+
+        .tree-icon {
+            width: 20px;
+            font-size: 0.9em;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .tree-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: var(--text-primary);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tree-item[data-folder] > .tree-label {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .tree-children {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .tree-children.expanded {
+            max-height: 500px;
+        }
+
+        /* Cores por categoria */
+        .tree-item[data-category="entrada"]:hover {
+            background: rgba(255, 248, 231, 0.5);
+            border-left-color: var(--folder-entrada-border);
+        }
+
+        .tree-item[data-category="tarefa"]:hover {
+            background: rgba(227, 242, 253, 0.5);
+            border-left-color: var(--folder-tarefa-border);
+        }
+
+        .tree-item[data-category="docs"]:hover {
+            background: rgba(232, 245, 233, 0.5);
+            border-left-color: var(--folder-docs-border);
+        }
+
+        .tree-item[data-category="saida"]:hover {
+            background: rgba(255, 243, 224, 0.5);
+            border-left-color: var(--folder-saida-border);
+        }
+
+        /* Pastas draggable */
+        .tree-item[draggable="true"] {
+            cursor: grab;
+        }
+
+        .tree-item[draggable="true"]:active {
+            cursor: grabbing;
+        }
+
+        /* ==========================================
+           MASCOTE CLAUDE CODE
+           ========================================== */
+        .mascote-container {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--super-gold);
+        }
+
+        .mascote-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .library-mascote {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            border: 2px solid var(--super-gold);
+            margin-bottom: 8px;
+        }
+
+        .library-mascote:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(190, 156, 109, 0.3);
+        }
+
+        .library-mascote:active {
+            cursor: grabbing;
+        }
+
+        .library-mascote.dragging {
+            opacity: 0.5;
+        }
+
+        .library-mascote .mascote-info {
+            flex: 1;
+        }
+
+        .library-mascote .mascote-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .library-mascote .mascote-role {
+            font-size: 0.7em;
+            color: var(--text-secondary);
+        }
+
+        /* Mascote SVG */
+        .mascote {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .mascote.principal {
+            width: 44px;
+            height: 44px;
+        }
+
+        .mascote.subagente {
+            width: 28px;
+            height: 28px;
+        }
+
+        .mascote svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Mascote no canvas */
+        .canvas-mascote {
+            position: absolute;
+            cursor: grab;
+            z-index: 50;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        .canvas-mascote:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3));
+        }
+
+        .canvas-mascote:active {
+            cursor: grabbing;
+        }
+
+        .canvas-mascote .mascote-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            white-space: nowrap;
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            padding: 2px 6px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .canvas-mascote:hover .mascote-label {
+            opacity: 1;
+        }
+
+        /* Subagentes na biblioteca */
+        .subagentes-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .library-subagente {
+            padding: 6px 8px;
+            background: white;
+            border-radius: 8px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .library-subagente:hover {
+            transform: scale(1.05);
+        }
+
+        .library-subagente .subagente-name {
+            font-size: 0.65em;
+            font-weight: 600;
+        }
+
+        /* ==========================================
+           CANVAS (área principal)
+           ========================================== */
+        .canvas {
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+            overflow: visible;
+            position: relative;
+            min-width: 2000px;
+            min-height: 2000px;
+            background:
+                radial-gradient(circle, rgba(190,156,109,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 5;
+        }
+
+        .canvas-hint {
+            position: fixed;
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1em;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .canvas-hint.hidden {
+            display: none;
+        }
+
+        .canvas-hint .icon {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .canvas.drag-over {
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .canvas-wrapper.drag-over {
+            background: rgba(190, 156, 109, 0.15);
+            box-shadow: inset 0 0 30px rgba(190, 156, 109, 0.2);
+        }
+
+        /* Layout Horizontal */
+        .canvas.horizontal {
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+            gap: 15px;
+            padding: 50px;
+        }
+
+        .canvas.horizontal .canvas-folder {
+            min-width: 260px;
+            max-width: 300px;
+            flex-shrink: 0;
+        }
+
+        .canvas.horizontal .arranjo-control {
+            margin-top: 0;
+            min-width: 200px;
+            flex-shrink: 0;
+        }
+
+        .canvas.horizontal .mode-badge {
+            margin-top: 0;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        /* Conectores (setas) entre pastas */
+        .connector {
+            display: none;
+            font-size: 1.8em;
+            color: var(--super-gold);
+            flex-shrink: 0;
+            animation: pulse-arrow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-arrow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Mostrar conectores no modo horizontal */
+        .canvas.horizontal .connector {
+            display: block;
+        }
+
+        /* Conector vertical (para modo vertical) */
+        .connector-vertical {
+            display: block;
+            font-size: 1.5em;
+            color: var(--super-gold);
+            animation: pulse-arrow 1.5s ease-in-out infinite;
+            text-align: center;
+        }
+
+        .canvas.horizontal .connector-vertical {
+            display: none;
+        }
+
+        /* Container do conector */
+        .connector-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ==========================================
+           RAMIFICAÇÕES (FORK/JOIN)
+           ========================================== */
+
+        /* Container de branches */
+        .branch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .canvas.horizontal .branch-container {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        /* Nó de Fork/Join */
+        .fork-node, .join-node {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--super-bg-dark);
+            border: 3px solid var(--super-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: var(--super-gold);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .fork-node.router {
+            background: linear-gradient(135deg, var(--super-bg-dark), #2a2a4e);
+            border-color: #90CAF9;
+        }
+
+        .fork-node.parallel {
+            background: linear-gradient(135deg, var(--super-bg-dark), #1a3a2e);
+            border-color: var(--color-success);
+        }
+
+        .fork-node.orchestrator {
+            background: linear-gradient(135deg, var(--super-bg-dark), #3a2a1e);
+            border-color: #FFCC80;
+        }
+
+        /* Área de branches paralelas */
+        .branches-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px 10px;
+            position: relative;
+        }
+
+        .canvas.horizontal .branches-area {
+            flex-direction: column;
+            padding: 10px 15px;
+        }
+
+        /* Cada branch individual */
+        .branch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .canvas.horizontal .branch {
+            flex-direction: row;
+        }
+
+        /* Linha de conexão das branches */
+        .branch::before {
+            content: '';
+            position: absolute;
+            background: var(--super-gold);
+            opacity: 0.5;
+        }
+
+        /* Vertical: linhas horizontais saindo do fork */
+        .branches-area .branch::before {
+            left: -25px;
+            top: 50%;
+            width: 25px;
+            height: 3px;
+            transform: translateY(-50%);
+        }
+
+        /* Linha vertical conectando as branches */
+        .branches-area::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--super-gold);
+            opacity: 0.5;
+            border-radius: 2px;
+        }
+
+        .canvas.horizontal .branches-area::before {
+            left: 0;
+            top: -15px;
+            bottom: auto;
+            width: 100%;
+            height: 3px;
+        }
+
+        .canvas.horizontal .branches-area .branch::before {
+            left: 50%;
+            top: -15px;
+            width: 3px;
+            height: 15px;
+            transform: translateX(-50%);
+        }
+
+        /* Tarefa dentro da branch */
+        .branch-task {
+            background: var(--folder-tarefa);
+            border: 2px solid var(--folder-tarefa-border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 160px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .branch-task-icon {
+            font-size: 1.3em;
+        }
+
+        .branch-task-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        /* Badge de condição para routing */
+        .branch-condition {
+            font-size: 0.7em;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.7);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* Animação de entrada das branches */
+        .branch {
+            animation: branch-enter 0.4s ease-out;
+        }
+
+        @keyframes branch-enter {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .canvas.horizontal .branch {
+            animation-name: branch-enter-horizontal;
+        }
+
+        @keyframes branch-enter-horizontal {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Branch container no modo horizontal */
+        .canvas.horizontal .branch-container {
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .canvas.horizontal .branch-container .branches-area {
+            flex-direction: column;
+            padding: 20px 10px;
+        }
+
+        .canvas.horizontal .branch-container .branches-area::before {
+            left: -15px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            height: auto;
+        }
+
+        .canvas.horizontal .branch-container .branches-area .branch::before {
+            left: -15px;
+            top: 50%;
+            width: 15px;
+            height: 3px;
+            transform: translateY(-50%);
+        }
+
+        .canvas.horizontal .branch-container .arranjo-control {
+            position: static;
+            transform: none;
+            min-width: auto;
+            margin-left: 10px;
+        }
+
+        /* Garantir que branch-container recebe o conector interno */
+        .branch-container .connector-container {
+            display: flex;
+        }
+
+        .branch-container .connector {
+            display: block;
+        }
+
+        .branch-container .connector-vertical {
+            display: none;
+        }
+
+        /* Container com zoom */
+        .canvas-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-canvas);
+            cursor: grab;
+        }
+
+        .canvas-wrapper:active {
+            cursor: grabbing;
+        }
+
+        .canvas-wrapper.panning {
+            cursor: grabbing;
+        }
+
+        .canvas-scaler {
+            transform-origin: top left;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.2s ease;
+            min-height: 100%;
+            min-width: 100%;
+        }
+
+        .canvas-scaler .canvas {
+            min-height: 100%;
+        }
+
+        /* Controle de Zoom */
+        .zoom-control {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: var(--super-bg-dark);
+            border: 1px solid var(--super-gold);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .zoom-control label {
+            color: var(--super-cream);
+            font-size: 0.75em;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .zoom-slider {
+            width: 100px;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(190, 156, 109, 0.3);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .zoom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .zoom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .zoom-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .zoom-value {
+            color: var(--super-gold);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .zoom-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: rgba(190, 156, 109, 0.2);
+            color: var(--super-cream);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-btn:hover {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+        }
+
+        /* ==========================================
+           BARRA DE FERRAMENTAS DE DESENHO
+           ========================================== */
+        .draw-toolbar {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 10, 18, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .draw-toolbar__divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(190, 156, 109, 0.3);
+            margin: 0 4px;
+        }
+
+        .draw-tool {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            color: var(--super-cream);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            opacity: 0.7;
+        }
+
+        .draw-tool:hover {
+            background: rgba(190, 156, 109, 0.2);
+            opacity: 1;
+        }
+
+        .draw-tool.active {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            opacity: 1;
+        }
+
+        .draw-tool svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .draw-tool.active svg {
+            stroke: var(--super-bg-dark);
+        }
+
+        /* Camada de desenho (abaixo do fluxo) */
+        .draw-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: visible;
+        }
+
+        .draw-layer.active {
+            pointer-events: auto;
+            z-index: 100;
+        }
+
+        /* Container interno que segue o pan/zoom */
+        .draw-layer-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: top left;
+            min-width: 2000px;
+            min-height: 2000px;
+        }
+
+        /* Shapes sempre clicáveis */
+        .draw-layer .canvas-shape {
+            pointer-events: auto;
+        }
+
+        /* Elementos desenhados no canvas */
+        .canvas-shape {
+            position: absolute;
+            pointer-events: all;
+            cursor: move;
+        }
+
+        .canvas-shape.selected {
+            outline: 2px dashed var(--super-gold);
+            outline-offset: 3px;
+        }
+
+        /* Handles de redimensionamento */
+        .resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--super-gold);
+            border: 2px solid var(--super-bg-dark);
+            border-radius: 2px;
+            z-index: 10;
+        }
+
+        .resize-handle.nw { top: -5px; left: -5px; cursor: nw-resize; }
+        .resize-handle.ne { top: -5px; right: -5px; cursor: ne-resize; }
+        .resize-handle.sw { bottom: -5px; left: -5px; cursor: sw-resize; }
+        .resize-handle.se { bottom: -5px; right: -5px; cursor: se-resize; }
+        .resize-handle.n { top: -5px; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+        .resize-handle.s { bottom: -5px; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+        .resize-handle.w { top: 50%; left: -5px; transform: translateY(-50%); cursor: w-resize; }
+        .resize-handle.e { top: 50%; right: -5px; transform: translateY(-50%); cursor: e-resize; }
+
+        .canvas-shape--rect {
+            border: 2px solid var(--super-gold);
+            border-radius: 4px;
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .canvas-shape--circle {
+            border: 2px solid var(--super-gold);
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .canvas-shape--text {
+            color: var(--super-cream);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            padding: 4px 8px;
+            background: rgba(10, 10, 18, 0.7);
+            border-radius: 4px;
+            min-width: 20px;
+            min-height: 20px;
+        }
+
+        .canvas-shape--arrow {
+            pointer-events: none;
+        }
+
+        /* Área de clique através do bounding box quando selecionado */
+        .canvas-shape--arrow.selected {
+            pointer-events: auto;
+            cursor: move;
+        }
+
+        .canvas-shape--arrow line {
+            stroke: var(--super-gold);
+            stroke-width: 2.5;
+            stroke-linecap: butt; /* Termina exatamente na base do triângulo */
+            pointer-events: stroke; /* Permite clicar na linha */
+            cursor: move;
+        }
+
+        .canvas-shape--arrow polygon {
+            fill: var(--super-gold);
+            stroke: none; /* Remove stroke para evitar artefatos */
+            pointer-events: fill; /* Permite clicar na ponta */
+            cursor: move;
+        }
+
+        /* ==========================================
+           PASTA NO CANVAS (aberta, com conteúdo)
+           ========================================== */
+        .canvas-folder {
+            background: white;
+            border-radius: 12px;
+            min-width: 350px;
+            max-width: 450px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            animation: folder-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid;
+        }
+
+        @keyframes folder-enter {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .canvas-folder.entrada {
+            background: var(--folder-entrada);
+            border-color: var(--folder-entrada-border);
+        }
+
+        .canvas-folder.tarefa {
+            background: var(--folder-tarefa);
+            border-color: var(--folder-tarefa-border);
+        }
+
+        .canvas-folder.docs {
+            background: var(--folder-docs);
+            border-color: var(--folder-docs-border);
+        }
+
+        .canvas-folder.saida {
+            background: var(--folder-saida);
+            border-color: var(--folder-saida-border);
+        }
+
+        .canvas-folder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .canvas-folder-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .canvas-folder-title .icon {
+            font-size: 1.4em;
+        }
+
+        .canvas-folder-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .folder-action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .folder-action-btn.add {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .folder-action-btn.add:hover {
+            transform: scale(1.1);
+        }
+
+        .folder-action-btn.remove {
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .folder-action-btn.remove:hover {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        .canvas-folder-content {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* ==========================================
+           ITENS DENTRO DA PASTA
+           ========================================== */
+        .folder-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+        }
+
+        .folder-item:hover {
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .folder-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .folder-item-icon {
+            font-size: 1.2em;
+        }
+
+        .folder-item-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            cursor: text;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background 0.2s ease;
+        }
+
+        .folder-item-name:hover {
+            background: rgba(190, 156, 109, 0.15);
+        }
+
+        .folder-item-name:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 2px var(--super-gold);
+        }
+
+        .folder-item-name[contenteditable="false"] {
+            cursor: default;
+            color: var(--text-primary);
+        }
+
+        .folder-item-remove {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+
+        .folder-item:hover .folder-item-remove {
+            opacity: 1;
+        }
+
+        .folder-item-remove:hover {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        /* ==========================================
+           MENU DE SELEÇÃO DE PROMPTS
+           ========================================== */
+        .prompt-selector {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 20px;
+            z-index: 1000;
+            min-width: 280px;
+            animation: popup-enter 0.3s ease;
+        }
+
+        @keyframes popup-enter {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .prompt-selector-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+        }
+
+        .prompt-selector-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            margin-bottom: 16px;
+            font-size: 1.1em;
+        }
+
+        .prompt-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .prompt-option:hover {
+            background: var(--folder-tarefa);
+            border-color: var(--folder-tarefa-border);
+        }
+
+        .prompt-option-icon {
+            font-size: 1.4em;
+        }
+
+        .prompt-option-info {
+            flex: 1;
+        }
+
+        .prompt-option-name {
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .prompt-option-desc {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+        }
+
+        /* ==========================================
+           CONEXÕES SVG
+           ========================================== */
+        .connections-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .connection-line {
+            stroke: var(--super-gold);
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        .connection-line.dashed {
+            stroke-dasharray: 8, 4;
+        }
+
+        .connection-arrow {
+            fill: var(--super-gold);
+        }
+
+        /* ==========================================
+           BADGE DE MODO
+           ========================================== */
+        .mode-badge {
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            padding: 12px 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            border: 2px solid var(--super-gold);
+            margin-top: auto;
+        }
+
+        .mode-badge-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            font-size: 0.9em;
+        }
+
+        .mode-badge-pattern {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .mode-badge-desc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold-light);
+        }
+
+        /* ==========================================
+           CONTROLE DE ARRANJO
+           ========================================== */
+        .arranjo-control {
+            background: var(--folder-tarefa);
+            border: 2px solid var(--folder-tarefa-border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-top: -10px;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 200;
+            cursor: move;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            min-width: 220px;
+        }
+
+        .arranjo-control:active {
+            cursor: grabbing;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        }
+
+        .arranjo-control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .arranjo-control-drag {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            cursor: move;
+        }
+
+        .arranjo-title {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .arranjo-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .arranjo-option {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.8em;
+            transition: all 0.2s ease;
+        }
+
+        .arranjo-option:hover {
+            border-color: var(--folder-tarefa-border);
+        }
+
+        .arranjo-option.active {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .arranjo-option-icon {
+            font-size: 1.2em;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ==========================================
+           ANIMAÇÕES DE EXECUÇÃO
+           ========================================== */
+        .canvas-folder.pulse {
+            animation: pulse-folder 0.6s ease;
+        }
+
+        @keyframes pulse-folder {
+            0%, 100% {
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(190, 156, 109, 0.5);
+                transform: scale(1.02);
+            }
+        }
+
+        .flying-doc {
+            position: fixed;
+            font-size: 1.5em;
+            pointer-events: none;
+            z-index: 1001;
+            animation: fly-doc 0.8s ease-in-out forwards;
+        }
+
+        @keyframes fly-doc {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        /* ==========================================
+           FEEDBACK / MENSAGENS
+           ========================================== */
+        .feedback-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 1px solid var(--super-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            z-index: 1000;
+            animation: feedback-enter 0.3s ease;
+        }
+
+        @keyframes feedback-enter {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .feedback-message.success {
+            border-color: var(--color-success);
+        }
+
+        .feedback-message.error {
+            border-color: var(--color-danger);
+        }
+
+        /* ==========================================
+           EMBED MODE
+           ========================================== */
+        body.embed-mode .header {
+            padding: 8px 15px;
+        }
+
+        body.embed-mode .header-title {
+            font-size: 1em;
+        }
+
+        body.embed-mode .pattern-btn {
+            padding: 4px 8px;
+            font-size: 0.7em;
+        }
+
+        body.embed-mode .library {
+            width: 200px;
+            padding: 12px;
+        }
+
+        body.embed-mode .library-folder {
+            padding: 8px;
+        }
+
+        body.embed-mode .folder-name {
+            font-size: 0.8em;
+        }
+
+        body.embed-mode .folder-desc {
+            display: none;
+        }
+
+        body.embed-mode .canvas {
+            padding: 15px;
+        }
+
+        body.embed-mode .canvas-folder {
+            min-width: 280px;
+        }
+
+        /* ==========================================
+           RESPONSIVO
+           ========================================== */
+        @media (max-width: 800px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .library {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 10px;
+            }
+
+            .library-folder {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .patterns-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <h1 class="header-title">Pipeline Builder</h1>
+
+        <div class="patterns-menu">
+            <button class="pattern-btn" onclick="loadPattern('single-turn')">Tarefa Unitária</button>
+            <button class="pattern-btn" onclick="loadPattern('batch')">Escala</button>
+            <button class="pattern-btn" onclick="loadPattern('chaining')">Cadeia</button>
+            <button class="pattern-btn" onclick="loadPattern('parallel')">Paralelo</button>
+            <button class="pattern-btn" onclick="loadPattern('routing')">Roteamento</button>
+            <button class="pattern-btn" onclick="loadPattern('orchestrator')">Orquestrador</button>
+        </div>
+
+        <div class="action-buttons">
+            <div class="theme-toggle">
+                <button class="theme-btn active" id="themeLight" onclick="setTheme('light')" title="Tema Claro">
+                    ☀️
+                </button>
+                <button class="theme-btn" id="themeDark" onclick="setTheme('dark')" title="Tema Escuro">
+                    🌙
+                </button>
+            </div>
+            <div class="mode-toggle-header">
+                <button class="mode-btn-header" id="modeEstruturado" onclick="setFlowMode('estruturado')" title="Modo Estruturado">
+                    📐 Estruturado
+                </button>
+                <button class="mode-btn-header livre active" id="modeLivre" onclick="setFlowMode('livre')" title="Modo Livre - Encadeie elementos">
+                    🔗 Livre
+                </button>
+            </div>
+            <div class="layout-toggle">
+                <button class="layout-btn" id="layoutVertical" onclick="setLayout('vertical')" title="Layout Vertical">
+                    ↕️
+                </button>
+                <button class="layout-btn active" id="layoutHorizontal" onclick="setLayout('horizontal')" title="Layout Horizontal">
+                    ↔️
+                </button>
+            </div>
+            <button class="action-btn reset" onclick="resetPipeline()">
+                <span>🔄</span> Reset
+            </button>
+            <button class="action-btn" onclick="executePipeline()">
+                <span>▶️</span> Executar
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main-container">
+        <!-- BIBLIOTECA -->
+        <aside class="library">
+            <h2 class="library-title">📁 Biblioteca</h2>
+
+            <nav class="explorer-tree" id="libraryTree">
+                <!-- Árvore será gerada dinamicamente -->
+            </nav>
+
+            <!-- MASCOTES -->
+            <div class="mascote-container">
+                <h3 class="mascote-title">🤖 Agentes</h3>
+
+                <!-- Claude Principal -->
+                <div class="library-mascote" draggable="true" data-mascote="principal" data-color="#E07A3A">
+                    <div class="mascote principal">
+                        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Conectores superiores -->
+                            <rect x="10" y="0" width="6" height="8" fill="#E07A3A"/>
+                            <rect x="28" y="0" width="6" height="8" fill="#E07A3A"/>
+                            <!-- Corpo principal -->
+                            <rect x="4" y="8" width="36" height="24" rx="2" fill="#E07A3A"/>
+                            <!-- Olhos -->
+                            <rect x="12" y="16" width="6" height="6" fill="#8B4513"/>
+                            <rect x="26" y="16" width="6" height="6" fill="#8B4513"/>
+                            <!-- Pernas -->
+                            <rect x="10" y="32" width="6" height="10" fill="#E07A3A"/>
+                            <rect x="28" y="32" width="6" height="10" fill="#E07A3A"/>
+                        </svg>
+                    </div>
+                    <div class="mascote-info">
+                        <div class="mascote-name">Claude Principal</div>
+                        <div class="mascote-role">Agente Orquestrador</div>
+                    </div>
+                </div>
+
+                <!-- Subagentes -->
+                <div class="subagentes-row">
+                    <div class="library-subagente" draggable="true" data-mascote="subagente" data-color="#4A90D9" data-name="Worker 1" style="border-color: #4A90D9;">
+                        <div class="mascote subagente">
+                            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="10" y="0" width="6" height="8" fill="#4A90D9"/>
+                                <rect x="28" y="0" width="6" height="8" fill="#4A90D9"/>
+                                <rect x="4" y="8" width="36" height="24" rx="2" fill="#4A90D9"/>
+                                <rect x="12" y="16" width="6" height="6" fill="#1a3a5c"/>
+                                <rect x="26" y="16" width="6" height="6" fill="#1a3a5c"/>
+                                <rect x="10" y="32" width="6" height="10" fill="#4A90D9"/>
+                                <rect x="28" y="32" width="6" height="10" fill="#4A90D9"/>
+                            </svg>
+                        </div>
+                        <span class="subagente-name">W1</span>
+                    </div>
+
+                    <div class="library-subagente" draggable="true" data-mascote="subagente" data-color="#50B878" data-name="Worker 2" style="border-color: #50B878;">
+                        <div class="mascote subagente">
+                            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="10" y="0" width="6" height="8" fill="#50B878"/>
+                                <rect x="28" y="0" width="6" height="8" fill="#50B878"/>
+                                <rect x="4" y="8" width="36" height="24" rx="2" fill="#50B878"/>
+                                <rect x="12" y="16" width="6" height="6" fill="#1a4a2e"/>
+                                <rect x="26" y="16" width="6" height="6" fill="#1a4a2e"/>
+                                <rect x="10" y="32" width="6" height="10" fill="#50B878"/>
+                                <rect x="28" y="32" width="6" height="10" fill="#50B878"/>
+                            </svg>
+                        </div>
+                        <span class="subagente-name">W2</span>
+                    </div>
+
+                    <div class="library-subagente" draggable="true" data-mascote="subagente" data-color="#9B59B6" data-name="Worker 3" style="border-color: #9B59B6;">
+                        <div class="mascote subagente">
+                            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="10" y="0" width="6" height="8" fill="#9B59B6"/>
+                                <rect x="28" y="0" width="6" height="8" fill="#9B59B6"/>
+                                <rect x="4" y="8" width="36" height="24" rx="2" fill="#9B59B6"/>
+                                <rect x="12" y="16" width="6" height="6" fill="#4a1a5c"/>
+                                <rect x="26" y="16" width="6" height="6" fill="#4a1a5c"/>
+                                <rect x="10" y="32" width="6" height="10" fill="#9B59B6"/>
+                                <rect x="28" y="32" width="6" height="10" fill="#9B59B6"/>
+                            </svg>
+                        </div>
+                        <span class="subagente-name">W3</span>
+                    </div>
+
+                    <div class="library-subagente" draggable="true" data-mascote="subagente" data-color="#E74C3C" data-name="Worker 4" style="border-color: #E74C3C;">
+                        <div class="mascote subagente">
+                            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="10" y="0" width="6" height="8" fill="#E74C3C"/>
+                                <rect x="28" y="0" width="6" height="8" fill="#E74C3C"/>
+                                <rect x="4" y="8" width="36" height="24" rx="2" fill="#E74C3C"/>
+                                <rect x="12" y="16" width="6" height="6" fill="#5c1a1a"/>
+                                <rect x="26" y="16" width="6" height="6" fill="#5c1a1a"/>
+                                <rect x="10" y="32" width="6" height="10" fill="#E74C3C"/>
+                                <rect x="28" y="32" width="6" height="10" fill="#E74C3C"/>
+                            </svg>
+                        </div>
+                        <span class="subagente-name">W4</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CANVAS -->
+        <div class="canvas-wrapper">
+            <div class="canvas-scaler" id="canvasScaler">
+                <section class="canvas" id="canvas">
+                </section>
+            </div>
+            <!-- Camada de desenho livre (cobre toda a área visível) -->
+            <div class="draw-layer" id="drawLayer">
+                <div class="draw-layer-content" id="drawLayerContent"></div>
+            </div>
+
+            <!-- Controle de Zoom -->
+            <div class="zoom-control">
+                <button class="zoom-btn" onclick="adjustZoom(-10)">−</button>
+                <input type="range" class="zoom-slider" id="zoomSlider"
+                       min="50" max="150" value="100"
+                       oninput="setZoom(this.value)">
+                <span class="zoom-value" id="zoomValue">100%</span>
+                <button class="zoom-btn" onclick="adjustZoom(10)">+</button>
+            </div>
+
+            <!-- Barra de Ferramentas de Desenho -->
+            <div class="draw-toolbar" id="drawToolbar">
+                <button class="draw-tool active" data-tool="select" onclick="setDrawTool('select')" title="Selecionar (V)">
+                    <svg viewBox="0 0 24 24"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>
+                </button>
+                <div class="draw-toolbar__divider"></div>
+                <button class="draw-tool" data-tool="rect" onclick="setDrawTool('rect')" title="Retângulo (R)">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                </button>
+                <button class="draw-tool" data-tool="circle" onclick="setDrawTool('circle')" title="Círculo (O)">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
+                </button>
+                <button class="draw-tool" data-tool="arrow" onclick="setDrawTool('arrow')" title="Seta (A)">
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </button>
+                <button class="draw-tool" data-tool="line" onclick="setDrawTool('line')" title="Linha (L)">
+                    <svg viewBox="0 0 24 24"><line x1="5" y1="19" x2="19" y2="5"/></svg>
+                </button>
+                <div class="draw-toolbar__divider"></div>
+                <button class="draw-tool" data-tool="text" onclick="setDrawTool('text')" title="Texto (T)">
+                    <svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+                </button>
+                <div class="draw-toolbar__divider"></div>
+                <button class="draw-tool" onclick="undo()" title="Desfazer (Ctrl+Z)">
+                    <svg viewBox="0 0 24 24"><path d="M3 10h10c4.42 0 8 3.58 8 8v2M3 10l6-6M3 10l6 6"/></svg>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- PROMPT SELECTOR (hidden by default) -->
+    <div class="prompt-selector-overlay" id="promptOverlay" style="display: none;"></div>
+    <div class="prompt-selector" id="promptSelector" style="display: none;">
+        <h3 class="prompt-selector-title">Escolha o tipo de tarefa:</h3>
+        <div class="prompt-option" onclick="selectPrompt('relator')">
+            <span class="prompt-option-icon">📝</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">relator.md</div>
+                <div class="prompt-option-desc">Resume o processo judicial</div>
+            </div>
+        </div>
+        <div class="prompt-option" onclick="selectPrompt('analisador')">
+            <span class="prompt-option-icon">🔍</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">analisador.md</div>
+                <div class="prompt-option-desc">Analisa questões jurídicas</div>
+            </div>
+        </div>
+        <div class="prompt-option" onclick="selectPrompt('pesquisador')">
+            <span class="prompt-option-icon">📚</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">pesquisador.md</div>
+                <div class="prompt-option-desc">Busca jurisprudência e doutrina</div>
+            </div>
+        </div>
+        <div class="prompt-option" onclick="selectPrompt('revisor')">
+            <span class="prompt-option-icon">✅</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">revisor.md</div>
+                <div class="prompt-option-desc">Revisa e valida documentos</div>
+            </div>
+        </div>
+        <div class="prompt-option" onclick="selectPrompt('minutador')">
+            <span class="prompt-option-icon">📋</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">minutador.md</div>
+                <div class="prompt-option-desc">Elabora minuta de decisão</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // ESTRUTURA DA BIBLIOTECA (árvore expandível)
+        // ==========================================
+        const LIBRARY_STRUCTURE = {
+            entrada: {
+                name: 'ENTRADA',
+                icon: '📂',
+                desc: 'Processos e documentos',
+                expanded: true,
+                children: [
+                    {
+                        name: 'caixa_entrada',
+                        icon: '📥',
+                        isFolder: true,
+                        expanded: true,
+                        files: [
+                            { name: 'PROCESSO-001.PDF', icon: '📄' },
+                            { name: 'PROCESSO-002.PDF', icon: '📄' },
+                            { name: 'PROCESSO-003.PDF', icon: '📄' }
+                        ]
+                    },
+                    {
+                        name: 'em_processamento',
+                        icon: '⏳',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'PROCESSO-ATUAL.PDF', icon: '📄' }
+                        ]
+                    },
+                    {
+                        name: 'dados_estruturados',
+                        icon: '🗃️',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'extracao-001.json', icon: '📊' },
+                            { name: 'validacao-001.json', icon: '✅' }
+                        ]
+                    }
+                ]
+            },
+            tarefa: {
+                name: 'TAREFA',
+                icon: '📂',
+                desc: 'Prompts e agentes',
+                expanded: false,
+                children: [
+                    {
+                        name: 'extractors',
+                        icon: '🔍',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'extrator-fatos.md', icon: '📝' },
+                            { name: 'extrator-pedidos.md', icon: '📝' },
+                            { name: 'estruturador.md', icon: '📝' },
+                            { name: 'validador.md', icon: '✅' }
+                        ]
+                    },
+                    {
+                        name: 'classifiers',
+                        icon: '🎯',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'classificador-materia.md', icon: '📝' },
+                            { name: 'router-tribunais.md', icon: '🔀' }
+                        ]
+                    },
+                    {
+                        name: 'workers',
+                        icon: '⚡',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'worker-stf.md', icon: '⚖️' },
+                            { name: 'worker-stj.md', icon: '⚖️' },
+                            { name: 'worker-trf.md', icon: '⚖️' },
+                            { name: 'sintetizador.md', icon: '📋' }
+                        ]
+                    },
+                    {
+                        name: 'generators',
+                        icon: '✍️',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'gerador-minuta.md', icon: '📝' },
+                            { name: 'fundamentador.md', icon: '📝' }
+                        ]
+                    },
+                    {
+                        name: 'evaluators',
+                        icon: '🎯',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'avaliador-qualidade.md', icon: '✅' },
+                            { name: 'avaliador-coerencia.md', icon: '✅' }
+                        ]
+                    },
+                    {
+                        name: 'revisors',
+                        icon: '✅',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'revisor-ortografico.md', icon: '📝' },
+                            { name: 'revisor-juridico.md', icon: '⚖️' },
+                            { name: 'revisor-estilistico.md', icon: '✨' },
+                            { name: 'consolidador.md', icon: '📋' }
+                        ]
+                    }
+                ]
+            },
+            docs: {
+                name: 'DOCS',
+                icon: '📂',
+                desc: 'Referências e modelos',
+                expanded: false,
+                children: [
+                    {
+                        name: 'jurisprudencia',
+                        icon: '⚖️',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'stf-sumulas.json', icon: '📚' },
+                            { name: 'stj-repetitivos.json', icon: '📚' },
+                            { name: 'trf-precedentes.json', icon: '📚' }
+                        ]
+                    },
+                    {
+                        name: 'templates',
+                        icon: '📑',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'modelo-sentenca.md', icon: '📄' },
+                            { name: 'modelo-fundamentacao.md', icon: '📄' }
+                        ]
+                    },
+                    {
+                        name: 'criterios',
+                        icon: '📋',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'criterios-avaliacao.md', icon: '✅' },
+                            { name: 'checklist-revisao.md', icon: '✅' }
+                        ]
+                    }
+                ]
+            },
+            saida: {
+                name: 'SAÍDA',
+                icon: '📂',
+                desc: 'Resultados gerados',
+                expanded: false,
+                children: [
+                    {
+                        name: 'minutas',
+                        icon: '📝',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'minuta-v1.md', icon: '📄' },
+                            { name: 'minuta-v2.md', icon: '📄' }
+                        ]
+                    },
+                    {
+                        name: 'sentencas',
+                        icon: '✅',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'sentenca-final.md', icon: '📄' },
+                            { name: 'sentenca-001.pdf', icon: '📊' }
+                        ]
+                    },
+                    {
+                        name: 'logs',
+                        icon: '📊',
+                        isFolder: true,
+                        expanded: false,
+                        files: [
+                            { name: 'execucao-001.json', icon: '📋' },
+                            { name: 'metricas.json', icon: '📈' }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // ==========================================
+        // ESTADO DO PIPELINE
+        // ==========================================
+        const state = {
+            entrada: { items: [], visible: false },
+            tarefa: { items: [], arranjo: 'sequential', visible: false },
+            docs: { items: [], conexao: null, visible: false },
+            saida: { items: [], visible: false },
+            modoDetectado: null
+        };
+
+        // Mapeamento de prompts para outputs
+        const promptConfig = {
+            relator: { icon: '📝', name: 'relator.md', output: 'relatorio' },
+            analisador: { icon: '🔍', name: 'analisador.md', output: 'analise' },
+            pesquisador: { icon: '📚', name: 'pesquisador.md', output: 'pesquisa' },
+            revisor: { icon: '✅', name: 'revisor.md', output: 'revisao' },
+            minutador: { icon: '📋', name: 'minutador.md', output: 'minuta' }
+        };
+
+        // Modos e seus nomes
+        const modeNames = {
+            'single-turn': { pt: 'Tarefa Unitária', en: 'Single-turn' },
+            'batch': { pt: 'Escala Horizontal', en: 'Batch Processing' },
+            'prompt-chaining': { pt: 'Cadeia de Prompts', en: 'Prompt Chaining' },
+            'parallelization': { pt: 'Paralelização', en: 'Parallelization' },
+            'routing': { pt: 'Roteamento', en: 'Routing' },
+            'orchestrator': { pt: 'Orquestrador', en: 'Orchestrator-Workers' }
+        };
+
+        // Layout e modo atual
+        let currentLayout = 'horizontal';
+        let currentZoom = 100;
+        let flowMode = 'livre'; // 'estruturado' ou 'livre'
+
+        // Estado do fluxo livre (array de nós em sequência)
+        let freeFlowNodes = [];
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Detectar modo embed
+            if (window.location.search.includes('embed=true') || window.self !== window.top) {
+                document.body.classList.add('embed-mode');
+            }
+
+            // Inicializar tema (verifica localStorage e preferência do sistema)
+            initTheme();
+
+            // Aplicar layout inicial (horizontal)
+            document.getElementById('canvas').classList.add('horizontal');
+
+            renderLibraryTree();
+            initDragAndDrop();
+            initPan();
+            initDrawTools();
+            centerCanvas();
+        });
+
+        // ==========================================
+        // RENDERIZAÇÃO DA ÁRVORE DA BIBLIOTECA
+        // ==========================================
+        function renderLibraryTree() {
+            const tree = document.getElementById('libraryTree');
+            if (!tree) return;
+
+            tree.innerHTML = '';
+
+            Object.entries(LIBRARY_STRUCTURE).forEach(([type, folder]) => {
+                // NÍVEL 1: Pasta principal (ENTRADA, TAREFA, etc)
+                const folderItem = document.createElement('div');
+                folderItem.className = 'tree-item';
+                folderItem.dataset.folder = type;
+                folderItem.dataset.category = type;
+                folderItem.draggable = true;
+                folderItem.innerHTML = `
+                    <span class="tree-chevron ${folder.expanded ? 'expanded' : ''}">▶</span>
+                    <span class="tree-icon">${folder.icon}</span>
+                    <span class="tree-label">${folder.name}</span>
+                `;
+
+                folderItem.addEventListener('dragstart', handleTreeDragStart);
+                folderItem.addEventListener('dragend', handleDragEnd);
+
+                // Container de filhos (subpastas)
+                const childrenContainer = document.createElement('div');
+                childrenContainer.className = 'tree-children' + (folder.expanded ? ' expanded' : '');
+                childrenContainer.id = `${type}-children`;
+
+                // Renderizar subpastas (children)
+                if (folder.children) {
+                    folder.children.forEach(subfolder => {
+                        // NÍVEL 2: Subpasta (caixa_entrada, extractors, etc)
+                        const subfolderItem = document.createElement('div');
+                        subfolderItem.className = 'tree-item';
+                        subfolderItem.dataset.subfolder = subfolder.name;
+                        subfolderItem.dataset.parentFolder = type;
+                        subfolderItem.dataset.category = type;
+                        subfolderItem.draggable = true;
+                        subfolderItem.innerHTML = `
+                            <span class="tree-indent"></span>
+                            <span class="tree-chevron ${subfolder.expanded ? 'expanded' : ''}">▶</span>
+                            <span class="tree-icon">${subfolder.icon}</span>
+                            <span class="tree-label">${subfolder.name}/</span>
+                        `;
+
+                        subfolderItem.addEventListener('dragstart', handleTreeDragStart);
+                        subfolderItem.addEventListener('dragend', handleDragEnd);
+
+                        // Container de arquivos da subpasta
+                        const filesContainer = document.createElement('div');
+                        filesContainer.className = 'tree-children' + (subfolder.expanded ? ' expanded' : '');
+                        filesContainer.id = `${type}-${subfolder.name}-files`;
+
+                        // NÍVEL 3: Arquivos dentro da subpasta
+                        if (subfolder.files) {
+                            subfolder.files.forEach(file => {
+                                const fileItem = document.createElement('div');
+                                fileItem.className = 'tree-item';
+                                fileItem.dataset.file = file.name;
+                                fileItem.dataset.fileType = type;
+                                fileItem.dataset.subfolder = subfolder.name;
+                                fileItem.dataset.category = type;
+                                fileItem.draggable = true;
+                                fileItem.innerHTML = `
+                                    <span class="tree-indent"></span>
+                                    <span class="tree-indent"></span>
+                                    <span class="tree-chevron empty">▶</span>
+                                    <span class="tree-icon">${file.icon}</span>
+                                    <span class="tree-label">${file.name}</span>
+                                `;
+
+                                fileItem.addEventListener('dragstart', handleTreeDragStart);
+                                fileItem.addEventListener('dragend', handleDragEnd);
+
+                                filesContainer.appendChild(fileItem);
+                            });
+                        }
+
+                        childrenContainer.appendChild(subfolderItem);
+                        childrenContainer.appendChild(filesContainer);
+
+                        // Evento de clique para expandir/colapsar subpasta
+                        const subChevron = subfolderItem.querySelector('.tree-chevron');
+                        subChevron.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            subChevron.classList.toggle('expanded');
+                            filesContainer.classList.toggle('expanded');
+                        });
+                    });
+                }
+
+                tree.appendChild(folderItem);
+                tree.appendChild(childrenContainer);
+
+                // Evento de clique para expandir/colapsar pasta principal
+                const chevron = folderItem.querySelector('.tree-chevron');
+                chevron.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    chevron.classList.toggle('expanded');
+                    childrenContainer.classList.toggle('expanded');
+                });
+            });
+        }
+
+        // ==========================================
+        // MODO DE FLUXO (ESTRUTURADO / LIVRE)
+        // ==========================================
+        function setFlowMode(mode) {
+            flowMode = mode;
+
+            // Atualizar botões
+            document.getElementById('modeEstruturado').classList.toggle('active', mode === 'estruturado');
+            document.getElementById('modeLivre').classList.toggle('active', mode === 'livre');
+
+            // Resetar ao mudar de modo
+            if (mode === 'livre') {
+                freeFlowNodes = [];
+                resetPipeline();
+                showFeedback('Modo Livre: arraste elementos para criar seu fluxo encadeado', 'info');
+            } else {
+                freeFlowNodes = [];
+                resetPipeline();
+                showFeedback('Modo Estruturado: ENTRADA → TAREFA → SAÍDA', 'info');
+            }
+        }
+
+        // ==========================================
+        // LAYOUT (VERTICAL / HORIZONTAL)
+        // ==========================================
+        function setLayout(layout) {
+            currentLayout = layout;
+            const canvas = document.getElementById('canvas');
+
+            // Atualizar botões
+            document.getElementById('layoutVertical').classList.toggle('active', layout === 'vertical');
+            document.getElementById('layoutHorizontal').classList.toggle('active', layout === 'horizontal');
+
+            // Atualizar canvas
+            canvas.classList.toggle('horizontal', layout === 'horizontal');
+        }
+
+        // ==========================================
+        // TEMA CLARO/ESCURO
+        // ==========================================
+        let currentTheme = 'light';
+
+        function setTheme(theme) {
+            currentTheme = theme;
+
+            // Atualizar classe no root
+            document.documentElement.classList.toggle('dark-theme', theme === 'dark');
+
+            // Atualizar botões
+            document.getElementById('themeLight').classList.toggle('active', theme === 'light');
+            document.getElementById('themeDark').classList.toggle('active', theme === 'dark');
+
+            // Salvar preferência
+            localStorage.setItem('pipeline-builder-theme', theme);
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('pipeline-builder-theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else {
+                // Detectar preferência do sistema
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    setTheme('dark');
+                }
+            }
+        }
+
+        // ==========================================
+        // ZOOM
+        // ==========================================
+        function setZoom(value) {
+            currentZoom = parseInt(value);
+            const slider = document.getElementById('zoomSlider');
+            const display = document.getElementById('zoomValue');
+
+            slider.value = currentZoom;
+            display.textContent = `${currentZoom}%`;
+            updateCanvasTransform();
+        }
+
+        function adjustZoom(delta) {
+            let newZoom = currentZoom + delta;
+            newZoom = Math.max(50, Math.min(150, newZoom));
+            setZoom(newZoom);
+        }
+
+        // ==========================================
+        // PAN (ARRASTAR CANVAS)
+        // ==========================================
+        let isPanning = false;
+        let panStartX = 0;
+        let panStartY = 0;
+        let panX = 0;
+        let panY = 0;
+
+        function initPan() {
+            const wrapper = document.querySelector('.canvas-wrapper');
+            const scaler = document.getElementById('canvasScaler');
+
+            wrapper.addEventListener('mousedown', (e) => {
+                // Só inicia pan se clicar no fundo (não em elementos)
+                if (e.target === wrapper || e.target === scaler || e.target.classList.contains('canvas')) {
+                    isPanning = true;
+                    wrapper.classList.add('panning');
+                    panStartX = e.clientX - panX;
+                    panStartY = e.clientY - panY;
+                    e.preventDefault();
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isPanning) return;
+
+                panX = e.clientX - panStartX;
+                panY = e.clientY - panStartY;
+
+                updateCanvasTransform();
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isPanning) {
+                    isPanning = false;
+                    wrapper.classList.remove('panning');
+                }
+            });
+
+            // Scroll do mouse para zoom
+            wrapper.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -5 : 5;
+                adjustZoom(delta);
+            });
+        }
+
+        function updateCanvasTransform() {
+            const scaler = document.getElementById('canvasScaler');
+            const drawContent = document.getElementById('drawLayerContent');
+            const transform = `translate(${panX}px, ${panY}px) scale(${currentZoom / 100})`;
+            scaler.style.transform = transform;
+            if (drawContent) {
+                drawContent.style.transform = transform;
+            }
+        }
+
+        // Centralizar canvas no início
+        function centerCanvas() {
+            const wrapper = document.querySelector('.canvas-wrapper');
+            const wrapperRect = wrapper.getBoundingClientRect();
+
+            // Começar com um offset para ver o início do canvas
+            panX = 50;
+            panY = 50;
+            updateCanvasTransform();
+        }
+
+        // ==========================================
+        // DRAG AND DROP
+        // ==========================================
+        function initDragAndDrop() {
+            const libraryMascotes = document.querySelectorAll('.library-mascote, .library-subagente');
+            const wrapper = document.querySelector('.canvas-wrapper');
+
+            // Nota: listeners para tree-items são anexados em renderLibraryTree()
+
+            // Mascotes
+            libraryMascotes.forEach(mascote => {
+                mascote.addEventListener('dragstart', handleMascoteDragStart);
+                mascote.addEventListener('dragend', handleDragEnd);
+            });
+
+            // Eventos no wrapper para capturar drops em toda a área visível
+            wrapper.addEventListener('dragover', handleDragOver);
+            wrapper.addEventListener('dragleave', handleDragLeave);
+            wrapper.addEventListener('drop', handleDrop);
+        }
+
+        function handleTreeDragStart(e) {
+            e.target.classList.add('dragging');
+            e.stopPropagation(); // Evita que o clique expanda/colapse
+
+            // CASO 1: Arrastando pasta principal (ENTRADA, TAREFA, etc)
+            if (e.target.dataset.folder) {
+                const folderType = e.target.dataset.folder;
+                const folder = LIBRARY_STRUCTURE[folderType];
+
+                // Coletar todos arquivos de todas subpastas
+                const allFiles = [];
+                if (folder.children) {
+                    folder.children.forEach(subfolder => {
+                        if (subfolder.files) {
+                            subfolder.files.forEach(f => allFiles.push(f.name));
+                        }
+                    });
+                }
+
+                e.dataTransfer.setData('text/plain', folderType);
+                e.dataTransfer.setData('dragType', 'tree-folder');
+                e.dataTransfer.setData('folderFiles', JSON.stringify(allFiles));
+            }
+            // CASO 2: Arrastando subpasta (caixa_entrada, extractors, etc)
+            else if (e.target.dataset.subfolder) {
+                const parentType = e.target.dataset.parentFolder;
+                const subfolderName = e.target.dataset.subfolder;
+                const folder = LIBRARY_STRUCTURE[parentType];
+
+                // Encontrar a subpasta e coletar seus arquivos
+                const subfolder = folder.children?.find(s => s.name === subfolderName);
+                const files = subfolder?.files?.map(f => f.name) || [];
+
+                e.dataTransfer.setData('text/plain', parentType);
+                e.dataTransfer.setData('dragType', 'tree-subfolder');
+                e.dataTransfer.setData('subfolderName', subfolderName);
+                e.dataTransfer.setData('folderFiles', JSON.stringify(files));
+            }
+            // CASO 3: Arrastando arquivo individual
+            else if (e.target.dataset.file) {
+                const fileType = e.target.dataset.fileType;
+                const fileName = e.target.dataset.file;
+                const subfolderName = e.target.dataset.subfolder || '';
+
+                e.dataTransfer.setData('text/plain', fileType);
+                e.dataTransfer.setData('dragType', 'tree-file');
+                e.dataTransfer.setData('fileName', fileName);
+                e.dataTransfer.setData('subfolderName', subfolderName);
+            }
+
+            e.dataTransfer.effectAllowed = 'copy';
+        }
+
+        function handleDragStart(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', e.target.dataset.type);
+            e.dataTransfer.setData('dragType', 'folder');
+            e.dataTransfer.effectAllowed = 'copy';
+        }
+
+        function handleMascoteDragStart(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.setData('dragType', 'mascote');
+            e.dataTransfer.setData('mascoteType', e.target.dataset.mascote);
+            e.dataTransfer.setData('mascoteColor', e.target.dataset.color);
+            e.dataTransfer.setData('mascoteName', e.target.dataset.name || 'Claude');
+            e.dataTransfer.effectAllowed = 'copy';
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            document.querySelector('.canvas-wrapper').classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            // Só remove se saiu completamente do wrapper
+            if (!e.relatedTarget || !document.querySelector('.canvas-wrapper').contains(e.relatedTarget)) {
+                document.querySelector('.canvas-wrapper').classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.querySelector('.canvas-wrapper').classList.remove('drag-over');
+
+            const dragType = e.dataTransfer.getData('dragType');
+
+            if (dragType === 'mascote') {
+                // Adicionar mascote no canvas na posição do drop
+                const mascoteType = e.dataTransfer.getData('mascoteType');
+                const mascoteColor = e.dataTransfer.getData('mascoteColor');
+                const mascoteName = e.dataTransfer.getData('mascoteName');
+                addMascoteToCanvas(mascoteType, mascoteColor, mascoteName, e.clientX, e.clientY);
+            } else if (dragType === 'tree-file') {
+                // Arquivo individual da árvore
+                const type = e.dataTransfer.getData('text/plain');
+                const fileName = e.dataTransfer.getData('fileName');
+                const subfolderName = e.dataTransfer.getData('subfolderName') || '';
+                if (!type || !fileName) return;
+
+                // Criar pasta contendo apenas esse arquivo
+                addNodeWithCustomFile(type, fileName, subfolderName);
+            } else if (dragType === 'tree-folder' || dragType === 'tree-subfolder') {
+                // Pasta ou subpasta da árvore (com seus arquivos)
+                const type = e.dataTransfer.getData('text/plain');
+                const filesJson = e.dataTransfer.getData('folderFiles');
+                const subfolderName = e.dataTransfer.getData('subfolderName') || '';
+                if (!type) return;
+
+                const files = filesJson ? JSON.parse(filesJson) : [];
+                addNodeWithFiles(type, files, subfolderName);
+            } else {
+                // Comportamento legado (library-folder antigo)
+                const type = e.dataTransfer.getData('text/plain');
+                if (!type) return;
+
+                if (flowMode === 'livre') {
+                    addNodeToFreeFlow(type);
+                } else {
+                    if (!state[type].visible) {
+                        addFolderToCanvas(type);
+                    }
+                }
+            }
+        }
+
+        // Adicionar nó com arquivo específico
+        function addNodeWithCustomFile(type, fileName, subfolderName = '') {
+            // Modo estruturado: usar lógica original
+            if (flowMode !== 'livre') {
+                if (!state[type].visible) {
+                    state[type].items = [fileName];
+                    state[type].visible = true;
+                    renderCanvas();
+                }
+                return;
+            }
+
+            // Modo livre
+            saveToHistory();
+
+            const node = {
+                id: ++freeFlowNodeCounter,
+                type: type,
+                items: [fileName],
+                prompt: type === 'tarefa' ? null : undefined,
+                subfolder: subfolderName // Para rastreio do kanban
+            };
+
+            if (type === 'tarefa') {
+                showPromptSelectorForFreeFlow(node);
+            } else {
+                freeFlowNodes.push(node);
+                renderFreeFlow();
+            }
+        }
+
+        // Adicionar nó com múltiplos arquivos (pasta ou subpasta)
+        function addNodeWithFiles(type, files, subfolderName = '') {
+            // Modo estruturado: usar lógica original
+            if (flowMode !== 'livre') {
+                if (!state[type].visible) {
+                    state[type].items = files.length > 0 ? files : getDefaultItemsForType(type);
+                    state[type].visible = true;
+                    renderCanvas();
+                }
+                return;
+            }
+
+            // Modo livre
+            saveToHistory();
+
+            const node = {
+                id: ++freeFlowNodeCounter,
+                type: type,
+                items: files.length > 0 ? files : getDefaultItemsForType(type),
+                prompt: type === 'tarefa' ? null : undefined,
+                subfolder: subfolderName // Para rastreio do kanban
+            };
+
+            if (type === 'tarefa') {
+                showPromptSelectorForFreeFlow(node);
+            } else {
+                freeFlowNodes.push(node);
+                renderFreeFlow();
+            }
+        }
+
+        // ==========================================
+        // FLUXO LIVRE
+        // ==========================================
+        let freeFlowNodeCounter = 0;
+
+        function addNodeToFreeFlow(type) {
+            saveToHistory();
+
+            // Criar nó com ID único
+            const node = {
+                id: ++freeFlowNodeCounter,
+                type: type,
+                items: getDefaultItemsForType(type),
+                prompt: type === 'tarefa' ? null : undefined // Para tarefas, precisa selecionar prompt
+            };
+
+            // Se for tarefa, mostrar seletor de prompt
+            if (type === 'tarefa') {
+                showPromptSelectorForFreeFlow(node);
+            } else {
+                freeFlowNodes.push(node);
+                renderFreeFlow();
+            }
+        }
+
+        function getDefaultItemsForType(type) {
+            switch(type) {
+                case 'entrada':
+                    return [`PROCESSO-${String(freeFlowNodes.filter(n => n.type === 'entrada').length + 1).padStart(3, '0')}.PDF`];
+                case 'tarefa':
+                    return [];
+                case 'docs':
+                    return ['referencia.md'];
+                case 'saida':
+                    return ['output.md'];
+                default:
+                    return [];
+            }
+        }
+
+        function showPromptSelectorForFreeFlow(node) {
+            const overlay = document.getElementById('promptOverlay');
+            const selector = document.getElementById('promptSelector');
+
+            // Guardar referência ao nó pendente
+            window.pendingFreeFlowNode = node;
+
+            overlay.style.display = 'block';
+            selector.style.display = 'block';
+        }
+
+        // Modificar selectPrompt para suportar modo livre
+        const originalSelectPrompt = typeof selectPrompt === 'function' ? selectPrompt : null;
+
+        function selectPrompt(prompt) {
+            if (flowMode === 'livre' && window.pendingFreeFlowNode) {
+                // Modo livre
+                const node = window.pendingFreeFlowNode;
+
+                if (window.pendingFreeFlowAddItem) {
+                    // Adicionando a um nó tarefa existente
+                    node.items.push(prompt);
+                    window.pendingFreeFlowAddItem = false;
+                } else {
+                    // Criando novo nó tarefa
+                    node.prompt = prompt;
+                    node.items = [prompt];
+                    freeFlowNodes.push(node);
+                }
+
+                window.pendingFreeFlowNode = null;
+                hidePromptSelector();
+                renderFreeFlow();
+            } else {
+                // Modo estruturado
+                state.tarefa.items.push(prompt);
+                state.tarefa.visible = true;
+                hidePromptSelector();
+                renderCanvas();
+            }
+        }
+
+        function renderFreeFlow() {
+            const canvas = document.getElementById('canvas');
+
+            // Limpar canvas (exceto mascotes)
+            Array.from(canvas.children).forEach(child => {
+                if (!child.classList.contains('canvas-mascote')) {
+                    child.remove();
+                }
+            });
+
+            // Renderizar cada nó do fluxo livre
+            freeFlowNodes.forEach((node, index) => {
+                // Adicionar conector antes (exceto primeiro)
+                if (index > 0) {
+                    canvas.appendChild(createConnector());
+                }
+
+                // Criar elemento da pasta
+                const folder = createFreeFlowFolder(node, index);
+                canvas.appendChild(folder);
+            });
+
+            // Atualizar saídas automaticamente baseado no fluxo
+            updateFreeFlowOutputs();
+        }
+
+        function createFreeFlowFolder(node, index) {
+            const folder = document.createElement('div');
+            folder.className = `canvas-folder ${node.type}`;
+            folder.id = `freeflow-${node.id}`;
+
+            const icons = {
+                entrada: '📂',
+                tarefa: '📂',
+                docs: '📂',
+                saida: '📂'
+            };
+
+            const names = {
+                entrada: 'ENTRADA',
+                tarefa: 'TAREFA',
+                docs: 'DOCS',
+                saida: 'SAÍDA'
+            };
+
+            // Todos os tipos podem adicionar itens
+            const canAddItems = true;
+
+            // Determinar o conteúdo a mostrar
+            let itemsHtml = '';
+            if (node.type === 'tarefa') {
+                // Tarefa pode ter múltiplos prompts - editável
+                itemsHtml = node.items.map((prompt, itemIndex) => {
+                    const config = promptConfig[prompt] || { icon: '📝', name: prompt };
+                    return `
+                        <div class="folder-item">
+                            <div class="folder-item-info">
+                                <span class="folder-item-icon">${config.icon}</span>
+                                <span class="folder-item-name"
+                                      contenteditable="true"
+                                      onblur="updateFreeFlowItemName(${node.id}, ${itemIndex}, this.textContent, 'tarefa')"
+                                      onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${config.name}</span>
+                            </div>
+                            <button class="folder-item-remove" onclick="removeFreeFlowItem(${node.id}, ${itemIndex})">×</button>
+                        </div>
+                    `;
+                }).join('');
+            } else if (node.type === 'saida') {
+                // Saída mostra os itens reais - editável
+                itemsHtml = node.items.map((item, itemIndex) => `
+                    <div class="folder-item">
+                        <div class="folder-item-info">
+                            <span class="folder-item-icon">📄</span>
+                            <span class="folder-item-name"
+                                  contenteditable="true"
+                                  onblur="updateFreeFlowItemName(${node.id}, ${itemIndex}, this.textContent, 'saida')"
+                                  onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${item}</span>
+                        </div>
+                        <button class="folder-item-remove" onclick="removeFreeFlowItem(${node.id}, ${itemIndex})">×</button>
+                    </div>
+                `).join('');
+            } else {
+                // Entrada e Docs - editável
+                itemsHtml = node.items.map((item, itemIndex) => `
+                    <div class="folder-item">
+                        <div class="folder-item-info">
+                            <span class="folder-item-icon">${node.type === 'docs' ? '📚' : '📄'}</span>
+                            <span class="folder-item-name"
+                                  contenteditable="true"
+                                  onblur="updateFreeFlowItemName(${node.id}, ${itemIndex}, this.textContent, '${node.type}')"
+                                  onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${item}</span>
+                        </div>
+                        <button class="folder-item-remove" onclick="removeFreeFlowItem(${node.id}, ${itemIndex})">×</button>
+                    </div>
+                `).join('');
+            }
+
+            folder.innerHTML = `
+                <div class="canvas-folder-header">
+                    <div class="canvas-folder-title">
+                        <span class="icon">${icons[node.type]}</span>
+                        <span>${names[node.type]}</span>
+                        <span style="font-size: 0.6em; color: var(--text-muted); margin-left: 5px;">#${index + 1}</span>
+                    </div>
+                    <div class="canvas-folder-actions">
+                        ${canAddItems ? `<button class="folder-action-btn add" onclick="addFreeFlowItem(${node.id}, '${node.type}')" title="Adicionar">+</button>` : ''}
+                        <button class="folder-action-btn remove" onclick="removeFreeFlowNode(${node.id})" title="Remover">×</button>
+                    </div>
+                </div>
+                <div class="canvas-folder-content">
+                    ${itemsHtml || '<div style="color: var(--text-muted); font-size: 0.85em; padding: 8px;">Vazio</div>'}
+                </div>
+            `;
+
+            return folder;
+        }
+
+        function findPreviousTask(currentIndex) {
+            for (let i = currentIndex - 1; i >= 0; i--) {
+                if (freeFlowNodes[i].type === 'tarefa') {
+                    return freeFlowNodes[i];
+                }
+            }
+            return null;
+        }
+
+        function removeFreeFlowNode(nodeId) {
+            saveToHistory();
+            freeFlowNodes = freeFlowNodes.filter(n => n.id !== nodeId);
+            renderFreeFlow();
+        }
+
+        function addFreeFlowItem(nodeId, type) {
+            const node = freeFlowNodes.find(n => n.id === nodeId);
+            if (!node) return;
+
+            saveToHistory();
+
+            if (type === 'entrada') {
+                const num = node.items.length + 1;
+                node.items.push(`PROCESSO-${String(num).padStart(3, '0')}.PDF`);
+                renderFreeFlow();
+            } else if (type === 'tarefa') {
+                // Mostrar seletor de prompt
+                window.pendingFreeFlowNode = node;
+                window.pendingFreeFlowAddItem = true;
+                showPromptSelector();
+            } else if (type === 'docs') {
+                const num = node.items.length + 1;
+                node.items.push(`documento-${num}.md`);
+                renderFreeFlow();
+            } else if (type === 'saida') {
+                const num = node.items.length + 1;
+                node.items.push(`output-${String(num).padStart(3, '0')}.md`);
+                renderFreeFlow();
+            }
+        }
+
+        function removeFreeFlowItem(nodeId, itemIndex) {
+            const node = freeFlowNodes.find(n => n.id === nodeId);
+            if (!node || node.items.length <= 1) return; // Manter pelo menos 1 item
+
+            saveToHistory();
+            node.items.splice(itemIndex, 1);
+            renderFreeFlow();
+        }
+
+        function updateFreeFlowItemName(nodeId, itemIndex, newName, type) {
+            const node = freeFlowNodes.find(n => n.id === nodeId);
+            if (!node) return;
+
+            // Limpar nome (remover espaços extras)
+            newName = newName.trim();
+            if (!newName) return; // Não permitir nomes vazios
+
+            if (type === 'tarefa') {
+                // Para tarefa, atualizar o nome customizado no promptConfig ou criar entrada custom
+                const prompt = node.items[itemIndex];
+                if (promptConfig[prompt]) {
+                    // Criar uma versão customizada do prompt
+                    promptConfig[prompt].name = newName;
+                }
+            } else if (type === 'saida') {
+                // Para saída, atualizar diretamente
+                node.items[itemIndex] = newName;
+            } else {
+                // Para entrada e docs, atualizar diretamente
+                node.items[itemIndex] = newName;
+            }
+        }
+
+        function showPromptSelector() {
+            document.getElementById('promptOverlay').style.display = 'block';
+            document.getElementById('promptSelector').style.display = 'block';
+        }
+
+        function updateFreeFlowOutputs() {
+            // Não sobrescrever itens existentes - apenas inicializar se vazio
+            freeFlowNodes.forEach((node, index) => {
+                if (node.type === 'saida' && node.items.length === 0) {
+                    const prevTask = findPreviousTask(index);
+                    const outputName = prevTask && prevTask.items[0] ?
+                        (promptConfig[prevTask.items[0]]?.output || 'output') : 'output';
+                    node.items = [`${outputName}-001.md`];
+                }
+            });
+        }
+
+        // ==========================================
+        // ADICIONAR MASCOTE AO CANVAS
+        // ==========================================
+        let mascoteCounter = 0;
+
+        function addMascoteToCanvas(type, color, name, clientX, clientY) {
+            saveToHistory();
+
+            const canvas = document.getElementById('canvas');
+            const wrapper = document.querySelector('.canvas-wrapper');
+            const wrapperRect = wrapper.getBoundingClientRect();
+
+            // Calcular posição considerando pan e zoom
+            const scale = currentZoom / 100;
+            const offsetX = type === 'principal' ? 30 : 20;
+            const offsetY = type === 'principal' ? 30 : 20;
+
+            // Converter coordenadas do cliente para coordenadas do canvas
+            const x = (clientX - wrapperRect.left - panX) / scale - offsetX;
+            const y = (clientY - wrapperRect.top - panY) / scale - offsetY;
+
+            const mascoteEl = document.createElement('div');
+            mascoteEl.className = 'canvas-mascote';
+            mascoteEl.id = `mascote-${++mascoteCounter}`;
+            mascoteEl.style.left = `${x}px`;
+            mascoteEl.style.top = `${y}px`;
+
+            const size = type === 'principal' ? 60 : 40;
+            const eyeColor = shadeColor(color, -40);
+
+            mascoteEl.innerHTML = `
+                <svg viewBox="0 0 44 44" width="${size}" height="${size}" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="0" width="6" height="8" fill="${color}"/>
+                    <rect x="28" y="0" width="6" height="8" fill="${color}"/>
+                    <rect x="4" y="8" width="36" height="24" rx="2" fill="${color}"/>
+                    <rect x="12" y="16" width="6" height="6" fill="${eyeColor}"/>
+                    <rect x="26" y="16" width="6" height="6" fill="${eyeColor}"/>
+                    <rect x="10" y="32" width="6" height="10" fill="${color}"/>
+                    <rect x="28" y="32" width="6" height="10" fill="${color}"/>
+                </svg>
+                <span class="mascote-label">${name}</span>
+            `;
+
+            // Tornar arrastável dentro do canvas
+            makeMascoteDraggable(mascoteEl);
+
+            // Duplo clique para remover
+            mascoteEl.addEventListener('dblclick', () => {
+                mascoteEl.remove();
+            });
+
+            canvas.appendChild(mascoteEl);
+        }
+
+        function makeMascoteDraggable(element) {
+            let isDragging = false;
+            let startX, startY, startLeft, startTop;
+
+            element.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                element.style.cursor = 'grabbing';
+                element.style.zIndex = 100;
+
+                startX = e.clientX;
+                startY = e.clientY;
+                startLeft = element.offsetLeft;
+                startTop = element.offsetTop;
+
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+
+                // Considerar o zoom ao calcular o movimento
+                const scale = currentZoom / 100;
+                const deltaX = (e.clientX - startX) / scale;
+                const deltaY = (e.clientY - startY) / scale;
+
+                element.style.left = (startLeft + deltaX) + 'px';
+                element.style.top = (startTop + deltaY) + 'px';
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    element.style.cursor = 'grab';
+                    element.style.zIndex = 50;
+                }
+            });
+        }
+
+        function shadeColor(color, percent) {
+            let R = parseInt(color.substring(1, 3), 16);
+            let G = parseInt(color.substring(3, 5), 16);
+            let B = parseInt(color.substring(5, 7), 16);
+
+            R = Math.max(0, Math.min(255, R + (R * percent / 100)));
+            G = Math.max(0, Math.min(255, G + (G * percent / 100)));
+            B = Math.max(0, Math.min(255, B + (B * percent / 100)));
+
+            return `#${Math.round(R).toString(16).padStart(2, '0')}${Math.round(G).toString(16).padStart(2, '0')}${Math.round(B).toString(16).padStart(2, '0')}`;
+        }
+
+        // ==========================================
+        // FERRAMENTAS DE DESENHO
+        // ==========================================
+        let currentDrawTool = 'select';
+        let isDrawing = false;
+        let drawStartX, drawStartY;
+        let currentShape = null;
+        let shapeCounter = 0;
+        let selectedShape = null;
+        let isResizing = false;
+        let resizeHandle = null;
+
+        // Sistema de Undo Global
+        let undoHistory = [];
+        const MAX_UNDO = 50;
+
+        function saveToHistory() {
+            const canvas = document.getElementById('canvas');
+            const drawContent = document.getElementById('drawLayerContent');
+
+            // Salvar estado completo
+            const snapshot = {
+                // Estado do fluxo (modo livre)
+                freeFlowNodes: JSON.parse(JSON.stringify(freeFlowNodes)),
+                freeFlowNodeCounter: freeFlowNodeCounter,
+                // Estado estruturado
+                state: JSON.parse(JSON.stringify(state)),
+                // DOM do canvas (mascotes e elementos visuais)
+                canvasHTML: canvas ? canvas.innerHTML : '',
+                // DOM dos desenhos
+                drawHTML: drawContent ? drawContent.innerHTML : ''
+            };
+
+            undoHistory.push(snapshot);
+            if (undoHistory.length > MAX_UNDO) {
+                undoHistory.shift();
+            }
+        }
+
+        function undo() {
+            if (undoHistory.length === 0) return;
+
+            const snapshot = undoHistory.pop();
+            const canvas = document.getElementById('canvas');
+            const drawContent = document.getElementById('drawLayerContent');
+
+            // Restaurar estado do fluxo livre
+            freeFlowNodes = snapshot.freeFlowNodes;
+            freeFlowNodeCounter = snapshot.freeFlowNodeCounter;
+
+            // Restaurar estado estruturado
+            Object.assign(state, snapshot.state);
+
+            // Restaurar DOM do canvas
+            if (canvas && snapshot.canvasHTML !== undefined) {
+                canvas.innerHTML = snapshot.canvasHTML;
+                // Reativar mascotes
+                canvas.querySelectorAll('.canvas-mascote').forEach(mascote => {
+                    makeMascoteDraggable(mascote);
+                    mascote.addEventListener('dblclick', () => mascote.remove());
+                });
+            }
+
+            // Restaurar DOM dos desenhos
+            if (drawContent && snapshot.drawHTML !== undefined) {
+                drawContent.innerHTML = snapshot.drawHTML;
+                // Reativar interatividade nos shapes
+                drawContent.querySelectorAll('.canvas-shape').forEach(shape => {
+                    makeShapeInteractive(shape);
+                });
+            }
+
+            // Re-renderizar conforme o modo
+            if (flowMode === 'livre') {
+                renderFreeFlow();
+            } else {
+                renderCanvas();
+            }
+
+            deselectAllShapes();
+        }
+
+        function setDrawTool(tool) {
+            currentDrawTool = tool;
+            document.querySelectorAll('.draw-tool').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tool === tool);
+            });
+
+            const drawLayer = document.getElementById('drawLayer');
+
+            // Ativar/desativar camada de desenho
+            if (tool === 'select') {
+                drawLayer.classList.remove('active');
+                drawLayer.style.cursor = 'default';
+            } else {
+                drawLayer.classList.add('active');
+                drawLayer.style.cursor = tool === 'text' ? 'text' : 'crosshair';
+            }
+
+            // Desselecionar ao mudar de ferramenta
+            deselectAllShapes();
+        }
+
+        function deselectAllShapes() {
+            document.querySelectorAll('.canvas-shape.selected').forEach(s => {
+                s.classList.remove('selected');
+                // Remover handles
+                s.querySelectorAll('.resize-handle').forEach(h => h.remove());
+            });
+            selectedShape = null;
+        }
+
+        function selectShape(shape) {
+            deselectAllShapes();
+            shape.classList.add('selected');
+            selectedShape = shape;
+
+            // Adicionar handles de redimensionamento (exceto para linhas/setas)
+            if (!shape.classList.contains('canvas-shape--arrow')) {
+                addResizeHandles(shape);
+            }
+        }
+
+        function addResizeHandles(shape) {
+            const handles = ['nw', 'ne', 'sw', 'se'];
+            handles.forEach(pos => {
+                const handle = document.createElement('div');
+                handle.className = `resize-handle ${pos}`;
+                handle.dataset.handle = pos;
+                shape.appendChild(handle);
+
+                handle.addEventListener('mousedown', (e) => {
+                    e.stopPropagation();
+                    isResizing = true;
+                    resizeHandle = pos;
+                    drawStartX = e.clientX;
+                    drawStartY = e.clientY;
+                });
+            });
+        }
+
+        function initDrawTools() {
+            const drawLayer = document.getElementById('drawLayer');
+            const scaler = document.getElementById('canvasScaler');
+
+            // Atalhos de teclado
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+
+                const keyMap = { 'v': 'select', 'r': 'rect', 'o': 'circle', 'a': 'arrow', 'l': 'line', 't': 'text' };
+                if (keyMap[e.key.toLowerCase()]) {
+                    setDrawTool(keyMap[e.key.toLowerCase()]);
+                }
+
+                // Delete para remover shape selecionado
+                if ((e.key === 'Delete' || e.key === 'Backspace') && selectedShape && !e.target.isContentEditable) {
+                    saveToHistory();
+                    selectedShape.remove();
+                    selectedShape = null;
+                }
+
+                // Escape para voltar ao select
+                if (e.key === 'Escape') {
+                    setDrawTool('select');
+                }
+
+                // Ctrl+Z para desfazer
+                if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                    e.preventDefault();
+                    undo();
+                }
+            });
+
+            // Desenhar na camada de desenho
+            drawLayer.addEventListener('mousedown', (e) => {
+                if (currentDrawTool === 'select') return;
+
+                isDrawing = true;
+                const wrapper = document.querySelector('.canvas-wrapper');
+                const wrapperRect = wrapper.getBoundingClientRect();
+                const scale = currentZoom / 100;
+
+                // Calcular posição considerando pan e zoom (mesmo cálculo dos mascotes)
+                drawStartX = (e.clientX - wrapperRect.left - panX) / scale;
+                drawStartY = (e.clientY - wrapperRect.top - panY) / scale;
+
+                saveToHistory();
+
+                if (currentDrawTool === 'text') {
+                    createTextShape(drawStartX, drawStartY);
+                    isDrawing = false;
+                    setDrawTool('select');
+                } else {
+                    currentShape = createShape(currentDrawTool, drawStartX, drawStartY);
+                    document.getElementById('drawLayerContent').appendChild(currentShape);
+                }
+
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            drawLayer.addEventListener('mousemove', (e) => {
+                if (!isDrawing || !currentShape) return;
+
+                const wrapper = document.querySelector('.canvas-wrapper');
+                const wrapperRect = wrapper.getBoundingClientRect();
+                const scale = currentZoom / 100;
+
+                const currentX = (e.clientX - wrapperRect.left - panX) / scale;
+                const currentY = (e.clientY - wrapperRect.top - panY) / scale;
+
+                updateShape(currentShape, drawStartX, drawStartY, currentX, currentY);
+            });
+
+            drawLayer.addEventListener('mouseup', () => {
+                if (isDrawing && currentShape) {
+                    makeShapeInteractive(currentShape);
+                    // Selecionar automaticamente
+                    setDrawTool('select');
+                    selectShape(currentShape);
+                }
+                isDrawing = false;
+                currentShape = null;
+            });
+
+            // Resize handling
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing || !selectedShape) return;
+
+                const scale = currentZoom / 100;
+                const dx = (e.clientX - drawStartX) / scale;
+                const dy = (e.clientY - drawStartY) / scale;
+
+                const left = parseInt(selectedShape.style.left) || 0;
+                const top = parseInt(selectedShape.style.top) || 0;
+                const width = parseInt(selectedShape.style.width) || 50;
+                const height = parseInt(selectedShape.style.height) || 50;
+
+                let newLeft = left, newTop = top, newWidth = width, newHeight = height;
+
+                if (resizeHandle.includes('w')) {
+                    newLeft = left + dx;
+                    newWidth = width - dx;
+                }
+                if (resizeHandle.includes('e')) {
+                    newWidth = width + dx;
+                }
+                if (resizeHandle.includes('n')) {
+                    newTop = top + dy;
+                    newHeight = height - dy;
+                }
+                if (resizeHandle.includes('s')) {
+                    newHeight = height + dy;
+                }
+
+                // Mínimo de 20px
+                if (newWidth >= 20 && newHeight >= 20) {
+                    selectedShape.style.left = newLeft + 'px';
+                    selectedShape.style.top = newTop + 'px';
+                    selectedShape.style.width = newWidth + 'px';
+                    selectedShape.style.height = newHeight + 'px';
+
+                    drawStartX = e.clientX;
+                    drawStartY = e.clientY;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isResizing = false;
+                resizeHandle = null;
+            });
+
+            // Click no scaler para selecionar shapes
+            scaler.addEventListener('click', (e) => {
+                if (currentDrawTool !== 'select') return;
+
+                const shape = e.target.closest('.canvas-shape');
+                if (shape) {
+                    selectShape(shape);
+                    e.stopPropagation();
+                } else if (!e.target.closest('.resize-handle')) {
+                    deselectAllShapes();
+                }
+            });
+        }
+
+        function createShape(type, x, y) {
+            const id = `shape-${++shapeCounter}`;
+
+            if (type === 'rect') {
+                const div = document.createElement('div');
+                div.className = 'canvas-shape canvas-shape--rect';
+                div.id = id;
+                div.style.left = x + 'px';
+                div.style.top = y + 'px';
+                div.style.width = '0px';
+                div.style.height = '0px';
+                return div;
+            }
+
+            if (type === 'circle') {
+                const div = document.createElement('div');
+                div.className = 'canvas-shape canvas-shape--circle';
+                div.id = id;
+                div.style.left = x + 'px';
+                div.style.top = y + 'px';
+                div.style.width = '0px';
+                div.style.height = '0px';
+                return div;
+            }
+
+            if (type === 'line' || type === 'arrow') {
+                const padding = 20; // Padding para a ponta da seta e outline
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.classList.add('canvas-shape', 'canvas-shape--arrow');
+                svg.id = id;
+                svg.style.position = 'absolute';
+                svg.style.overflow = 'visible';
+                // Posição inicial no ponto do clique (com padding)
+                svg.style.left = (x - padding) + 'px';
+                svg.style.top = (y - padding) + 'px';
+                svg.style.width = (padding * 2) + 'px';
+                svg.style.height = (padding * 2) + 'px';
+                svg.style.pointerEvents = 'none';
+                // Guardar dados originais para cálculos
+                svg.dataset.startX = x;
+                svg.dataset.startY = y;
+                svg.dataset.padding = padding;
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                // Coordenadas relativas ao SVG
+                line.setAttribute('x1', padding);
+                line.setAttribute('y1', padding);
+                line.setAttribute('x2', padding);
+                line.setAttribute('y2', padding);
+                line.style.pointerEvents = 'stroke';
+                line.style.strokeWidth = '8';
+                line.style.cursor = 'move';
+                svg.appendChild(line);
+
+                if (type === 'arrow') {
+                    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                    marker.setAttribute('points', `${padding},${padding} ${padding},${padding} ${padding},${padding}`);
+                    marker.classList.add('arrow-head');
+                    svg.appendChild(marker);
+                }
+
+                return svg;
+            }
+
+            return null;
+        }
+
+        function updateShape(shape, x1, y1, x2, y2) {
+            if (shape.classList.contains('canvas-shape--rect') || shape.classList.contains('canvas-shape--circle')) {
+                const left = Math.min(x1, x2);
+                const top = Math.min(y1, y2);
+                const width = Math.abs(x2 - x1);
+                const height = Math.abs(y2 - y1);
+
+                shape.style.left = left + 'px';
+                shape.style.top = top + 'px';
+                shape.style.width = width + 'px';
+                shape.style.height = height + 'px';
+            }
+
+            if (shape.classList.contains('canvas-shape--arrow')) {
+                const line = shape.querySelector('line');
+                const arrowHead = shape.querySelector('.arrow-head');
+                const padding = parseFloat(shape.dataset.padding) || 20;
+
+                // Calcular bounding box
+                const minX = Math.min(x1, x2);
+                const minY = Math.min(y1, y2);
+                const maxX = Math.max(x1, x2);
+                const maxY = Math.max(y1, y2);
+                const width = Math.max(maxX - minX, 1) + padding * 2;
+                const height = Math.max(maxY - minY, 1) + padding * 2;
+
+                // Posicionar SVG no bounding box
+                shape.style.left = (minX - padding) + 'px';
+                shape.style.top = (minY - padding) + 'px';
+                shape.style.width = width + 'px';
+                shape.style.height = height + 'px';
+
+                // Coordenadas relativas ao SVG
+                const relX1 = x1 - minX + padding;
+                const relY1 = y1 - minY + padding;
+                const relX2 = x2 - minX + padding;
+                const relY2 = y2 - minY + padding;
+
+                const angle = Math.atan2(relY2 - relY1, relX2 - relX1);
+
+                // Atualizar ponto inicial
+                line.setAttribute('x1', relX1);
+                line.setAttribute('y1', relY1);
+
+                if (arrowHead) {
+                    // Seta: linha termina na base do triângulo
+                    const arrowLength = 16;
+                    const arrowWidth = 8;
+
+                    // A linha termina antes da ponta
+                    const lineEndX = relX2 - arrowLength * Math.cos(angle);
+                    const lineEndY = relY2 - arrowLength * Math.sin(angle);
+                    line.setAttribute('x2', lineEndX);
+                    line.setAttribute('y2', lineEndY);
+
+                    // Ponta do triângulo
+                    const tipX = relX2;
+                    const tipY = relY2;
+                    // Pontos laterais da base
+                    const leftX = lineEndX - arrowWidth * Math.cos(angle - Math.PI / 2);
+                    const leftY = lineEndY - arrowWidth * Math.sin(angle - Math.PI / 2);
+                    const rightX = lineEndX - arrowWidth * Math.cos(angle + Math.PI / 2);
+                    const rightY = lineEndY - arrowWidth * Math.sin(angle + Math.PI / 2);
+                    arrowHead.setAttribute('points', `${tipX},${tipY} ${leftX},${leftY} ${rightX},${rightY}`);
+                } else {
+                    // Linha simples: vai até o final
+                    line.setAttribute('x2', relX2);
+                    line.setAttribute('y2', relY2);
+                }
+
+                // Guardar coordenadas absolutas para drag posterior
+                shape.dataset.absX1 = x1;
+                shape.dataset.absY1 = y1;
+                shape.dataset.absX2 = x2;
+                shape.dataset.absY2 = y2;
+            }
+        }
+
+        function createTextShape(x, y) {
+            const drawContent = document.getElementById('drawLayerContent');
+            const div = document.createElement('div');
+            div.className = 'canvas-shape canvas-shape--text';
+            div.id = `shape-${++shapeCounter}`;
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+            div.contentEditable = true;
+            div.textContent = 'Texto';
+
+            drawContent.appendChild(div);
+            makeShapeInteractive(div);
+
+            // Focar e selecionar
+            setTimeout(() => {
+                div.focus();
+                const range = document.createRange();
+                range.selectNodeContents(div);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }, 10);
+        }
+
+        function makeShapeInteractive(shape) {
+            let isDragging = false;
+            let startX, startY, startLeft, startTop;
+
+            const handleMouseDown = (e) => {
+                if (currentDrawTool !== 'select') return;
+                if (e.target.classList.contains('resize-handle')) return;
+                if (e.target.isContentEditable && shape.classList.contains('canvas-shape--text')) return;
+
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                startLeft = parseInt(shape.style.left) || 0;
+                startTop = parseInt(shape.style.top) || 0;
+
+                selectShape(shape);
+                e.stopPropagation();
+                e.preventDefault();
+            };
+
+            // Adicionar evento ao shape principal
+            shape.addEventListener('mousedown', handleMouseDown);
+
+            // Para SVGs (setas/linhas), adicionar eventos aos elementos internos também
+            if (shape.classList.contains('canvas-shape--arrow')) {
+                const line = shape.querySelector('line');
+                const polygon = shape.querySelector('polygon');
+                if (line) line.addEventListener('mousedown', handleMouseDown);
+                if (polygon) polygon.addEventListener('mousedown', handleMouseDown);
+            }
+
+            const onMouseMove = (e) => {
+                if (!isDragging) return;
+
+                const scale = currentZoom / 100;
+                const dx = (e.clientX - startX) / scale;
+                const dy = (e.clientY - startY) / scale;
+
+                shape.style.left = (startLeft + dx) + 'px';
+                shape.style.top = (startTop + dy) + 'px';
+            };
+
+            const onMouseUp = () => {
+                isDragging = false;
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+
+            // Duplo clique para remover (exceto texto)
+            if (!shape.classList.contains('canvas-shape--text')) {
+                shape.addEventListener('dblclick', () => {
+                    saveToHistory();
+                    shape.remove();
+                    selectedShape = null;
+                });
+            }
+        }
+
+        // ==========================================
+        // ADICIONAR PASTA AO CANVAS
+        // ==========================================
+        function addFolderToCanvas(type) {
+            saveToHistory();
+
+            state[type].visible = true;
+
+            // Adicionar item inicial
+            if (type === 'entrada' && state.entrada.items.length === 0) {
+                state.entrada.items.push('PROCESSO-001.PDF');
+            } else if (type === 'tarefa' && state.tarefa.items.length === 0) {
+                showPromptSelector();
+                return; // Espera seleção
+            } else if (type === 'docs' && state.docs.items.length === 0) {
+                state.docs.items.push('referencias.md');
+            }
+
+            renderCanvas();
+        }
+
+        // ==========================================
+        // RENDERIZAR CANVAS
+        // ==========================================
+        function renderCanvas() {
+            const canvas = document.getElementById('canvas');
+
+            // Limpar canvas
+            Array.from(canvas.children).forEach(child => {
+                child.remove();
+            });
+
+            // Renderizar pastas na ordem com conectores
+            if (state.entrada.visible) {
+                canvas.appendChild(createCanvasFolder('entrada'));
+            }
+
+            if (state.docs.visible && state.docs.conexao === 'entrada') {
+                canvas.appendChild(createConnector());
+                canvas.appendChild(createCanvasFolder('docs'));
+            }
+
+            if (state.tarefa.visible) {
+                const hasBranches = state.tarefa.items.length > 1 &&
+                                    (state.tarefa.arranjo === 'parallel' || state.tarefa.arranjo === 'conditional');
+
+                if (hasBranches) {
+                    // Renderizar com ramificações
+                    if (state.entrada.visible) {
+                        canvas.appendChild(createConnector());
+                    }
+                    canvas.appendChild(createBranchStructure());
+                } else {
+                    // Renderizar linear (sequencial ou única tarefa)
+                    if (state.entrada.visible) {
+                        canvas.appendChild(createConnector());
+                    }
+                    canvas.appendChild(createCanvasFolder('tarefa'));
+                }
+
+                // Criar/atualizar controle de arranjo se houver múltiplos prompts
+                if (state.tarefa.items.length > 1) {
+                    createArranjoControl();
+                }
+            }
+
+            // Atualizar visibilidade do controle de arranjo
+            updateArranjoControlVisibility();
+
+            if (state.docs.visible && state.docs.conexao === 'tarefa') {
+                canvas.appendChild(createConnector());
+                canvas.appendChild(createCanvasFolder('docs'));
+            }
+
+            // Calcular e mostrar saídas
+            recalculateOutputs();
+            if (state.saida.items.length > 0) {
+                // No modo branch, o join já está incluído
+                const hasBranches = state.tarefa.items.length > 1 &&
+                                    (state.tarefa.arranjo === 'parallel' || state.tarefa.arranjo === 'conditional');
+                if (state.tarefa.visible && !hasBranches) {
+                    canvas.appendChild(createConnector());
+                }
+                canvas.appendChild(createCanvasFolder('saida'));
+            }
+
+            // Detectar e mostrar modo
+            detectMode();
+            if (state.modoDetectado) {
+                canvas.appendChild(createModeBadge());
+            }
+        }
+
+        // ==========================================
+        // CRIAR ESTRUTURA DE RAMIFICAÇÃO
+        // ==========================================
+        function createBranchStructure() {
+            const container = document.createElement('div');
+            container.className = 'branch-container';
+
+            // Determinar tipo de fork
+            const isParallel = state.tarefa.arranjo === 'parallel';
+            const isConditional = state.tarefa.arranjo === 'conditional';
+
+            // Criar nó de FORK
+            const forkNode = document.createElement('div');
+            forkNode.className = `fork-node ${isConditional ? 'router' : 'parallel'}`;
+            forkNode.innerHTML = isConditional ? '🔀' : '⚡';
+            forkNode.title = isConditional ? 'Router (Roteamento)' : 'Fork (Paralelização)';
+
+            // Criar área de branches
+            const branchesArea = document.createElement('div');
+            branchesArea.className = 'branches-area';
+
+            // Criar cada branch com sua tarefa
+            state.tarefa.items.forEach((prompt, index) => {
+                const branch = document.createElement('div');
+                branch.className = 'branch';
+                branch.style.animationDelay = `${index * 0.1}s`;
+
+                const task = document.createElement('div');
+                task.className = 'branch-task';
+
+                const config = promptConfig[prompt] || { icon: '📝', name: prompt };
+
+                task.innerHTML = `
+                    <span class="branch-task-icon">${config.icon}</span>
+                    <span class="branch-task-name">${config.name}</span>
+                    ${isConditional ? `<span class="branch-condition">${getConditionLabel(index)}</span>` : ''}
+                `;
+
+                branch.appendChild(task);
+                branchesArea.appendChild(branch);
+            });
+
+            // Criar nó de JOIN
+            const joinNode = document.createElement('div');
+            joinNode.className = 'join-node';
+            joinNode.innerHTML = isConditional ? '🎯' : '🔗';
+            joinNode.title = isConditional ? 'Resultado' : 'Join (Merge)';
+
+            // Conector após join
+            const connectorAfter = createConnector();
+
+            // Montar estrutura
+            container.appendChild(forkNode);
+            container.appendChild(branchesArea);
+            container.appendChild(joinNode);
+            container.appendChild(connectorAfter);
+
+            return container;
+        }
+
+        function getConditionLabel(index) {
+            const conditions = ['se tipo A', 'se tipo B', 'se tipo C', 'se tipo D', 'outros'];
+            return conditions[index] || `condição ${index + 1}`;
+        }
+
+        // ==========================================
+        // CRIAR CONECTOR (SETA)
+        // ==========================================
+        function createConnector() {
+            const connector = document.createElement('div');
+            connector.className = 'connector';
+            connector.innerHTML = '→';
+
+            const connectorVertical = document.createElement('div');
+            connectorVertical.className = 'connector-vertical';
+            connectorVertical.innerHTML = '↓';
+
+            // Retornar um container com ambos
+            const container = document.createElement('div');
+            container.className = 'connector-container';
+            container.appendChild(connector);
+            container.appendChild(connectorVertical);
+
+            return container;
+        }
+
+        // ==========================================
+        // CRIAR PASTA NO CANVAS
+        // ==========================================
+        function createCanvasFolder(type) {
+            const folder = document.createElement('div');
+            folder.className = `canvas-folder ${type}`;
+            folder.id = `folder-${type}`;
+
+            const icons = {
+                entrada: '📂',
+                tarefa: '📂',
+                docs: '📂',
+                saida: '📂'
+            };
+
+            const names = {
+                entrada: 'ENTRADA',
+                tarefa: 'TAREFA',
+                docs: 'DOCS',
+                saida: 'SAÍDA'
+            };
+
+            folder.innerHTML = `
+                <div class="canvas-folder-header">
+                    <div class="canvas-folder-title">
+                        <span class="icon">${icons[type]}</span>
+                        <span>${names[type]}</span>
+                        ${type === 'saida' ? `<span style="font-size: 0.7em; color: var(--text-muted);">(${state.saida.items.length} docs)</span>` : ''}
+                    </div>
+                    <div class="canvas-folder-actions">
+                        <button class="folder-action-btn add" onclick="addItem('${type}')">+</button>
+                        <button class="folder-action-btn remove" onclick="removeFolder('${type}')">×</button>
+                    </div>
+                </div>
+                <div class="canvas-folder-content">
+                    ${renderFolderItems(type)}
+                </div>
+            `;
+
+            return folder;
+        }
+
+        // ==========================================
+        // RENDERIZAR ITENS DA PASTA
+        // ==========================================
+        function renderFolderItems(type) {
+            const items = state[type].items;
+
+            if (items.length === 0) {
+                return '<div style="color: var(--text-muted); font-size: 0.85em; padding: 8px;">Pasta vazia</div>';
+            }
+
+            return items.map((item, index) => {
+                let icon = '📄';
+                let displayName = item;
+
+                if (type === 'tarefa' && promptConfig[item]) {
+                    icon = promptConfig[item].icon;
+                    displayName = promptConfig[item].name;
+                } else if (type === 'docs') {
+                    icon = '📚';
+                }
+
+                const isEditable = type !== 'saida';
+
+                return `
+                    <div class="folder-item">
+                        <div class="folder-item-info">
+                            <span class="folder-item-icon">${icon}</span>
+                            <span class="folder-item-name"
+                                  contenteditable="true"
+                                  onblur="updateStructuredItemName('${type}', ${index}, this.textContent)"
+                                  onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${displayName}</span>
+                        </div>
+                        ${isEditable ? `<button class="folder-item-remove" onclick="removeItem('${type}', ${index})">×</button>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStructuredItemName(type, index, newName) {
+            newName = newName.trim();
+            if (!newName) return;
+
+            if (type === 'tarefa') {
+                // Para tarefa, atualizar o nome no promptConfig
+                const prompt = state.tarefa.items[index];
+                if (promptConfig[prompt]) {
+                    promptConfig[prompt].name = newName;
+                }
+            } else if (type === 'saida') {
+                // Para saída, armazenar nome customizado
+                state.saida.items[index] = newName;
+            } else {
+                // Para entrada e docs, atualizar diretamente
+                state[type].items[index] = newName;
+            }
+        }
+
+        // ==========================================
+        // CONTROLE DE ARRANJO
+        // ==========================================
+        function createArranjoControl() {
+            // Remover controle anterior se existir
+            const existing = document.getElementById('arranjoControl');
+            if (existing) existing.remove();
+
+            const control = document.createElement('div');
+            control.className = 'arranjo-control';
+            control.id = 'arranjoControl';
+            control.innerHTML = `
+                <div class="arranjo-control-header">
+                    <div class="arranjo-title">Arranjo dos prompts</div>
+                    <span class="arranjo-control-drag" title="Arraste para mover">⋮⋮</span>
+                </div>
+                <div class="arranjo-options">
+                    <div class="arranjo-option ${state.tarefa.arranjo === 'sequential' ? 'active' : ''}"
+                         onclick="setArranjo('sequential')">
+                        <span class="arranjo-option-icon">⛓️</span>
+                        Sequencial
+                    </div>
+                    <div class="arranjo-option ${state.tarefa.arranjo === 'parallel' ? 'active' : ''}"
+                         onclick="setArranjo('parallel')">
+                        <span class="arranjo-option-icon">⚡</span>
+                        Paralelo
+                    </div>
+                    <div class="arranjo-option ${state.tarefa.arranjo === 'conditional' ? 'active' : ''}"
+                         onclick="setArranjo('conditional')">
+                        <span class="arranjo-option-icon">🔀</span>
+                        Condicional
+                    </div>
+                </div>
+            `;
+
+            // Tornar arrastável
+            makeDraggable(control);
+
+            // Adicionar ao body em vez do canvas
+            document.body.appendChild(control);
+
+            return document.createComment('arranjo-control-placeholder');
+        }
+
+        function makeDraggable(element) {
+            let isDragging = false;
+            let startX, startY, startLeft, startTop;
+
+            const header = element.querySelector('.arranjo-control-header');
+            const dragHandle = header || element;
+
+            dragHandle.style.cursor = 'grab';
+
+            dragHandle.addEventListener('mousedown', function(e) {
+                // Não arrastar se clicar em opção
+                if (e.target.closest('.arranjo-option')) return;
+
+                isDragging = true;
+                dragHandle.style.cursor = 'grabbing';
+
+                // Pegar posição inicial
+                const rect = element.getBoundingClientRect();
+                startX = e.clientX;
+                startY = e.clientY;
+                startLeft = rect.left;
+                startTop = rect.top;
+
+                // Fixar posição com left/top
+                element.style.left = startLeft + 'px';
+                element.style.top = startTop + 'px';
+                element.style.right = 'auto';
+
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+
+                element.style.left = (startLeft + deltaX) + 'px';
+                element.style.top = (startTop + deltaY) + 'px';
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    dragHandle.style.cursor = 'grab';
+                }
+            });
+        }
+
+        function setArranjo(arranjo) {
+            state.tarefa.arranjo = arranjo;
+            renderCanvas();
+        }
+
+        function updateArranjoControlVisibility() {
+            const control = document.getElementById('arranjoControl');
+            if (control) {
+                const shouldShow = state.tarefa.visible && state.tarefa.items.length > 1;
+                control.style.display = shouldShow ? 'block' : 'none';
+            }
+        }
+
+        // ==========================================
+        // ADICIONAR / REMOVER ITENS
+        // ==========================================
+        function addItem(type) {
+            saveToHistory();
+
+            if (type === 'entrada') {
+                const num = state.entrada.items.length + 1;
+                state.entrada.items.push(`PROCESSO-${String(num).padStart(3, '0')}.PDF`);
+                renderCanvas();
+            } else if (type === 'tarefa') {
+                showPromptSelector();
+            } else if (type === 'docs') {
+                const num = state.docs.items.length + 1;
+                state.docs.items.push(`documento-${num}.md`);
+                renderCanvas();
+            } else if (type === 'saida') {
+                const num = state.saida.items.length + 1;
+                state.saida.items.push(`output-${String(num).padStart(3, '0')}.md`);
+                renderCanvas();
+            }
+        }
+
+        function removeItem(type, index) {
+            saveToHistory();
+            state[type].items.splice(index, 1);
+            renderCanvas();
+        }
+
+        function removeFolder(type) {
+            saveToHistory();
+            state[type].visible = false;
+            state[type].items = [];
+            if (type === 'docs') {
+                state.docs.conexao = null;
+            }
+            renderCanvas();
+        }
+
+        // ==========================================
+        // SELETOR DE PROMPTS
+        // ==========================================
+        function showPromptSelector() {
+            document.getElementById('promptOverlay').style.display = 'block';
+            document.getElementById('promptSelector').style.display = 'block';
+        }
+
+        function hidePromptSelector() {
+            document.getElementById('promptOverlay').style.display = 'none';
+            document.getElementById('promptSelector').style.display = 'none';
+        }
+
+        // selectPrompt já definida acima com suporte a modo livre
+
+        document.getElementById('promptOverlay').addEventListener('click', hidePromptSelector);
+
+        // ==========================================
+        // CALCULAR SAÍDAS
+        // ==========================================
+        function recalculateOutputs() {
+            if (!state.entrada.visible || !state.tarefa.visible ||
+                state.entrada.items.length === 0 || state.tarefa.items.length === 0) {
+                state.saida.items = [];
+                state.saida.visible = false;
+                return;
+            }
+
+            const numEntradas = state.entrada.items.length;
+            const prompts = state.tarefa.items;
+            const arranjo = state.tarefa.arranjo;
+
+            let outputs = [];
+
+            if (arranjo === 'sequential') {
+                // Cadeia: saída final é do último prompt
+                const lastPrompt = prompts[prompts.length - 1];
+                const outputType = promptConfig[lastPrompt]?.output || 'output';
+
+                for (let i = 0; i < numEntradas; i++) {
+                    outputs.push(`${outputType}-${String(i + 1).padStart(3, '0')}.md`);
+                }
+            } else if (arranjo === 'parallel') {
+                // Paralelo: uma saída por prompt por entrada
+                for (let i = 0; i < numEntradas; i++) {
+                    prompts.forEach(prompt => {
+                        const outputType = promptConfig[prompt]?.output || 'output';
+                        outputs.push(`${outputType}-${String(i + 1).padStart(3, '0')}.md`);
+                    });
+                }
+            } else if (arranjo === 'conditional') {
+                // Condicional: uma saída por entrada (roteada)
+                for (let i = 0; i < numEntradas; i++) {
+                    outputs.push(`output-${String(i + 1).padStart(3, '0')}.md`);
+                }
+            }
+
+            state.saida.items = outputs;
+            state.saida.visible = outputs.length > 0;
+        }
+
+        // ==========================================
+        // DETECTAR MODO
+        // ==========================================
+        function detectMode() {
+            if (!state.entrada.visible || !state.tarefa.visible) {
+                state.modoDetectado = null;
+                return;
+            }
+
+            const n = state.entrada.items.length;
+            const p = state.tarefa.items.length;
+            const arranjo = state.tarefa.arranjo;
+
+            if (n === 1 && p === 1) {
+                state.modoDetectado = 'single-turn';
+            } else if (n > 1 && p === 1) {
+                state.modoDetectado = 'batch';
+            } else if (n === 1 && p > 1 && arranjo === 'sequential') {
+                state.modoDetectado = 'prompt-chaining';
+            } else if (n === 1 && p > 1 && arranjo === 'parallel') {
+                state.modoDetectado = 'parallelization';
+            } else if (n === 1 && p > 1 && arranjo === 'conditional') {
+                state.modoDetectado = 'routing';
+            } else if (n > 1 && p > 1) {
+                state.modoDetectado = 'orchestrator';
+            } else {
+                state.modoDetectado = null;
+            }
+        }
+
+        // ==========================================
+        // BADGE DE MODO
+        // ==========================================
+        function createModeBadge() {
+            const badge = document.createElement('div');
+            badge.className = 'mode-badge';
+
+            const mode = modeNames[state.modoDetectado];
+            const desc = generateModeDescription();
+
+            badge.innerHTML = `
+                <div class="mode-badge-title">🏷️ MODO DETECTADO</div>
+                <div class="mode-badge-pattern">${mode.pt} (${mode.en})</div>
+                <div class="mode-badge-desc">${desc}</div>
+            `;
+
+            return badge;
+        }
+
+        function generateModeDescription() {
+            const n = state.entrada.items.length;
+            const p = state.tarefa.items.length;
+            const s = state.saida.items.length;
+
+            const promptNames = state.tarefa.items.map(p => promptConfig[p]?.name || p).join(' → ');
+
+            return `${n} entrada${n > 1 ? 's' : ''} → ${promptNames} → ${s} saída${s > 1 ? 's' : ''}`;
+        }
+
+        // ==========================================
+        // PADRÕES PRÉ-CONFIGURADOS
+        // ==========================================
+        function loadPattern(pattern) {
+            resetPipeline();
+
+            switch (pattern) {
+                case 'single-turn':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator'];
+                    state.tarefa.arranjo = 'sequential';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'batch':
+                    state.entrada.items = ['PROCESSO-001.PDF', 'PROCESSO-002.PDF', 'PROCESSO-003.PDF', 'PROCESSO-004.PDF', 'PROCESSO-005.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator'];
+                    state.tarefa.arranjo = 'sequential';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'chaining':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator', 'analisador', 'minutador'];
+                    state.tarefa.arranjo = 'sequential';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'parallel':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator', 'analisador', 'pesquisador'];
+                    state.tarefa.arranjo = 'parallel';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'routing':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['analisador', 'pesquisador'];
+                    state.tarefa.arranjo = 'conditional';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'orchestrator':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator', 'pesquisador', 'analisador', 'minutador'];
+                    state.tarefa.arranjo = 'sequential';
+                    state.tarefa.visible = true;
+                    break;
+            }
+
+            renderCanvas();
+            showFeedback(`Padrão "${modeNames[state.modoDetectado]?.pt || pattern}" carregado`);
+        }
+
+        // ==========================================
+        // EXECUTAR PIPELINE
+        // ==========================================
+        async function executePipeline() {
+            if (!state.entrada.visible || !state.tarefa.visible) {
+                showFeedback('Monte o pipeline antes de executar!', 'error');
+                return;
+            }
+
+            const folders = document.querySelectorAll('.canvas-folder');
+
+            // Animar sequencialmente
+            for (let i = 0; i < folders.length; i++) {
+                folders[i].classList.add('pulse');
+                await sleep(400);
+                folders[i].classList.remove('pulse');
+            }
+
+            // Animar documentos voando
+            const entradaEl = document.getElementById('folder-entrada');
+            const saidaEl = document.getElementById('folder-saida');
+
+            if (entradaEl && saidaEl) {
+                const startRect = entradaEl.getBoundingClientRect();
+                const endRect = saidaEl.getBoundingClientRect();
+
+                for (let i = 0; i < Math.min(state.entrada.items.length, 3); i++) {
+                    await sleep(150);
+                    createFlyingDoc(startRect, endRect);
+                }
+            }
+
+            await sleep(500);
+            showFeedback(`Pipeline executado ✓ ${state.saida.items.length} documento(s) gerado(s)`, 'success');
+        }
+
+        function createFlyingDoc(startRect, endRect) {
+            const doc = document.createElement('div');
+            doc.className = 'flying-doc';
+            doc.textContent = '📄';
+            doc.style.left = `${startRect.left + startRect.width / 2}px`;
+            doc.style.top = `${startRect.top + startRect.height / 2}px`;
+            document.body.appendChild(doc);
+
+            // Animar para destino
+            requestAnimationFrame(() => {
+                doc.style.transition = 'all 0.8s ease-in-out';
+                doc.style.left = `${endRect.left + endRect.width / 2}px`;
+                doc.style.top = `${endRect.top + endRect.height / 2}px`;
+            });
+
+            setTimeout(() => doc.remove(), 1000);
+        }
+
+        // ==========================================
+        // RESET
+        // ==========================================
+        function resetPipeline() {
+            // Reset estado estruturado
+            state.entrada = { items: [], visible: false };
+            state.tarefa = { items: [], arranjo: 'sequential', visible: false };
+            state.docs = { items: [], conexao: null, visible: false };
+            state.saida = { items: [], visible: false };
+            state.modoDetectado = null;
+
+            // Reset fluxo livre
+            freeFlowNodes = [];
+            freeFlowNodeCounter = 0;
+
+            // Remover controle de arranjo
+            const arranjoControl = document.getElementById('arranjoControl');
+            if (arranjoControl) arranjoControl.remove();
+
+            // Remover mascotes do canvas
+            const canvas = document.getElementById('canvas');
+            canvas.querySelectorAll('.canvas-mascote').forEach(m => m.remove());
+
+            if (flowMode === 'livre') {
+                renderFreeFlow();
+            } else {
+                renderCanvas();
+            }
+        }
+
+        // ==========================================
+        // UTILITÁRIOS
+        // ==========================================
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function showFeedback(message, type = 'info') {
+            // Remover feedback anterior
+            const existing = document.querySelector('.feedback-message');
+            if (existing) existing.remove();
+
+            const feedback = document.createElement('div');
+            feedback.className = `feedback-message ${type}`;
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+
+            setTimeout(() => feedback.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

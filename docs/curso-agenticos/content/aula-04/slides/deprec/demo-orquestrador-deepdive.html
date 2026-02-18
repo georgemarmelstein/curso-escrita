@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - O Orquestrador</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        .bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(190, 156, 109, 0.08) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 3vh 5vw;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3vh;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .header p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 0.8vh;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 4vw;
+            align-items: center;
+        }
+
+        /* Visual Section */
+        .visual-section {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orchestrator-hub {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 1;
+        }
+
+        /* Central orchestrator */
+        .central-node {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.2), rgba(190, 156, 109, 0.05));
+            border: 3px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 0 40px rgba(190, 156, 109, 0.3),
+                inset 0 0 30px rgba(190, 156, 109, 0.1);
+            animation: pulse-glow 3s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 40px rgba(190, 156, 109, 0.3), inset 0 0 30px rgba(190, 156, 109, 0.1); }
+            50% { box-shadow: 0 0 60px rgba(190, 156, 109, 0.5), inset 0 0 40px rgba(190, 156, 109, 0.2); }
+        }
+
+        .central-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5vh;
+        }
+
+        .central-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        /* Task rays */
+        .task-ray {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1vh;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+        .task-ray.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .task-ray:hover {
+            transform: scale(1.1);
+        }
+
+        .task-ray.active {
+            transform: scale(1.15);
+        }
+
+        .task-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--ray-color, var(--blue));
+            border-radius: 10px;
+            padding: 1.5vh 1.5vw;
+            text-align: center;
+            min-width: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .task-ray:hover .task-box,
+        .task-ray.active .task-box {
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 20px rgba(var(--ray-color-rgb, 96, 165, 250), 0.3);
+        }
+
+        .task-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5vh;
+        }
+
+        .task-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--ray-color, var(--blue));
+        }
+
+        /* Connection lines */
+        .connection-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--ray-color, var(--blue)));
+            transform-origin: left center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .connection-line.visible {
+            opacity: 0.5;
+        }
+
+        .task-ray:hover ~ .connection-line,
+        .task-ray.active ~ .connection-line {
+            opacity: 1;
+        }
+
+        /* Task positions */
+        .task-ray:nth-child(1) { top: 5%; left: 50%; transform: translateX(-50%); }
+        .task-ray:nth-child(2) { top: 25%; right: 5%; }
+        .task-ray:nth-child(3) { bottom: 25%; right: 5%; }
+        .task-ray:nth-child(4) { bottom: 5%; left: 50%; transform: translateX(-50%); }
+        .task-ray:nth-child(5) { bottom: 25%; left: 5%; }
+        .task-ray:nth-child(6) { top: 25%; left: 5%; }
+
+        .task-ray:nth-child(1).visible { transform: translateX(-50%) scale(1); }
+        .task-ray:nth-child(4).visible { transform: translateX(-50%) scale(1); }
+
+        /* Ray colors */
+        .ray-blue { --ray-color: var(--blue); --ray-color-rgb: 96, 165, 250; }
+        .ray-green { --ray-color: var(--green); --ray-color-rgb: 74, 222, 128; }
+        .ray-purple { --ray-color: var(--purple); --ray-color-rgb: 167, 139, 250; }
+        .ray-cyan { --ray-color: var(--cyan); --ray-color-rgb: 34, 211, 238; }
+
+        /* Info Section */
+        .info-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5vh;
+        }
+
+        .info-card {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2vh 2vw;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            border-color: var(--gold);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .info-card h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            color: var(--gold);
+            margin-bottom: 1vh;
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+        }
+
+        .info-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8vh;
+        }
+
+        .info-card li {
+            font-size: clamp(0.75rem, 1vw, 0.88rem);
+            color: rgba(255, 244, 228, 0.7);
+            padding-left: 1.5vw;
+            position: relative;
+        }
+
+        .info-card li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6em;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+            opacity: 0.6;
+        }
+
+        .info-card.does li::before { background: var(--green); }
+        .info-card.doesnt li::before { background: #f87171; }
+
+        /* Analogy card */
+        .analogy-card {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.1), transparent);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+        }
+
+        .analogy-card p {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            color: var(--cream);
+            font-style: italic;
+        }
+
+        .analogy-card strong {
+            color: var(--gold);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 2vw;
+            margin-top: 2vh;
+        }
+
+        .control-btn {
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            color: var(--gold);
+            padding: 1vh 2vw;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 1vw, 0.88rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(190, 156, 109, 0.25);
+        }
+
+        .control-btn.active {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 2vh 3vw; }
+        body.embed-mode .central-node { width: 100px; height: 100px; }
+        body.embed-mode .central-icon { font-size: 2rem; }
+        body.embed-mode .task-box { padding: 1vh 1vw; min-width: 90px; }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>O Maestro que Nao Toca Instrumento</h1>
+            <p>O orquestrador: coordenar sem executar</p>
+        </div>
+
+        <div class="main-content">
+            <div class="visual-section">
+                <div class="orchestrator-hub">
+                    <!-- Central Orchestrator -->
+                    <div class="central-node">
+                        <span class="central-icon">🎯</span>
+                        <span class="central-label">Orquestrador</span>
+                    </div>
+
+                    <!-- Task Rays -->
+                    <div class="task-ray ray-blue" onclick="highlightTask(0)">
+                        <div class="task-box">
+                            <div class="task-icon">🔍</div>
+                            <div class="task-label">"Pesquise X"</div>
+                        </div>
+                    </div>
+
+                    <div class="task-ray ray-green" onclick="highlightTask(1)">
+                        <div class="task-box">
+                            <div class="task-icon">📊</div>
+                            <div class="task-label">"Analise Y"</div>
+                        </div>
+                    </div>
+
+                    <div class="task-ray ray-purple" onclick="highlightTask(2)">
+                        <div class="task-box">
+                            <div class="task-icon">📝</div>
+                            <div class="task-label">"Escreva Z"</div>
+                        </div>
+                    </div>
+
+                    <div class="task-ray ray-cyan" onclick="highlightTask(3)">
+                        <div class="task-box">
+                            <div class="task-icon">✅</div>
+                            <div class="task-label">"Valide W"</div>
+                        </div>
+                    </div>
+
+                    <div class="task-ray ray-blue" onclick="highlightTask(4)">
+                        <div class="task-box">
+                            <div class="task-icon">📁</div>
+                            <div class="task-label">"Organize P"</div>
+                        </div>
+                    </div>
+
+                    <div class="task-ray ray-green" onclick="highlightTask(5)">
+                        <div class="task-box">
+                            <div class="task-icon">📤</div>
+                            <div class="task-label">"Envie Q"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-card does">
+                    <h3>✓ O que FAZ</h3>
+                    <ul>
+                        <li>Recebe a tarefa complexa do usuario</li>
+                        <li>Decompoe em subtarefas gerenciaveis</li>
+                        <li>Delega para workers especializados</li>
+                        <li>Coordena a ordem de execucao</li>
+                        <li>Consolida resultados no final</li>
+                    </ul>
+                </div>
+
+                <div class="info-card doesnt">
+                    <h3>✗ O que NAO FAZ</h3>
+                    <ul>
+                        <li>Executar tarefas diretamente</li>
+                        <li>Pesquisar ou redigir ele mesmo</li>
+                        <li>Usar ferramentas (tools)</li>
+                        <li>Guardar estado entre sessoes</li>
+                    </ul>
+                </div>
+
+                <div class="info-card analogy-card">
+                    <h3>⚖️ Analogia Juridica</h3>
+                    <p>
+                        Como o <strong>juiz que distribui processos</strong> para assessores:
+                        decide quem faz o que, mas nao redige as minutas.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="showAllTasks()">Ver Todos</button>
+            <button class="control-btn" onclick="animateSequence()">▶ Animar Delegacao</button>
+            <button class="control-btn" onclick="resetView()">↺ Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let isAnimating = false;
+        const tasks = document.querySelectorAll('.task-ray');
+
+        function highlightTask(index) {
+            if (isAnimating) return;
+            tasks.forEach((t, i) => {
+                if (i === index) {
+                    t.classList.add('active');
+                } else {
+                    t.classList.remove('active');
+                }
+            });
+        }
+
+        function showAllTasks() {
+            if (isAnimating) return;
+            tasks.forEach(t => {
+                t.classList.add('visible');
+                t.classList.remove('active');
+            });
+        }
+
+        function animateSequence() {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            // Reset first
+            tasks.forEach(t => {
+                t.classList.remove('visible', 'active');
+            });
+
+            // Animate one by one
+            tasks.forEach((task, i) => {
+                setTimeout(() => {
+                    task.classList.add('visible', 'active');
+                    if (i > 0) {
+                        tasks[i-1].classList.remove('active');
+                    }
+                    if (i === tasks.length - 1) {
+                        setTimeout(() => {
+                            task.classList.remove('active');
+                            isAnimating = false;
+                        }, 500);
+                    }
+                }, i * 400);
+            });
+        }
+
+        function resetView() {
+            if (isAnimating) return;
+            tasks.forEach(t => {
+                t.classList.remove('visible', 'active');
+            });
+        }
+
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Initialize with all visible
+        showAllTasks();
+    </script>
+</body>
+</html>

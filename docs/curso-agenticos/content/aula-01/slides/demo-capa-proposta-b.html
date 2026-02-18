@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta B - Matrix Rain</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            background: #0a0a0a;
+        }
+
+        /* Canvas para Matrix Rain */
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Overlay para suavizar */
+        .matrix-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center,
+                rgba(10, 10, 10, 0.3) 0%,
+                rgba(10, 10, 10, 0.7) 50%,
+                rgba(10, 10, 10, 0.9) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Container principal */
+        .capa-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+            max-width: 1000px;
+        }
+
+        /* Numero do modulo */
+        .module-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            font-weight: 400;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: rgba(190, 156, 109, 0.8);
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease 0.2s both;
+        }
+
+        .module-number::before {
+            content: '// ';
+            color: rgba(74, 222, 128, 0.6);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Titulo principal */
+        .main-title {
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title-line {
+            display: block;
+        }
+
+        .title-line.small {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8em;
+            font-weight: 300;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+            color: rgba(255, 244, 228, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .title-line.large {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 4.5em;
+            font-weight: 800;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #4ade80 0%, #BE9C6D 50%, #4ade80 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s ease infinite;
+            filter: drop-shadow(0 0 30px rgba(74, 222, 128, 0.4));
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Terminal cursor */
+        .title-line.large::after {
+            content: '_';
+            -webkit-text-fill-color: #4ade80;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Barra decorativa */
+        .decorative-bar {
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #4ade80, #BE9C6D, transparent);
+            margin: 30px auto;
+            animation: expandBar 1s ease 0.6s both;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+
+        @keyframes expandBar {
+            from { width: 0; opacity: 0; }
+            to { width: 200px; opacity: 1; }
+        }
+
+        /* Subtitulo */
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2em;
+            font-weight: 400;
+            color: rgba(255, 244, 228, 0.6);
+            letter-spacing: 2px;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease 0.8s both;
+        }
+
+        .subtitle::before {
+            content: '> ';
+            color: #4ade80;
+        }
+
+        /* Animacao de agentes */
+        .agents-animation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease 1s both;
+        }
+
+        .agent-node {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8em;
+            position: relative;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .agent-node.subagent {
+            background: rgba(74, 222, 128, 0.1);
+            border: 2px solid rgba(74, 222, 128, 0.5);
+            animation: pulse-agent 2s ease infinite;
+        }
+
+        .agent-node.orchestrator {
+            background: rgba(190, 156, 109, 0.15);
+            border: 2px solid rgba(190, 156, 109, 0.6);
+            width: 70px;
+            height: 70px;
+            font-size: 2em;
+            animation: pulse-orchestrator 2s ease infinite;
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.3);
+        }
+
+        @keyframes pulse-agent {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(74, 222, 128, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(74, 222, 128, 0.5); }
+        }
+
+        @keyframes pulse-orchestrator {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(190, 156, 109, 0.3); }
+            50% { transform: scale(1.08); box-shadow: 0 0 40px rgba(190, 156, 109, 0.5); }
+        }
+
+        .connection-line {
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0.5), rgba(190, 156, 109, 0.5));
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .connection-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 222, 128, 0.8), transparent);
+            animation: flow 1.5s linear infinite;
+        }
+
+        @keyframes flow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Labels dos agentes */
+        .agent-labels {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease 1.2s both;
+        }
+
+        .agent-label span {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(74, 222, 128, 0.6);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .agent-label.orchestrator span {
+            color: rgba(190, 156, 109, 0.8);
+        }
+
+        /* Barra inferior */
+        .bottom-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            animation: fadeInUp 1s ease 1.4s both;
+        }
+
+        .course-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 4px;
+            backdrop-filter: blur(10px);
+        }
+
+        .course-badge .icon { font-size: 1.5em; }
+
+        .course-badge .text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-badge .text .label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6em;
+            color: rgba(74, 222, 128, 0.7);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .course-badge .text .value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9em;
+            color: #FFF4E4;
+            font-weight: 500;
+        }
+
+        /* Embed mode */
+        body.embed-mode .capa-container { padding: 15px; }
+        body.embed-mode .title-line.small { font-size: 1.5em; }
+        body.embed-mode .title-line.large { font-size: 3.8em; }
+        body.embed-mode .subtitle { font-size: 1em; margin-bottom: 40px; }
+        body.embed-mode .agents-animation { margin-bottom: 30px; }
+        body.embed-mode .agent-labels { margin-bottom: 20px; gap: 40px; }
+        body.embed-mode .agent-node { width: 55px; height: 55px; font-size: 1.6em; }
+        body.embed-mode .agent-node.orchestrator { width: 65px; height: 65px; font-size: 1.8em; }
+        body.embed-mode .connection-line { width: 35px; }
+        body.embed-mode .bottom-bar { margin-top: 25px; gap: 15px; }
+        body.embed-mode .course-badge { padding: 10px 18px; }
+    </style>
+</head>
+<body>
+    <!-- Canvas Matrix -->
+    <canvas id="matrix-canvas"></canvas>
+    <div class="matrix-overlay"></div>
+
+    <!-- Container principal -->
+    <div class="capa-container">
+        <div class="module-number">Aula 01</div>
+
+        <h1 class="main-title">
+            <span class="title-line small">A Era dos</span>
+            <span class="title-line large">AGENTES</span>
+        </h1>
+
+        <div class="decorative-bar"></div>
+
+        <p class="subtitle">Do Assistente ao Sistema Agentico</p>
+
+        <div class="agents-animation">
+            <div class="agent-node subagent">&#129302;</div>
+            <div class="connection-line"></div>
+            <div class="agent-node subagent">&#129302;</div>
+            <div class="connection-line"></div>
+            <div class="agent-node orchestrator">&#127932;</div>
+            <div class="connection-line"></div>
+            <div class="agent-node subagent">&#129302;</div>
+            <div class="connection-line"></div>
+            <div class="agent-node subagent">&#129302;</div>
+        </div>
+
+        <div class="agent-labels">
+            <div class="agent-label"><span>Subagentes</span></div>
+            <div class="agent-label orchestrator"><span>Orquestrador</span></div>
+            <div class="agent-label"><span>Subagentes</span></div>
+        </div>
+
+        <div class="bottom-bar">
+            <div class="course-badge">
+                <span class="icon">&#128218;</span>
+                <div class="text">
+                    <span class="label">Curso</span>
+                    <span class="value">Sistemas Agenticos</span>
+                </div>
+            </div>
+            <div class="course-badge">
+                <span class="icon">&#9878;</span>
+                <div class="text">
+                    <span class="label">Publico</span>
+                    <span class="value">Juristas</span>
+                </div>
+            </div>
+            <div class="course-badge">
+                <span class="icon">&#128100;</span>
+                <div class="text">
+                    <span class="label">Instrutor</span>
+                    <span class="value">George Marmelstein</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Caracteres juridicos e tech
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()Art.Inc.Lei.Proc.Juiz.AI.LLM.MCP.Agent.Claude'.split('');
+
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+
+        function draw() {
+            // Fundo semi-transparente para trail effect
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px JetBrains Mono, monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+
+                // Gradiente de cor: verde para dourado
+                const gradient = Math.random();
+                if (gradient > 0.7) {
+                    ctx.fillStyle = 'rgba(190, 156, 109, 0.8)'; // Dourado
+                } else if (gradient > 0.3) {
+                    ctx.fillStyle = 'rgba(74, 222, 128, 0.7)'; // Verde
+                } else {
+                    ctx.fillStyle = 'rgba(74, 222, 128, 0.3)'; // Verde escuro
+                }
+
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 50);
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

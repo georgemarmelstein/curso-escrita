@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Decision Tree de Padrões</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(190, 156, 109, 0.05) 0%, transparent 50%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            max-width: 900px;
+            padding: 25px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--super-cream);
+        }
+
+        .tree-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .question-node {
+            background: rgba(20, 20, 30, 0.9);
+            border: 2px solid var(--super-gold);
+            border-radius: 12px;
+            padding: 20px 30px;
+            text-align: center;
+            max-width: 500px;
+            margin-bottom: 25px;
+            opacity: 0;
+            animation: nodeAppear 0.4s ease forwards;
+        }
+
+        @keyframes nodeAppear {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .question-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 5px;
+        }
+
+        .question-hint {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .options-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .option-btn {
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 244, 228, 0.2);
+            border-radius: 10px;
+            color: var(--super-cream);
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .option-btn:hover {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .option-btn.yes {
+            border-color: var(--super-green);
+        }
+
+        .option-btn.yes:hover {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: var(--super-green);
+        }
+
+        .option-btn.no {
+            border-color: rgba(255, 244, 228, 0.3);
+        }
+
+        .result-node {
+            background: rgba(20, 20, 30, 0.9);
+            border: 2px solid;
+            border-radius: 12px;
+            padding: 25px 35px;
+            text-align: center;
+            max-width: 400px;
+            opacity: 0;
+            animation: resultAppear 0.5s ease forwards;
+        }
+
+        @keyframes resultAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-node.chaining { border-color: var(--super-amber); }
+        .result-node.routing { border-color: var(--super-blue); }
+        .result-node.parallel { border-color: var(--super-purple); }
+        .result-node.orchestrator { border-color: var(--super-cyan); }
+        .result-node.evaluator { border-color: var(--super-pink); }
+
+        .result-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .result-node.chaining .result-title { color: var(--super-amber); }
+        .result-node.routing .result-title { color: var(--super-blue); }
+        .result-node.parallel .result-title { color: var(--super-purple); }
+        .result-node.orchestrator .result-title { color: var(--super-cyan); }
+        .result-node.evaluator .result-title { color: var(--super-pink); }
+
+        .result-desc {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.7);
+            margin-bottom: 15px;
+        }
+
+        .result-example {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        .result-example strong {
+            color: var(--super-cream);
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .breadcrumb-item {
+            padding: 4px 10px;
+            background: rgba(255, 244, 228, 0.05);
+            border-radius: 4px;
+        }
+
+        .breadcrumb-item.active {
+            background: rgba(190, 156, 109, 0.2);
+            color: var(--super-gold);
+        }
+
+        .breadcrumb-arrow {
+            color: rgba(255, 244, 228, 0.2);
+        }
+
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 25px;
+            background: transparent;
+            border: 1px solid rgba(255, 244, 228, 0.3);
+            border-radius: 8px;
+            color: rgba(255, 244, 228, 0.6);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            border-color: var(--super-cream);
+            color: var(--super-cream);
+        }
+
+        .hidden { display: none; }
+
+        body.embed-mode .container { padding: 15px; }
+        body.embed-mode .header-title { font-size: 1.2em; }
+        body.embed-mode .question-node { padding: 15px 20px; }
+        body.embed-mode .question-text { font-size: 1em; }
+        body.embed-mode .option-btn { padding: 12px 20px; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Guia de Decisão</div>
+            <h1 class="header-title">Qual Padrão Usar?</h1>
+        </div>
+
+        <div class="breadcrumb" id="breadcrumb">
+            <span class="breadcrumb-item active">Início</span>
+        </div>
+
+        <div class="tree-container" id="treeContainer">
+            <!-- Content generated by JS -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 'q1',
+                icon: '🔄',
+                text: 'Suas etapas são sequenciais?',
+                hint: 'O output de uma alimenta a próxima?',
+                yes: 'chaining',
+                no: 'q2'
+            },
+            {
+                id: 'q2',
+                icon: '🔀',
+                text: 'Os inputs têm tipos distintos?',
+                hint: 'Precisam de tratamento especializado?',
+                yes: 'routing',
+                no: 'q3'
+            },
+            {
+                id: 'q3',
+                icon: '⚡',
+                text: 'As subtarefas são independentes?',
+                hint: 'Podem rodar ao mesmo tempo?',
+                yes: 'parallel',
+                no: 'q4'
+            },
+            {
+                id: 'q4',
+                icon: '🎯',
+                text: 'As subtarefas são definidas em runtime?',
+                hint: 'O orquestrador decide dinamicamente?',
+                yes: 'orchestrator',
+                no: 'evaluator'
+            }
+        ];
+
+        const results = {
+            chaining: {
+                class: 'chaining',
+                icon: '🔗',
+                title: 'Prompt Chaining',
+                desc: 'Pipeline sequencial onde cada etapa usa o resultado da anterior.',
+                example: '<strong>Exemplo:</strong> Relatório → Fundamentação → Dispositivo'
+            },
+            routing: {
+                class: 'routing',
+                icon: '🔀',
+                title: 'Routing',
+                desc: 'Classificador direciona para fluxos especializados.',
+                example: '<strong>Exemplo:</strong> BPC vs Aposentadoria vs Auxílio-Doença'
+            },
+            parallel: {
+                class: 'parallel',
+                icon: '⚡',
+                title: 'Parallelization',
+                desc: 'Subtarefas independentes executam simultaneamente.',
+                example: '<strong>Exemplo:</strong> 3 revisores analisam a mesma sentença'
+            },
+            orchestrator: {
+                class: 'orchestrator',
+                icon: '🎭',
+                title: 'Orchestrator-Workers',
+                desc: 'Orquestrador delega dinamicamente para workers especializados.',
+                example: '<strong>Exemplo:</strong> Pesquisa jurídica adaptativa'
+            },
+            evaluator: {
+                class: 'evaluator',
+                icon: '🔄',
+                title: 'Evaluator-Optimizer',
+                desc: 'Loop de refinamento até atingir qualidade desejada.',
+                example: '<strong>Exemplo:</strong> Maker-Checker jurídico'
+            }
+        };
+
+        let path = [];
+
+        function render() {
+            const container = document.getElementById('treeContainer');
+            const breadcrumb = document.getElementById('breadcrumb');
+
+            // Update breadcrumb
+            breadcrumb.innerHTML = `
+                <span class="breadcrumb-item ${path.length === 0 ? 'active' : ''}" onclick="goToStart()">Início</span>
+                ${path.map((p, i) => `
+                    <span class="breadcrumb-arrow">→</span>
+                    <span class="breadcrumb-item ${i === path.length - 1 ? 'active' : ''}">${p.answer}</span>
+                `).join('')}
+            `;
+
+            // Determine current state
+            let current = 'q1';
+            for (const p of path) {
+                const q = questions.find(q => q.id === current);
+                current = p.answer === 'Sim' ? q.yes : q.no;
+            }
+
+            // Check if current is a result
+            if (results[current]) {
+                const r = results[current];
+                container.innerHTML = `
+                    <div class="result-node ${r.class}">
+                        <div class="result-icon">${r.icon}</div>
+                        <div class="result-title">${r.title}</div>
+                        <div class="result-desc">${r.desc}</div>
+                        <div class="result-example">${r.example}</div>
+                    </div>
+                    <button class="reset-btn" onclick="reset()">↺ Recomeçar</button>
+                `;
+            } else {
+                const q = questions.find(q => q.id === current);
+                container.innerHTML = `
+                    <div class="question-node">
+                        <div class="question-icon">${q.icon}</div>
+                        <div class="question-text">${q.text}</div>
+                        <div class="question-hint">${q.hint}</div>
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn yes" onclick="answer('Sim')">Sim</button>
+                        <button class="option-btn no" onclick="answer('Não')">Não</button>
+                    </div>
+                `;
+            }
+        }
+
+        function answer(ans) {
+            path.push({ answer: ans });
+            render();
+        }
+
+        function reset() {
+            path = [];
+            render();
+        }
+
+        function goToStart() {
+            reset();
+        }
+
+        render();
+
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

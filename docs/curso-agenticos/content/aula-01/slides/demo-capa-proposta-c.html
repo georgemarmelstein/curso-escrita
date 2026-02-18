@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta C - Glassmorphism</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+        }
+
+        /* Formas geometricas flutuantes */
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
+            animation: float-shape 20s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.4), rgba(190, 156, 109, 0.1));
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(99, 102, 241, 0.1));
+            bottom: -50px;
+            left: -50px;
+            animation-delay: -5s;
+        }
+
+        .shape-3 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(74, 222, 128, 0.1));
+            top: 50%;
+            left: 10%;
+            animation-delay: -10s;
+        }
+
+        .shape-4 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.3), rgba(99, 102, 241, 0.2));
+            bottom: 20%;
+            right: 15%;
+            animation-delay: -15s;
+        }
+
+        @keyframes float-shape {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(20px, 30px) scale(1.05); }
+        }
+
+        /* Grid sutil */
+        .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 80px 80px;
+            z-index: 2;
+        }
+
+        /* Container principal com glass effect */
+        .capa-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 50px 60px;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Numero do modulo */
+        .module-number {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: rgba(190, 156, 109, 0.9);
+            margin-bottom: 25px;
+            animation: fadeInDown 1s ease 0.2s both;
+            padding: 8px 20px;
+            background: rgba(190, 156, 109, 0.1);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Titulo principal */
+        .main-title {
+            margin-bottom: 15px;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title-line {
+            display: block;
+        }
+
+        .title-line.small {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.6em;
+            font-weight: 300;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            color: rgba(255, 244, 228, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .title-line.large {
+            font-family: 'Sora', sans-serif;
+            font-size: 5em;
+            font-weight: 800;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, #BE9C6D 0%, #f0d9a8 30%, #BE9C6D 60%, #d4b896 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 4px 20px rgba(190, 156, 109, 0.25));
+        }
+
+        /* Barra decorativa */
+        .decorative-bar {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #BE9C6D, rgba(190, 156, 109, 0.3));
+            margin: 25px auto;
+            border-radius: 2px;
+            animation: expandBar 1s ease 0.6s both;
+        }
+
+        @keyframes expandBar {
+            from { width: 0; opacity: 0; }
+            to { width: 80px; opacity: 1; }
+        }
+
+        /* Subtitulo */
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2em;
+            font-weight: 400;
+            color: rgba(255, 244, 228, 0.6);
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease 0.8s both;
+        }
+
+        /* Animacao de agentes */
+        .agents-animation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease 1s both;
+        }
+
+        .agent-node {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.6em;
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .agent-node.subagent {
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+            animation: pulse-agent 3s ease infinite;
+        }
+
+        .agent-node.subagent:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .agent-node.orchestrator {
+            width: 64px;
+            height: 64px;
+            font-size: 1.8em;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            box-shadow: 0 4px 20px rgba(190, 156, 109, 0.25);
+            animation: pulse-orchestrator 3s ease infinite;
+        }
+
+        .agent-node.orchestrator:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(190, 156, 109, 0.4);
+        }
+
+        @keyframes pulse-agent {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes pulse-orchestrator {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .connection-line {
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.4), rgba(190, 156, 109, 0.4));
+            border-radius: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .connection-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: flow 2.5s linear infinite;
+        }
+
+        @keyframes flow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Labels dos agentes */
+        .agent-labels {
+            display: flex;
+            justify-content: center;
+            gap: 45px;
+            margin-bottom: 15px;
+            animation: fadeInUp 1s ease 1.2s both;
+        }
+
+        .agent-label span {
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7em;
+            font-weight: 500;
+            color: rgba(255, 244, 228, 0.4);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .agent-label.orchestrator span {
+            color: rgba(190, 156, 109, 0.7);
+        }
+
+        /* Barra inferior */
+        .bottom-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            animation: fadeInUp 1s ease 1.4s both;
+        }
+
+        .course-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .course-badge:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(190, 156, 109, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .course-badge .icon { font-size: 1.3em; }
+
+        .course-badge .text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-badge .text .label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6em;
+            font-weight: 500;
+            color: rgba(190, 156, 109, 0.7);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .course-badge .text .value {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85em;
+            color: #FFF4E4;
+            font-weight: 500;
+        }
+
+        /* Embed mode */
+        body.embed-mode .capa-container { padding: 30px 40px; border-radius: 20px; }
+        body.embed-mode .title-line.small { font-size: 1.4em; }
+        body.embed-mode .title-line.large { font-size: 4em; }
+        body.embed-mode .subtitle { font-size: 1em; margin-bottom: 30px; }
+        body.embed-mode .agents-animation { margin-bottom: 30px; gap: 12px; }
+        body.embed-mode .agent-labels { margin-bottom: 12px; gap: 35px; }
+        body.embed-mode .agent-node { width: 50px; height: 50px; font-size: 1.4em; border-radius: 14px; }
+        body.embed-mode .agent-node.orchestrator { width: 58px; height: 58px; font-size: 1.6em; }
+        body.embed-mode .connection-line { width: 25px; }
+        body.embed-mode .bottom-bar { margin-top: 20px; gap: 12px; }
+        body.embed-mode .course-badge { padding: 8px 14px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <!-- Formas flutuantes -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+
+    <!-- Grid sutil -->
+    <div class="grid-bg"></div>
+
+    <!-- Container principal -->
+    <div class="capa-container">
+        <div class="module-number">Aula 01</div>
+
+        <h1 class="main-title">
+            <span class="title-line small">A Era dos</span>
+            <span class="title-line large">AGENTES</span>
+        </h1>
+
+        <div class="decorative-bar"></div>
+
+        <p class="subtitle">Do Assistente ao Sistema Agentico</p>
+
+        <div class="agents-animation">
+            <div class="agent-node subagent">&#129302;</div>
+            <div class="connection-line"></div>
+            <div class="agent-node subagent">&#129302;</div>
+            <div class="connection-line"></div>
+            <div class="agent-node orchestrator">&#127932;</div>
+            <div class="connection-line"></div>
+            <div class="agent-node subagent">&#129302;</div>
+            <div class="connection-line"></div>
+            <div class="agent-node subagent">&#129302;</div>
+        </div>
+
+        <div class="agent-labels">
+            <div class="agent-label"><span>Subagentes</span></div>
+            <div class="agent-label orchestrator"><span>Orquestrador</span></div>
+            <div class="agent-label"><span>Subagentes</span></div>
+        </div>
+
+        <div class="bottom-bar">
+            <div class="course-badge">
+                <span class="icon">&#128218;</span>
+                <div class="text">
+                    <span class="label">Curso</span>
+                    <span class="value">Sistemas Agenticos</span>
+                </div>
+            </div>
+            <div class="course-badge">
+                <span class="icon">&#9878;</span>
+                <div class="text">
+                    <span class="label">Publico</span>
+                    <span class="value">Juristas</span>
+                </div>
+            </div>
+            <div class="course-badge">
+                <span class="icon">&#128100;</span>
+                <div class="text">
+                    <span class="label">Instrutor</span>
+                    <span class="value">George Marmelstein</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

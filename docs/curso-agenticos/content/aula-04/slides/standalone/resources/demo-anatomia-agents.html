@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomia de um Sistema Agêntico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&family=Raleway:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-bright: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-deeper: #050508;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            overflow: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: 100vh;
+        }
+
+        /* EXPLORER */
+        .explorer {
+            background: linear-gradient(180deg, #12121a 0%, #0a0a12 100%);
+            border-right: 1px solid rgba(190, 156, 109, 0.2);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .explorer-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+            background: rgba(190, 156, 109, 0.05);
+        }
+
+        .explorer-title {
+            font-size: 0.7em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 244, 228, 0.4);
+            margin-bottom: 6px;
+        }
+
+        .explorer-project {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            color: var(--super-gold);
+        }
+
+        .explorer-tree {
+            flex: 1;
+            min-height: 0; /* Permite shrink no flex */
+            overflow-y: auto;
+            padding: 10px 0;
+            padding-bottom: 40px; /* Espaço extra para últimos itens */
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 14px 8px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .tree-item:hover {
+            background: rgba(190, 156, 109, 0.1);
+            border-left-color: rgba(190, 156, 109, 0.4);
+        }
+
+        .tree-item.active {
+            background: linear-gradient(90deg, rgba(190, 156, 109, 0.2), transparent);
+            border-left-color: var(--super-gold);
+        }
+
+        .tree-indent { width: 16px; flex-shrink: 0; }
+
+        .tree-chevron {
+            width: 18px;
+            font-size: 0.75em;
+            color: rgba(190, 156, 109, 0.5);
+            transition: transform 0.2s ease;
+        }
+        .tree-chevron.expanded { transform: rotate(90deg); color: var(--super-gold); }
+        .tree-chevron.empty { visibility: hidden; }
+
+        .tree-icon { width: 22px; font-size: 0.9em; }
+
+        .tree-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .tree-item[data-type="root"] .tree-label,
+        .tree-item[data-folder] > .tree-label { color: var(--super-gold); }
+        .tree-item.active .tree-label { color: var(--super-cream); font-weight: 500; }
+
+        .tree-children { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .tree-children.expanded { max-height: 800px; } /* Aumentado para acomodar mais itens */
+
+        /* CONTENT AREA */
+        .content-area {
+            background: var(--super-bg-deeper);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Spotlight sutil */
+        .content-area::before {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 60%;
+            background: radial-gradient(ellipse at center, rgba(190, 156, 109, 0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* HEADER com TABS */
+        .content-header {
+            padding: 30px 50px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .breadcrumb {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: rgba(190, 156, 109, 0.5);
+            margin-bottom: 12px;
+        }
+        .breadcrumb .current { color: var(--super-gold); }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 25px;
+        }
+        .main-title .gold { color: var(--super-gold); }
+
+        /* TABS - Progressive Disclosure */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+            padding-bottom: 0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.85em;
+            font-weight: 500;
+            color: rgba(255, 244, 228, 0.5);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover { color: rgba(255, 244, 228, 0.8); }
+
+        .tab.active {
+            color: var(--super-gold);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--super-gold);
+        }
+
+        .tab .tab-icon {
+            margin-right: 8px;
+            font-size: 1em;
+        }
+
+        /* CONTENT BODY */
+        .content-body {
+            flex: 1;
+            min-height: 0; /* Permite shrink no flex - ESSENCIAL para scroll */
+            padding: 40px 50px;
+            padding-bottom: 60px; /* Espaço extra para scroll */
+            position: relative;
+            z-index: 10;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+
+        .content-body::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        /* Garante que o scroll funcione no zoom */
+        .content-body > * {
+            flex-shrink: 0;
+        }
+
+        /* TAB PANELS */
+        .tab-panel {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            animation: fadeIn 0.4s ease;
+            padding-bottom: 40px; /* Espaço extra para scroll confortável */
+        }
+
+        .tab-panel.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* CONCEITO PANEL - Organograma */
+        .org-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .org-node-main {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.25), rgba(190, 156, 109, 0.08));
+            border: 2px solid var(--super-gold);
+            border-radius: 14px;
+            padding: 16px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .org-node-main::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 17px;
+            background: linear-gradient(135deg, var(--super-gold), transparent);
+            z-index: -1;
+            opacity: 0.2;
+        }
+
+        .org-node-main:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.3);
+        }
+
+        .org-node-main.active {
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.4);
+        }
+
+        .org-node-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        .org-connector-v {
+            width: 2px;
+            height: 25px;
+            background: linear-gradient(180deg, var(--super-gold), rgba(190, 156, 109, 0.3));
+        }
+
+        .org-split {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            position: relative;
+        }
+
+        .org-split::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 400px;
+            height: 2px;
+            background: rgba(190, 156, 109, 0.3);
+        }
+
+        .org-columns {
+            display: flex;
+            gap: 40px;
+        }
+
+        .org-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .org-branch-line {
+            width: 2px;
+            height: 20px;
+            background: rgba(190, 156, 109, 0.3);
+        }
+
+        .org-cell {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 10px;
+            padding: 22px 35px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 320px;
+            max-width: 380px;
+        }
+
+        .org-cell:hover {
+            background: rgba(190, 156, 109, 0.08);
+            border-color: rgba(190, 156, 109, 0.4);
+        }
+
+        .org-cell.active {
+            background: rgba(190, 156, 109, 0.12);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 25px rgba(190, 156, 109, 0.2);
+        }
+
+        .org-cell-icon {
+            font-size: 1.8em;
+            margin-bottom: 12px;
+        }
+
+        .org-cell-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .org-cell-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15em;
+            line-height: 1.5;
+            color: rgba(255, 244, 228, 0.85);
+        }
+
+        .org-cell-text strong {
+            color: var(--super-gold);
+        }
+
+        .org-yaml-section {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .org-yaml-connector {
+            width: 2px;
+            height: 28px;
+            background: linear-gradient(180deg, transparent, var(--super-green));
+        }
+
+        .org-yaml-cell {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.08), rgba(74, 222, 128, 0.02));
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 10px;
+            padding: 22px 35px;
+            max-width: 580px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .org-yaml-cell:hover {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: var(--super-green);
+        }
+
+        .org-yaml-cell.active {
+            background: rgba(74, 222, 128, 0.12);
+            border-color: var(--super-green);
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.2);
+        }
+
+        .org-yaml-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .org-yaml-icon {
+            width: 38px;
+            height: 38px;
+            background: rgba(74, 222, 128, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .org-yaml-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--super-green);
+        }
+
+        .org-yaml-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .org-yaml-line {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05em;
+            line-height: 1.5;
+            color: rgba(255, 244, 228, 0.85);
+            padding-left: 50px;
+        }
+
+        .org-yaml-line code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            padding: 2px 6px;
+            background: rgba(190, 156, 109, 0.15);
+            border-radius: 3px;
+            color: var(--super-gold);
+        }
+
+        .org-hint {
+            margin-top: 25px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.25);
+            letter-spacing: 1px;
+        }
+
+        /* FORMAS DE CONECTAR */
+        .formas-conectar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .formas-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: var(--super-cream);
+            margin-bottom: 10px;
+        }
+
+        .formas-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            width: 100%;
+        }
+
+        .forma-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            padding: 18px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .forma-card:hover {
+            background: rgba(190, 156, 109, 0.08);
+            border-color: rgba(190, 156, 109, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .forma-card.active {
+            background: rgba(190, 156, 109, 0.12);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.2);
+        }
+
+        .forma-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .forma-nome {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 8px;
+        }
+
+        .forma-desc {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.75);
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .forma-quando {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(74, 222, 128, 0.7);
+            line-height: 1.3;
+        }
+
+        .formas-insight {
+            font-family: 'Playfair Display', serif;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.6);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .formas-insight strong {
+            color: var(--super-gold);
+        }
+
+        /* CONCEITO PANEL - Texto legado */
+        .conceito-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            line-height: 1.7;
+            color: rgba(255, 244, 228, 0.92);
+        }
+
+        .conceito-text strong { color: var(--super-gold); }
+
+        .conceito-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            padding: 4px 10px;
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 4px;
+            color: var(--super-gold);
+        }
+
+        /* CITAÇÃO PANEL */
+        .quote-container {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .quote-container::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--super-gold), rgba(190, 156, 109, 0.2));
+            border-radius: 2px;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-style: italic;
+            line-height: 1.6;
+            color: rgba(255, 244, 228, 0.9);
+            margin-bottom: 30px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .quote-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            background: rgba(190, 156, 109, 0.15);
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        .author-role {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: rgba(190, 156, 109, 0.7);
+        }
+
+        /* INSIGHT PANEL */
+        .insight-container {
+            background: rgba(190, 156, 109, 0.08);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .insight-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.75em;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+        }
+
+        .insight-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25em;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.6;
+        }
+
+        .insight-text strong { color: var(--super-gold); }
+
+        .insight-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            padding: 2px 6px;
+            background: rgba(190, 156, 109, 0.2);
+            border-radius: 3px;
+            color: var(--super-gold);
+        }
+
+        /* CRIAR PANEL */
+        .criar-intro {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .command-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin-bottom: 30px;
+        }
+
+        .command-label {
+            font-size: 0.65em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--super-green);
+            margin-bottom: 10px;
+        }
+
+        .command-line {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            color: var(--super-cream);
+        }
+        .command-line .prompt { color: var(--super-green); }
+        .command-line .cmd { color: var(--super-gold); }
+
+        .steps { display: flex; flex-direction: column; gap: 12px; }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border-left: 3px solid rgba(190, 156, 109, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .step:hover {
+            background: rgba(190, 156, 109, 0.08);
+            border-left-color: var(--super-gold);
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: rgba(190, 156, 109, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .step-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05em;
+            color: rgba(255, 244, 228, 0.85);
+        }
+
+        .step-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            padding: 2px 6px;
+            background: rgba(190, 156, 109, 0.15);
+            border-radius: 3px;
+            color: var(--super-gold);
+        }
+
+        /* EXEMPLO PANEL */
+        .exemplo-intro {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.85);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .source-badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            padding: 4px 12px;
+            background: rgba(74, 222, 128, 0.15);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 4px;
+            color: var(--super-green);
+            margin-bottom: 8px;
+            margin-right: 6px;
+        }
+
+        /* Lang Toggle - EN/PT-BR */
+        .lang-toggle-container {
+            position: relative;
+        }
+
+        .lang-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 4px;
+            padding: 2px;
+            z-index: 10;
+        }
+
+        .lang-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            padding: 4px 10px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 244, 228, 0.4);
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn:hover {
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .lang-btn.active {
+            background: rgba(190, 156, 109, 0.2);
+            color: var(--super-gold);
+        }
+
+        .lang-content {
+            display: none;
+        }
+
+        .lang-content.active {
+            display: block;
+        }
+
+        .code-window {
+            background: linear-gradient(180deg, #0d0d15, #08080d);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 18px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(190, 156, 109, 0.1);
+        }
+
+        .code-dots { display: flex; gap: 6px; margin-right: 15px; }
+        .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-dot.red { background: #ff5f56; }
+        .code-dot.yellow { background: #ffbd2e; }
+        .code-dot.green { background: #27c93f; }
+
+        .code-filename {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: var(--super-gold);
+        }
+
+        .code-body {
+            padding: 20px 25px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            line-height: 1.45;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 52vh;
+            white-space: pre;
+        }
+
+        .syn-delim { color: rgba(190, 156, 109, 0.5); }
+        .syn-key { color: var(--super-gold); }
+        .syn-value { color: var(--super-green); }
+        .syn-heading { color: var(--super-cream); font-weight: 700; }
+        .syn-tag { color: var(--super-gold-bright); }
+        .syn-comment { color: rgba(255, 244, 228, 0.3); font-style: italic; }
+        .syn-rule { color: var(--super-gold); font-weight: 600; }
+
+        /* CARACTERÍSTICAS */
+        .caracteristica-item {
+            display: flex;
+            gap: 25px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .caracteristica-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.2), rgba(190, 156, 109, 0.05));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            flex-shrink: 0;
+        }
+
+        .caracteristica-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 8px;
+        }
+
+        .caracteristica-content p {
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        .caracteristica-content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            padding: 2px 6px;
+            background: rgba(190, 156, 109, 0.15);
+            border-radius: 3px;
+            color: var(--super-gold);
+        }
+
+        /* QUANDO CRIAR - Decision Grid */
+        .decision-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .decision-box {
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid;
+        }
+
+        .decision-box.yes {
+            background: rgba(74, 222, 128, 0.08);
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .decision-box.no {
+            background: rgba(190, 156, 109, 0.08);
+            border-color: rgba(190, 156, 109, 0.3);
+        }
+
+        .decision-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .decision-icon {
+            font-size: 1.5em;
+        }
+
+        .decision-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.9em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .decision-box.yes .decision-title { color: var(--super-green); }
+        .decision-box.no .decision-title { color: var(--super-gold); }
+
+        .decision-list {
+            list-style: none;
+        }
+
+        .decision-list li {
+            padding: 8px 0;
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .decision-list li:last-child { border-bottom: none; }
+
+        .decision-list li::before {
+            content: '•';
+            color: var(--super-gold);
+            font-weight: bold;
+        }
+
+        .decision-box.yes .decision-list li::before { color: var(--super-green); }
+
+        /* TIPO CARD */
+        .tipo-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(190, 156, 109, 0.08));
+            border: 1px solid rgba(190, 156, 109, 0.25);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tipo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--super-gold), transparent);
+        }
+
+        .tipo-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .tipo-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(190, 156, 109, 0.15);
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+        }
+
+        .tipo-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .tipo-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .tipo-desc {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15em;
+            line-height: 1.6;
+            color: rgba(255, 244, 228, 0.85);
+            margin-bottom: 25px;
+        }
+
+        .tipo-specs {
+            display: flex;
+            gap: 25px;
+        }
+
+        .spec-group {
+            flex: 1;
+        }
+
+        .spec-label {
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.65em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(190, 156, 109, 0.6);
+            margin-bottom: 8px;
+        }
+
+        .spec-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-cream);
+        }
+
+        .spec-value .tool-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(190, 156, 109, 0.15);
+            border-radius: 4px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            color: var(--super-gold);
+        }
+
+        .spec-value .model-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(74, 222, 128, 0.15);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 4px;
+            color: var(--super-green);
+        }
+
+        /* TOOLS VISUAL */
+        .tools-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 22px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(190, 156, 109, 0.15);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .tool-item:hover {
+            background: rgba(190, 156, 109, 0.08);
+            border-color: rgba(190, 156, 109, 0.3);
+        }
+
+        .tool-icon-box {
+            width: 48px;
+            height: 48px;
+            background: rgba(190, 156, 109, 0.12);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            flex-shrink: 0;
+        }
+
+        .tool-info { flex: 1; }
+
+        .tool-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 4px;
+        }
+
+        .tool-desc {
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .tool-example {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+            color: rgba(255, 244, 228, 0.5);
+            flex-shrink: 0;
+        }
+
+        /* EMBED MODE */
+        body.embed-mode .container { grid-template-columns: 260px 1fr; }
+        body.embed-mode .explorer { height: 100%; }
+        body.embed-mode .content-area { height: 100%; }
+        body.embed-mode .main-title { font-size: 2.5em; }
+        body.embed-mode .conceito-text { font-size: 1.5em; }
+        body.embed-mode .quote-text { font-size: 1.35em; }
+        body.embed-mode .tipo-card { padding: 25px; }
+        body.embed-mode .tipo-name { font-size: 1.4em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="explorer">
+            <div class="explorer-header">
+                <div class="explorer-title">Anatomia do Sistema</div>
+                <div class="explorer-project">superjurista/</div>
+            </div>
+            <nav class="explorer-tree">
+                <div class="tree-item" data-type="root">
+                    <span class="tree-indent"></span>
+                    <span class="tree-chevron expanded">▶</span>
+                    <span class="tree-icon">📁</span>
+                    <span class="tree-label">.claude/</span>
+                </div>
+                <div class="tree-children expanded" id="claude-children">
+                    <div class="tree-item" data-folder="agents">
+                        <span class="tree-indent"></span><span class="tree-indent"></span>
+                        <span class="tree-chevron expanded">▶</span>
+                        <span class="tree-icon">📁</span>
+                        <span class="tree-label">agents/</span>
+                    </div>
+                    <div class="tree-children expanded" id="agents-children">
+                        <div class="tree-item" data-id="agents-conceito" data-parent="agents">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">conceito.md</span>
+                        </div>
+                        <div class="tree-item" data-id="agents-caracteristicas" data-parent="agents">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">caracteristicas.md</span>
+                        </div>
+                        <div class="tree-item" data-id="agents-tipos" data-parent="agents">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">tipos.md</span>
+                        </div>
+                        <div class="tree-item" data-id="agents-tools" data-parent="agents">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">tools.md</span>
+                        </div>
+                        <div class="tree-item" data-id="agents-quando" data-parent="agents">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">quando-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-id="agents-criar" data-parent="agents">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">como-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-id="agents-exemplos" data-parent="agents">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">exemplos.md</span>
+                        </div>
+                    </div>
+                    <div class="tree-item" data-folder="skills">
+                        <span class="tree-indent"></span><span class="tree-indent"></span>
+                        <span class="tree-chevron">▶</span>
+                        <span class="tree-icon">📁</span>
+                        <span class="tree-label">skills/</span>
+                    </div>
+                    <div class="tree-children" id="skills-children">
+                        <div class="tree-item" data-id="skills-conceito" data-parent="skills">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">conceito.md</span>
+                        </div>
+                        <div class="tree-item" data-id="skills-caracteristicas" data-parent="skills">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">caracteristicas.md</span>
+                        </div>
+                        <div class="tree-item" data-id="skills-quando" data-parent="skills">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">quando-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-id="skills-criar" data-parent="skills">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">como-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-id="skills-exemplos" data-parent="skills">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">exemplos.md</span>
+                        </div>
+                    </div>
+                    <div class="tree-item" data-folder="commands">
+                        <span class="tree-indent"></span><span class="tree-indent"></span>
+                        <span class="tree-chevron">▶</span>
+                        <span class="tree-icon">📁</span>
+                        <span class="tree-label">commands/</span>
+                    </div>
+                    <div class="tree-children" id="commands-children">
+                        <div class="tree-item" data-id="commands-conceito" data-parent="commands">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">conceito.md</span>
+                        </div>
+                        <div class="tree-item" data-id="commands-caracteristicas" data-parent="commands">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">caracteristicas.md</span>
+                        </div>
+                        <div class="tree-item" data-id="commands-quando" data-parent="commands">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">quando-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-id="commands-criar" data-parent="commands">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">como-criar.md</span>
+                        </div>
+                        <div class="tree-item" data-id="commands-exemplos" data-parent="commands">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">exemplos.md</span>
+                        </div>
+                    </div>
+                    <div class="tree-item" data-folder="mcps">
+                        <span class="tree-indent"></span><span class="tree-indent"></span>
+                        <span class="tree-chevron">▶</span>
+                        <span class="tree-icon">📁</span>
+                        <span class="tree-label">mcp-servers/</span>
+                    </div>
+                    <div class="tree-children" id="mcps-children">
+                        <div class="tree-item" data-id="mcps-conceito" data-parent="mcps">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">conceito.md</span>
+                        </div>
+                        <div class="tree-item" data-id="mcps-caracteristicas" data-parent="mcps">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">caracteristicas.md</span>
+                        </div>
+                        <div class="tree-item" data-id="mcps-quando" data-parent="mcps">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">quando-usar.md</span>
+                        </div>
+                        <div class="tree-item" data-id="mcps-criar" data-parent="mcps">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">como-configurar.md</span>
+                        </div>
+                        <div class="tree-item" data-id="mcps-exemplos" data-parent="mcps">
+                            <span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span>
+                            <span class="tree-chevron empty">▶</span>
+                            <span class="tree-icon">📄</span>
+                            <span class="tree-label">exemplos.md</span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="content-area">
+            <div class="content-header" id="content-header"></div>
+            <div class="content-body" id="content-body"></div>
+        </main>
+    </div>
+
+    <script>
+        (function() { try { if (window.self !== window.top) document.body.classList.add('embed-mode'); } catch (e) { document.body.classList.add('embed-mode'); } })();
+
+        const data = {
+            'agents-conceito': {
+                title: 'O que são <span class="gold">Agents</span>?',
+                breadcrumb: '.claude / agents / <span class="current">conceito.md</span>',
+                tabs: ['Visual', 'Citação', 'Insight'],
+                panels: {
+                    visual: '<div class="org-chart"><div class="org-node-main" data-org="main"><div class="org-node-title">agent.md</div></div><div class="org-connector-v"></div><div class="org-split"><div class="org-columns"><div class="org-branch"><div class="org-branch-line"></div><div class="org-cell" data-org="def"><div class="org-cell-icon">📄</div><div class="org-cell-title">Definição</div><div class="org-cell-text">Arquivos <strong>.md</strong> que definem <strong>especialistas</strong> do Claude para tarefas específicas.</div></div></div><div class="org-branch"><div class="org-branch-line"></div><div class="org-cell" data-org="ana"><div class="org-cell-icon">⚖️</div><div class="org-cell-title">Analogia</div><div class="org-cell-text">Como <strong>procuradores</strong> com poderes específicos em uma procuração.</div></div></div></div></div><div class="org-yaml-section"><div class="org-yaml-connector"></div><div class="org-yaml-cell" data-org="yaml"><div class="org-yaml-header"><div class="org-yaml-icon">📋</div><div class="org-yaml-title">YAML + Instruções</div></div><div class="org-yaml-content"><div class="org-yaml-line">O <code>YAML</code> no início é o cabeçalho que especifica os <strong>poderes</strong> (ferramentas, modelo).</div><div class="org-yaml-line">O restante são <strong>instruções em linguagem natural</strong>.</div></div></div></div><div class="org-hint">Clique nos elementos para destacar</div></div>',
+                    citacao: '<div class="quote-container"><div class="quote-text">"O agente por baixo é muito <span class="highlight">mais universal</span> do que pensávamos. A estrutura pode se tornar tão simples quanto <span class="highlight">bash e sistema de arquivos</span>."</div><div class="quote-author"><div class="author-avatar">🔷</div><div><div class="author-name">Barry Zhang</div><div class="author-role">Anthropic • AI Engineer Summit</div></div></div></div>',
+                    insight: '<div class="insight-container"><div class="insight-title">💡 Por que YAML no início?</div><div class="insight-text">Imagine um <strong>formulário no topo do documento</strong>: nome, modelo, ferramentas, cor. O sistema lê esse "formulário" ANTES de ler as instruções. Assim, sabe <strong>quem é</strong> o agent antes de saber <strong>o que fazer</strong>.<br><br><span style="font-family: JetBrains Mono, monospace; font-size: 0.8em; color: var(--super-gold);">📚 Docs: <a href="https://docs.anthropic.com/en/docs/claude-code/sub-agents" target="_blank" style="color: var(--super-gold); text-decoration: underline;">docs.anthropic.com/claude-code/sub-agents</a></span></div></div>'
+                }
+            },
+            'agents-criar': {
+                title: 'Como criar um <span class="gold">Agent</span>',
+                breadcrumb: '.claude / agents / <span class="current">como-criar.md</span>',
+                tabs: ['/agents', 'Manual', 'Escopos', 'Invocação'],
+                panels: {
+                    '/agents': '<div class="criar-intro">O comando <code>/agents</code> abre uma interface interativa para gerenciar agents.</div><div class="steps"><div class="step"><div class="step-num">1</div><div class="step-text">Digite <code>/agents</code> no Claude Code</div></div><div class="step"><div class="step-num">2</div><div class="step-text">Selecione <strong>"Create new agent"</strong></div></div><div class="step"><div class="step-num">3</div><div class="step-text">Escolha o escopo: <strong>Projeto</strong> ou <strong>Usuário</strong></div></div><div class="step"><div class="step-num">4</div><div class="step-text">Escolha: <strong>Generate with Claude</strong> (recomendado) ou Manual</div></div><div class="step"><div class="step-num">5</div><div class="step-text">Descreva o agent em linguagem natural</div></div><div class="step"><div class="step-num">6</div><div class="step-text">Selecione ferramentas, modelo e cor</div></div></div><div class="insight-container" style="margin-top:20px;"><div class="insight-title">💡 Dica</div><div class="insight-text">O <code>/agents</code> também lista, edita e deleta agents existentes. É a forma mais fácil de gerenciar.</div></div>',
+                    manual: '<div class="criar-intro">Você também pode criar manualmente: basta escrever um arquivo <code>.md</code> na pasta correta.</div><div class="command-box"><div class="command-label">Arquivo</div><div class="command-line"><span class="cmd">.claude/agents/relator-marmelstein.md</span></div></div><div class="steps"><div class="step"><div class="step-num">1</div><div class="step-text">Crie o arquivo em <code>.claude/agents/</code></div></div><div class="step"><div class="step-num">2</div><div class="step-text">Adicione o frontmatter YAML (name, description, tools, model)</div></div><div class="step"><div class="step-num">3</div><div class="step-text">Escreva as instruções em Markdown ou XML</div></div><div class="step"><div class="step-num">4</div><div class="step-text">Salve — o agent fica disponível imediatamente</div></div></div>',
+                    escopos: '<div class="criar-intro">Agents podem morar em lugares diferentes. Quando há <strong>nomes iguais</strong>, o mais próximo do projeto vence.</div><div class="caracteristica-item"><div class="caracteristica-icon">📁</div><div class="caracteristica-content"><h3>Projeto — .claude/agents/</h3><p>Disponível <strong>só neste projeto</strong>. Versionado com Git. Ideal para agents específicos do contexto.</p><p style="margin-top:8px;font-size:0.85em;color:var(--super-gold);">🏆 Prioridade ALTA — vence se houver conflito</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">👤</div><div class="caracteristica-content"><h3>Usuário — ~/.claude/agents/</h3><p>Disponível em <strong>todos os seus projetos</strong>. Ideal para agents pessoais que você usa sempre.</p><p style="margin-top:8px;font-size:0.85em;color:rgba(255,244,228,0.5);">Prioridade MÉDIA</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">🔌</div><div class="caracteristica-content"><h3>Plugin — pasta do plugin</h3><p>Vem com plugins instalados (ex: feature-dev traz code-architect, code-explorer, code-reviewer).</p><p style="margin-top:8px;font-size:0.85em;color:rgba(255,244,228,0.5);">Prioridade BAIXA — pode ser sobrescrito</p></div></div>',
+                    invocacao: '<div class="criar-intro">Após criar o agent, há duas formas de usá-lo:</div><div class="caracteristica-item"><div class="caracteristica-icon">🤖</div><div class="caracteristica-content"><h3>Automática</h3><p>O Claude <strong>detecta automaticamente</strong> quando usar o agent, baseado no campo <code>description</code>. Basta pedir a tarefa naturalmente.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">🎯</div><div class="caracteristica-content"><h3>Explícita via Task tool</h3><p>Invoque diretamente usando o <code>subagent_type</code>:</p><div class="command-box" style="margin-top:12px"><div class="command-line"><span class="syn-key">Task</span>(prompt=<span class="syn-value">"analise este código"</span>,<br>     subagent_type=<span class="syn-value">"relator-marmelstein"</span>)</div></div></div></div>'
+                }
+            },
+            'agents-caracteristicas': {
+                title: '<span class="gold">Características</span> dos Agents',
+                breadcrumb: '.claude / agents / <span class="current">caracteristicas.md</span>',
+                tabs: ['Contexto', 'Ciclo de Vida', 'Restrições'],
+                panels: {
+                    contexto: '<div class="caracteristica-item"><div class="caracteristica-icon">🔒</div><div class="caracteristica-content"><h3>Contexto Isolado</h3><p>Subagentes <strong>não veem a conversa do pai</strong>. Recebem apenas o prompt específico. Isso garante foco e evita vazamento de informações sensíveis.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">📦</div><div class="caracteristica-content"><h3>Briefing Específico</h3><p>Cada agent recebe <strong>apenas o que precisa</strong> para executar sua tarefa. Como um assessor que recebe instruções claras sem contexto desnecessário.</p></div></div>',
+                    ciclo: '<div class="caracteristica-item"><div class="caracteristica-icon">🌱</div><div class="caracteristica-content"><h3>Nasce sob Demanda</h3><p>Agents são criados via <code>Task tool</code> quando necessário. Não existem permanentemente — são instanciados para tarefas específicas.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">⚡</div><div class="caracteristica-content"><h3>Executa e Retorna</h3><p>Processa a tarefa, produz resultado e <strong>devolve ao pai</strong>. Não mantém estado entre execuções.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">📦</div><div class="caracteristica-content"><h3>Resultado Compactado</h3><p>O resultado é <strong>automaticamente resumido</strong> (~1-2k tokens) antes de retornar ao agente pai. Respostas longas são condensadas.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">💨</div><div class="caracteristica-content"><h3>Descartado ao Final</h3><p>Após retornar resultado, o agent é encerrado. Memória liberada. <strong>Sem persistência</strong>.</p></div></div>',
+                    restricoes: '<div class="caracteristica-item"><div class="caracteristica-icon">🚫</div><div class="caracteristica-content"><h3>Sem Subagentes Aninhados</h3><p>Subagentes <strong>não podem criar seus próprios subagentes</strong>. Máximo 1 nível de profundidade. Isso evita complexidade exponencial.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">🔇</div><div class="caracteristica-content"><h3>Sem Acesso ao Usuário</h3><p>Subagentes não falam diretamente com o usuário. Toda comunicação passa pelo <strong>agente orquestrador</strong>.</p></div></div>'
+                }
+            },
+            'agents-quando': {
+                title: 'Quando criar um <span class="gold">Agent</span>?',
+                breadcrumb: '.claude / agents / <span class="current">quando-criar.md</span>',
+                tabs: ['Decisão', 'Custo'],
+                panels: {
+                    decisao: '<div class="decision-grid"><div class="decision-box yes"><div class="decision-header"><span class="decision-icon">✓</span><span class="decision-title">Crie um Agent quando</span></div><ul class="decision-list"><li>Tarefa precisa de especialização diferente</li><li>Trabalho pode ser paralelizado</li><li>Contexto deve ser isolado (segurança)</li><li>Tarefa é independente e auto-contida</li><li>Precisa de modelo diferente (ex: Haiku para velocidade)</li></ul></div><div class="decision-box no"><div class="decision-header"><span class="decision-icon">✗</span><span class="decision-title">NÃO crie quando</span></div><ul class="decision-list"><li>Tarefa depende de contexto anterior</li><li>Resultado precisa ser iterado várias vezes</li><li>Comunicação direta com usuário é necessária</li><li>Tarefa é simples e rápida</li><li>Overhead de criação não compensa</li></ul></div></div>',
+                    custo: '<div class="insight-container" style="background: rgba(255, 100, 100, 0.08); border-color: rgba(255, 100, 100, 0.3);"><div class="insight-title" style="color: #ff6b6b;">⚠️ Custo de Tokens</div><div class="insight-text">Cada subagente consome sua <strong>própria quota de tokens</strong>. O contexto não é compartilhado — cada um recebe instruções completas.<br><br><strong>Exemplo prático:</strong> Um pipeline com 5 subagentes pode consumir <strong>5× mais tokens</strong> que uma execução sequencial.<br><br>Use <code>model: haiku</code> para tarefas simples — é ~10× mais barato que Sonnet.</div></div>'
+                }
+            },
+            'agents-tipos': {
+                title: 'Tipos de <span class="gold">Agents</span>',
+                breadcrumb: '.claude / agents / <span class="current">tipos.md</span>',
+                tabs: ['Built-in', 'Explore', 'Plan', 'general-purpose', 'Bash', 'claude-code-guide'],
+                panels: {
+                    'built-in': '<div class="insight-container"><div class="insight-title">🔧 Tipos Built-in do Claude Code</div><div class="insight-text">Estes são os <strong>5 tipos nativos</strong> disponíveis via <code>subagent_type</code> na Task tool.<br><br>Além deles, você pode criar <strong>agents customizados</strong> em <code>.claude/agents/</code> ou usar <strong>plugins</strong> como feature-dev (code-architect, code-explorer, code-reviewer).</div></div><div class="insight-container" style="margin-top:20px;"><div class="insight-title">💡 Como são ativados?</div><div class="insight-text"><strong>Automático:</strong> O Claude detecta a tarefa e escolhe o tipo adequado. Ex: perguntas sobre Claude Code ativam <code>claude-code-guide</code>.<br><br><strong>Explícito:</strong> Via Task tool com <code>subagent_type</code>:<br><code style="display:block;margin-top:8px;padding:8px 12px;background:rgba(0,0,0,0.3);border-radius:4px;">Task(prompt="...", subagent_type="Explore")</code></div></div>',
+                    explore: '<div class="tipo-card"><div class="tipo-header"><div class="tipo-icon">🔍</div><div><div class="tipo-name">Explore</div><div class="tipo-subtitle">Especialista em Busca</div></div></div><div class="tipo-desc">Busca e explora o codebase. <strong>Read-only</strong> — nunca modifica arquivos. Suporta níveis: quick, medium, very thorough.</div><div class="tipo-specs"><div class="spec-group"><div class="spec-label">Ferramentas</div><div class="spec-value"><span class="tool-tag">Glob</span><span class="tool-tag">Grep</span><span class="tool-tag">Read</span><span class="tool-tag">LS</span></div></div><div class="spec-group"><div class="spec-label">Modelo</div><div class="spec-value"><span class="model-tag">Haiku</span> <span style="font-size:0.75em;color:rgba(255,244,228,0.5)">~80% mais barato</span></div></div></div></div>',
+                    plan: '<div class="tipo-card"><div class="tipo-header"><div class="tipo-icon">📐</div><div><div class="tipo-name">Plan</div><div class="tipo-subtitle">Arquiteto de Soluções</div></div></div><div class="tipo-desc">Pesquisa para planejamento arquitetural. <strong>Read-only</strong> — não cria subagentes (evita nesting infinito). Usado no modo <code>/plan</code>.</div><div class="tipo-specs"><div class="spec-group"><div class="spec-label">Ferramentas</div><div class="spec-value"><span class="tool-tag">Glob</span><span class="tool-tag">Grep</span><span class="tool-tag">Read</span></div></div><div class="spec-group"><div class="spec-label">Modelo</div><div class="spec-value"><span class="model-tag">Herda do pai</span></div></div></div></div>',
+                    'general-purpose': '<div class="tipo-card"><div class="tipo-header"><div class="tipo-icon">⚡</div><div><div class="tipo-name">general-purpose</div><div class="tipo-subtitle">Propósito Geral</div></div></div><div class="tipo-desc">Tarefas complexas multi-passo. <strong>Acesso total</strong> — pode ler, escrever, editar e executar. O mais versátil (e mais caro).</div><div class="tipo-specs"><div class="spec-group"><div class="spec-label">Ferramentas</div><div class="spec-value"><span class="tool-tag">TODAS</span></div></div><div class="spec-group"><div class="spec-label">Modelo</div><div class="spec-value"><span class="model-tag">Herda do pai</span></div></div></div></div>',
+                    bash: '<div class="tipo-card"><div class="tipo-header"><div class="tipo-icon">💻</div><div><div class="tipo-name">Bash</div><div class="tipo-subtitle">Executor de Terminal</div></div></div><div class="tipo-desc">Comandos de terminal isolados. <strong>Apenas Bash</strong> — para git, npm, builds e scripts.</div><div class="tipo-specs"><div class="spec-group"><div class="spec-label">Ferramentas</div><div class="spec-value"><span class="tool-tag">Bash</span></div></div><div class="spec-group"><div class="spec-label">Modelo</div><div class="spec-value"><span class="model-tag">Herda do pai</span></div></div></div></div>',
+                    'claude-code-guide': '<div class="tipo-card"><div class="tipo-header"><div class="tipo-icon">📚</div><div><div class="tipo-name">claude-code-guide</div><div class="tipo-subtitle">Guia do Claude Code</div></div></div><div class="tipo-desc">Responde perguntas sobre Claude Code, MCP, hooks, skills e SDK. <strong>Especialista em documentação</strong>.</div><div class="tipo-specs"><div class="spec-group"><div class="spec-label">Ferramentas</div><div class="spec-value"><span class="tool-tag">Read</span><span class="tool-tag">Glob</span><span class="tool-tag">Grep</span><span class="tool-tag">WebFetch</span><span class="tool-tag">WebSearch</span></div></div><div class="spec-group"><div class="spec-label">Modelo</div><div class="spec-value"><span class="model-tag">Haiku</span> <span style="font-size:0.75em;color:rgba(255,244,228,0.5)">econômico</span></div></div></div></div>'
+                }
+            },
+            'agents-tools': {
+                title: 'Ferramentas dos <span class="gold">Agents</span>',
+                breadcrumb: '.claude / agents / <span class="current">tools.md</span>',
+                tabs: ['Leitura', 'Escrita', 'Execução', 'Web', 'Interação'],
+                panels: {
+                    leitura: '<div class="tools-grid"><div class="tool-item"><div class="tool-icon-box">📖</div><div class="tool-info"><div class="tool-name">Read</div><div class="tool-desc">Lê conteúdo de arquivos — código, configs, documentação</div></div><div class="tool-example">Read("src/app.ts")</div></div><div class="tool-item"><div class="tool-icon-box">🔎</div><div class="tool-info"><div class="tool-name">Glob</div><div class="tool-desc">Busca arquivos por padrão — encontra por nome ou extensão</div></div><div class="tool-example">Glob("**/*.py")</div></div><div class="tool-item"><div class="tool-icon-box">🎯</div><div class="tool-info"><div class="tool-name">Grep</div><div class="tool-desc">Busca conteúdo em arquivos — encontra onde algo é usado</div></div><div class="tool-example">Grep("function")</div></div></div>',
+                    escrita: '<div class="tools-grid"><div class="tool-item"><div class="tool-icon-box">📝</div><div class="tool-info"><div class="tool-name">Write</div><div class="tool-desc">Cria ou sobrescreve arquivo inteiro — para arquivos novos</div></div><div class="tool-example">Write("config.json")</div></div><div class="tool-item"><div class="tool-icon-box">✂️</div><div class="tool-info"><div class="tool-name">Edit</div><div class="tool-desc">Modifica trecho específico — cirurgias precisas no código</div></div><div class="tool-example">Edit(old, new)</div></div><div class="tool-item"><div class="tool-icon-box">📓</div><div class="tool-info"><div class="tool-name">NotebookEdit</div><div class="tool-desc">Edita Jupyter notebooks — manipula células de código e markdown</div></div><div class="tool-example">NotebookEdit(...)</div></div></div>',
+                    execucao: '<div class="tools-grid"><div class="tool-item"><div class="tool-icon-box">💻</div><div class="tool-info"><div class="tool-name">Bash</div><div class="tool-desc">Executa comandos no terminal — git, npm, pytest, builds</div></div><div class="tool-example">Bash("npm test")</div></div><div class="tool-item"><div class="tool-icon-box">🚀</div><div class="tool-info"><div class="tool-name">Task</div><div class="tool-desc">Cria subagente para tarefa — delega trabalho paralelo</div></div><div class="tool-example">Task(prompt, type)</div></div></div>',
+                    web: '<div class="tools-grid"><div class="tool-item"><div class="tool-icon-box">🌐</div><div class="tool-info"><div class="tool-name">WebFetch</div><div class="tool-desc">Busca conteúdo de URLs — lê páginas web e APIs públicas</div></div><div class="tool-example">WebFetch(url)</div></div><div class="tool-item"><div class="tool-icon-box">🔍</div><div class="tool-info"><div class="tool-name">WebSearch</div><div class="tool-desc">Pesquisa na internet — encontra informações atualizadas</div></div><div class="tool-example">WebSearch("query")</div></div></div>',
+                    interacao: '<div class="tools-grid"><div class="tool-item"><div class="tool-icon-box">💬</div><div class="tool-info"><div class="tool-name">AskUserQuestion</div><div class="tool-desc">Pergunta ao usuário — coleta decisões e preferências</div></div><div class="tool-example">AskUserQuestion(...)</div></div></div>'
+                }
+            },
+            'agents-exemplos': {
+                title: 'Exemplos de <span class="gold">Agents</span>',
+                breadcrumb: '.claude / agents / <span class="current">exemplos.md</span>',
+                tabs: ['code-explorer', 'code-architect', 'code-reviewer'],
+                panels: {
+                    'code-explorer': '<div class="lang-toggle-container"><div class="lang-toggle"><button class="lang-btn active" data-lang="en">EN</button><button class="lang-btn" data-lang="pt">PT-BR</button></div><div class="lang-content active" data-lang="en"><div class="exemplo-intro"><span class="source-badge">Fonte: plugin feature-dev (Anthropic)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">code-explorer.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">code-explorer</span>\n<span class="syn-key">description:</span> <span class="syn-value">Deeply analyzes existing codebase features</span>\n<span class="syn-key">tools:</span> <span class="syn-value">Glob, Grep, LS, Read, NotebookRead, WebFetch,</span>\n       <span class="syn-value">TodoWrite, WebSearch, KillShell, BashOutput</span>\n<span class="syn-key">model:</span> <span class="syn-value">sonnet</span>\n<span class="syn-key">color:</span> <span class="syn-value">yellow</span>\n<span class="syn-delim">---</span>\n\nYou are an expert code analyst specializing in tracing\nand understanding feature implementations across codebases.\n\n<span class="syn-heading">## Core Mission</span>\nProvide complete understanding of how a specific feature\nworks by tracing from entry points to data storage.\n\n<span class="syn-heading">## Analysis Approach</span>\n\n<span class="syn-rule">**1. Feature Discovery**</span>\n- Find entry points (APIs, UI components, CLI commands)\n- Locate core implementation files\n- Map feature boundaries and configuration\n\n<span class="syn-rule">**2. Code Flow Tracing**</span>\n- Follow call chains from entry to output\n- Trace data transformations at each step\n- Identify all dependencies and integrations\n- Document state changes and side effects\n\n<span class="syn-rule">**3. Architecture Analysis**</span>\n- Map abstraction layers\n- Identify design patterns\n- Document interfaces between components\n\n<span class="syn-heading">## Output Guidance</span>\n- Entry points with <span class="syn-value">file:line</span> references\n- Step-by-step execution flow\n- Key components and responsibilities\n- List of essential files for understanding</div></div></div><div class="lang-content" data-lang="pt"><div class="exemplo-intro"><span class="source-badge">Tradução: Haiku</span><span class="source-badge">Fonte: plugin feature-dev (Anthropic)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">explorador-codigo.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">explorador-codigo</span>\n<span class="syn-key">description:</span> <span class="syn-value">Analisa profundamente funcionalidades existentes</span>\n              <span class="syn-value">no codebase através de rastreamento de caminhos</span>\n<span class="syn-key">tools:</span> <span class="syn-value">Glob, Grep, LS, Read, NotebookRead, WebFetch,</span>\n       <span class="syn-value">TodoWrite, WebSearch, KillShell, BashOutput</span>\n<span class="syn-key">model:</span> <span class="syn-value">sonnet</span>\n<span class="syn-key">color:</span> <span class="syn-value">yellow</span>\n<span class="syn-delim">---</span>\n\nVocê é um especialista em análise de código especializado\nem rastreamento e compreensão de implementações.\n\n<span class="syn-heading">## Missão Central</span>\nFornecer compreensão completa de como uma funcionalidade\nespecífica funciona rastreando desde pontos de entrada\naté armazenamento de dados.\n\n<span class="syn-heading">## Abordagem de Análise</span>\n\n<span class="syn-rule">**1. Descoberta de Funcionalidade**</span>\n- Encontrar pontos de entrada (APIs, UI, comandos CLI)\n- Localizar arquivos de implementação central\n- Mapear limites de funcionalidade e configuração\n\n<span class="syn-rule">**2. Rastreamento de Fluxo**</span>\n- Seguir cadeias de chamadas de entrada até saída\n- Rastrear transformações de dados em cada etapa\n- Identificar dependências e integrações\n- Documentar mudanças de estado e efeitos colaterais\n\n<span class="syn-rule">**3. Análise de Arquitetura**</span>\n- Mapear camadas de abstração\n- Identificar padrões de design\n- Documentar interfaces entre componentes\n\n<span class="syn-heading">## Orientação de Saída</span>\n- Pontos de entrada com referências <span class="syn-value">arquivo:linha</span>\n- Fluxo de execução passo-a-passo\n- Componentes-chave e responsabilidades\n- Lista de arquivos essenciais para compreensão</div></div></div></div>',
+                    'code-architect': '<div class="lang-toggle-container"><div class="lang-toggle"><button class="lang-btn active" data-lang="en">EN</button><button class="lang-btn" data-lang="pt">PT-BR</button></div><div class="lang-content active" data-lang="en"><div class="exemplo-intro"><span class="source-badge">Fonte: plugin feature-dev (Anthropic)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">code-architect.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">code-architect</span>\n<span class="syn-key">description:</span> <span class="syn-value">Designs feature architectures by analyzing</span>\n              <span class="syn-value">existing codebase patterns and conventions</span>\n<span class="syn-key">tools:</span> <span class="syn-value">Glob, Grep, LS, Read, NotebookRead, WebFetch,</span>\n       <span class="syn-value">TodoWrite, WebSearch, KillShell, BashOutput</span>\n<span class="syn-key">model:</span> <span class="syn-value">sonnet</span>\n<span class="syn-key">color:</span> <span class="syn-value">green</span>\n<span class="syn-delim">---</span>\n\nYou are a senior software architect who delivers\ncomprehensive, actionable architecture blueprints.\n\n<span class="syn-heading">## Core Process</span>\n\n<span class="syn-rule">**1. Codebase Pattern Analysis**</span>\nExtract existing patterns, conventions, and architectural\ndecisions. Identify tech stack, module boundaries,\nabstraction layers, and CLAUDE.md guidelines.\n\n<span class="syn-rule">**2. Architecture Design**</span>\nBased on patterns found, design the complete feature.\n<span class="syn-tag">Make decisive choices - pick one approach and commit.</span>\nEnsure seamless integration with existing code.\n\n<span class="syn-rule">**3. Complete Implementation Blueprint**</span>\nSpecify every file to create or modify, component\nresponsibilities, integration points, and data flow.\n\n<span class="syn-heading">## Output Guidance</span>\n- <span class="syn-value">Patterns & Conventions</span> with file:line refs\n- <span class="syn-value">Architecture Decision</span> with rationale\n- <span class="syn-value">Component Design</span> with paths and interfaces\n- <span class="syn-value">Build Sequence</span> as phased checklist</div></div></div><div class="lang-content" data-lang="pt"><div class="exemplo-intro"><span class="source-badge">Tradução: Haiku</span><span class="source-badge">Fonte: plugin feature-dev (Anthropic)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">arquiteto-codigo.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">arquiteto-codigo</span>\n<span class="syn-key">description:</span> <span class="syn-value">Projeta arquiteturas de funcionalidades</span>\n              <span class="syn-value">analisando padrões e convenções existentes</span>\n<span class="syn-key">tools:</span> <span class="syn-value">Glob, Grep, LS, Read, NotebookRead, WebFetch,</span>\n       <span class="syn-value">TodoWrite, WebSearch, KillShell, BashOutput</span>\n<span class="syn-key">model:</span> <span class="syn-value">sonnet</span>\n<span class="syn-key">color:</span> <span class="syn-value">green</span>\n<span class="syn-delim">---</span>\n\nVocê é um arquiteto de software sênior que entrega\nblueprints de arquitetura abrangentes e acionáveis.\n\n<span class="syn-heading">## Processo Central</span>\n\n<span class="syn-rule">**1. Análise de Padrões do Codebase**</span>\nExtraia padrões existentes, convenções e decisões\narquiteturais. Identifique stack de tecnologia,\nlimites de módulos e diretrizes CLAUDE.md.\n\n<span class="syn-rule">**2. Design de Arquitetura**</span>\nCom base nos padrões encontrados, projete a arquitetura.\n<span class="syn-tag">Tome decisões decisivas - escolha uma abordagem.</span>\nGaranta integração perfeita com código existente.\n\n<span class="syn-rule">**3. Blueprint de Implementação Completo**</span>\nEspecifique cada arquivo a criar ou modificar,\nresponsabilidades de componentes e fluxo de dados.\n\n<span class="syn-heading">## Orientação de Saída</span>\n- <span class="syn-value">Padrões Encontrados</span> com referências arquivo:linha\n- <span class="syn-value">Decisão Arquitetural</span> com justificativa\n- <span class="syn-value">Design de Componentes</span> com caminhos e interfaces\n- <span class="syn-value">Sequência de Construção</span> como checklist</div></div></div></div>',
+                    'code-reviewer': '<div class="lang-toggle-container"><div class="lang-toggle"><button class="lang-btn active" data-lang="en">EN</button><button class="lang-btn" data-lang="pt">PT-BR</button></div><div class="lang-content active" data-lang="en"><div class="exemplo-intro"><span class="source-badge">Fonte: plugin feature-dev (Anthropic)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">code-reviewer.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">code-reviewer</span>\n<span class="syn-key">description:</span> <span class="syn-value">Reviews code for bugs, logic errors,</span>\n              <span class="syn-value">security vulnerabilities, code quality issues</span>\n<span class="syn-key">tools:</span> <span class="syn-value">Glob, Grep, LS, Read, NotebookRead, WebFetch,</span>\n       <span class="syn-value">TodoWrite, WebSearch, KillShell, BashOutput</span>\n<span class="syn-key">model:</span> <span class="syn-value">sonnet</span>\n<span class="syn-key">color:</span> <span class="syn-value">red</span>\n<span class="syn-delim">---</span>\n\nYou are an expert code reviewer specializing in modern\nsoftware development across multiple languages.\n\n<span class="syn-heading">## Review Scope</span>\nBy default, review unstaged changes from <span class="syn-value">`git diff`</span>.\n\n<span class="syn-heading">## Core Review Responsibilities</span>\n\n<span class="syn-rule">**Project Guidelines Compliance**</span>\nVerify adherence to CLAUDE.md rules: import patterns,\nframework conventions, error handling, testing.\n\n<span class="syn-rule">**Bug Detection**</span>\nLogic errors, null handling, race conditions,\nmemory leaks, security vulnerabilities.\n\n<span class="syn-heading">## Confidence Scoring (0-100)</span>\n<span class="syn-comment">- 0:   False positive</span>\n<span class="syn-comment">- 25:  Might be issue</span>\n<span class="syn-comment">- 50:  Real but minor</span>\n<span class="syn-comment">- 75:  Verified important</span>\n<span class="syn-comment">- 100: Absolutely certain</span>\n\n<span class="syn-tag">**Only report issues with confidence ≥ 80**</span>\nFocus on issues that truly matter.</div></div></div><div class="lang-content" data-lang="pt"><div class="exemplo-intro"><span class="source-badge">Tradução: Haiku</span><span class="source-badge">Fonte: plugin feature-dev (Anthropic)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">revisor-codigo.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">revisor-codigo</span>\n<span class="syn-key">description:</span> <span class="syn-value">Revisa código quanto a bugs, erros de lógica,</span>\n              <span class="syn-value">vulnerabilidades e problemas de qualidade</span>\n<span class="syn-key">tools:</span> <span class="syn-value">Glob, Grep, LS, Read, NotebookRead, WebFetch,</span>\n       <span class="syn-value">TodoWrite, WebSearch, KillShell, BashOutput</span>\n<span class="syn-key">model:</span> <span class="syn-value">sonnet</span>\n<span class="syn-key">color:</span> <span class="syn-value">red</span>\n<span class="syn-delim">---</span>\n\nVocê é um especialista em revisão de código especializado\nem desenvolvimento de software moderno.\n\n<span class="syn-heading">## Escopo de Revisão</span>\nPor padrão, revise mudanças de <span class="syn-value">`git diff`</span>.\n\n<span class="syn-heading">## Responsabilidades Centrais</span>\n\n<span class="syn-rule">**Conformidade com Diretrizes**</span>\nVerifique adesão às regras do CLAUDE.md: padrões de\nimportação, convenções, tratamento de erros, testes.\n\n<span class="syn-rule">**Detecção de Bugs**</span>\nErros de lógica, tratamento de null, race conditions,\nvazamentos de memória, vulnerabilidades de segurança.\n\n<span class="syn-heading">## Pontuação de Confiança (0-100)</span>\n<span class="syn-comment">- 0:   Falso positivo</span>\n<span class="syn-comment">- 25:  Talvez seja problema</span>\n<span class="syn-comment">- 50:  Real mas menor</span>\n<span class="syn-comment">- 75:  Verificado importante</span>\n<span class="syn-comment">- 100: Absolutamente certo</span>\n\n<span class="syn-tag">**Relate apenas problemas com confiança ≥ 80**</span>\nFoque em problemas que realmente importam.</div></div></div></div>'
+                }
+            },
+            'skills-conceito': {
+                title: 'O que são <span class="gold">Skills</span>?',
+                breadcrumb: '.claude / skills / <span class="current">conceito.md</span>',
+                tabs: ['Visual', 'Citação', 'Insight'],
+                panels: {
+                    visual: '<div class="org-chart"><div class="org-node-main" data-org="main"><div class="org-node-title">skill/</div></div><div class="org-connector-v"></div><div class="org-split"><div class="org-columns"><div class="org-branch"><div class="org-branch-line"></div><div class="org-cell" data-org="def"><div class="org-cell-icon">📁</div><div class="org-cell-title">Definição</div><div class="org-cell-text"><strong>Pastas</strong> com um arquivo <strong>SKILL.md</strong> como ponto de entrada, mais recursos auxiliares.</div></div></div><div class="org-branch"><div class="org-branch-line"></div><div class="org-cell" data-org="ana"><div class="org-cell-icon">⚖️</div><div class="org-cell-title">Analogia</div><div class="org-cell-text">Como um <strong>manual de redação</strong> jurídica: templates, modelos e referências organizados.</div></div></div></div></div><div class="org-yaml-section"><div class="org-yaml-connector"></div><div class="org-yaml-cell" data-org="estrutura"><div class="org-yaml-header"><div class="org-yaml-icon">📂</div><div class="org-yaml-title">Estrutura da Pasta</div></div><div class="org-yaml-content"><div class="org-yaml-line"><code>SKILL.md</code> — ponto de entrada com instruções principais</div><div class="org-yaml-line"><code>templates/</code>, <code>scripts/</code>, <code>references/</code> — recursos auxiliares</div></div></div></div><div class="org-hint">Clique nos elementos para destacar</div></div>',
+                    citacao: '<div class="quote-container"><div class="quote-text">"Skills são <span class="highlight">coleções organizadas de arquivos</span> que empacotam conhecimento procedural composável. Em outras palavras, <span class="highlight">são pastas</span>. Essa simplicidade é deliberada."</div><div class="quote-author"><div class="author-avatar">🔷</div><div><div class="author-name">Barry Zhang</div><div class="author-role">Anthropic • AI Engineer Summit</div></div></div></div>',
+                    insight: '<div class="insight-container"><div class="insight-title">💡 Diferença para Agents</div><div class="insight-text"><strong>Agents</strong> = arquivos únicos (<code>.md</code>) — como um <strong>procurador</strong> com poderes específicos<br><br><strong>Skills</strong> = pastas com múltiplos arquivos — como um <strong>manual de redação</strong> com templates e modelos<br><br>O agent é o especialista. A skill é a biblioteca de conhecimento que ele consulta.</div></div>'
+                }
+            },
+            'skills-caracteristicas': {
+                title: '<span class="gold">Características</span> das Skills',
+                breadcrumb: '.claude / skills / <span class="current">caracteristicas.md</span>',
+                tabs: ['Estrutura', 'Carregamento', 'Invocação', 'Escopos', 'Subagentes'],
+                panels: {
+                    estrutura: '<div class="caracteristica-item"><div class="caracteristica-icon">📂</div><div class="caracteristica-content"><h3>Pasta com SKILL.md</h3><p>Diferente de agents (arquivo único), skills são <strong>pastas inteiras</strong>. O <code>SKILL.md</code> é o ponto de entrada obrigatório.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">📚</div><div class="caracteristica-content"><h3>Recursos Auxiliares</h3><p>Pode conter <code>templates/</code>, <code>scripts/</code>, <code>references/</code>, <code>examples/</code>. Esses recursos são <strong>carregados sob demanda</strong>.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">📏</div><div class="caracteristica-content"><h3>Tamanho Recomendado</h3><p>O <code>SKILL.md</code> deve ter <strong>menos de 500 linhas</strong> para manter boa performance. Detalhes extensos devem ir para arquivos em <code>references/</code>.</p></div></div>',
+                    carregamento: '<div class="criar-intro">O Claude carrega skills em <strong>3 níveis</strong> para economizar memória:</div><div class="caracteristica-item"><div class="caracteristica-icon">1️⃣</div><div class="caracteristica-content"><h3>Nível 1: Nome e Descrição</h3><p>Claude sempre sabe que a skill existe. Usa a <code>description</code> para decidir quando ativar.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">2️⃣</div><div class="caracteristica-content"><h3>Nível 2: SKILL.md Completo</h3><p>Quando a skill é ativada, Claude lê todo o arquivo principal com as instruções.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">3️⃣</div><div class="caracteristica-content"><h3>Nível 3: Arquivos de Suporte</h3><p>Templates e referências são lidos <strong>apenas quando necessário</strong>. Economiza contexto.</p></div></div>',
+                    invocacao: '<div class="criar-intro">Há duas formas de ativar uma skill:</div><div class="caracteristica-item"><div class="caracteristica-icon">🤖</div><div class="caracteristica-content"><h3>Automática (Claude decide)</h3><p>Claude lê a <code>description</code> de todas as skills. Se combina com sua pergunta, <strong>ativa sozinho</strong>.</p><p style="margin-top:8px;font-size:0.9em;color:rgba(255,244,228,0.7);">Ex: Você pede "crie uma apresentação" → Claude ativa a skill de slides.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">👤</div><div class="caracteristica-content"><h3>Manual (você decide)</h3><p>Digite <code>/nome-da-skill</code> no início da mensagem. A skill aparece no menu <code>/</code> com autocomplete.</p><p style="margin-top:8px;font-size:0.9em;color:rgba(255,244,228,0.7);">Ex: <code>/slides-web</code> ativa diretamente a skill de slides.</p></div></div>',
+                    escopos: '<div class="criar-intro">Skills podem morar em lugares diferentes. Quando há <strong>nomes iguais</strong>, o mais próximo do projeto vence.</div><div class="caracteristica-item"><div class="caracteristica-icon">📁</div><div class="caracteristica-content"><h3>Projeto — .claude/skills/</h3><p>Disponível <strong>só neste projeto</strong>. Ideal para skills específicas do contexto de trabalho.</p><p style="margin-top:8px;font-size:0.85em;color:var(--super-gold);">🏆 Prioridade ALTA — vence se houver conflito</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">👤</div><div class="caracteristica-content"><h3>Usuário — ~/.claude/skills/</h3><p>Disponível em <strong>todos os seus projetos</strong>. Ideal para skills pessoais que você usa sempre.</p><p style="margin-top:8px;font-size:0.85em;color:rgba(255,244,228,0.5);">Prioridade MÉDIA</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">🔌</div><div class="caracteristica-content"><h3>Plugin — pacotes instalados</h3><p>Plugins como <code>feature-dev</code> e <code>superpowers</code> trazem skills, agents e configurações prontas.</p><p style="margin-top:8px;font-size:0.85em;color:rgba(255,244,228,0.5);">Prioridade BAIXA — pode ser sobrescrito</p></div></div>',
+                    subagentes: '<div class="criar-intro"><strong>Skills são recursos do agente principal.</strong> Subagentes não herdam skills automaticamente.</div><div class="caracteristica-item"><div class="caracteristica-icon">👨‍💼</div><div class="caracteristica-content"><h3>Agente Principal (Orquestrador)</h3><p>Tem <strong>acesso livre</strong> à biblioteca de skills. Descobre automaticamente, ativa por conta própria ou por solicitação explícita do usuário.</p><p style="margin-top:8px;font-size:0.9em;color:var(--super-gold);">Como o advogado titular que conhece todo o acervo do escritório.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">👨‍🎓</div><div class="caracteristica-content"><h3>Subagentes (Delegados)</h3><p><strong>Não herdam skills do pai.</strong> Só acessam skills se forem explicitamente listadas no campo <code>skills:</code> do seu arquivo de configuração.</p><p style="margin-top:8px;font-size:0.9em;color:rgba(255,244,228,0.7);">Como estagiários que recebem apenas os materiais específicos para a tarefa.</p></div></div><div class="insight-container" style="margin-top:20px;"><div class="insight-title">📋 Campo skills: no Agent</div><div class="insight-text">Para dar acesso a skills para um subagente, liste-as no cabeçalho:<br><code style="display:block;margin-top:8px;padding:8px 12px;background:rgba(0,0,0,0.3);border-radius:4px;">skills:<br>  - api-conventions<br>  - error-handling</code><br>O conteúdo completo é <strong>injetado no início</strong>, não descoberto dinamicamente.</div></div>'
+                }
+            },
+            'skills-quando': {
+                title: 'Quando criar uma <span class="gold">Skill</span>?',
+                breadcrumb: '.claude / skills / <span class="current">quando-criar.md</span>',
+                tabs: ['Decisão'],
+                panels: {
+                    decisao: '<div class="decision-grid"><div class="decision-box yes"><div class="decision-header"><span class="decision-icon">✓</span><span class="decision-title">Crie uma Skill quando</span></div><ul class="decision-list"><li>Conhecimento precisa de múltiplos arquivos de suporte</li><li>Expertise será reutilizada em vários contextos</li><li>Precisa de templates, scripts ou referências</li><li>Workflow complexo com várias etapas documentadas</li><li>Quer compartilhar expertise entre projetos</li></ul></div><div class="decision-box no"><div class="decision-header"><span class="decision-icon">✗</span><span class="decision-title">Use Agent quando</span></div><ul class="decision-list"><li>Especialista simples que cabe em um arquivo</li><li>Não precisa de recursos auxiliares</li><li>Tarefa é específica e auto-contida</li><li>Não há necessidade de templates ou scripts</li><li>Expertise é específica de um projeto</li></ul></div></div>'
+                }
+            },
+            'skills-criar': {
+                title: 'Como criar uma <span class="gold">Skill</span>',
+                breadcrumb: '.claude / skills / <span class="current">como-criar.md</span>',
+                tabs: ['/skill-creator', 'Estrutura', 'Cabeçalho', 'Parâmetros'],
+                panels: {
+                    '/skill-creator': '<div class="criar-intro">O comando <code>/skill-creator</code> guia você na criação de uma nova skill.</div><div class="command-box"><div class="command-label">Comando</div><div class="command-line"><span class="prompt">$</span> <span class="cmd">/skill-creator</span></div></div><div class="steps"><div class="step"><div class="step-num">1</div><div class="step-text">O assistente pergunta o <strong>domínio</strong> da skill (ex: "criação de documentos")</div></div><div class="step"><div class="step-num">2</div><div class="step-text">Pergunta as <strong>capacidades</strong> que a skill deve ter</div></div><div class="step"><div class="step-num">3</div><div class="step-text">Cria a pasta <code>.claude/skills/nome-skill/</code></div></div><div class="step"><div class="step-num">4</div><div class="step-text">Gera o <code>SKILL.md</code> com instruções iniciais</div></div><div class="step"><div class="step-num">5</div><div class="step-text">Você personaliza e adiciona recursos conforme necessário</div></div></div>',
+                    estrutura: '<div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">Estrutura típica</span></div><div class="code-body"><span class="syn-value">.claude/skills/minha-skill/</span>\n├── <span class="syn-key">SKILL.md</span>           <span class="syn-comment"># Ponto de entrada (obrigatório)</span>\n├── <span class="syn-value">templates/</span>         <span class="syn-comment"># Modelos reutilizáveis</span>\n│   └── base.md\n├── <span class="syn-value">scripts/</span>           <span class="syn-comment"># Automações (opcional)</span>\n│   └── generate.py\n├── <span class="syn-value">references/</span>        <span class="syn-comment"># Documentação detalhada</span>\n│   └── guia.md\n└── <span class="syn-value">examples/</span>          <span class="syn-comment"># Exemplos de uso</span>\n    └── caso-1.md</div></div><div class="insight-container" style="margin-top:20px;"><div class="insight-title">💡 Dica</div><div class="insight-text">Coloque informações extensas em <code>references/</code>. O Claude só lê quando precisar, economizando contexto.</div></div>',
+                    cabecalho: '<div class="criar-intro">O <strong>cabeçalho YAML</strong> (entre <code>---</code>) define as configurações da skill:</div><div class="caracteristica-item"><div class="caracteristica-icon">📛</div><div class="caracteristica-content"><h3>name e description</h3><p><code>name</code>: identificador único (letras minúsculas e hífens)<br><code>description</code>: <strong>CRÍTICO!</strong> Claude usa isso para decidir quando ativar a skill</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">🔒</div><div class="caracteristica-content"><h3>Controle de Ativação</h3><p><code>disable-model-invocation: true</code> → só você pode ativar (com <code>/skill</code>)<br><code>user-invocable: false</code> → só Claude pode ativar (conhecimento passivo)</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">🔧</div><div class="caracteristica-content"><h3>allowed-tools</h3><p>Lista de ferramentas que a skill pode usar sem pedir permissão. Ex: <code>Read, Grep, Bash</code></p></div></div>',
+                    parametros: '<div class="criar-intro">Skills podem receber <strong>parâmetros</strong> do usuário usando variáveis especiais:</div><div class="caracteristica-item"><div class="caracteristica-icon">📥</div><div class="caracteristica-content"><h3>$ARGUMENTS</h3><p>Recebe tudo que você digitar após o nome da skill.</p><p style="margin-top:8px;font-size:0.9em;color:rgba(255,244,228,0.7);">Ex: <code>/fix-issue 123</code> → <code>$ARGUMENTS</code> vira <code>123</code></p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">🔢</div><div class="caracteristica-content"><h3>$0, $1, $2...</h3><p>Acessa argumentos por posição (como em linha de comando).</p><p style="margin-top:8px;font-size:0.9em;color:rgba(255,244,228,0.7);">Ex: <code>/compare arquivo1.txt arquivo2.txt</code> → <code>$0</code> é arquivo1, <code>$1</code> é arquivo2</p></div></div><div class="code-window" style="margin-top:20px;"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">Exemplo prático</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">analisar-processo</span>\n<span class="syn-key">description:</span> <span class="syn-value">Analisa um processo judicial pelo número</span>\n<span class="syn-delim">---</span>\n\nAnalise o processo <span class="syn-tag">$ARGUMENTS</span> seguindo as diretrizes...</div></div>'
+                }
+            },
+            'skills-exemplos': {
+                title: 'Exemplos de <span class="gold">Skills</span>',
+                breadcrumb: '.claude / skills / <span class="current">exemplos.md</span>',
+                tabs: ['brainstorming', 'skill-creator'],
+                panels: {
+                    'brainstorming': '<div class="lang-toggle-container"><div class="lang-toggle"><button class="lang-btn active" data-lang="en">EN</button><button class="lang-btn" data-lang="pt">PT-BR</button></div><div class="lang-content active" data-lang="en"><div class="exemplo-intro"><span class="source-badge">Fonte: plugin superpowers (obra)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">brainstorming/SKILL.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">brainstorming</span>\n<span class="syn-key">description:</span> <span class="syn-value">You MUST use this before any creative work -</span>\n              <span class="syn-value">creating features, building components, adding</span>\n              <span class="syn-value">functionality, or modifying behavior.</span>\n<span class="syn-delim">---</span>\n\n<span class="syn-heading"># Brainstorming Ideas Into Designs</span>\n\n<span class="syn-heading">## Overview</span>\nHelp turn ideas into fully formed designs and specs\nthrough natural collaborative dialogue.\n\n<span class="syn-heading">## The Process</span>\n\n<span class="syn-rule">**Understanding the idea:**</span>\n- Check out the current project state first\n- Ask questions <span class="syn-tag">one at a time</span> to refine the idea\n- Prefer multiple choice questions when possible\n- Focus on: purpose, constraints, success criteria\n\n<span class="syn-rule">**Exploring approaches:**</span>\n- Propose 2-3 different approaches with trade-offs\n- Lead with your recommended option and explain why\n\n<span class="syn-rule">**Presenting the design:**</span>\n- Break it into sections of 200-300 words\n- Ask after each section whether it looks right\n- Cover: architecture, components, data flow\n\n<span class="syn-heading">## Key Principles</span>\n- <span class="syn-tag">One question at a time</span> - Don\'t overwhelm\n- <span class="syn-tag">YAGNI ruthlessly</span> - Remove unnecessary features\n- <span class="syn-tag">Incremental validation</span> - Validate each section</div></div></div><div class="lang-content" data-lang="pt"><div class="exemplo-intro"><span class="source-badge">Tradução para o curso</span><span class="source-badge">Fonte: plugin superpowers (obra)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">brainstorming/SKILL.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">brainstorming</span>\n<span class="syn-key">description:</span> <span class="syn-value">Você DEVE usar isto antes de qualquer trabalho</span>\n              <span class="syn-value">criativo - criar features, construir componentes,</span>\n              <span class="syn-value">adicionar funcionalidades ou modificar comportamento.</span>\n<span class="syn-delim">---</span>\n\n<span class="syn-heading"># Transformando Ideias em Designs</span>\n\n<span class="syn-heading">## Visão Geral</span>\nAjuda a transformar ideias em designs e especificações\ncompletas através de diálogo colaborativo natural.\n\n<span class="syn-heading">## O Processo</span>\n\n<span class="syn-rule">**Entendendo a ideia:**</span>\n- Primeiro, verifique o estado atual do projeto\n- Faça perguntas <span class="syn-tag">uma de cada vez</span> para refinar\n- Prefira perguntas de múltipla escolha quando possível\n- Foque em: propósito, restrições, critérios de sucesso\n\n<span class="syn-rule">**Explorando abordagens:**</span>\n- Proponha 2-3 abordagens diferentes com trade-offs\n- Lidere com sua recomendação e explique o porquê\n\n<span class="syn-rule">**Apresentando o design:**</span>\n- Divida em seções de 200-300 palavras\n- Pergunte após cada seção se está correto\n- Cubra: arquitetura, componentes, fluxo de dados\n\n<span class="syn-heading">## Princípios-Chave</span>\n- <span class="syn-tag">Uma pergunta por vez</span> - Não sobrecarregue\n- <span class="syn-tag">YAGNI implacável</span> - Remova features desnecessárias\n- <span class="syn-tag">Validação incremental</span> - Valide cada seção</div></div></div></div>',
+                    'skill-creator': '<div class="lang-toggle-container"><div class="lang-toggle"><button class="lang-btn active" data-lang="en">EN</button><button class="lang-btn" data-lang="pt">PT-BR</button></div><div class="lang-content active" data-lang="en"><div class="exemplo-intro"><span class="source-badge">Fonte: anthropics/skills (oficial)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">skill-creator/SKILL.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">skill-creator</span>\n<span class="syn-key">description:</span> <span class="syn-value">Guide for creating effective skills. Use when</span>\n              <span class="syn-value">users want to create a new skill that extends</span>\n              <span class="syn-value">Claude\'s capabilities with specialized knowledge.</span>\n<span class="syn-delim">---</span>\n\n<span class="syn-heading"># Skill Creator</span>\n\nSkills are modular packages that extend Claude\'s\ncapabilities with specialized knowledge and workflows.\n\n<span class="syn-heading">## Anatomy of a Skill</span>\n\n<span class="syn-value">skill-name/</span>\n├── <span class="syn-key">SKILL.md</span>        <span class="syn-comment"># Required - entry point</span>\n│   ├── YAML frontmatter (name, description)\n│   └── Markdown instructions\n└── <span class="syn-value">Bundled Resources</span> <span class="syn-comment"># Optional</span>\n    ├── <span class="syn-value">scripts/</span>    <span class="syn-comment"># Executable code (Python/Bash)</span>\n    ├── <span class="syn-value">references/</span> <span class="syn-comment"># Docs loaded on demand</span>\n    └── <span class="syn-value">assets/</span>     <span class="syn-comment"># Templates, images, fonts</span>\n\n<span class="syn-heading">## Core Principles</span>\n\n<span class="syn-rule">**Concise is Key**</span>\nThe context window is a public good. Only add context\nClaude doesn\'t already have.\n\n<span class="syn-rule">**Progressive Disclosure**</span>\n1. Metadata (name + description) - Always in context\n2. SKILL.md body - When skill triggers\n3. Bundled resources - As needed by Claude</div></div></div><div class="lang-content" data-lang="pt"><div class="exemplo-intro"><span class="source-badge">Tradução para o curso</span><span class="source-badge">Fonte: anthropics/skills (oficial)</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">skill-creator/SKILL.md</span></div><div class="code-body"><span class="syn-delim">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">skill-creator</span>\n<span class="syn-key">description:</span> <span class="syn-value">Guia para criar skills eficazes. Use quando</span>\n              <span class="syn-value">quiser criar uma nova skill que estenda as</span>\n              <span class="syn-value">capacidades do Claude com conhecimento especializado.</span>\n<span class="syn-delim">---</span>\n\n<span class="syn-heading"># Criador de Skills</span>\n\nSkills são pacotes modulares que estendem as capacidades\ndo Claude com conhecimento e workflows especializados.\n\n<span class="syn-heading">## Anatomia de uma Skill</span>\n\n<span class="syn-value">nome-skill/</span>\n├── <span class="syn-key">SKILL.md</span>        <span class="syn-comment"># Obrigatório - ponto de entrada</span>\n│   ├── Cabeçalho YAML (name, description)\n│   └── Instruções em Markdown\n└── <span class="syn-value">Recursos</span>        <span class="syn-comment"># Opcional</span>\n    ├── <span class="syn-value">scripts/</span>    <span class="syn-comment"># Código executável (Python/Bash)</span>\n    ├── <span class="syn-value">references/</span> <span class="syn-comment"># Docs carregados sob demanda</span>\n    └── <span class="syn-value">assets/</span>     <span class="syn-comment"># Templates, imagens, fontes</span>\n\n<span class="syn-heading">## Princípios Centrais</span>\n\n<span class="syn-rule">**Concisão é Fundamental**</span>\nA janela de contexto é um bem público. Adicione apenas\ncontexto que Claude ainda não possui.\n\n<span class="syn-rule">**Divulgação Progressiva**</span>\n1. Metadados (name + description) - Sempre no contexto\n2. Corpo do SKILL.md - Quando a skill é ativada\n3. Recursos auxiliares - Conforme Claude precisar</div></div></div></div>'
+                }
+            },
+            'commands-conceito': {
+                title: 'O que são <span class="gold">Commands</span>?',
+                breadcrumb: '.claude / commands / <span class="current">conceito.md</span>',
+                tabs: ['Visual', 'Citação', 'Insight'],
+                panels: {
+                    visual: '<div class="org-chart"><div class="org-node-main" data-org="main"><div class="org-node-title">/comando</div></div><div class="org-connector-v"></div><div class="org-split"><div class="org-columns"><div class="org-branch"><div class="org-branch-line"></div><div class="org-cell" data-org="def"><div class="org-cell-icon">⚡</div><div class="org-cell-title">Definição</div><div class="org-cell-text"><strong>Atalho de texto</strong> que dispara qualquer conteúdo: prompt, agent, skill...</div></div></div><div class="org-branch"><div class="org-branch-line"></div><div class="org-cell" data-org="ana"><div class="org-cell-icon">⚖️</div><div class="org-cell-title">Analogia</div><div class="org-cell-text">Como <strong>atalhos de teclado</strong>: uma tecla dispara uma ação complexa.</div></div></div></div></div><div class="org-yaml-section"><div class="org-yaml-connector"></div><div class="org-yaml-cell" data-org="invocacao"><div class="org-yaml-header"><div class="org-yaml-icon">🎯</div><div class="org-yaml-title">Método de Ativação</div></div><div class="org-yaml-content"><div class="org-yaml-line">Nome do arquivo vira o atalho: <code>revisar.md</code> → <code>/revisar</code></div><div class="org-yaml-line">O conteúdo pode ser qualquer coisa: prompt, agent, skill, orquestrador.</div></div></div></div><div class="org-hint">Clique nos elementos para destacar</div></div>',
+                    citacao: '<div class="insight-container" style="max-width:600px;margin:0 auto;"><div class="insight-title" style="font-size:1.3em;">⚡ O Poder do Atalho</div><div class="insight-text" style="font-size:1.15em;line-height:1.7;">Se você digita o mesmo prompt <strong>mais de duas vezes</strong>, está perdendo tempo.<br><br>Commands transformam <span class="highlight">repetição em atalho</span>.<br><br>Um arquivo. Uma barra. Ativação instantânea.<br><code>/revisar</code> <code>/commit</code> <code>/documentar</code></div></div>',
+                    insight: '<div class="insight-container"><div class="insight-title">💡 Método de Ativação</div><div class="insight-text"><strong>Command não é uma categoria</strong> — é um <span class="highlight">método de ativação</span>.<br><br>O conteúdo de um command pode ser:<br>• Um prompt simples<br>• Uma referência a um Agent<br>• Uma chamada de Skill<br>• Um orquestrador de múltiplos agentes<br><br>Command = <strong>atalho de texto</strong> que dispara qualquer coisa.</div></div>'
+                }
+            },
+            'commands-caracteristicas': {
+                title: '<span class="gold">Características</span> dos Commands',
+                breadcrumb: '.claude / commands / <span class="current">caracteristicas.md</span>',
+                tabs: ['Simplicidade', 'Argumentos', 'Escopo', 'Cabeçalho'],
+                panels: {
+                    simplicidade: '<div class="caracteristica-item"><div class="caracteristica-icon">📝</div><div class="caracteristica-content"><h3>Apenas um Arquivo</h3><p>Commands são a forma mais direta: <strong>um arquivo .md</strong> com o prompt. YAML é <strong>opcional mas recomendado</strong> para controlar comportamento.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">🚀</div><div class="caracteristica-content"><h3>Invocação Instantânea</h3><p>Digite <code>/nome-do-arquivo</code> e o prompt é executado imediatamente. Sem necessidade de explicar o que quer.</p></div></div>',
+                    argumentos: '<div class="caracteristica-item"><div class="caracteristica-icon">📥</div><div class="caracteristica-content"><h3>$ARGUMENTS e Posicionais</h3><p>Variáveis disponíveis no prompt:<br><code>$ARGUMENTS</code> → todos os argumentos<br><code>$0</code>, <code>$1</code>, <code>$2</code>... → por posição<br><code>${CLAUDE_SESSION_ID}</code> → ID da sessão</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">💡</div><div class="caracteristica-content"><h3>Exemplo Prático</h3><p><code>/fix-issue 123 high</code><br>→ <code>$0</code> = "123"<br>→ <code>$1</code> = "high"<br>→ <code>$ARGUMENTS</code> = "123 high"</p></div></div>',
+                    escopo: '<div class="caracteristica-item"><div class="caracteristica-icon">🏛️</div><div class="caracteristica-content"><h3>Hierarquia de Prioridade</h3><p>Quando há conflito de nomes, a prioridade é:<br><strong>1. Enterprise</strong> (mais alta)<br><strong>2. Personal</strong> <code>~/.claude/commands/</code><br><strong>3. Project</strong> <code>.claude/commands/</code><br><br><em>Analogia:</em> Como leis — federal prevalece sobre estadual.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">👥</div><div class="caracteristica-content"><h3>Compartilháveis</h3><p>Commite os commands no repositório e <strong>toda a equipe</strong> passa a ter os mesmos atalhos. Padronização instantânea.</p></div></div>',
+                    cabecalho: '<div class="caracteristica-item"><div class="caracteristica-icon">📋</div><div class="caracteristica-content"><h3>Campos do Frontmatter YAML</h3><table class="mini-table" style="font-size:0.9em;width:100%;"><tr><th>Campo</th><th>Função</th></tr><tr><td><code>name</code></td><td>Identificador (se diferente do arquivo)</td></tr><tr><td><code>description</code></td><td><strong>Crítico!</strong> Quando usar este command</td></tr><tr><td><code>allowed-tools</code></td><td>Ferramentas permitidas: Read, Grep, Bash</td></tr><tr><td><code>model</code></td><td>Modelo específico (sonnet, haiku, opus)</td></tr><tr><td><code>disable-model-invocation</code></td><td>Apenas usuário pode invocar</td></tr><tr><td><code>argument-hint</code></td><td>Dica no autocomplete</td></tr></table></div></div>'
+                }
+            },
+            'commands-quando': {
+                title: 'Quando criar um <span class="gold">Command</span>?',
+                breadcrumb: '.claude / commands / <span class="current">quando-criar.md</span>',
+                tabs: ['Decisão'],
+                panels: {
+                    decisao: '<div class="decision-grid"><div class="decision-box yes"><div class="decision-header"><span class="decision-icon">✓</span><span class="decision-title">Crie um Command quando</span></div><ul class="decision-list"><li>Você repete o mesmo prompt frequentemente</li><li>Quer padronizar uma tarefa na equipe</li><li>Precisa de um atalho rápido para workflow comum</li><li>Quer documentar "como fazemos X aqui"</li><li>Tarefa é simples e não precisa de especialista</li></ul></div><div class="decision-box no"><div class="decision-header"><span class="decision-icon">✗</span><span class="decision-title">Use Agent/Skill quando</span></div><ul class="decision-list"><li>Tarefa precisa de ferramentas específicas (Agent)</li><li>Precisa de múltiplos arquivos de suporte (Skill)</li><li>Comportamento complexo com muitas regras</li><li>Precisa de modelo específico (Haiku/Opus)</li><li>Especialização profunda é necessária</li></ul></div></div>'
+                }
+            },
+            'commands-criar': {
+                title: 'Como criar um <span class="gold">Command</span>',
+                breadcrumb: '.claude / commands / <span class="current">como-criar.md</span>',
+                tabs: ['Passos', 'Com Cabeçalho', 'Com Argumentos'],
+                panels: {
+                    passos: '<div class="criar-intro">Commands são os mais diretos de criar — basta um arquivo .md com o prompt.</div><div class="command-box"><div class="command-label">Criar arquivo</div><div class="command-line"><span class="prompt">$</span> <span class="cmd">.claude/commands/revisar.md</span></div></div><div class="steps"><div class="step"><div class="step-num">1</div><div class="step-text">Crie o arquivo em <code>.claude/commands/</code></div></div><div class="step"><div class="step-num">2</div><div class="step-text">Opcionalmente adicione frontmatter YAML</div></div><div class="step"><div class="step-num">3</div><div class="step-text">Escreva o prompt dentro do arquivo</div></div><div class="step"><div class="step-num">4</div><div class="step-text">Invoque com <code>/revisar</code></div></div></div>',
+                    cabecalho: '<div class="criar-intro">O frontmatter YAML é <strong>opcional mas recomendado</strong> para controlar comportamento.</div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">fix-issue.md</span></div><div class="code-body"><span class="syn-comment">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">fix-issue</span>\n<span class="syn-key">description:</span> <span class="syn-value">Corrige uma issue do GitHub</span>\n<span class="syn-key">allowed-tools:</span> <span class="syn-value">Read, Grep, Bash, Edit</span>\n<span class="syn-key">argument-hint:</span> <span class="syn-value">[issue-number]</span>\n<span class="syn-comment">---</span>\n\nCorrect the GitHub issue <span class="syn-value">$0</span>.\nPriority: <span class="syn-value">$1</span>\n\nFollow project conventions.</div></div><div class="insight-container" style="margin-top:15px;"><div class="insight-title">💡 description é crítico</div><div class="insight-text">O campo <code>description</code> ajuda o Claude a <strong>sugerir</strong> o command no autocomplete e entender quando usá-lo.</div></div>',
+                    argumentos: '<div class="criar-intro">Use <code>$ARGUMENTS</code> ou variáveis posicionais <code>$0</code>, <code>$1</code>...</div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">analisar-arquivo.md</span></div><div class="code-body"><span class="syn-heading"># Analisar Arquivo</span>\n\nAnalise o arquivo especificado:\n\n<span class="syn-key">Arquivo:</span> <span class="syn-value">$ARGUMENTS</span>\n\n<span class="syn-heading">## Tarefas</span>\n<span class="syn-rule">1.</span> Leia o conteúdo do arquivo\n<span class="syn-rule">2.</span> Identifique a linguagem/formato\n<span class="syn-rule">3.</span> Liste as principais funções/seções\n<span class="syn-rule">4.</span> Aponte possíveis melhorias</div></div><div class="insight-container" style="margin-top:20px;"><div class="insight-title">💡 Uso</div><div class="insight-text"><code>/analisar-arquivo src/utils.ts</code><br>→ <code>$ARGUMENTS</code> será substituído por <code>src/utils.ts</code></div></div>'
+                }
+            },
+            'commands-exemplos': {
+                title: 'Exemplo: <span class="gold">Command Orquestrador</span>',
+                breadcrumb: '.claude / commands / <span class="current">feature-dev.md</span>',
+                tabs: ['Visão Geral', 'Workflow Completo', 'Estrutura'],
+                panels: {
+                    'visao geral': '<div class="exemplo-intro"><span class="source-badge nativo">Plugin Anthropic</span><span class="source-badge">Uso: /feature-dev "Add OAuth"</span></div><div class="insight-container" style="margin-bottom:15px;background:rgba(190,156,109,0.1);"><div class="insight-title">💡 Command como Orquestrador</div><div class="insight-text" style="font-size:0.95em;">Commands podem funcionar como <strong>orquestradores</strong> que coordenam múltiplos agentes. O <code>/feature-dev</code> é o exemplo canônico: um command que dispara <code>code-explorer</code>, <code>code-architect</code> e <code>code-reviewer</code> em paralelo, evitando a complexidade de um agente chamando outro agente.</div></div><div class="lang-toggle-container"><div class="lang-toggle"><button class="lang-btn active" data-lang="en">EN</button><button class="lang-btn" data-lang="pt">PT-BR</button></div><div class="lang-content active" data-lang="en"><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">commands/feature-dev.md</span></div><div class="code-body" style="font-size:0.82em;line-height:1.5;"><span class="syn-comment">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">feature-dev</span>\n<span class="syn-key">slash_command:</span> <span class="syn-value">true</span>\n<span class="syn-key">description:</span> <span class="syn-value">Build features through a systematic 7-phase</span>\n  <span class="syn-value">workflow that ensures deep codebase understanding,</span>\n  <span class="syn-value">thorough clarification, thoughtful architecture</span>\n  <span class="syn-value">design, and rigorous code review</span>\n<span class="syn-comment">---</span>\n\n<span class="syn-heading"># Feature Development Workflow</span>\n\nThe <span class="syn-value">/feature-dev</span> command guides you through a\nsystematic 7-phase process for building new features,\ncoordinating specialized agents for codebase exploration,\narchitecture design, and quality review.</div></div></div><div class="lang-content" data-lang="pt"><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">commands/feature-dev.md</span></div><div class="code-body" style="font-size:0.82em;line-height:1.5;"><span class="syn-comment">---</span>\n<span class="syn-key">name:</span> <span class="syn-value">feature-dev</span>\n<span class="syn-key">slash_command:</span> <span class="syn-value">true</span>\n<span class="syn-key">description:</span> <span class="syn-value">Desenvolve features através de workflow</span>\n  <span class="syn-value">sistemático de 7 fases que garante compreensão</span>\n  <span class="syn-value">profunda do codebase, clarificação completa,</span>\n  <span class="syn-value">design arquitetural e revisão rigorosa</span>\n<span class="syn-comment">---</span>\n\n<span class="syn-heading"># Workflow de Desenvolvimento de Features</span>\n\nO comando <span class="syn-value">/feature-dev</span> guia você através de um\nprocesso sistemático de 7 fases para construir features,\ncoordenando agentes especializados para exploração do\ncodebase, design de arquitetura e revisão de qualidade.</div></div></div></div>',
+                    'workflow completo': '<div class="exemplo-intro"><span class="source-badge">As 7 Fases do Workflow</span></div><div class="lang-toggle-container"><div class="lang-toggle"><button class="lang-btn active" data-lang="en">EN</button><button class="lang-btn" data-lang="pt">PT-BR</button></div><div class="lang-content active" data-lang="en"><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">feature-dev.md (continuation)</span></div><div class="code-body" style="font-size:0.78em;line-height:1.45;"><span class="syn-heading">## Phase 1: Discovery</span>\n<span class="syn-comment">Goal: Clarify what needs building</span>\nAsk questions to understand the problem, requirements,\nsuccess criteria, and edge cases.\n\n<span class="syn-heading">## Phase 2: Codebase Exploration</span>\n<span class="syn-comment">Goal: Understand relevant existing patterns</span>\n<span class="syn-rule">Launch 2-3 `code-explorer` agents in parallel</span>, each examining:\n- Similar existing features\n- Relevant architectural patterns\n- Module boundaries and abstractions\n\n<span class="syn-heading">## Phase 3: Clarifying Questions</span>\n<span class="syn-comment">Goal: Identify and resolve ambiguities</span>\nBased on exploration findings, identify underspecified aspects.\n\n<span class="syn-heading">## Phase 4: Architecture Design</span>\n<span class="syn-comment">Goal: Design the implementation approach</span>\n<span class="syn-rule">Launch 2-3 `code-architect` agents in parallel</span>, each proposing\na distinct approach with different trade-offs.\n<span class="syn-value">Get explicit user approval before implementation.</span>\n\n<span class="syn-heading">## Phase 5: Implementation</span>\n<span class="syn-comment">Goal: Build the feature</span>\nOnly proceed after Phase 4 approval.\n\n<span class="syn-heading">## Phase 6: Quality Review</span>\n<span class="syn-comment">Goal: Ensure correctness and quality</span>\n<span class="syn-rule">Launch 3 `code-reviewer` agents in parallel</span>, each examining:\n1. Simplicity and DRY principles\n2. Functional correctness and error handling\n3. Adherence to project conventions\n\n<span class="syn-heading">## Phase 7: Summary</span>\n<span class="syn-comment">Goal: Document accomplishments</span>\nSummarize what was built, decisions made, files modified.</div></div></div><div class="lang-content" data-lang="pt"><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">feature-dev.md (continuação)</span></div><div class="code-body" style="font-size:0.78em;line-height:1.45;"><span class="syn-heading">## Fase 1: Descoberta</span>\n<span class="syn-comment">Objetivo: Clarificar o que precisa ser construído</span>\nFazer perguntas para entender o problema, requisitos,\ncritérios de sucesso e casos de borda.\n\n<span class="syn-heading">## Fase 2: Exploração do Codebase</span>\n<span class="syn-comment">Objetivo: Entender padrões existentes relevantes</span>\n<span class="syn-rule">Lançar 2-3 agentes `code-explorer` em paralelo</span>, cada um examinando:\n- Features similares existentes\n- Padrões arquiteturais relevantes\n- Limites de módulos e abstrações\n\n<span class="syn-heading">## Fase 3: Perguntas de Clarificação</span>\n<span class="syn-comment">Objetivo: Identificar e resolver ambiguidades</span>\nCom base nas descobertas, identificar aspectos subespecificados.\n\n<span class="syn-heading">## Fase 4: Design de Arquitetura</span>\n<span class="syn-comment">Objetivo: Projetar a abordagem de implementação</span>\n<span class="syn-rule">Lançar 2-3 agentes `code-architect` em paralelo</span>, cada um propondo\numa abordagem distinta com diferentes trade-offs.\n<span class="syn-value">Obter aprovação explícita do usuário antes de implementar.</span>\n\n<span class="syn-heading">## Fase 5: Implementação</span>\n<span class="syn-comment">Objetivo: Construir a feature</span>\nSó prosseguir após aprovação da Fase 4.\n\n<span class="syn-heading">## Fase 6: Revisão de Qualidade</span>\n<span class="syn-comment">Objetivo: Garantir correção e qualidade</span>\n<span class="syn-rule">Lançar 3 agentes `code-reviewer` em paralelo</span>, cada um examinando:\n1. Simplicidade e princípios DRY\n2. Correção funcional e tratamento de erros\n3. Aderência às convenções do projeto\n\n<span class="syn-heading">## Fase 7: Resumo</span>\n<span class="syn-comment">Objetivo: Documentar realizações</span>\nResumir o que foi construído, decisões tomadas, arquivos modificados.</div></div></div></div>',
+                    'estrutura': '<div class="exemplo-intro"><span class="source-badge">Estrutura do Plugin feature-dev</span></div><div class="code-window" style="margin-bottom:15px;"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">Estrutura de Diretórios</span></div><div class="code-body" style="font-size:0.9em;"><span class="syn-value">plugins/feature-dev/</span>\n├── <span class="syn-key">.claude-plugin/</span>\n│   └── plugin.json          <span class="syn-comment"># Metadados</span>\n├── <span class="syn-key">agents/</span>                   <span class="syn-comment"># 3 subagentes</span>\n│   ├── code-explorer.md     <span class="syn-comment"># Analisa codebase</span>\n│   ├── code-architect.md    <span class="syn-comment"># Projeta arquitetura</span>\n│   └── code-reviewer.md     <span class="syn-comment"># Revisa qualidade</span>\n├── <span class="syn-key">commands/</span>\n│   └── <span class="syn-value">feature-dev.md</span>       <span class="syn-comment"># Orquestrador!</span>\n└── README.md</div></div><div class="insight-container" style="background:rgba(74,222,128,0.1);"><div class="insight-title">🎯 Padrão de Orquestração</div><div class="insight-text" style="font-size:0.9em;"><strong>O command é o maestro:</strong><br>• Coordena as 7 fases em sequência<br>• Dispara agentes <strong>em paralelo</strong> (fases 2, 4, 6)<br>• Aguarda <strong>aprovação explícita</strong> antes de implementar<br>• Consolida resultados de múltiplos agentes<br><br><em>Vantagem:</em> Evita a complexidade de "agente chamando agente chamando agente". O command centraliza a orquestração.</div></div>'
+                }
+            },
+            'mcps-conceito': {
+                title: 'O que são <span class="gold">MCPs</span>?',
+                breadcrumb: '.claude / mcp-servers / <span class="current">conceito.md</span>',
+                tabs: ['Formas de Conectar', 'O que é MCP', 'Citação'],
+                panels: {
+                    formas: '<div class="formas-conectar"><div class="formas-titulo">5 Formas de Conectar o Claude ao Mundo</div><div class="formas-grid"><div class="forma-card" data-org="mcp"><div class="forma-icon">🔌</div><div class="forma-nome">MCP</div><div class="forma-desc">Sistemas recorrentes, APIs, bancos de dados</div><div class="forma-quando">Quando: uso frequente, integração estruturada</div></div><div class="forma-card" data-org="websearch"><div class="forma-icon">🔍</div><div class="forma-nome">Web Search</div><div class="forma-desc">Busca na internet pública em tempo real</div><div class="forma-quando">Quando: notícias, artigos, informações atuais</div></div><div class="forma-card" data-org="bash"><div class="forma-icon">⌨️</div><div class="forma-nome">Bash / API</div><div class="forma-desc">Scripts e chamadas diretas via terminal</div><div class="forma-quando">Quando: integração pontual, teste rápido</div></div><div class="forma-card" data-org="playwright"><div class="forma-icon">🎭</div><div class="forma-nome">Playwright</div><div class="forma-desc">Automação de sites sem API disponível</div><div class="forma-quando">Quando: sites legados, tarefas repetitivas</div></div><div class="forma-card" data-org="chrome"><div class="forma-icon">👁️</div><div class="forma-nome">Computer Use</div><div class="forma-desc">Claude vê e interage visualmente no browser</div><div class="forma-quando">Quando: exploração, sites desconhecidos</div></div></div><div class="formas-insight">MCP é a forma mais robusta para <strong>integrações recorrentes</strong>.</div></div>',
+                    mcp: '<div class="org-chart"><div class="org-node-main" data-org="main"><div class="org-node-title">MCP Server</div></div><div class="org-connector-v"></div><div class="org-split"><div class="org-columns"><div class="org-branch"><div class="org-branch-line"></div><div class="org-cell" data-org="def"><div class="org-cell-icon">🔌</div><div class="org-cell-title">Definição</div><div class="org-cell-text"><strong>Padrão aberto</strong> para conectar LLMs a sistemas externos. Como HTTP é para a web, MCP é para ferramentas.</div></div></div><div class="org-branch"><div class="org-branch-line"></div><div class="org-cell" data-org="ana"><div class="org-cell-icon">⚖️</div><div class="org-cell-title">Analogia</div><div class="org-cell-text">Como <strong>convênios</strong> com outros tribunais: BACENJUD, RENAJUD, CNIB.</div></div></div></div></div><div class="org-yaml-section"><div class="org-yaml-connector"></div><div class="org-yaml-cell" data-org="config"><div class="org-yaml-header"><div class="org-yaml-icon">⚙️</div><div class="org-yaml-title">Configuração via CLI ou arquivo</div></div><div class="org-yaml-content"><div class="org-yaml-line">Comando: <code>claude mcp add nome url</code></div><div class="org-yaml-line">Arquivo: <code>.mcp.json</code> (projeto) ou <code>~/.claude.json</code> (pessoal)</div></div></div></div><div class="org-hint">Clique nos elementos para destacar</div></div>',
+                    citacao: '<div class="quote-container"><div class="quote-text">"<span class="highlight">MCP fornece a conexão</span> com o mundo externo enquanto <span class="highlight">skills fornecem a expertise</span>."</div><div class="quote-author"><div class="author-avatar">🔷</div><div><div class="author-name">Barry Zhang</div><div class="author-role">Anthropic • AI Engineer Summit</div></div></div></div>'
+                }
+            },
+            'mcps-caracteristicas': {
+                title: '<span class="gold">Características</span> dos MCPs',
+                breadcrumb: '.claude / mcp-servers / <span class="current">caracteristicas.md</span>',
+                tabs: ['Transportes', 'Componentes', 'Escopo', 'Segurança'],
+                panels: {
+                    transportes: '<div class="caracteristica-item"><div class="caracteristica-icon">🌐</div><div class="caracteristica-content"><h3>HTTP (Recomendado)</h3><p>Para serviços <strong>remotos</strong>: APIs cloud, SaaS, servidores web.<br><code>claude mcp add --transport http nome https://...</code></p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">💻</div><div class="caracteristica-content"><h3>STDIO (Local)</h3><p>Para ferramentas <strong>locais</strong>: scripts, bancos de dados, CLIs.<br><code>claude mcp add --transport stdio nome -- npx pacote</code></p></div></div><div class="caracteristica-item" style="opacity:0.6;"><div class="caracteristica-icon">📡</div><div class="caracteristica-content"><h3>SSE (Deprecado)</h3><p>Server-Sent Events. <strong>Evitar</strong> — use HTTP quando possível.</p></div></div>',
+                    componentes: '<div class="insight-container" style="margin-bottom:15px;background:rgba(190,156,109,0.1);"><div class="insight-title">MCP expõe 3 tipos de componentes</div></div><div class="caracteristica-item"><div class="caracteristica-icon">🔧</div><div class="caracteristica-content"><h3>Tools (Funções)</h3><p>Ações que Claude pode executar. Invocadas <strong>automaticamente</strong> quando necessário.<br><em>Ex: query_database, create_issue, send_message</em></p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">📎</div><div class="caracteristica-content"><h3>Resources (Dados via @)</h3><p>Dados acessíveis via <code>@mention</code>. São uma das fontes do <code>@</code> no Claude Code.<br><em>Ex: <code>@github:issue://123</code>, <code>@postgres:schema://users</code></em></p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">⚡</div><div class="caracteristica-content"><h3>Prompts (Comandos)</h3><p>Comandos pré-configurados do servidor.<br><em>Ex: <code>/mcp__github__list_prs</code>, <code>/mcp__sentry__recent_errors</code></em></p></div></div>',
+                    escopo: '<div class="caracteristica-item"><div class="caracteristica-icon">🏠</div><div class="caracteristica-content"><h3>Local (Padrão)</h3><p>Armazenado em <code>~/.claude.json</code><br>MCPs <strong>privados</strong>, experimentais, com credenciais sensíveis.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">📁</div><div class="caracteristica-content"><h3>Project</h3><p>Armazenado em <code>.mcp.json</code> na raiz do projeto<br><strong>Compartilhado</strong> com o time via git. Ideal para padronização.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">👤</div><div class="caracteristica-content"><h3>User</h3><p>Armazenado em <code>~/.claude.json</code><br>Disponível em <strong>todos</strong> os seus projetos.</p></div></div>',
+                    seguranca: '<div class="caracteristica-item"><div class="caracteristica-icon">🔐</div><div class="caracteristica-content"><h3>Credenciais Locais</h3><p>Tokens ficam na sua máquina. MCPs HTTP suportam <strong>OAuth 2.0</strong> com refresh automático.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">🛡️</div><div class="caracteristica-content"><h3>Isolamento</h3><p>Cada MCP roda isolado. Você controla permissões via configuração.</p></div></div><div class="caracteristica-item"><div class="caracteristica-icon">⚠️</div><div class="caracteristica-content"><h3>Cuidado com terceiros</h3><p>MCPs de terceiros não são verificados pela Anthropic. Use apenas MCPs que você <strong>confia</strong>.</p></div></div>'
+                }
+            },
+            'mcps-quando': {
+                title: 'Quando usar um <span class="gold">MCP</span>?',
+                breadcrumb: '.claude / mcp-servers / <span class="current">quando-usar.md</span>',
+                tabs: ['Decisão'],
+                panels: {
+                    decisao: '<div class="decision-grid"><div class="decision-box yes"><div class="decision-header"><span class="decision-icon">✓</span><span class="decision-title">Use MCP quando</span></div><ul class="decision-list"><li>Precisa acessar APIs externas (GitHub, Slack, etc)</li><li>Quer consultar bancos de dados</li><li>Precisa de integração com sistemas internos</li><li>Quer automatizar serviços web</li><li>Dados sensíveis devem ficar locais</li></ul></div><div class="decision-box no"><div class="decision-header"><span class="decision-icon">✗</span><span class="decision-title">NÃO precisa de MCP quando</span></div><ul class="decision-list"><li>Tarefa usa apenas arquivos locais</li><li>Informação já está no contexto</li><li>Bash/curl resolve o problema</li><li>É uma consulta única (use WebFetch)</li><li>Não precisa de autenticação persistente</li></ul></div></div>'
+                }
+            },
+            'mcps-criar': {
+                title: 'Como configurar um <span class="gold">MCP</span>',
+                breadcrumb: '.claude / mcp-servers / <span class="current">como-configurar.md</span>',
+                tabs: ['Via CLI (Recomendado)', 'Via Arquivo', 'Criar Novo'],
+                panels: {
+                    'via cli (recomendado)': '<div class="criar-intro">A forma moderna é usar o comando <code>claude mcp add</code>.</div><div class="code-window" style="margin:15px 0;"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">Terminal</span></div><div class="code-body" style="font-size:0.85em;"><span class="syn-comment"># MCP remoto (HTTP)</span>\nclaude mcp add --transport http github https://mcp.github.com\n\n<span class="syn-comment"># MCP local (STDIO)</span>\nclaude mcp add --transport stdio postgres -- npx -y @mcp/server-postgres\n\n<span class="syn-comment"># Com autenticação</span>\nclaude mcp add --transport http api https://api.example.com \\\n  --header "Authorization: Bearer $TOKEN"\n\n<span class="syn-comment"># Listar MCPs configurados</span>\nclaude mcp list\n\n<span class="syn-comment"># Ver status dentro do Claude Code</span>\n/mcp</div></div><div class="steps"><div class="step"><div class="step-num">1</div><div class="step-text">Encontre um MCP em <code>github.com/modelcontextprotocol/servers</code></div></div><div class="step"><div class="step-num">2</div><div class="step-text">Execute <code>claude mcp add</code> com os parâmetros</div></div><div class="step"><div class="step-num">3</div><div class="step-text">Use <code>--scope project</code> para compartilhar com o time</div></div></div>',
+                    'via arquivo': '<div class="criar-intro">Alternativa: editar arquivos de configuração diretamente.</div><div class="code-window" style="margin:15px 0;"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">.mcp.json (projeto)</span></div><div class="code-body" style="font-size:0.85em;">{\n  <span class="syn-key">"mcpServers"</span>: {\n    <span class="syn-key">"github"</span>: {\n      <span class="syn-key">"type"</span>: <span class="syn-value">"http"</span>,\n      <span class="syn-key">"url"</span>: <span class="syn-value">"https://mcp.github.com"</span>\n    },\n    <span class="syn-key">"postgres"</span>: {\n      <span class="syn-key">"command"</span>: <span class="syn-value">"npx"</span>,\n      <span class="syn-key">"args"</span>: [<span class="syn-value">"-y"</span>, <span class="syn-value">"@mcp/server-postgres"</span>],\n      <span class="syn-key">"env"</span>: {\n        <span class="syn-key">"DATABASE_URL"</span>: <span class="syn-value">"${DB_URL}"</span>\n      }\n    }\n  }\n}</div></div><div class="insight-container"><div class="insight-title">💡 Variáveis de ambiente</div><div class="insight-text">Use <code>${VAR}</code> ou <code>${VAR:-default}</code> para não expor credenciais no git.</div></div>',
+                    'criar novo': '<div class="criar-intro">Você não precisa programar. Basta pedir ao Claude Code.</div><div class="insight-container" style="margin:25px 0;"><div class="insight-title">💡 Skill: mcp-builder</div><div class="insight-text" style="font-size:1.1em;line-height:1.6;">Peça ao Claude Code:<br><em style="color:var(--super-gold);">"Use a skill mcp-builder para criar um MCP que consulte a API do tribunal"</em></div></div><div class="steps"><div class="step"><div class="step-num">1</div><div class="step-text">Descreva o que você quer conectar (API, banco de dados, serviço)</div></div><div class="step"><div class="step-num">2</div><div class="step-text">O Claude Code cria o MCP seguindo as melhores práticas</div></div><div class="step"><div class="step-num">3</div><div class="step-text">Revise e aprove — ele configura automaticamente</div></div><div class="step"><div class="step-num">4</div><div class="step-text">Reinicie o Claude — novas ferramentas disponíveis</div></div></div>'
+                }
+            },
+            'mcps-exemplos': {
+                title: 'Exemplos de <span class="gold">MCPs</span>',
+                breadcrumb: '.claude / mcp-servers / <span class="current">exemplos.md</span>',
+                tabs: ['Jurídicos', 'Desenvolvimento', 'Produtividade'],
+                panels: {
+                    juridicos: '<div class="exemplo-intro"><span class="source-badge">MCPs para prática jurídica</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">settings.json</span></div><div class="code-body"><span class="syn-key">"mcpServers"</span>: {\n\n  <span class="syn-comment">// Jurisprudência do CJF</span>\n  <span class="syn-key">"cjf-jurisprudencia"</span>: {\n    <span class="syn-key">"command"</span>: <span class="syn-value">"npx"</span>,\n    <span class="syn-key">"args"</span>: [<span class="syn-value">"-y"</span>, <span class="syn-value">"@superjurista/mcp-cjf"</span>]\n  },\n\n  <span class="syn-comment">// Sistema JULIA do TRF5</span>\n  <span class="syn-key">"julia-trf5"</span>: {\n    <span class="syn-key">"command"</span>: <span class="syn-value">"npx"</span>,\n    <span class="syn-key">"args"</span>: [<span class="syn-value">"-y"</span>, <span class="syn-value">"@superjurista/mcp-julia"</span>]\n  },\n\n  <span class="syn-comment">// Precedentes BNP</span>\n  <span class="syn-key">"bnp-precedentes"</span>: {\n    <span class="syn-key">"command"</span>: <span class="syn-value">"npx"</span>,\n    <span class="syn-key">"args"</span>: [<span class="syn-value">"-y"</span>, <span class="syn-value">"@superjurista/mcp-bnp"</span>]\n  }\n}</div></div>',
+                    desenvolvimento: '<div class="exemplo-intro"><span class="source-badge">MCPs para desenvolvimento</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">settings.json</span></div><div class="code-body"><span class="syn-key">"mcpServers"</span>: {\n\n  <span class="syn-comment">// GitHub API</span>\n  <span class="syn-key">"github"</span>: {\n    <span class="syn-key">"command"</span>: <span class="syn-value">"npx"</span>,\n    <span class="syn-key">"args"</span>: [<span class="syn-value">"-y"</span>, <span class="syn-value">"@modelcontextprotocol/server-github"</span>],\n    <span class="syn-key">"env"</span>: { <span class="syn-key">"GITHUB_TOKEN"</span>: <span class="syn-value">"ghp_xxx"</span> }\n  },\n\n  <span class="syn-comment">// PostgreSQL</span>\n  <span class="syn-key">"postgres"</span>: {\n    <span class="syn-key">"command"</span>: <span class="syn-value">"npx"</span>,\n    <span class="syn-key">"args"</span>: [<span class="syn-value">"-y"</span>, <span class="syn-value">"@modelcontextprotocol/server-postgres"</span>],\n    <span class="syn-key">"env"</span>: { <span class="syn-key">"DATABASE_URL"</span>: <span class="syn-value">"postgres://..."</span> }\n  }\n}</div></div>',
+                    produtividade: '<div class="exemplo-intro"><span class="source-badge">MCPs para produtividade</span></div><div class="code-window"><div class="code-header"><div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div><span class="code-filename">settings.json</span></div><div class="code-body"><span class="syn-key">"mcpServers"</span>: {\n\n  <span class="syn-comment">// Slack</span>\n  <span class="syn-key">"slack"</span>: {\n    <span class="syn-key">"command"</span>: <span class="syn-value">"npx"</span>,\n    <span class="syn-key">"args"</span>: [<span class="syn-value">"-y"</span>, <span class="syn-value">"@modelcontextprotocol/server-slack"</span>],\n    <span class="syn-key">"env"</span>: { <span class="syn-key">"SLACK_TOKEN"</span>: <span class="syn-value">"xoxb-xxx"</span> }\n  },\n\n  <span class="syn-comment">// Google Drive</span>\n  <span class="syn-key">"gdrive"</span>: {\n    <span class="syn-key">"command"</span>: <span class="syn-value">"npx"</span>,\n    <span class="syn-key">"args"</span>: [<span class="syn-value">"-y"</span>, <span class="syn-value">"@anthropic/mcp-gdrive"</span>]\n  },\n\n  <span class="syn-comment">// Automação de browser</span>\n  <span class="syn-key">"puppeteer"</span>: {\n    <span class="syn-key">"command"</span>: <span class="syn-value">"npx"</span>,\n    <span class="syn-key">"args"</span>: [<span class="syn-value">"-y"</span>, <span class="syn-value">"@anthropic/mcp-puppeteer"</span>]\n  }\n}</div></div>'
+                }
+            }
+        };
+
+        let currentId = null;
+        let currentTab = 0;
+
+        function render(id) {
+            const item = data[id];
+            if (!item) return;
+            currentId = id;
+            currentTab = 0;
+
+            const tabNames = item.tabs.map(t => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace('ç', 'c'));
+
+            document.getElementById('content-header').innerHTML = `
+                <div class="breadcrumb">${item.breadcrumb}</div>
+                <h1 class="main-title">${item.title}</h1>
+                <div class="tabs">
+                    ${item.tabs.map((t, i) => `<button class="tab ${i === 0 ? 'active' : ''}" data-tab="${i}">${t}</button>`).join('')}
+                </div>
+            `;
+
+            const panelKeys = Object.keys(item.panels);
+            document.getElementById('content-body').innerHTML = `
+                ${panelKeys.map((key, i) => `<div class="tab-panel ${i === 0 ? 'active' : ''}" data-panel="${i}">${item.panels[key]}</div>`).join('')}
+            `;
+
+            // Tab clicks
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const idx = parseInt(tab.dataset.tab);
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.querySelector(`.tab-panel[data-panel="${idx}"]`).classList.add('active');
+                });
+            });
+
+            // Lang toggle (EN/PT-BR)
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const container = btn.closest('.lang-toggle-container');
+                    const lang = btn.dataset.lang;
+                    container.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    container.querySelectorAll('.lang-content').forEach(c => c.classList.remove('active'));
+                    btn.classList.add('active');
+                    container.querySelector(`.lang-content[data-lang="${lang}"]`).classList.add('active');
+                });
+            });
+
+            // Organograma interativo (clique para destacar)
+            document.querySelectorAll('[data-org]').forEach(cell => {
+                cell.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('[data-org]').forEach(c => c.classList.remove('active'));
+                    cell.classList.add('active');
+                });
+            });
+
+            // Clique fora remove highlight do organograma
+            document.querySelector('.content-body')?.addEventListener('click', (e) => {
+                if (!e.target.closest('[data-org]')) {
+                    document.querySelectorAll('[data-org]').forEach(c => c.classList.remove('active'));
+                }
+            });
+        }
+
+        // Tree: folders
+        document.querySelectorAll('.tree-item[data-folder]').forEach(folder => {
+            folder.addEventListener('click', () => {
+                const id = folder.dataset.folder;
+                const children = document.getElementById(`${id}-children`);
+                const chevron = folder.querySelector('.tree-chevron');
+                if (children) {
+                    children.classList.toggle('expanded');
+                    chevron.classList.toggle('expanded');
+                }
+            });
+        });
+
+        // Tree: files
+        document.querySelectorAll('.tree-item[data-id]').forEach(item => {
+            item.addEventListener('click', e => {
+                e.stopPropagation();
+                document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                render(item.dataset.id);
+            });
+        });
+
+        // Init
+        setTimeout(() => document.querySelector('[data-id="agents-conceito"]').click(), 100);
+    </script>
+</body>
+</html>

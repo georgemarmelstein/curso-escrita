@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Quote Al Harris (Fechamento)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #030308;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 30%,
+                rgba(0, 0, 0, 0.4) 60%,
+                rgba(0, 0, 0, 0.8) 100%);
+            pointer-events: none;
+            z-index: 90;
+        }
+
+        /* Glow dourado suave */
+        .bg-glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120vw;
+            height: 120vh;
+            background: radial-gradient(ellipse at center,
+                rgba(190, 156, 109, 0.06) 0%,
+                transparent 50%);
+            z-index: 0;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 50;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5vh 8vw;
+        }
+
+        /* Quote */
+        .quote-container {
+            text-align: center;
+            max-width: 90vw;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.2rem, 5vw, 4.5rem);
+            font-weight: 600;
+            color: var(--cream);
+            line-height: 1.35;
+            opacity: 0;
+            animation: revealQuote 1s ease 0.3s forwards;
+        }
+
+        @keyframes revealQuote {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .highlight {
+            color: var(--gold);
+            position: relative;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0.08em;
+            left: 0;
+            width: 100%;
+            height: 0.06em;
+            background: var(--gold);
+            opacity: 0.5;
+        }
+
+        .highlight-green {
+            color: var(--green);
+        }
+
+        /* Original */
+        .original-container {
+            margin-top: 4vh;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.2s forwards;
+        }
+
+        .original-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1.1vw, 0.95rem);
+            font-style: italic;
+            color: rgba(255, 244, 228, 0.35);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Author */
+        .author-container {
+            margin-top: 5vh;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.5s forwards;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.2rem, 2vw, 1.6rem);
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.05em;
+        }
+
+        .author-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 1.2vw, 1rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 0.5em;
+        }
+
+        /* Next lesson teaser */
+        .next-lesson {
+            position: absolute;
+            bottom: 5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 2s forwards;
+        }
+
+        .next-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 0.9vw, 0.75rem);
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1vh;
+        }
+
+        .next-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1rem, 1.6vw, 1.3rem);
+            color: var(--cream);
+        }
+
+        .next-title strong {
+            color: var(--green);
+        }
+
+        /* Embed mode */
+        body.embed-mode .quote-text {
+            font-size: clamp(1.8rem, 4vw, 3.5rem);
+        }
+        body.embed-mode .container {
+            padding: 4vh 6vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="vignette"></div>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <div class="quote-container">
+            <p class="quote-text">
+                Se você acertar o <span class="highlight">spec</span>,<br>
+                o código <span class="highlight-green">quase escreve a si mesmo</span>.
+            </p>
+        </div>
+
+        <div class="original-container">
+            <p class="original-text">
+                "If you get the spec right, the code almost writes itself."
+            </p>
+        </div>
+
+        <div class="author-container">
+            <div class="author-name">Al Harris</div>
+            <div class="author-title">Amazon Kiro • AI Engineer Summit 2025</div>
+        </div>
+
+        <div class="next-lesson">
+            <div class="next-label">Próxima Aula</div>
+            <div class="next-title">
+                Na Aula 05, vamos <strong>CONSTRUIR</strong> — montando as peças na prática.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

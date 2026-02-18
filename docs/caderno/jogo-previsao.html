@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Previsão — Como os LLMs Geram Texto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #FDFCFA;
+            --bg-secondary: #F7F5F2;
+            --bg-tertiary: #EFECE7;
+            --bg-card: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-muted: #7A7A7A;
+            --border-light: #E8E5E0;
+            --border-medium: #D4D0C8;
+            --accent-blue: #194A68;
+            --accent-blue-light: #2A6A8F;
+            --accent-gold: #BE9C6D;
+            --accent-gold-light: #D4B88A;
+            --accent-success: #2D8659;
+            --accent-warning: #C77D1A;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+            --font-display: 'Crimson Pro', Georgia, serif;
+            --font-body: 'Source Sans 3', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition-fast: 150ms ease;
+            --transition-base: 250ms ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0F0F0F;
+            --bg-secondary: #1A1A1A;
+            --bg-tertiary: #252525;
+            --bg-card: #1F1F1F;
+            --text-primary: #F5F5F5;
+            --text-secondary: #BEBEBE;
+            --text-muted: #888888;
+            --border-light: #2A2A2A;
+            --border-medium: #3A3A3A;
+            --accent-blue: #4A90B8;
+            --accent-blue-light: #6AAED4;
+            --accent-gold: #D4B88A;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            padding: 32px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+        }
+
+        .header-badge-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--accent-gold);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .header h1 {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Game Container */
+        .game-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Sentence Section */
+        .sentence-section {
+            padding: 24px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .sentence-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .sentence-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-medium);
+            border-radius: 8px;
+            padding: 20px 24px;
+            font-family: var(--font-display);
+            font-size: 22px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            min-height: 70px;
+        }
+
+        .sentence-box .word.new {
+            background: linear-gradient(120deg, rgba(190, 156, 109, 0.3) 0%, rgba(190, 156, 109, 0.3) 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            animation: highlightFade 2s ease-out;
+        }
+
+        .sentence-box .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--accent-blue);
+            margin-left: 4px;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes highlightFade {
+            0% { background: rgba(190, 156, 109, 0.5); }
+            100% { background: rgba(190, 156, 109, 0.2); }
+        }
+
+        /* Neural Network Section */
+        .neural-section {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            border-bottom: 1px solid var(--border-light);
+            background: var(--bg-tertiary);
+        }
+
+        .neural-image-container {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .neural-image {
+            width: 100%;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .neural-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(239, 236, 231, 0.8) 80%);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        [data-theme="dark"] .neural-image-overlay {
+            background: linear-gradient(90deg, transparent 0%, rgba(37, 37, 37, 0.8) 80%);
+        }
+
+        .neural-arrow {
+            font-size: 28px;
+            color: var(--accent-gold);
+            flex-shrink: 0;
+        }
+
+        .neural-output {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .neural-output-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .neural-output-value {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        /* Words Section */
+        .words-section {
+            padding: 24px;
+        }
+
+        .words-label {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .words-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .word-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-medium);
+            border-radius: 10px;
+            padding: 16px 20px;
+            min-width: 130px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .word-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-blue);
+        }
+
+        .word-card:active {
+            transform: translateY(-2px);
+        }
+
+        .word-card.selected {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            transform: scale(1.05);
+        }
+
+        .word-card.selected .word-text {
+            color: white;
+        }
+
+        .word-card.selected .prob-text {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .word-card.selected .prob-bar {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .word-card.selected .prob-bar-fill {
+            background: var(--accent-gold);
+        }
+
+        .word-card.not-selected {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+
+        .word-text {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .prob-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prob-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .prob-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-blue-light));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .prob-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            min-width: 35px;
+            text-align: right;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            padding: 0 24px 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-gold);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-gold-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-medium);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-light);
+            color: var(--text-primary);
+        }
+
+        /* History */
+        .history-section {
+            padding: 24px;
+            border-top: 1px solid var(--border-light);
+            background: var(--bg-secondary);
+        }
+
+        .history-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .history-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .history-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .history-item .chosen {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .history-item .options {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* End Message */
+        .end-message {
+            text-align: center;
+            padding: 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            margin-top: 16px;
+        }
+
+        .end-message h3 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            color: var(--accent-success);
+            margin-bottom: 12px;
+        }
+
+        .end-message p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Callout */
+        .callout {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin: 24px;
+            border-left: 4px solid var(--accent-blue);
+            background: rgba(25, 74, 104, 0.08);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .callout p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Stats */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 16px 24px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+
+            .header h1 { font-size: 28px; }
+            .header p { font-size: 16px; }
+
+            .neural-section {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .neural-arrow {
+                transform: rotate(90deg);
+            }
+
+            .sentence-box {
+                font-size: 18px;
+                padding: 16px;
+            }
+
+            .word-card {
+                min-width: 110px;
+                padding: 12px 16px;
+            }
+
+            .word-text {
+                font-size: 18px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema">
+        <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-badge">
+                <span class="header-badge-icon">1</span>
+                <span>Módulo 1 — Aula 1</span>
+            </div>
+            <h1>Jogo da Previsão</h1>
+            <p>Entenda como os LLMs geram texto prevendo a próxima palavra, uma de cada vez</p>
+        </div>
+
+        <div class="game-container">
+            <!-- Stats -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value" id="wordCount">6</div>
+                    <div class="stat-label">Palavras</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stepCount">0</div>
+                    <div class="stat-label">Passos</div>
+                </div>
+            </div>
+
+            <!-- Sentence -->
+            <div class="sentence-section">
+                <div class="sentence-label">Frase em construção</div>
+                <div class="sentence-box" id="sentenceBox">
+                    <span id="sentenceText"></span><span class="cursor"></span>
+                </div>
+            </div>
+
+            <!-- Neural Network -->
+            <div class="neural-section">
+                <div class="neural-image-container">
+                    <img src="../../site/assets/img/1Je65TdJbDm55KQCja7rPVw.png" alt="Rede Neural" class="neural-image">
+                    <div class="neural-image-overlay"></div>
+                </div>
+                <div class="neural-arrow">→</div>
+                <div class="neural-output">
+                    <div class="neural-output-label">Saída</div>
+                    <div class="neural-output-value">Probabilidades</div>
+                </div>
+            </div>
+
+            <!-- Words -->
+            <div class="words-section">
+                <div class="words-label" id="wordsLabel">Escolha a próxima palavra:</div>
+                <div class="words-container" id="wordsContainer"></div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button class="btn btn-primary" id="autoBtn" onclick="autoSelect()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    Sorteio Automático
+                </button>
+                <button class="btn btn-secondary" onclick="resetGame()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10"></polyline>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                    </svg>
+                    Reiniciar
+                </button>
+            </div>
+
+            <!-- Callout -->
+            <div class="callout">
+                <div class="callout-title">Como funciona o jogo</div>
+                <p>A cada passo, o modelo analisa toda a frase anterior e calcula probabilidades para cada palavra do vocabulário. Clique em uma palavra para adicioná-la à frase, ou use o sorteio automático (ponderado pelas probabilidades).</p>
+            </div>
+
+            <!-- History -->
+            <div class="history-section" id="historySection" style="display: none;">
+                <div class="history-label">Histórico de escolhas</div>
+                <div class="history-container" id="historyContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Árvore de decisão expandida com muitos caminhos
+        const storyTree = {
+            // ===== INÍCIO =====
+            "Era uma vez um rei que": {
+                words: [
+                    { word: "vivia", prob: 32 },
+                    { word: "governava", prob: 28 },
+                    { word: "tinha", prob: 25 },
+                    { word: "queria", prob: 15 }
+                ]
+            },
+
+            // ===== CAMINHO: VIVIA =====
+            "Era uma vez um rei que vivia": {
+                words: [
+                    { word: "em", prob: 38 },
+                    { word: "sozinho", prob: 25 },
+                    { word: "feliz", prob: 22 },
+                    { word: "num", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que vivia em": {
+                words: [
+                    { word: "um", prob: 40 },
+                    { word: "seu", prob: 28 },
+                    { word: "terras", prob: 18 },
+                    { word: "paz", prob: 14 }
+                ]
+            },
+            "Era uma vez um rei que vivia em um": {
+                words: [
+                    { word: "castelo", prob: 42 },
+                    { word: "reino", prob: 28 },
+                    { word: "palácio", prob: 20 },
+                    { word: "lugar", prob: 10 }
+                ]
+            },
+            "Era uma vez um rei que vivia em um castelo": {
+                words: [
+                    { word: "assombrado", prob: 30 },
+                    { word: "distante", prob: 28 },
+                    { word: "encantado", prob: 25 },
+                    { word: "antigo", prob: 17 }
+                ]
+            },
+            "Era uma vez um rei que vivia em um castelo assombrado": {
+                words: [
+                    { word: "por", prob: 35 },
+                    { word: "onde", prob: 28 },
+                    { word: "que", prob: 22 },
+                    { word: "no", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que vivia em um castelo assombrado por": {
+                words: [
+                    { word: "fantasmas", prob: 38 },
+                    { word: "espíritos", prob: 28 },
+                    { word: "sombras", prob: 20 },
+                    { word: "memórias", prob: 14 }
+                ]
+            },
+            "Era uma vez um rei que vivia em um castelo assombrado por fantasmas": {
+                words: [
+                    { word: "do", prob: 35 },
+                    { word: "antigos", prob: 28 },
+                    { word: "que", prob: 22 },
+                    { word: "misteriosos", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que vivia em um castelo assombrado por fantasmas do": {
+                words: [
+                    { word: "passado", prob: 45 },
+                    { word: "reino", prob: 25 },
+                    { word: "seu", prob: 18 },
+                    { word: "tempo", prob: 12 }
+                ]
+            },
+            // Castelo distante
+            "Era uma vez um rei que vivia em um castelo distante": {
+                words: [
+                    { word: "nas", prob: 32 },
+                    { word: "além", prob: 28 },
+                    { word: "cercado", prob: 25 },
+                    { word: "onde", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que vivia em um castelo distante nas": {
+                words: [
+                    { word: "montanhas", prob: 40 },
+                    { word: "terras", prob: 30 },
+                    { word: "florestas", prob: 20 },
+                    { word: "nuvens", prob: 10 }
+                ]
+            },
+            // Castelo encantado
+            "Era uma vez um rei que vivia em um castelo encantado": {
+                words: [
+                    { word: "onde", prob: 35 },
+                    { word: "que", prob: 28 },
+                    { word: "cercado", prob: 22 },
+                    { word: "repleto", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que vivia em um castelo encantado onde": {
+                words: [
+                    { word: "tudo", prob: 35 },
+                    { word: "os", prob: 28 },
+                    { word: "a", prob: 22 },
+                    { word: "ninguém", prob: 15 }
+                ]
+            },
+            // Reino
+            "Era uma vez um rei que vivia em um reino": {
+                words: [
+                    { word: "distante", prob: 35 },
+                    { word: "próspero", prob: 28 },
+                    { word: "mágico", prob: 22 },
+                    { word: "esquecido", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que vivia em um reino distante": {
+                words: [
+                    { word: "onde", prob: 35 },
+                    { word: "além", prob: 28 },
+                    { word: "chamado", prob: 22 },
+                    { word: "cercado", prob: 15 }
+                ]
+            },
+            // Palácio
+            "Era uma vez um rei que vivia em um palácio": {
+                words: [
+                    { word: "dourado", prob: 35 },
+                    { word: "magnífico", prob: 28 },
+                    { word: "de", prob: 22 },
+                    { word: "cercado", prob: 15 }
+                ]
+            },
+            // Vivia sozinho
+            "Era uma vez um rei que vivia sozinho": {
+                words: [
+                    { word: "em", prob: 38 },
+                    { word: "num", prob: 28 },
+                    { word: "desde", prob: 20 },
+                    { word: "porque", prob: 14 }
+                ]
+            },
+            "Era uma vez um rei que vivia sozinho em": {
+                words: [
+                    { word: "seu", prob: 38 },
+                    { word: "um", prob: 32 },
+                    { word: "uma", prob: 18 },
+                    { word: "terras", prob: 12 }
+                ]
+            },
+            "Era uma vez um rei que vivia sozinho em seu": {
+                words: [
+                    { word: "castelo", prob: 40 },
+                    { word: "palácio", prob: 30 },
+                    { word: "reino", prob: 20 },
+                    { word: "trono", prob: 10 }
+                ]
+            },
+            // Vivia feliz
+            "Era uma vez um rei que vivia feliz": {
+                words: [
+                    { word: "em", prob: 35 },
+                    { word: "com", prob: 30 },
+                    { word: "até", prob: 20 },
+                    { word: "governando", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que vivia feliz em": {
+                words: [
+                    { word: "seu", prob: 38 },
+                    { word: "um", prob: 32 },
+                    { word: "paz", prob: 18 },
+                    { word: "harmonia", prob: 12 }
+                ]
+            },
+            // Vivia num
+            "Era uma vez um rei que vivia num": {
+                words: [
+                    { word: "castelo", prob: 40 },
+                    { word: "reino", prob: 30 },
+                    { word: "palácio", prob: 20 },
+                    { word: "lugar", prob: 10 }
+                ]
+            },
+
+            // ===== CAMINHO: GOVERNAVA =====
+            "Era uma vez um rei que governava": {
+                words: [
+                    { word: "um", prob: 38 },
+                    { word: "com", prob: 28 },
+                    { word: "suas", prob: 20 },
+                    { word: "o", prob: 14 }
+                ]
+            },
+            "Era uma vez um rei que governava um": {
+                words: [
+                    { word: "reino", prob: 45 },
+                    { word: "vasto", prob: 25 },
+                    { word: "pequeno", prob: 18 },
+                    { word: "grande", prob: 12 }
+                ]
+            },
+            "Era uma vez um rei que governava um reino": {
+                words: [
+                    { word: "distante", prob: 32 },
+                    { word: "próspero", prob: 28 },
+                    { word: "muito", prob: 22 },
+                    { word: "onde", prob: 18 }
+                ]
+            },
+            "Era uma vez um rei que governava um reino distante": {
+                words: [
+                    { word: "além", prob: 35 },
+                    { word: "nas", prob: 28 },
+                    { word: "onde", prob: 22 },
+                    { word: "chamado", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que governava um reino próspero": {
+                words: [
+                    { word: "e", prob: 35 },
+                    { word: "onde", prob: 28 },
+                    { word: "cheio", prob: 22 },
+                    { word: "conhecido", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que governava um reino próspero e": {
+                words: [
+                    { word: "feliz", prob: 35 },
+                    { word: "pacífico", prob: 28 },
+                    { word: "rico", prob: 22 },
+                    { word: "harmonioso", prob: 15 }
+                ]
+            },
+            // Governava com
+            "Era uma vez um rei que governava com": {
+                words: [
+                    { word: "sabedoria", prob: 38 },
+                    { word: "justiça", prob: 30 },
+                    { word: "bondade", prob: 20 },
+                    { word: "firmeza", prob: 12 }
+                ]
+            },
+            "Era uma vez um rei que governava com sabedoria": {
+                words: [
+                    { word: "e", prob: 40 },
+                    { word: "seu", prob: 25 },
+                    { word: "um", prob: 20 },
+                    { word: "todas", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que governava com sabedoria e": {
+                words: [
+                    { word: "justiça", prob: 38 },
+                    { word: "bondade", prob: 30 },
+                    { word: "compaixão", prob: 20 },
+                    { word: "coragem", prob: 12 }
+                ]
+            },
+
+            // ===== CAMINHO: TINHA =====
+            "Era uma vez um rei que tinha": {
+                words: [
+                    { word: "três", prob: 32 },
+                    { word: "uma", prob: 28 },
+                    { word: "muitos", prob: 22 },
+                    { word: "o", prob: 18 }
+                ]
+            },
+            "Era uma vez um rei que tinha três": {
+                words: [
+                    { word: "filhas", prob: 38 },
+                    { word: "filhos", prob: 32 },
+                    { word: "desejos", prob: 18 },
+                    { word: "reinos", prob: 12 }
+                ]
+            },
+            "Era uma vez um rei que tinha três filhas": {
+                words: [
+                    { word: "muito", prob: 32 },
+                    { word: "lindas", prob: 28 },
+                    { word: "que", prob: 25 },
+                    { word: "e", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que tinha três filhas muito": {
+                words: [
+                    { word: "bonitas", prob: 35 },
+                    { word: "especiais", prob: 28 },
+                    { word: "diferentes", prob: 22 },
+                    { word: "amadas", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que tinha três filhas lindas": {
+                words: [
+                    { word: "que", prob: 35 },
+                    { word: "chamadas", prob: 28 },
+                    { word: "e", prob: 22 },
+                    { word: "mas", prob: 15 }
+                ]
+            },
+            // Três filhos
+            "Era uma vez um rei que tinha três filhos": {
+                words: [
+                    { word: "corajosos", prob: 32 },
+                    { word: "que", prob: 28 },
+                    { word: "muito", prob: 25 },
+                    { word: "e", prob: 15 }
+                ]
+            },
+            // Uma filha
+            "Era uma vez um rei que tinha uma": {
+                words: [
+                    { word: "filha", prob: 42 },
+                    { word: "esposa", prob: 25 },
+                    { word: "coroa", prob: 18 },
+                    { word: "missão", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que tinha uma filha": {
+                words: [
+                    { word: "muito", prob: 35 },
+                    { word: "chamada", prob: 28 },
+                    { word: "que", prob: 22 },
+                    { word: "linda", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que tinha uma filha muito": {
+                words: [
+                    { word: "bonita", prob: 35 },
+                    { word: "especial", prob: 28 },
+                    { word: "curiosa", prob: 22 },
+                    { word: "corajosa", prob: 15 }
+                ]
+            },
+            // Muitos
+            "Era uma vez um rei que tinha muitos": {
+                words: [
+                    { word: "súditos", prob: 35 },
+                    { word: "tesouros", prob: 28 },
+                    { word: "inimigos", prob: 22 },
+                    { word: "segredos", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que tinha muitos súditos": {
+                words: [
+                    { word: "que", prob: 38 },
+                    { word: "fiéis", prob: 28 },
+                    { word: "e", prob: 20 },
+                    { word: "mas", prob: 14 }
+                ]
+            },
+
+            // ===== CAMINHO: QUERIA =====
+            "Era uma vez um rei que queria": {
+                words: [
+                    { word: "encontrar", prob: 32 },
+                    { word: "ser", prob: 28 },
+                    { word: "muito", prob: 22 },
+                    { word: "conquistar", prob: 18 }
+                ]
+            },
+            "Era uma vez um rei que queria encontrar": {
+                words: [
+                    { word: "um", prob: 38 },
+                    { word: "a", prob: 28 },
+                    { word: "seu", prob: 20 },
+                    { word: "o", prob: 14 }
+                ]
+            },
+            "Era uma vez um rei que queria encontrar um": {
+                words: [
+                    { word: "herdeiro", prob: 32 },
+                    { word: "tesouro", prob: 28 },
+                    { word: "amor", prob: 25 },
+                    { word: "caminho", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que queria encontrar um herdeiro": {
+                words: [
+                    { word: "digno", prob: 38 },
+                    { word: "para", prob: 28 },
+                    { word: "que", prob: 20 },
+                    { word: "capaz", prob: 14 }
+                ]
+            },
+            "Era uma vez um rei que queria encontrar um tesouro": {
+                words: [
+                    { word: "perdido", prob: 38 },
+                    { word: "escondido", prob: 28 },
+                    { word: "mágico", prob: 20 },
+                    { word: "lendário", prob: 14 }
+                ]
+            },
+            // Queria ser
+            "Era uma vez um rei que queria ser": {
+                words: [
+                    { word: "o", prob: 35 },
+                    { word: "mais", prob: 30 },
+                    { word: "amado", prob: 20 },
+                    { word: "lembrado", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que queria ser o": {
+                words: [
+                    { word: "mais", prob: 40 },
+                    { word: "melhor", prob: 30 },
+                    { word: "maior", prob: 18 },
+                    { word: "único", prob: 12 }
+                ]
+            },
+            "Era uma vez um rei que queria ser o mais": {
+                words: [
+                    { word: "justo", prob: 35 },
+                    { word: "poderoso", prob: 28 },
+                    { word: "sábio", prob: 22 },
+                    { word: "amado", prob: 15 }
+                ]
+            },
+            // Queria conquistar
+            "Era uma vez um rei que queria conquistar": {
+                words: [
+                    { word: "novos", prob: 35 },
+                    { word: "o", prob: 28 },
+                    { word: "terras", prob: 22 },
+                    { word: "todos", prob: 15 }
+                ]
+            },
+            "Era uma vez um rei que queria conquistar novos": {
+                words: [
+                    { word: "reinos", prob: 40 },
+                    { word: "territórios", prob: 30 },
+                    { word: "mundos", prob: 18 },
+                    { word: "horizontes", prob: 12 }
+                ]
+            },
+
+            // ===== CONTINUAÇÕES EXTRAS =====
+            "Era uma vez um rei que vivia em seu": {
+                words: [
+                    { word: "castelo", prob: 40 },
+                    { word: "palácio", prob: 30 },
+                    { word: "reino", prob: 20 },
+                    { word: "trono", prob: 10 }
+                ]
+            },
+            "Era uma vez um rei que vivia em terras": {
+                words: [
+                    { word: "distantes", prob: 40 },
+                    { word: "longínquas", prob: 28 },
+                    { word: "mágicas", prob: 20 },
+                    { word: "esquecidas", prob: 12 }
+                ]
+            },
+            "Era uma vez um rei que vivia em paz": {
+                words: [
+                    { word: "com", prob: 38 },
+                    { word: "até", prob: 28 },
+                    { word: "em", prob: 20 },
+                    { word: "e", prob: 14 }
+                ]
+            }
+        };
+
+        // Estado do jogo
+        let currentSentence = "Era uma vez um rei que";
+        let history = [];
+        let isAnimating = false;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSentence();
+            renderWords();
+            updateStats();
+        });
+
+        // Renderiza a frase atual
+        function renderSentence() {
+            const sentenceText = document.getElementById('sentenceText');
+            const words = currentSentence.split(' ');
+
+            let html = '';
+            words.forEach((word, index) => {
+                const isNew = history.length > 0 && index === words.length - 1;
+                html += `<span class="word${isNew ? ' new' : ''}">${word}</span> `;
+            });
+
+            sentenceText.innerHTML = html;
+        }
+
+        // Renderiza as palavras candidatas
+        function renderWords() {
+            const container = document.getElementById('wordsContainer');
+            const label = document.getElementById('wordsLabel');
+            const autoBtn = document.getElementById('autoBtn');
+
+            const options = storyTree[currentSentence];
+
+            if (!options) {
+                container.innerHTML = '';
+                label.textContent = 'História completa!';
+                autoBtn.style.display = 'none';
+                showEndMessage();
+                return;
+            }
+
+            label.textContent = 'Escolha a próxima palavra:';
+            autoBtn.style.display = 'inline-flex';
+
+            container.innerHTML = options.words.map((item, index) => `
+                <div class="word-card fade-in" onclick="selectWord('${item.word}')" style="animation-delay: ${index * 0.08}s">
+                    <div class="word-text">${item.word}</div>
+                    <div class="prob-container">
+                        <div class="prob-bar">
+                            <div class="prob-bar-fill" style="width: ${item.prob}%"></div>
+                        </div>
+                        <div class="prob-text">${item.prob}%</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Seleciona uma palavra
+        function selectWord(word) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const options = storyTree[currentSentence];
+            if (!options) return;
+
+            const cards = document.querySelectorAll('.word-card');
+            cards.forEach(card => {
+                const cardWord = card.querySelector('.word-text').textContent;
+                if (cardWord === word) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.add('not-selected');
+                }
+            });
+
+            const otherWords = options.words
+                .filter(w => w.word !== word)
+                .map(w => w.word)
+                .join(', ');
+
+            history.push({
+                chosen: word,
+                others: otherWords,
+                sentence: currentSentence
+            });
+
+            setTimeout(() => {
+                currentSentence += ' ' + word;
+                renderSentence();
+                renderHistory();
+                updateStats();
+
+                setTimeout(() => {
+                    renderWords();
+                    isAnimating = false;
+                }, 250);
+            }, 400);
+        }
+
+        // Sorteio automático
+        function autoSelect() {
+            if (isAnimating) return;
+
+            const options = storyTree[currentSentence];
+            if (!options) return;
+
+            const total = options.words.reduce((sum, w) => sum + w.prob, 0);
+            let random = Math.random() * total;
+
+            let selectedWord = options.words[0].word;
+            for (const item of options.words) {
+                random -= item.prob;
+                if (random <= 0) {
+                    selectedWord = item.word;
+                    break;
+                }
+            }
+
+            selectWord(selectedWord);
+        }
+
+        // Atualiza estatísticas
+        function updateStats() {
+            document.getElementById('wordCount').textContent = currentSentence.split(' ').length;
+            document.getElementById('stepCount').textContent = history.length;
+        }
+
+        // Renderiza o histórico
+        function renderHistory() {
+            const section = document.getElementById('historySection');
+            const container = document.getElementById('historyContainer');
+
+            if (history.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            container.innerHTML = history.map((item, index) => `
+                <div class="history-item fade-in">
+                    <span class="chosen">${item.chosen}</span>
+                    <span class="options">(${item.others})</span>
+                </div>
+            `).join('');
+        }
+
+        // Mostra mensagem de fim
+        function showEndMessage() {
+            const wordsSection = document.querySelector('.words-section');
+
+            const endDiv = document.createElement('div');
+            endDiv.className = 'end-message fade-in';
+            endDiv.innerHTML = `
+                <h3>Parabéns! Você completou a história!</h3>
+                <p>Assim como você escolheu entre palavras prováveis, os LLMs fazem trilhões de cálculos para determinar qual palavra vem a seguir — tudo baseado em padrões estatísticos aprendidos durante o treinamento.</p>
+            `;
+
+            wordsSection.appendChild(endDiv);
+        }
+
+        // Reinicia o jogo
+        function resetGame() {
+            currentSentence = "Era uma vez um rei que";
+            history = [];
+            isAnimating = false;
+
+            document.getElementById('historySection').style.display = 'none';
+            document.getElementById('historyContainer').innerHTML = '';
+
+            const endMessage = document.querySelector('.end-message');
+            if (endMessage) endMessage.remove();
+
+            renderSentence();
+            renderWords();
+            updateStats();
+        }
+
+        // Toggle tema
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+
+            const icon = document.getElementById('theme-icon');
+            if (newTheme === 'dark') {
+                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+            } else {
+                icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+            }
+        }
+    </script>
+</body>
+</html>

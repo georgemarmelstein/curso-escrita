@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Memory: O Contexto Acumulado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        .bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 50% 50%, rgba(34, 211, 238, 0.05) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 3vh 5vw;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 2vw;
+            margin-bottom: 3vh;
+        }
+
+        .header-icon {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+        }
+
+        .header-text h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+            font-weight: 600;
+            color: var(--cyan);
+        }
+
+        .header-text p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 0.5vh;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4vw;
+            align-items: center;
+        }
+
+        /* Concentric circles visualization */
+        .circles-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .memory-circle {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .memory-circle:hover {
+            transform: scale(1.02);
+        }
+
+        .memory-circle.active {
+            z-index: 10;
+        }
+
+        /* Outer - CLAUDE.md */
+        .circle-claudemd {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center,
+                transparent 60%,
+                rgba(190, 156, 109, 0.15) 60%,
+                rgba(190, 156, 109, 0.08) 100%);
+            border: 2px solid rgba(190, 156, 109, 0.4);
+        }
+
+        .circle-claudemd .circle-label {
+            position: absolute;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--gold);
+        }
+
+        /* Middle - Skills */
+        .circle-skills {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            background: radial-gradient(circle at center,
+                transparent 55%,
+                rgba(74, 222, 128, 0.15) 55%,
+                rgba(74, 222, 128, 0.08) 100%);
+            border: 2px solid rgba(74, 222, 128, 0.4);
+        }
+
+        .circle-skills .circle-label {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--green);
+        }
+
+        /* Inner - Conversa atual */
+        .circle-conversa {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            background: rgba(34, 211, 238, 0.2);
+            border: 2px solid var(--cyan);
+            box-shadow: 0 0 40px rgba(34, 211, 238, 0.3);
+        }
+
+        .circle-conversa .circle-label {
+            color: var(--cyan);
+            text-align: center;
+        }
+
+        .circle-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            font-weight: 600;
+        }
+
+        .circle-sublabel {
+            font-size: clamp(0.6rem, 0.8vw, 0.7rem);
+            opacity: 0.6;
+            margin-top: 0.3vh;
+        }
+
+        /* Center indicator */
+        .center-indicator {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 0.9vw, 0.75rem);
+            color: rgba(255, 244, 228, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        .center-indicator .arrow {
+            color: var(--cyan);
+        }
+
+        /* Info panel */
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5vh;
+        }
+
+        .info-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 2vh 2vw;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            border-color: var(--cyan);
+            background: rgba(34, 211, 238, 0.05);
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            margin-bottom: 1.2vh;
+        }
+
+        .info-card-icon {
+            font-size: clamp(1.3rem, 1.8vw, 1.5rem);
+        }
+
+        .info-card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            font-weight: 600;
+        }
+
+        .card-claudemd .info-card-title { color: var(--gold); }
+        .card-skills .info-card-title { color: var(--green); }
+        .card-conversa .info-card-title { color: var(--cyan); }
+
+        .info-card-content {
+            font-size: clamp(0.75rem, 1vw, 0.88rem);
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.6;
+        }
+
+        .info-card-content ul {
+            list-style: none;
+            margin-top: 0.8vh;
+        }
+
+        .info-card-content li {
+            padding: 0.4vh 0;
+            padding-left: 1.5vw;
+            position: relative;
+        }
+
+        .info-card-content li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+        }
+
+        .persistence-badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.8vw, 0.7rem);
+            padding: 0.3vh 0.8vw;
+            border-radius: 10px;
+            margin-left: 1vw;
+        }
+
+        .badge-persiste {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--green);
+        }
+
+        .badge-sessao {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: center;
+            padding-top: 2vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-message {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+            color: rgba(255, 244, 228, 0.7);
+            font-style: italic;
+        }
+
+        .footer-message strong {
+            color: var(--cyan);
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 2vh 3vw; }
+        body.embed-mode .circles-container { max-width: 400px; }
+        body.embed-mode .info-card { padding: 1.5vh 1.5vw; }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="container">
+        <div class="header">
+            <span class="header-icon">🧠</span>
+            <div class="header-text">
+                <h1>Memory - O Contexto Acumulado</h1>
+                <p>O que o agente "lembra"</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Circles visualization -->
+            <div class="circles-container">
+                <div class="memory-circle circle-claudemd">
+                    <span class="circle-label">
+                        CLAUDE.md
+                        <div class="circle-sublabel">projeto</div>
+                    </span>
+                </div>
+
+                <div class="memory-circle circle-skills">
+                    <span class="circle-label">
+                        Skills
+                        <div class="circle-sublabel">carregadas</div>
+                    </span>
+                </div>
+
+                <div class="memory-circle circle-conversa">
+                    <span class="circle-label">
+                        Conversa
+                        <div class="circle-sublabel">atual</div>
+                    </span>
+                </div>
+
+                <div class="center-indicator">
+                    <span class="arrow">←</span>
+                    mais relevante
+                    <span class="arrow">→</span>
+                </div>
+            </div>
+
+            <!-- Info panel -->
+            <div class="info-panel">
+                <div class="info-card card-claudemd">
+                    <div class="info-card-header">
+                        <span class="info-card-icon">📄</span>
+                        <span class="info-card-title">CLAUDE.md</span>
+                        <span class="persistence-badge badge-persiste">persiste</span>
+                    </div>
+                    <div class="info-card-content">
+                        Instruções do projeto carregadas automaticamente.
+                        <ul>
+                            <li>Convenções de código</li>
+                            <li>Preferências do usuário</li>
+                            <li>Regras específicas do projeto</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-card card-skills">
+                    <div class="info-card-header">
+                        <span class="info-card-icon">📚</span>
+                        <span class="info-card-title">Skills Carregadas</span>
+                        <span class="persistence-badge badge-sessao">sessão</span>
+                    </div>
+                    <div class="info-card-content">
+                        Expertise ativada durante a conversa.
+                        <ul>
+                            <li>Metodologias disponíveis</li>
+                            <li>Exemplos e templates</li>
+                            <li>Regras SEMPRE/NUNCA</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-card card-conversa">
+                    <div class="info-card-header">
+                        <span class="info-card-icon">💬</span>
+                        <span class="info-card-title">Conversa Atual</span>
+                        <span class="persistence-badge badge-sessao">sessão</span>
+                    </div>
+                    <div class="info-card-content">
+                        O diálogo em andamento.
+                        <ul>
+                            <li>Mensagens trocadas</li>
+                            <li>Decisões tomadas</li>
+                            <li>Contexto imediato</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p class="footer-message">
+                Quanto <strong>mais ao centro</strong>, mais o agente prioriza.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

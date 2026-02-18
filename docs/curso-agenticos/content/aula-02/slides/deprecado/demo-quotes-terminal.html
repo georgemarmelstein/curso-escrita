@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotes Terminal - Slash Commands</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --terminal-bg: #0d0d14;
+            --terminal-border: rgba(190, 156, 109, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            background: var(--super-bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        /* Terminal container */
+        .terminal {
+            width: 100%;
+            max-width: 950px;
+            background: var(--terminal-bg);
+            border-radius: 12px;
+            border: 1px solid var(--terminal-border);
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.5),
+                0 0 60px rgba(190, 156, 109, 0.08);
+            overflow: hidden;
+        }
+
+        /* Terminal header */
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: linear-gradient(180deg, rgba(190, 156, 109, 0.08) 0%, rgba(190, 156, 109, 0.02) 100%);
+            border-bottom: 1px solid var(--terminal-border);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.75em;
+            color: rgba(190, 156, 109, 0.6);
+            margin-right: 60px;
+        }
+
+        /* Terminal body - layout */
+        .terminal-body {
+            display: flex;
+            min-height: 420px;
+        }
+
+        /* Sidebar com commands */
+        .commands-sidebar {
+            width: 200px;
+            background: rgba(0, 0, 0, 0.2);
+            border-right: 1px solid var(--terminal-border);
+            padding: 20px 0;
+        }
+
+        .sidebar-label {
+            font-size: 0.65em;
+            color: rgba(190, 156, 109, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0 15px;
+            margin-bottom: 15px;
+        }
+
+        .command-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .command-item:hover {
+            background: rgba(190, 156, 109, 0.05);
+        }
+
+        .command-item.active {
+            background: rgba(190, 156, 109, 0.1);
+            border-left-color: var(--super-gold);
+        }
+
+        .command-slash {
+            color: var(--super-gold);
+            margin-right: 2px;
+        }
+
+        .command-name {
+            color: var(--super-cream);
+            font-size: 0.8em;
+        }
+
+        .command-item.active .command-name {
+            color: var(--super-gold);
+        }
+
+        /* Área de conteúdo principal */
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Prompt line mostrando comando executado */
+        .prompt-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.1);
+        }
+
+        .prompt-symbol {
+            color: var(--super-gold);
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+
+        .prompt-command {
+            color: var(--super-cream);
+            font-size: 0.9em;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--super-gold);
+            margin-left: 3px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Output da quote */
+        .quote-output {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15em;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Autor info */
+        .author-block {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(190, 156, 109, 0.1);
+        }
+
+        .author-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--super-gold-dark), var(--super-gold));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9em;
+            color: var(--super-bg-dark);
+            font-weight: 600;
+        }
+
+        .author-details {
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 3px;
+        }
+
+        .author-role {
+            font-size: 0.7em;
+            color: var(--super-gold);
+            opacity: 0.7;
+        }
+
+        /* Hint inferior */
+        .hint-bar {
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--terminal-border);
+            font-size: 0.65em;
+            color: rgba(190, 156, 109, 0.4);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .hint-bar kbd {
+            background: rgba(190, 156, 109, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin: 0 2px;
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 20px; }
+        body.embed-mode .terminal { max-width: 850px; }
+        body.embed-mode .terminal-body { min-height: 350px; }
+        body.embed-mode .commands-sidebar { width: 170px; }
+        body.embed-mode .command-name { font-size: 0.7em; }
+        body.embed-mode .content-area { padding: 20px; }
+        body.embed-mode .quote-text { font-size: 1em; }
+        body.embed-mode .author-avatar { width: 38px; height: 38px; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-dots">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="terminal-title">claude ~ quotes</div>
+        </div>
+
+        <div class="terminal-body">
+            <div class="commands-sidebar">
+                <div class="sidebar-label">Slash Commands</div>
+
+                <div class="command-item active" data-index="0">
+                    <span class="command-slash">/</span>
+                    <span class="command-name">andrej-karpathy</span>
+                </div>
+
+                <div class="command-item" data-index="1">
+                    <span class="command-slash">/</span>
+                    <span class="command-name">boris-cherny</span>
+                </div>
+
+                <div class="command-item" data-index="2">
+                    <span class="command-slash">/</span>
+                    <span class="command-name">ben-mann</span>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="prompt-line">
+                    <span class="prompt-symbol">claude></span>
+                    <span class="prompt-command" id="promptCommand">/andrej-karpathy</span>
+                    <span class="cursor"></span>
+                </div>
+
+                <div class="quote-output" id="quoteOutput">
+                    <!-- Conteúdo dinâmico -->
+                </div>
+            </div>
+        </div>
+
+        <div class="hint-bar">
+            <span><kbd>↑</kbd><kbd>↓</kbd> navegar</span>
+            <span><kbd>Enter</kbd> ou <kbd>clique</kbd> selecionar</span>
+        </div>
+    </div>
+
+    <script>
+        const quotes = [
+            {
+                command: '/andrej-karpathy',
+                text: `"Claude Code acertou a <span class="highlight">ordem de precedência</span> e empacotou isso em uma forma CLI bonita, minimalista e convincente que mudou o que IA parece — não é apenas um site que você visita como o Google, é um pequeno <span class="highlight">espírito/fantasma</span> que 'vive' no seu computador. Este é um <span class="highlight">paradigma novo e distinto</span> de interação com uma IA."`,
+                author: 'Andrej Karpathy',
+                role: 'Ex-Director of AI @ Tesla',
+                initials: 'AK'
+            },
+            {
+                command: '/boris-cherny',
+                text: `"<span class="highlight">Não existe um único jeito certo</span> de usar o Claude Code: nós o construímos para que você possa <span class="highlight">hackeá-lo do jeito que quiser</span>."`,
+                author: 'Boris Cherny',
+                role: 'Criador do Claude Code @ Anthropic',
+                initials: 'BC'
+            },
+            {
+                command: '/ben-mann',
+                text: `"Não construa para o modelo de hoje, construa para o <span class="highlight">modelo de seis meses a partir de agora</span>."`,
+                author: 'Ben Mann',
+                role: 'Co-Founder @ Anthropic',
+                initials: 'BM'
+            }
+        ];
+
+        const commandItems = document.querySelectorAll('.command-item');
+        const promptCommand = document.getElementById('promptCommand');
+        const quoteOutput = document.getElementById('quoteOutput');
+        let currentIndex = 0;
+
+        function renderQuote(index) {
+            const q = quotes[index];
+
+            // Atualiza prompt
+            promptCommand.textContent = q.command;
+
+            // Atualiza output com animação
+            quoteOutput.style.animation = 'none';
+            quoteOutput.offsetHeight; // Trigger reflow
+            quoteOutput.style.animation = 'fadeIn 0.4s ease forwards';
+
+            quoteOutput.innerHTML = `
+                <p class="quote-text">${q.text}</p>
+                <div class="author-block">
+                    <div class="author-line">
+                        <div class="author-avatar">${q.initials}</div>
+                        <div class="author-details">
+                            <div class="author-name">${q.author}</div>
+                            <div class="author-role">${q.role}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectCommand(index) {
+            currentIndex = index;
+
+            commandItems.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+
+            renderQuote(index);
+        }
+
+        // Clique nos commands
+        commandItems.forEach(item => {
+            item.addEventListener('click', () => {
+                selectCommand(parseInt(item.dataset.index));
+            });
+        });
+
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                selectCommand((currentIndex + 1) % quotes.length);
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                selectCommand((currentIndex - 1 + quotes.length) % quotes.length);
+            }
+        });
+
+        // Clique na área de conteúdo avança
+        document.querySelector('.content-area').addEventListener('click', (e) => {
+            if (!e.target.closest('.command-item')) {
+                selectCommand((currentIndex + 1) % quotes.length);
+            }
+        });
+
+        // Inicializar
+        renderQuote(0);
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

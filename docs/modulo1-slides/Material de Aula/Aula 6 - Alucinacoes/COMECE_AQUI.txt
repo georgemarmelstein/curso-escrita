@@ -1,0 +1,339 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║                         🎓 COMECE AQUI! 🎓                                   ║
+║                                                                               ║
+║                  Material Bibliográfico - Aula 6                             ║
+║                      ALUCINAÇÕES DOS LLMs                                    ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+
+👋 OLÁ, PROFESSOR(A)!
+
+Esta pasta contém TODO o material bibliográfico sobre ALUCINAÇÕES EM LLMs,
+com FOCO ESPECIAL nos SURVEYS DE 2025!
+
+✅ 16 PAPERS CIENTÍFICOS BAIXADOS E ORGANIZADOS
+✅ 8 SURVEYS DE 2025 (OS MAIS RECENTES!)
+✅ 5 PAPERS RECENTES DE 2025
+✅ 3 PAPERS FUNDAMENTAIS (2023-2024)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📂 ESTRUTURA DA PASTA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Aula 6 - Alucinacoes/
+│
+├── Surveys_2025/              ← 8 SURVEYS DE 2025! (25.2 MB)
+│   ├── Survey_LLM_Hallucination_Comprehensive.pdf
+│   ├── Survey_Mitigating_Hallucination_RAG_Reasoning_Agentic.pdf
+│   ├── Survey_Lokis_Dance_of_Illusions.pdf
+│   ├── Survey_Comprehensive_Taxonomy_Hallucinations.pdf
+│   ├── HalluLens_LLM_Hallucination_Benchmark.pdf
+│   ├── Survey_Hallucination_to_Truth_Fact_Checking.pdf
+│   ├── Survey_Agentic_RAG_Deep_Reasoning.pdf
+│   └── Theoretical_Foundations_Mitigation_Hallucination.pdf
+│
+├── Papers_Recentes/           ← 5 PAPERS RECENTES 2025 (10.0 MB)
+│   ├── CLAP_Cross_Layer_Attention_Probing.pdf
+│   ├── Finch_Zk_Zero_Knowledge_Hallucination_Detection.pdf
+│   ├── Teaming_LLMs_Detect_Mitigate_Hallucinations.pdf
+│   ├── HaMI_Robust_Hallucination_Detection.pdf
+│   └── FactReasoner_Factuality_Assessment.pdf
+│
+├── Papers_Fundamentais/       ← 3 PAPERS FUNDAMENTAIS (3.1 MB)
+│   ├── 2023_Survey_Hallucination_Principles_Taxonomy_Challenges.pdf
+│   ├── 2024_Survey_Factuality_of_LLMs.pdf
+│   └── 2024_Survey_Multimodal_LLM_Hallucination.pdf
+│
+├── INDICE_COMPLETO_PDFS.md    ← ÍNDICE DETALHADO (LEIA ISTO!)
+└── COMECE_AQUI.txt            ← Você está aqui! 👈
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 INÍCIO RÁPIDO - ESCOLHA SEU CENÁRIO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO A: "TENHO APENAS 2 HORAS!"                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    1. Abra: INDICE_COMPLETO_PDFS.md
+       └─ Leia a seção "PAPERS POR RELEVÂNCIA"
+
+    2. Leia introdução dos 2 papers essenciais:
+       └─ Surveys_2025/2025_Survey_LLM_Hallucination_Comprehensive.pdf
+       └─ Surveys_2025/2025_Theoretical_Foundations_Mitigation.pdf
+
+    3. Folheie: Survey_Comprehensive_Taxonomy_Hallucinations.pdf
+       └─ Foque na TAXONOMIA (tipos de alucinações)
+
+    4. Você já tem o básico para dar a aula!
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO B: "TENHO 1 DIA INTEIRO"                                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    Siga o "Roteiro de Leitura - Dia 1 e 2" em INDICE_COMPLETO_PDFS.md:
+
+    MANHÃ (4 horas):
+    1. Ler: 2023_Survey_Hallucination_Principles_Taxonomy
+    2. Ler: 2024_Survey_Factuality_of_LLMs
+    3. Ler: 2025_Theoretical_Foundations
+
+    TARDE (4 horas):
+    4. Ler: 2025_Survey_LLM_Hallucination_Comprehensive (PRIORITÁRIO!)
+    5. Ler: 2025_Survey_Comprehensive_Taxonomy
+
+    RESULTADO: Domínio completo dos conceitos fundamentais!
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO C: "TENHO UMA SEMANA - QUERO SER ESPECIALISTA!"                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    Siga o "Roteiro de Leitura de 5 Dias" completo em INDICE_COMPLETO_PDFS.md
+
+    • Dia 1: Fundamentos (3-4h)
+    • Dia 2: Estado da Arte 2025 (4-5h)
+    • Dia 3: Mitigação (3-4h)
+    • Dia 4: Detecção e Avaliação (3-4h)
+    • Dia 5: Aprofundamento e Preparação (2-3h)
+
+    RESULTADO: Você será um ESPECIALISTA em alucinações de LLMs!
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO D: "SÓ QUERO OS MELHORES PAPERS"                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    Os 5 PAPERS ESSENCIAIS (⭐⭐⭐⭐⭐):
+
+    1. Surveys_2025/Survey_LLM_Hallucination_Comprehensive.pdf
+       └─ O MAIS IMPORTANTE! Survey completo de 2025
+
+    2. Surveys_2025/Survey_Mitigating_Hallucination_RAG.pdf
+       └─ Como MITIGAR alucinações na prática
+
+    3. Surveys_2025/Survey_Comprehensive_Taxonomy.pdf
+       └─ TAXONOMIA completa de tipos
+
+    4. Surveys_2025/Theoretical_Foundations.pdf
+       └─ BASE TEÓRICA sólida
+
+    5. Papers_Fundamentais/2023_Survey_Hallucination_Principles.pdf
+       └─ REFERÊNCIA HISTÓRICA fundamental
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⭐ OS 3 SURVEYS MAIS IMPORTANTES DE 2025
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    🥇 #1: Survey_LLM_Hallucination_Comprehensive.pdf
+         └─ Outubro 2025 - O MAIS RECENTE E COMPLETO
+         └─ Cobre TUDO: causas, detecção, mitigação
+         └─ ArXiv: 2510.06265
+
+    🥇 #2: Survey_Mitigating_Hallucination_RAG_Reasoning_Agentic.pdf
+         └─ Outubro 2025 - FOCO EM SOLUÇÕES PRÁTICAS
+         └─ RAG, Reasoning, Agentic Systems
+         └─ ArXiv: 2510.24476
+
+    🥇 #3: Survey_Comprehensive_Taxonomy_Hallucinations.pdf
+         └─ Agosto 2025 - TAXONOMIA DEFINITIVA
+         └─ Framework teórico formal
+         └─ ArXiv: 2508.01781
+
+    LEIA ESTES 3 E VOCÊ JÁ DOMINA O ESTADO DA ARTE 2025!
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 ESTATÍSTICAS DO MATERIAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    📄 TOTAL DE PAPERS:        16 papers científicos
+    💾 TAMANHO TOTAL:          ~38.3 MB
+    📅 PERÍODO:                2023-2025 (foco em 2025!)
+
+    DISTRIBUIÇÃO:
+    🔵 Surveys de 2025:        8 papers (50%) - 25.2 MB
+    🟢 Papers Recentes 2025:   5 papers (31%) - 10.0 MB
+    🟡 Papers Fundamentais:    3 papers (19%) -  3.1 MB
+
+    COBERTURA:
+    ✅ Definições e conceitos
+    ✅ Taxonomia completa
+    ✅ Causas (dados, treino, arquitetura)
+    ✅ Detecção (múltiplos métodos)
+    ✅ Mitigação (RAG, fine-tuning, etc.)
+    ✅ Avaliação (benchmarks, métricas)
+    ✅ Aspectos teóricos
+    ✅ Aspectos práticos
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 OBJETIVO DA AULA 6
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Baseado nos slides originais, a aula deve cobrir:
+
+
+    1. CONCEITO
+       └─ O que são alucinações em LLMs
+       └─ "Uma máquina de palpites probabilísticos"
+
+    2. CAUSAS
+       └─ Problemas nos dados de treinamento
+       └─ Problemas no feedback humano (RLHF)
+       └─ Natureza probabilística dos LLMs
+
+    3. TAXONOMIA
+       └─ Tipos de alucinações
+       └─ Exemplos de cada tipo
+
+    4. EXEMPLOS
+       └─ "Máquinas nem tão inteligentes assim"
+
+    5. SÍNTESE
+       └─ Alucinações são INERENTES aos LLMs
+       └─ Não é bug, é feature!
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📖 MATERIAL POR SEÇÃO DA AULA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    PARA DEFINIR CONCEITO:
+    └─ Theoretical_Foundations_Mitigation.pdf (definição formal)
+    └─ 2023_Survey_Hallucination_Principles.pdf (definição clássica)
+
+    PARA TAXONOMIA:
+    └─ Survey_Comprehensive_Taxonomy.pdf (taxonomia completa)
+    └─ HalluLens_Benchmark.pdf (comparação de taxonomias)
+
+    PARA CAUSAS:
+    └─ Survey_LLM_Hallucination_Comprehensive.pdf (ciclo completo)
+    └─ Theoretical_Foundations.pdf (causas teóricas)
+
+    PARA DETECÇÃO:
+    └─ Finch_Zk.pdf (método prático)
+    └─ Teaming_LLMs.pdf (ensemble)
+
+    PARA MITIGAÇÃO:
+    └─ Survey_Mitigating_Hallucination_RAG.pdf (soluções completas)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💡 DICAS IMPORTANTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    1. 🔥 FOQUE NOS SURVEYS DE 2025
+       └─ São os mais atualizados e completos
+       └─ Compilam TODO o conhecimento anterior
+
+    2. 📊 EXTRAIA AS FIGURAS
+       └─ Taxonomias
+       └─ Diagramas de causas
+       └─ Frameworks de mitigação
+
+    3. 📝 PEGUE CITAÇÕES
+       └─ Definições formais
+       └─ Frases de impacto
+       └─ Dados estatísticos
+
+    4. 🎯 CONECTE COM SLIDES ORIGINAIS
+       └─ Seus slides já têm estrutura
+       └─ Use papers para APROFUNDAR cada seção
+
+    5. ⚠️ MENSAGEM-CHAVE
+       └─ "Alucinações NÃO são bugs - são CARACTERÍSTICAS"
+       └─ Esta é a tese central da aula!
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ CHECKLIST RÁPIDO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Antes da aula, certifique-se de ter:
+
+    □ Lido Survey_LLM_Hallucination_Comprehensive (ESSENCIAL!)
+    □ Lido Theoretical_Foundations (definições formais)
+    □ Extraído taxonomia de Survey_Comprehensive_Taxonomy
+    □ Preparado exemplos de cada tipo de alucinação
+    □ Listado causas principais (dados, RLHF, arquitetura)
+    □ Preparado slides com figuras dos papers
+    □ Testado exemplos práticos de alucinações
+    □ Preparado resposta para "Como mitigar?"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 AÇÃO IMEDIATA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Se você está lendo isso agora, sua próxima ação deve ser:
+
+
+    ┌─────────────────────────────────────────────────────────┐
+    │                                                         │
+    │   1. Abrir: INDICE_COMPLETO_PDFS.md                    │
+    │                                                         │
+    │   2. Escolher seu cenário de preparação                │
+    │                                                         │
+    │   3. Abrir o primeiro PDF da lista                     │
+    │                                                         │
+    └─────────────────────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📞 INFORMAÇÕES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    📧 Compilado para:    George Marmelstein
+    🎓 Curso:             LLMs e suas Aplicações - 2025
+    📚 Aula:              6 - Alucinações dos LLMs
+    📅 Data:              31 de janeiro de 2025
+    🤖 Compilado por:     Claude (Anthropic)
+
+    📂 Pasta:
+    C:\Users\georg\Dropbox\1 PROJETOS\CHATGPT\Slides\AULAS 2025\
+    Material de Aula\Aula 6 - Alucinacoes
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌟 DESTAQUE ESPECIAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Esta coleção contém:
+
+    ✨ 8 SURVEYS DE 2025 - OS MAIS RECENTES DO MUNDO!
+    ✨ Publicados entre FEVEREIRO e OUTUBRO de 2025
+    ✨ Estado da arte ATUALÍSSIMO
+    ✨ Cobertura COMPLETA do tema
+
+    Você tem em mãos o material mais ATUALIZADO E COMPLETO
+    sobre alucinações em LLMs disponível HOJE!
+
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║                            📚 BONS ESTUDOS! 📚                               ║
+║                                                                               ║
+║                  E mais importante: BOA AULA! 🎓                             ║
+║                                                                               ║
+║            "As alucinações não são bugs - são características                ║
+║                    inerentes aos LLMs"                                       ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+
+P.S.: O arquivo INDICE_COMPLETO_PDFS.md contém descrição detalhada de TODOS
+      os 16 papers, roteiros de leitura, e sugestões de uso para cada seção
+      da aula. É o seu GUIA MESTRE!
+
+
+═══════════════════════════════════════════════════════════════════════════════
+FIM DO GUIA "COMECE AQUI"
+═══════════════════════════════════════════════════════════════════════════════

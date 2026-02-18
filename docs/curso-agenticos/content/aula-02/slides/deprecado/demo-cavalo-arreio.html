@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Cavalo e Arreio - A Metafora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        /* Titulo */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Container principal */
+        .metaphor-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1000px;
+        }
+
+        /* Card base */
+        .element-card {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 16px;
+            padding: 30px 25px;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+        }
+
+        .element-card.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .element-card.spotlight {
+            border-color: var(--super-gold);
+            box-shadow: 0 0 60px rgba(190, 156, 109, 0.3),
+                        0 20px 40px rgba(0, 0, 0, 0.4);
+            transform: scale(1.05);
+        }
+
+        .element-card.dimmed {
+            opacity: 0.25;
+            transform: scale(0.92);
+            filter: grayscale(0.5);
+        }
+
+        /* Icone grande */
+        .element-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Nome do elemento */
+        .element-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 8px;
+        }
+
+        /* Subtitulo tecnico */
+        .element-tech {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+            padding: 5px 15px;
+            background: rgba(190, 156, 109, 0.1);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* Features */
+        .features {
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.1);
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        .feature:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            color: var(--super-gold);
+            font-size: 1.1em;
+        }
+
+        /* Sinal de mais no meio */
+        .connector {
+            font-size: 3em;
+            color: var(--super-gold);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s ease;
+        }
+
+        .connector.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Sinal de igual e resultado */
+        .result-section {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .result-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .equals-sign {
+            font-size: 2.5em;
+            color: var(--super-gold);
+        }
+
+        .result-box {
+            background: rgba(190, 156, 109, 0.15);
+            border: 2px solid var(--super-gold);
+            border-radius: 16px;
+            padding: 25px 40px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.2);
+        }
+
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--super-gold);
+            margin-bottom: 8px;
+        }
+
+        .result-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        /* Quote final */
+        .quote-final {
+            margin-top: 25px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.9);
+            text-align: center;
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .quote-final.visible {
+            opacity: 1;
+        }
+
+        .quote-final .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Stage dots */
+        .stage-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .stage-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            border: 2px solid rgba(190, 156, 109, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stage-dot.active {
+            background: var(--super-gold);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode h1 { font-size: 1.3em; margin-bottom: 20px; }
+        body.embed-mode .metaphor-container { gap: 25px; }
+        body.embed-mode .element-card { width: 240px; padding: 20px 18px; }
+        body.embed-mode .element-icon { font-size: 3em; margin-bottom: 15px; }
+        body.embed-mode .element-name { font-size: 1.4em; }
+        body.embed-mode .element-tech { font-size: 0.8em; }
+        body.embed-mode .feature { font-size: 0.85em; padding: 6px 0; }
+        body.embed-mode .connector { font-size: 2.2em; }
+        body.embed-mode .result-section { margin-top: 20px; gap: 20px; }
+        body.embed-mode .equals-sign { font-size: 2em; }
+        body.embed-mode .result-box { padding: 18px 30px; }
+        body.embed-mode .result-title { font-size: 1.5em; }
+        body.embed-mode .result-subtitle { font-size: 0.85em; }
+        body.embed-mode .quote-final { font-size: 1em; margin-top: 18px; }
+        body.embed-mode .stage-indicator { bottom: 15px; }
+    </style>
+</head>
+<body>
+    <h1>A Metafora do Arreio</h1>
+
+    <div class="metaphor-container">
+        <!-- Cavalo = Modelo -->
+        <div class="element-card" id="horse">
+            <span class="element-icon">&#127838;</span>
+            <div class="element-name">O Cavalo</div>
+            <div class="element-tech">Modelo Claude</div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">&#9889;</span>
+                    <span>Poder bruto</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">&#129504;</span>
+                    <span>Inteligencia</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">&#128218;</span>
+                    <span>Conhecimento</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sinal de mais -->
+        <div class="connector" id="plus">+</div>
+
+        <!-- Arreio = Claude Code -->
+        <div class="element-card" id="harness">
+            <span class="element-icon">&#128706;</span>
+            <div class="element-name">O Arreio</div>
+            <div class="element-tech">Claude Code</div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">&#127919;</span>
+                    <span>Controle</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">&#10132;</span>
+                    <span>Direcao</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">&#128737;</span>
+                    <span>Guarda-corpos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultado -->
+    <div class="result-section" id="result">
+        <div class="equals-sign">=</div>
+        <div class="result-box">
+            <div class="result-title">Autonomia Controlada</div>
+            <div class="result-subtitle">Poder + Controle = Resultado</div>
+        </div>
+    </div>
+
+    <!-- Quote final -->
+    <div class="quote-final" id="quote">
+        "Sem o arreio, o cavalo corre <span class="highlight">solto</span>.<br>
+        Com o arreio, voce tem <span class="highlight">controle</span>."
+    </div>
+
+    <!-- Stage indicator -->
+    <div class="stage-indicator">
+        <div class="stage-dot" data-stage="0"></div>
+        <div class="stage-dot" data-stage="1"></div>
+        <div class="stage-dot" data-stage="2"></div>
+        <div class="stage-dot" data-stage="3"></div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Elements
+        const horse = document.getElementById('horse');
+        const plus = document.getElementById('plus');
+        const harness = document.getElementById('harness');
+        const result = document.getElementById('result');
+        const quote = document.getElementById('quote');
+        const stageDots = document.querySelectorAll('.stage-dot');
+
+        let currentStage = 0;
+        const TOTAL_STAGES = 4;
+
+        function setStage(stage) {
+            currentStage = stage;
+
+            // Update dots
+            stageDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === stage);
+            });
+
+            // Reset all
+            horse.classList.remove('visible', 'spotlight', 'dimmed');
+            plus.classList.remove('visible');
+            harness.classList.remove('visible', 'spotlight', 'dimmed');
+            result.classList.remove('visible');
+            quote.classList.remove('visible');
+
+            // Stage transitions
+            if (stage >= 0) {
+                horse.classList.add('visible');
+                if (stage === 0) horse.classList.add('spotlight');
+            }
+
+            if (stage >= 1) {
+                plus.classList.add('visible');
+                harness.classList.add('visible');
+                if (stage === 1) {
+                    harness.classList.add('spotlight');
+                    horse.classList.add('dimmed');
+                }
+            }
+
+            if (stage >= 2) {
+                result.classList.add('visible');
+                horse.classList.remove('dimmed');
+                harness.classList.remove('spotlight');
+            }
+
+            if (stage >= 3) {
+                quote.classList.add('visible');
+            }
+        }
+
+        function nextStage() {
+            setStage((currentStage + 1) % TOTAL_STAGES);
+        }
+
+        // Initialize
+        setStage(0);
+
+        // Click handler
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.stage-dot')) {
+                setStage(parseInt(e.target.closest('.stage-dot').dataset.stage));
+                return;
+            }
+            nextStage();
+        });
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (document.body.classList.contains('embed-mode')) return;
+
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setStage(currentStage <= 0 ? TOTAL_STAGES - 1 : currentStage - 1);
+            }
+        });
+
+        // Communication with parent
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data.action === 'nextStage') {
+                if (currentStage < TOTAL_STAGES - 1) {
+                    nextStage();
+                    window.parent.postMessage({ type: 'cavalo-state', currentStage, totalStages: TOTAL_STAGES, completed: currentStage >= TOTAL_STAGES - 1 }, '*');
+                } else {
+                    window.parent.postMessage({ type: 'cavalo-state', currentStage, totalStages: TOTAL_STAGES, completed: true, canProceed: true }, '*');
+                }
+            } else if (data.action === 'prevStage') {
+                if (currentStage > 0) {
+                    setStage(currentStage - 1);
+                    window.parent.postMessage({ type: 'cavalo-state', currentStage, totalStages: TOTAL_STAGES, completed: false }, '*');
+                } else {
+                    window.parent.postMessage({ type: 'cavalo-state', currentStage, totalStages: TOTAL_STAGES, completed: false, canGoBack: true }, '*');
+                }
+            } else if (data.action === 'getState') {
+                window.parent.postMessage({ type: 'cavalo-state', currentStage, totalStages: TOTAL_STAGES, completed: currentStage >= TOTAL_STAGES - 1 }, '*');
+            } else if (data.action === 'reset') {
+                setStage(0);
+                window.parent.postMessage({ type: 'cavalo-state', currentStage: 0, totalStages: TOTAL_STAGES, completed: false }, '*');
+            }
+        });
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'cavalo-ready', currentStage, totalStages: TOTAL_STAGES }, '*');
+        }
+    </script>
+</body>
+</html>

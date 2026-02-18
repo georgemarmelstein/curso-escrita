@@ -1,0 +1,422 @@
+═══════════════════════════════════════════════════════════════════════════════
+                 AULA 10 - MODOS DE USO DOS LLMs
+                      GUIA DE INÍCIO RÁPIDO
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 TOTAL: 20 PDFs científicos sobre os 3 modos de uso dos LLMs
+📅 Data: 02 de novembro de 2025
+📚 Cobertura: 2020-2025 (ênfase em surveys 2024-2025)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📖 ARQUIVOS DE DOCUMENTAÇÃO:
+
+1. COMECE_AQUI.txt (este arquivo)
+   → Guia rápido de navegação
+
+2. RESUMO_3_MODOS_DE_USO.txt
+   → Explicação detalhada dos 3 modos de uso
+   → Comparações, diagramas, exemplos práticos
+   → ~500 linhas, leitura de 20-30 minutos
+
+3. INDICE_COMPLETO_PDFS.md
+   → Descrição detalhada de cada um dos 20 papers
+   → Resumos, metodologias, resultados, relevância
+   → Documento de referência completo
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 OS 3 MODOS DE USO DOS LLMs:
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ MODO 1: RECALL (Conhecimento Paramétrico)                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • O QUE: Uso do conhecimento armazenado nos parâmetros do modelo           │
+│ • QUANDO: Informação foi vista durante pré-training ou fine-tuning         │
+│ • EXEMPLOS: Fatos históricos, conceitos gerais, raciocínio matemático      │
+│ • LIMITAÇÃO: Conhecimento "congelado" no tempo do treinamento              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ MODO 2: RAG/CONTEXT (Conhecimento Não-Paramétrico)                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • O QUE: Informação anexada pelo usuário ou recuperada externamente        │
+│ • QUANDO: Documentos específicos, dados atualizados, contexto privado      │
+│ • EXEMPLOS: RAG, busca web, documentos anexados, contexto longo            │
+│ • VANTAGEM: Conhecimento atualizado sem retreinamento                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ MODO 3: INTERACTIVE/AGENTIC (Uso de Ferramentas)                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • O QUE: LLM usa ferramentas externas e realiza ações                       │
+│ • QUANDO: Precisa executar código, chamar APIs, interagir com mundo real   │
+│ • EXEMPLOS: Agentes, ReAct, Toolformer, function calling                   │
+│ • CAPACIDADE: Vai além de geração de texto para execução de tarefas        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎓 ROTEIROS DE LEITURA SUGERIDOS:
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 1: VISÃO GERAL RÁPIDA (2-3 horas)
+─────────────────────────────────────────────────────────────────────────────
+
+1º - LEIA: RESUMO_3_MODOS_DE_USO.txt (30 min)
+   → Compreensão completa dos 3 modos
+   → Comparações e trade-offs
+   → Exemplos práticos
+
+2º - LEIA: Surveys_2025/2024_RAG_Survey_Comprehensive.pdf
+   → Overview de RAG (Modo 2)
+   → Conexão entre conhecimento paramétrico e não-paramétrico
+   → Estado da arte em retrieval
+
+3º - LEIA: Papers_Tool_Use_Agents/2022_ReAct_Reasoning_Acting_Google.pdf
+   → Fundamento de agentes (Modo 3)
+   → Como LLMs usam ferramentas
+   → Pattern Reasoning + Acting
+
+4º - CONSULTE: INDICE_COMPLETO_PDFS.md
+   → Para resumos específicos de outros papers
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 2: FUNDAMENTOS TÉCNICOS (2-3 dias)
+─────────────────────────────────────────────────────────────────────────────
+
+DIA 1 - MODO 1 (RECALL/PARAMETRIC):
+
+Manhã:
+1. Papers_Parametric_Knowledge/2024_Knowledge_Mechanisms_LLMs.pdf
+   → Como conhecimento é armazenado em parâmetros
+   → Localização e recuperação de fatos
+
+2. Papers_Parametric_Knowledge/2023_ROME_Locating_Editing_Factual.pdf
+   → Onde fatos ficam armazenados (MLPs)
+   → Como editar conhecimento sem retreinamento
+
+Tarde:
+3. Papers_Parametric_Knowledge/2024_Knowledge_Editing_LLMs_Survey.pdf
+   → Survey completo sobre edição de conhecimento
+   → Métodos: ROME, MEMIT, WISE
+
+4. Papers_Context_Learning/2023_Lost_in_Middle_Context_Length.pdf
+   → Limitações do conhecimento paramétrico
+   → Por que modelos esquecem informação no meio do contexto
+
+DIA 2 - MODO 2 (RAG/NON-PARAMETRIC):
+
+Manhã:
+5. Papers_RAG_Retrieval/2020_RAG_Original_Lewis_Facebook.pdf
+   → Paper seminal de RAG (Meta AI)
+   → Como combinar retrieval + generation
+
+6. Surveys_2025/2024_RAG_Survey_Comprehensive.pdf
+   → Estado da arte em RAG (2024)
+   → Arquiteturas: Naive, Advanced, Modular
+
+Tarde:
+7. Surveys_2025/2025_Survey_Parametric_NonParametric_RAG.pdf
+   → Distinção explícita entre parametric e non-parametric memory
+   → Quando usar cada abordagem
+
+8. Papers_Context_Learning/2023_In_Context_Learning_Survey_Dong.pdf
+   → Como LLMs aprendem de exemplos no contexto
+   → Mecanismo fundamental para Modo 2
+
+DIA 3 - MODO 3 (INTERACTIVE/AGENTIC):
+
+Manhã:
+9. Papers_Tool_Use_Agents/2022_ReAct_Reasoning_Acting_Google.pdf
+   → Pattern fundamental: Thought → Action → Observation
+   → Agentes que raciocinam e agem
+
+10. Papers_Tool_Use_Agents/2023_Toolformer_Teach_Use_Tools_Meta.pdf
+    → LLMs aprendem a usar ferramentas de forma self-supervised
+    → Não precisa de anotação humana
+
+Tarde:
+11. Surveys_2025/2024_LLM_Agents_Survey_Wang.pdf
+    → Survey completo sobre agentes baseados em LLMs
+    → Single-agent vs multi-agent
+
+12. Surveys_2025/2024_Tool_Learning_LLMs_Survey.pdf
+    → Como LLMs aprendem a usar ferramentas
+    → Tool selection, execution, error handling
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 3: COMBINANDO OS 3 MODOS (Foco prático)
+─────────────────────────────────────────────────────────────────────────────
+
+1. LEIA: RESUMO_3_MODOS_DE_USO.txt
+   → Seção "COMBINANDO OS 3 MODOS NA PRÁTICA"
+
+2. Papers_RAG_Retrieval/2020_RAG_Original_Lewis_Facebook.pdf
+   → RAG como ponte entre Modo 1 e Modo 2
+
+3. Papers_Tool_Use_Agents/2022_ReAct_Reasoning_Acting_Google.pdf
+   → Como agentes usam retrieval (Modo 2) como ferramenta (Modo 3)
+
+4. Surveys_2025/2024_LLM_Agents_Survey_Wang.pdf
+   → Multi-agent systems que combinam os 3 modos
+
+INSIGHT CENTRAL:
+Sistemas reais SEMPRE combinam múltiplos modos. Por exemplo:
+- ChatGPT: Modo 1 (recall) + Modo 2 (web search) + Modo 3 (code interpreter)
+- Claude Code: Modo 1 (coding knowledge) + Modo 2 (codebase context) + Modo 3 (bash, tools)
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 4: APROFUNDAMENTO EM IN-CONTEXT LEARNING
+─────────────────────────────────────────────────────────────────────────────
+
+ICL é o MECANISMO FUNDAMENTAL que conecta os 3 modos!
+
+1. Papers_Context_Learning/2023_In_Context_Learning_Survey_Dong.pdf
+   → Survey completo sobre ICL
+   → Como funciona, por que funciona
+
+2. Papers_Context_Learning/2022_Rethinking_Role_Demonstrations_ICL.pdf
+   → Papel das demonstrações em ICL
+   → O que realmente importa nos exemplos
+
+3. Papers_Context_Learning/2023_Lost_in_Middle_Context_Length.pdf
+   → Limitações de ICL
+   → Position bias, context overflow
+
+4. Surveys_2025/2024_RAG_Survey_Comprehensive.pdf
+   → RAG como extensão de ICL com retrieval
+
+CONEXÃO ENTRE ICL E OS 3 MODOS:
+• Modo 1: ICL ativa conhecimento paramétrico via prompting
+• Modo 2: ICL é o mecanismo para usar contexto anexado
+• Modo 3: ICL permite que modelo aprenda a usar ferramentas via exemplos
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📚 ESTRUTURA DE PASTAS E CONTEÚDO:
+
+📁 Surveys_2025/ (5 PDFs)
+   ├─ RAG surveys (2 PDFs): Comprehensive + Parametric/Non-parametric
+   ├─ Agent surveys (2 PDFs): LLM Agents + Tool Learning
+   └─ Context/ICL surveys (incluído nos outros)
+
+📁 Papers_RAG_Retrieval/ (2 PDFs)
+   ├─ RAG original (Lewis et al., 2020) - Paper seminal
+   └─ Self-RAG (2023) - RAG com self-reflection
+
+📁 Papers_Parametric_Knowledge/ (5 PDFs)
+   ├─ Knowledge editing: ROME, MEMIT, WISE
+   ├─ Knowledge mechanisms: Como conhecimento é armazenado
+   └─ Knowledge survey: Estado da arte em edição
+
+📁 Papers_Tool_Use_Agents/ (5 PDFs)
+   ├─ ReAct (2022) - Pattern Reasoning + Acting
+   ├─ Toolformer (2023) - Self-taught tool use
+   ├─ ToolACE (2025) - Agentic workflows
+   ├─ Gorilla (2023) - API calls
+   └─ Multi-agent collaboration (2024)
+
+📁 Papers_Context_Learning/ (3 PDFs)
+   ├─ ICL survey (Dong et al.)
+   ├─ Rethinking demonstrations
+   └─ Lost in the middle (limitations)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔑 CONCEITOS-CHAVE A DOMINAR:
+
+1. CONHECIMENTO PARAMÉTRICO VS NÃO-PARAMÉTRICO:
+   □ Parametric: Armazenado em pesos (W, θ)
+   □ Non-parametric: Armazenado externamente (docs, DB)
+   □ Trade-off: Fixed vs Dynamic
+
+2. RAG (RETRIEVAL-AUGMENTED GENERATION):
+   □ Naive RAG: Query → Retrieve → Generate
+   □ Advanced RAG: Pre-retrieval + Post-retrieval optimization
+   □ Modular RAG: Componentes plugáveis
+   □ Self-RAG: Self-reflection durante retrieval
+
+3. AGENTIC WORKFLOWS:
+   □ ReAct Pattern: Thought → Action → Observation
+   □ Tool Use: Function calling, API calls
+   □ Multi-agent: Collaboration, debate, reflection
+   □ Planning: Task decomposition, hierarchical execution
+
+4. IN-CONTEXT LEARNING (ICL):
+   □ Few-shot prompting
+   □ Role of demonstrations
+   □ Context length limitations
+   □ Position bias (lost in the middle)
+
+5. KNOWLEDGE EDITING:
+   □ ROME: Rank-One Model Editing
+   □ MEMIT: Mass-Editing Memory in Transformers
+   □ WISE: Sequential editing
+   □ Locate & Edit paradigm
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 PAPERS POR CATEGORIA E IMPORTÂNCIA:
+
+MAIS IMPORTANTES (LEITURA OBRIGATÓRIA):
+→ 2020_RAG_Original_Lewis_Facebook.pdf
+  Fundou o campo de RAG, combina parametric + non-parametric
+
+→ 2022_ReAct_Reasoning_Acting_Google.pdf
+  Pattern fundamental para agentes, usado em todos sistemas modernos
+
+→ 2024_RAG_Survey_Comprehensive.pdf
+  Survey completo e atualizado sobre RAG até 2024
+
+→ 2023_In_Context_Learning_Survey_Dong.pdf
+  Mecanismo fundamental que conecta os 3 modos
+
+MAIS INOVADORES (TECNICAMENTE INTERESSANTES):
+→ 2023_Toolformer_Teach_Use_Tools_Meta.pdf
+  LLMs aprendem tool use sem supervisão humana
+
+→ 2023_ROME_Locating_Editing_Factual.pdf
+  Edita conhecimento paramétrico sem retreinamento
+
+→ 2025_Survey_Parametric_NonParametric_RAG.pdf
+  Faz distinção explícita entre os dois tipos de conhecimento
+
+MAIS PRÁTICOS (APLICAÇÃO DIRETA):
+→ 2024_LLM_Agents_Survey_Wang.pdf
+  Como construir agentes na prática
+
+→ 2023_Lost_in_Middle_Context_Length.pdf
+  Limitações reais de contexto longo
+
+→ 2024_Tool_Learning_LLMs_Survey.pdf
+  Como implementar tool use
+
+═══════════════════════════════════════════════════════════════════════════════
+
+💡 INSIGHTS PRINCIPAIS:
+
+1. OS 3 MODOS NÃO SÃO MUTUAMENTE EXCLUSIVOS
+   → Sistemas reais SEMPRE combinam múltiplos modos
+   → Exemplo: ChatGPT usa recall + web search + code interpreter
+
+2. IN-CONTEXT LEARNING É O CONECTOR
+   → ICL é o mecanismo que permite todos os 3 modos funcionarem
+   → Modo 1: ICL ativa recall via prompting
+   → Modo 2: ICL processa contexto anexado
+   → Modo 3: ICL permite aprender tool use via exemplos
+
+3. RAG RESOLVE O PROBLEMA DE CONHECIMENTO DESATUALIZADO
+   → Parametric knowledge fica "frozen" após treinamento
+   → Non-parametric (RAG) permite atualização sem retreinamento
+   → Trade-off: Latência vs Atualização
+
+4. AGENTES EXPANDEM LLMs DE "PENSADORES" PARA "ATORES"
+   → LLMs puros apenas geram texto (Modo 1 e 2)
+   → Agentes permitem executar ações no mundo real (Modo 3)
+   → ReAct pattern combina raciocínio + ação
+
+5. KNOWLEDGE EDITING AINDA É DESAFIADOR
+   → ROME/MEMIT editam fatos específicos
+   → Mas podem causar efeitos colaterais (ripple effects)
+   → Escalar para edições massivas ainda é problema aberto
+
+6. CONTEXTO LONGO NÃO RESOLVE TUDO
+   → Models perdem informação "no meio" do contexto (U-shaped curve)
+   → Retrieval targeted é mais eficiente que contexto massivo
+   → Trade-off: Context window vs Retrieval quality
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎓 DICAS DE ESTUDO:
+
+ANTES DE LER OS PAPERS:
+1. Leia RESUMO_3_MODOS_DE_USO.txt para entender a taxonomia
+2. Escolha um roteiro acima baseado no seu objetivo
+3. Pense em exemplos práticos de cada modo
+
+DURANTE A LEITURA:
+1. Para cada paper, pergunte:
+   - Qual modo ele aborda? (Pode ser mais de um)
+   - Qual problema ele resolve?
+   - Como se conecta com outros papers?
+
+2. Compare papers por modo:
+   - Modo 1: ROME vs MEMIT (knowledge editing)
+   - Modo 2: RAG vs Self-RAG (retrieval strategies)
+   - Modo 3: ReAct vs Toolformer (agent approaches)
+
+3. Identifique trade-offs:
+   - Latency vs Accuracy
+   - Fixed vs Dynamic knowledge
+   - Simple vs Complex architectures
+
+APÓS LEITURA:
+1. Desenhe um diagrama conectando os 3 modos
+2. Identifique casos de uso para cada modo
+3. Pense em como combinar modos em sistemas reais
+
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️ AVISOS IMPORTANTES:
+
+1. TAXONOMIA DOS 3 MODOS É PEDAGÓGICA
+   - Na prática, sistemas combinam todos os modos
+   - A divisão ajuda a entender trade-offs
+   - Não é uma classificação rígida da literatura
+
+2. PAPERS USAM TERMINOLOGIA VARIADA
+   - "Parametric" = model weights, memorization
+   - "Non-parametric" = external memory, retrieval
+   - "Agentic" = tool use, function calling, agents
+   - Mesmos conceitos, nomes diferentes
+
+3. CAMPO ESTÁ EVOLUINDO RAPIDAMENTE
+   - RAG evoluiu muito de 2020 para 2025
+   - Novos padrões agentic surgem constantemente
+   - Foque em conceitos fundamentais, não apenas números
+
+4. CONTEXTO LONGO NÃO É PANACEIA
+   - Models com 100K+ tokens ainda sofrem "lost in middle"
+   - Retrieval targeted muitas vezes supera contexto massivo
+   - Trade-off entre context window e qualidade
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📞 PRÓXIMOS PASSOS:
+
+1. DECISÃO RÁPIDA (5 min):
+   Qual roteiro acima se alinha com seu objetivo?
+
+2. LEITURA INICIAL (30 min):
+   Leia RESUMO_3_MODOS_DE_USO.txt para overview completo
+
+3. PRIMEIRA SESSÃO (2-3h):
+   Siga Roteiro 1 (Visão Geral Rápida)
+
+4. APROFUNDAMENTO (2-3 dias):
+   Siga Roteiro 2 (Fundamentos Técnicos) por modo
+
+5. REFERÊNCIA CONTÍNUA:
+   Use INDICE_COMPLETO_PDFS.md quando precisar de detalhes
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✨ BOM ESTUDO!
+
+Esta coleção cobre os fundamentos teóricos e práticos dos 3 modos de uso dos LLMs:
+• RECALL: Conhecimento nos parâmetros
+• RAG/CONTEXT: Conhecimento externo anexado
+• INTERACTIVE: Uso de ferramentas e ações
+
+Compreender esses modos é fundamental para:
+- Decidir quando usar cada abordagem
+- Combinar modos em sistemas reais
+- Entender limitações de cada modo
+- Projetar sistemas LLM eficientes
+
+Dúvidas ou precisa de orientação adicional? Consulte os arquivos de documentação.
+
+═══════════════════════════════════════════════════════════════════════════════
+Compilado em: 02 de novembro de 2025
+Versão: 1.0

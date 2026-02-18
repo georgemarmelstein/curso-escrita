@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Quote Anthropic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Background glow - document authority */
+        .bg-glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150vw;
+            height: 150vh;
+            background: radial-gradient(ellipse at center,
+                rgba(190, 156, 109, 0.08) 0%,
+                transparent 45%);
+            z-index: 0;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 30%,
+                rgba(10, 10, 18, 0.8) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Container fullscreen */
+        .container {
+            position: relative;
+            z-index: 50;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5vh 6vw;
+        }
+
+        /* Document badge no topo */
+        .doc-badge {
+            position: absolute;
+            top: 3vh;
+            left: 4vw;
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            opacity: 0;
+            animation: fadeIn 0.5s ease 0.2s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .doc-logo {
+            width: clamp(40px, 4vw, 55px);
+            height: clamp(40px, 4vw, 55px);
+            background: linear-gradient(135deg, #d4a574 0%, #c49463 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 20px rgba(196, 148, 99, 0.4);
+        }
+
+        .doc-title {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.3vw, 1.2rem);
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 0.5px;
+        }
+
+        .doc-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.9vw, 0.8rem);
+            color: rgba(255, 244, 228, 0.4);
+            margin-top: 2px;
+        }
+
+        /* Research badge */
+        .research-badge {
+            position: absolute;
+            top: 3vh;
+            right: 4vw;
+            padding: 1vh 2vw;
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.4);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.9vw, 0.8rem);
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: slideIn 0.5s ease 0.3s forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Quote principal - MASSIVA */
+        .quote-container {
+            text-align: center;
+            max-width: 90vw;
+        }
+
+        .quote-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.9rem);
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 3vh;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 0.4s forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2rem, 4.5vw, 4.5rem);
+            font-weight: 500;
+            color: var(--super-cream);
+            line-height: 1.3;
+            font-style: italic;
+            opacity: 0;
+            animation: revealQuote 0.8s ease 0.5s forwards;
+        }
+
+        @keyframes revealQuote {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .highlight-workflow {
+            background: rgba(34, 211, 238, 0.2);
+            padding: 0.1em 0.3em;
+            border-radius: 6px;
+            color: var(--super-cyan);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .highlight-agent {
+            background: rgba(167, 139, 250, 0.2);
+            padding: 0.1em 0.3em;
+            border-radius: 6px;
+            color: var(--super-purple);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* Original em inglês */
+        .original-container {
+            margin-top: 4vh;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.2s forwards;
+        }
+
+        .original-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 0.9vw, 0.85rem);
+            font-style: italic;
+            color: rgba(255, 244, 228, 0.3);
+            line-height: 1.6;
+            max-width: 70vw;
+        }
+
+        /* Source reference */
+        .source-container {
+            margin-top: 5vh;
+            display: flex;
+            align-items: center;
+            gap: 1.5vw;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.4s forwards;
+        }
+
+        .source-icon {
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+        }
+
+        .source-text {
+            text-align: left;
+        }
+
+        .source-name {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .source-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.4);
+            margin-top: 0.3em;
+        }
+
+        /* Context bar no fundo */
+        .context-bar {
+            position: absolute;
+            bottom: 4vh;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1.5vh 3vw;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 10px;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.8s forwards;
+        }
+
+        .context-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .context-highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Embed mode */
+        body.embed-mode .quote-text {
+            font-size: clamp(1.8rem, 4vw, 3.8rem);
+        }
+        body.embed-mode .container {
+            padding: 4vh 5vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="doc-badge">
+            <div class="doc-logo">A</div>
+            <div>
+                <div class="doc-title">Anthropic</div>
+                <div class="doc-subtitle">Building Effective Agents</div>
+            </div>
+        </div>
+
+        <div class="research-badge">Research Paper</div>
+
+        <div class="quote-container">
+            <div class="quote-label">Definição Oficial</div>
+            <p class="quote-text">
+                "<span class="highlight-workflow">Workflows</span> são sistemas onde LLMs e ferramentas são orquestrados através de <strong>caminhos de código predefinidos</strong>. <span class="highlight-agent">Agentes</span>, por outro lado, são sistemas onde LLMs <strong>direcionam dinamicamente seus próprios processos</strong>."
+            </p>
+        </div>
+
+        <div class="original-container">
+            <p class="original-text">
+                Original: "Workflows are systems where LLMs and tools are orchestrated through predefined code paths. Agents, on the other hand, are systems where LLMs dynamically direct their own processes."
+            </p>
+        </div>
+
+        <div class="source-container">
+            <span class="source-icon">📄</span>
+            <div class="source-text">
+                <div class="source-name">Anthropic — "Building Effective Agents"</div>
+                <div class="source-link">anthropic.com/research/building-effective-agents</div>
+            </div>
+        </div>
+
+        <div class="context-bar">
+            <p class="context-text">
+                A distinção fundamental: <span class="context-highlight">Workflow = determinístico</span> | <span class="context-highlight">Agent = autônomo</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

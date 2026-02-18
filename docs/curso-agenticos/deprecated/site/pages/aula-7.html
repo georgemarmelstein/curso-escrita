@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 7: Engenharia de Contexto | Sistemas Agenticos</title>
+    <meta name="description" content="Progressive Disclosure, hierarquia de contextos, gerenciamento da Context Window e otimizacao de tokens">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">S</span>
+                <span class="logo-text">Sistemas Agenticos</span>
+            </a>
+            <nav class="nav-main">
+                <ul>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Aulas</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="aula-0.html">Aula 0: Abertura</a></li>
+                            <li><a href="aula-1.html">Aula 1: Fundamentos</a></li>
+                            <li><a href="aula-2a.html">Aula 2A: Anatomia</a></li>
+                            <li><a href="aula-2b.html">Aula 2B: Claude Code</a></li>
+                            <li><a href="aula-3.html">Aula 3: Arquitetura</a></li>
+                            <li><a href="aula-4.html">Aula 4: Construindo</a></li>
+                            <li><a href="aula-5.html">Aula 5: Sistema CLERK</a></li>
+                            <li class="divider"></li>
+                            <li><a href="aula-6.html">Aula 6: Engenharia de Prompt</a></li>
+                            <li><a href="aula-6b.html">Aula 6B: Prompts Agenticos</a></li>
+                            <li><a href="aula-7.html" class="active">Aula 7: Engenharia de Contexto</a></li>
+                            <li><a href="aula-8.html">Aula 8: Engenharia de Capacidades</a></li>
+                            <li><a href="aula-9.html">Aula 9: Engenharia de Workflows</a></li>
+                            <li><a href="aula-10.html">Aula 10: Engenharia de Conexoes</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="glossario.html">Glossario</a></li>
+                    <li><a href="recursos.html">Recursos</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" aria-label="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+        <div class="container">
+            <span class="badge badge-module">Modulo 2</span>
+            <h1>Engenharia de Contexto</h1>
+            <p class="lesson-subtitle">A arte de gerenciar o contexto que alimenta sistemas agenticos - Progressive Disclosure, hierarquia e otimizacao de tokens</p>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    2h
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    5 blocos
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                    </svg>
+                    CLAUDE.md
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lesson Content -->
+    <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+            <nav class="lesson-nav">
+                <h4>Nesta Aula</h4>
+                <ul>
+                    <li><a href="#bloco1" class="lesson-nav-link">1. Problema do Contexto Inchado</a></li>
+                    <li><a href="#bloco2" class="lesson-nav-link">2. Progressive Disclosure</a></li>
+                    <li><a href="#bloco3" class="lesson-nav-link">3. Hierarquia de CLAUDE.md</a></li>
+                    <li><a href="#bloco4" class="lesson-nav-link">4. Context Window Management</a></li>
+                    <li><a href="#bloco5" class="lesson-nav-link">5. Context is King</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lesson-content">
+            <!-- Mobile TOC -->
+            <div class="mobile-toc">
+                <button class="mobile-toc-trigger">
+                    <span>Navegacao</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <nav class="mobile-toc-content">
+                    <ul>
+                        <li><a href="#bloco1">1. Problema do Contexto Inchado</a></li>
+                        <li><a href="#bloco2">2. Progressive Disclosure</a></li>
+                        <li><a href="#bloco3">3. Hierarquia de CLAUDE.md</a></li>
+                        <li><a href="#bloco4">4. Context Window Management</a></li>
+                        <li><a href="#bloco5">5. Context is King</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Introducao -->
+            <section class="lesson-block" id="intro">
+                <h2>Contexto e Rei</h2>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Objetivo</div>
+                    <p>Dominar a arte de gerenciar o contexto que alimenta sistemas agenticos. Estruturar informacoes de forma que o agente tenha acesso ao que precisa, quando precisa, sem desperdicar tokens.</p>
+                </div>
+
+                <blockquote>
+                    <p>"Context is King. A well-structured context makes the model smarter than any instruction could."</p>
+                    <cite>Dex Horthy (12 Factor Agents)</cite>
+                </blockquote>
+
+                <h3>Lema da Aula</h3>
+                <p><strong>"Contexto rico supera instrucoes longas."</strong></p>
+
+                <h3>Pre-requisitos</h3>
+                <ul>
+                    <li>Aula 6: Engenharia de Prompt</li>
+                    <li>Compreensao de CLAUDE.md</li>
+                    <li>Experiencia basica com tokens e custos</li>
+                </ul>
+            </section>
+
+            <!-- Bloco 1: Problema do Contexto Inchado -->
+            <section id="bloco1" class="lesson-block">
+                <h2>Bloco 1: O Problema do Contexto Inchado</h2>
+                <span class="badge badge-time">20 min</span>
+
+                <h3>1.1 Por Que CLAUDE.md Gigante e Anti-Padrao</h3>
+
+                <blockquote>
+                    <p>"Metadata visible, details loaded on demand."</p>
+                    <cite>Barry Zhang, Anthropic (AI Engineer Summit 2024)</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              O ANTI-PADRAO: CLAUDE.md GIGANTE                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   SINTOMAS:                                                     │
+│   ─────────                                                     │
+│   • CLAUDE.md com mais de 500 linhas                            │
+│   • Documentacao inteira embutida                               │
+│   • Exemplos longos inline                                      │
+│   • Historico de decisoes completo                              │
+│   • Logs de reunioes                                            │
+│                                                                 │
+│   PROBLEMAS CAUSADOS:                                           │
+│   ───────────────────                                           │
+│   1. CUSTO: Tokens desperdicados em TODA requisicao             │
+│   2. VELOCIDADE: Resposta mais lenta (mais contexto)            │
+│   3. QUALIDADE: Modelo pode se confundir com excesso            │
+│   4. MANUTENCAO: Dificil manter atualizado                      │
+│   5. DESATUALIZACAO: Copias ficam defasadas                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>1.2 O Custo Real do Contexto</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                  CUSTO REAL DO CONTEXTO                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   CENARIO: 100 requisicoes/dia, 30 dias/mes                     │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                                                         │   │
+│   │   CLAUDE.md INCHADO (2000 linhas):                      │   │
+│   │   10.000 tokens × 100 req × 30 dias = 30M tokens/mes    │   │
+│   │   Custo: $90/mes so em CLAUDE.md                        │   │
+│   │                                                         │   │
+│   │   CLAUDE.md OTIMIZADO (300 linhas):                     │   │
+│   │   1.500 tokens × 100 req × 30 dias = 4.5M tokens/mes    │   │
+│   │   Custo: $13.50/mes                                     │   │
+│   │                                                         │   │
+│   │   ECONOMIA: $76.50/mes (85%)                            │   │
+│   │                                                         │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">Regra de Ouro</div>
+                    <p>CLAUDE.md ideal tem entre <strong>200-300 linhas</strong>. Acima disso, use referencias.</p>
+                </div>
+            </section>
+
+            <!-- Bloco 2: Progressive Disclosure -->
+            <section id="bloco2" class="lesson-block">
+                <h2>Bloco 2: Progressive Disclosure</h2>
+                <span class="badge badge-time">30 min</span>
+
+                <h3>2.1 O Principio</h3>
+
+                <p><strong>Progressive Disclosure</strong> = Metadados visiveis, detalhes sob demanda</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              PROGRESSIVE DISCLOSURE                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ANTI-PADRAO (Tudo Embutido):                                  │
+│   ────────────────────────────                                  │
+│   # Projeto CLERK                                               │
+│                                                                 │
+│   ## Pipeline Completo                                          │
+│   [500 linhas de detalhes do pipeline]                          │
+│                                                                 │
+│   ## API de Cada MCP                                            │
+│   [300 linhas de documentacao de API]                           │
+│                                                                 │
+│   ## Exemplos de Cada Comando                                   │
+│   [400 linhas de exemplos]                                      │
+│                                                                 │
+│   PADRAO CORRETO (Referencias):                                 │
+│   ─────────────────────────────                                 │
+│   # Projeto CLERK                                               │
+│                                                                 │
+│   ## Pipeline                                                   │
+│   6 fases: Preparacao → Extracao → Pesquisa →                   │
+│            Elaboracao → Merge → Revisao                         │
+│   > Ver detalhes: docs/pipeline-completo.md                     │
+│                                                                 │
+│   ## MCPs Disponiveis                                           │
+│   - BNP: Precedentes vinculantes                                │
+│   - CJF: Jurisprudencia unificada                               │
+│   - JULIA: TRF5 regional                                        │
+│   > Ver API: docs/mcp-reference.md                              │
+│                                                                 │
+│   ## Commands                                                   │
+│   - /baixar-pje: Download de processos                          │
+│   - /relatar-processo: Gera relatorio                           │
+│   > Ver exemplos: docs/command-examples.md                      │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>2.2 Como Usar Referencias</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo de Conteudo</th>
+                            <th>No CLAUDE.md</th>
+                            <th>No Arquivo Referenciado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pipeline</strong></td>
+                            <td>Resumo de 5 linhas</td>
+                            <td>docs/pipeline.md (detalhes)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>API</strong></td>
+                            <td>Lista de endpoints</td>
+                            <td>docs/api-reference.md (params)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Exemplos</strong></td>
+                            <td>1 exemplo simples</td>
+                            <td>docs/examples.md (completos)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Historico</strong></td>
+                            <td>Nao incluir</td>
+                            <td>docs/changelog.md</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 3: Hierarquia de CLAUDE.md -->
+            <section id="bloco3" class="lesson-block">
+                <h2>Bloco 3: Hierarquia de CLAUDE.md</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>3.1 Os 3 Niveis</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              HIERARQUIA DE CLAUDE.md                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   NIVEL 1: GLOBAL (~/.claude/CLAUDE.md)                         │
+│   ─────────────────────────────────────                         │
+│   Configuracoes que valem para TODOS os projetos:               │
+│   • Preferencias de idioma                                      │
+│   • Estilo de comunicacao                                       │
+│   • Ferramentas globais instaladas                              │
+│   • Regras pessoais do usuario                                  │
+│                                                                 │
+│   NIVEL 2: PROJETO (./CLAUDE.md)                                │
+│   ────────────────────────────────                              │
+│   Configuracoes especificas do projeto:                         │
+│   • Arquitetura do sistema                                      │
+│   • Padroes de codigo                                           │
+│   • Dependencias e stack                                        │
+│   • Commands e Skills do projeto                                │
+│                                                                 │
+│   NIVEL 3: SUBPASTA (./pasta/CLAUDE.md)                         │
+│   ─────────────────────────────────────                         │
+│   Configuracoes especificas de uma pasta:                       │
+│   • Contexto local (ex: tests/, docs/)                          │
+│   • Regras especificas (ex: sem console.log)                    │
+│   • Sobrescreve niveis superiores                               │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                                                         │   │
+│   │   ~/.claude/CLAUDE.md     (GLOBAL - sempre carregado)   │   │
+│   │           │                                             │   │
+│   │           ▼                                             │   │
+│   │   ./CLAUDE.md             (PROJETO - no projeto atual)  │   │
+│   │           │                                             │   │
+│   │           ▼                                             │   │
+│   │   ./tests/CLAUDE.md       (SUBPASTA - contexto local)   │   │
+│   │                                                         │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│   ORDEM DE PRECEDENCIA:                                         │
+│   Subpasta > Projeto > Global                                   │
+│   (mais especifico sobrescreve mais generico)                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>3.2 Exemplo Pratico</h3>
+
+                <h4>Global (~/.claude/CLAUDE.md)</h4>
+                <pre><code># Configuracoes Globais
+
+## Idioma
+- Documentacao: Portugues brasileiro
+- Codigo: Ingles
+
+## Preferencias
+- Respostas didaticas
+- Evitar emojis</code></pre>
+
+                <h4>Projeto (./CLAUDE.md)</h4>
+                <pre><code># Projeto CLERK
+
+## Stack
+- Python 3.11
+- Claude Code
+
+## Commands
+Ver: .claude/commands/</code></pre>
+
+                <h4>Subpasta (./tests/CLAUDE.md)</h4>
+                <pre><code># Contexto de Testes
+
+SEMPRE usar pytest.
+NUNCA mockar chamadas reais de API.</code></pre>
+            </section>
+
+            <!-- Bloco 4: Context Window Management -->
+            <section id="bloco4" class="lesson-block">
+                <h2>Bloco 4: Context Window Management</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>4.1 O Que e a Context Window</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              CONTEXT WINDOW                                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   A Context Window e o "espaco de memoria" disponivel           │
+│   para cada requisicao ao modelo.                               │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                    CONTEXT WINDOW                       │   │
+│   │                    (200k tokens)                        │   │
+│   │                                                         │   │
+│   │   ┌───────────────────────────────────────────────┐     │   │
+│   │   │ System Prompt (CLAUDE.md, Skills, etc)        │     │   │
+│   │   │ ~5-15k tokens                                 │     │   │
+│   │   └───────────────────────────────────────────────┘     │   │
+│   │   ┌───────────────────────────────────────────────┐     │   │
+│   │   │ Historico da Conversa                         │     │   │
+│   │   │ (cresce a cada mensagem)                      │     │   │
+│   │   └───────────────────────────────────────────────┘     │   │
+│   │   ┌───────────────────────────────────────────────┐     │   │
+│   │   │ Arquivos Lidos / Tool Results                 │     │   │
+│   │   │ (variaveis)                                   │     │   │
+│   │   └───────────────────────────────────────────────┘     │   │
+│   │   ┌───────────────────────────────────────────────┐     │   │
+│   │   │ Espaco para Resposta                          │     │   │
+│   │   │ (output tokens)                               │     │   │
+│   │   └───────────────────────────────────────────────┘     │   │
+│   │                                                         │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.2 Comando /compact</h3>
+
+                <p>O comando <code>/compact</code> comprime o historico da conversa, liberando espaco na context window.</p>
+
+                <h4>Quando Usar</h4>
+                <ul>
+                    <li>Conversa muito longa (100+ mensagens)</li>
+                    <li>Respostas ficando lentas ou truncadas</li>
+                    <li>Aviso de context window cheia</li>
+                    <li>Mudanca de tarefa dentro da mesma sessao</li>
+                </ul>
+
+                <h4>Quando Iniciar Nova Sessao</h4>
+                <ul>
+                    <li>Tarefa completamente diferente</li>
+                    <li>Contexto antigo nao e mais relevante</li>
+                    <li>Apos muitos erros acumulados</li>
+                    <li>Performance muito degradada</li>
+                </ul>
+            </section>
+
+            <!-- Bloco 5: Context is King -->
+            <section id="bloco5" class="lesson-block">
+                <h2>Bloco 5: Context is King</h2>
+                <span class="badge badge-time">20 min</span>
+
+                <h3>5.1 Contexto Rico vs Instrucoes Longas</h3>
+
+                <blockquote>
+                    <p>"Um contexto bem estruturado torna o modelo mais inteligente do que qualquer instrucao poderia."</p>
+                    <cite>Dex Horthy (12 Factor Agents)</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              CONTEXTO RICO vs INSTRUCOES LONGAS                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ABORDAGEM ERRADA (Instrucoes Longas):                         │
+│   ─────────────────────────────────────                         │
+│   "Gere uma sentenca. Uma sentenca tem relatorio,               │
+│   fundamentacao e dispositivo. O relatorio deve conter          │
+│   os fatos, as partes, os pedidos. A fundamentacao              │
+│   deve analisar cada pedido. O dispositivo deve..."             │
+│   [500 palavras de instrucoes]                                  │
+│                                                                 │
+│   ABORDAGEM CORRETA (Contexto Rico):                            │
+│   ──────────────────────────────────                            │
+│   "Gere sentenca seguindo o template em:                        │
+│   docs/template-sentenca-bpc.md                                 │
+│                                                                 │
+│   Contexto do caso:                                             │
+│   - Tipo: BPC Idoso                                             │
+│   - Requerente: [dados]                                         │
+│   - Laudo: Favoravel                                            │
+│   - Precedente aplicavel: Tema 1038 STF"                        │
+│                                                                 │
+│   A DIFERENCA:                                                  │
+│   ─────────────                                                 │
+│   • Instrucoes longas: Agente precisa "decorar" regras          │
+│   • Contexto rico: Agente tem EXEMPLOS e DADOS                  │
+│                                                                 │
+│   Por que contexto funciona melhor:                             │
+│   • LLMs aprendem por EXEMPLOS, nao por regras                  │
+│   • Template concreto > descricao abstrata                      │
+│   • Dados reais > instrucoes hipoteticas                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>5.2 Estrutura Ideal</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>O que incluir</th>
+                            <th>Formato</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Identidade</strong></td>
+                            <td>Quem voce e, qual o projeto</td>
+                            <td>2-3 linhas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estrutura</strong></td>
+                            <td>Pastas, arquivos importantes</td>
+                            <td>Lista ou arvore</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Padroes</strong></td>
+                            <td>Convencoes do projeto</td>
+                            <td>Tabela ou lista</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Referencias</strong></td>
+                            <td>Onde encontrar detalhes</td>
+                            <td>Links para arquivos</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Resumo -->
+            <section class="lesson-block" id="resumo">
+                <h2>Resumo da Aula</h2>
+
+                <div class="key-points">
+                    <h4>Conceitos-Chave</h4>
+                    <ul>
+                        <li><strong>Progressive Disclosure:</strong> Metadados visiveis, detalhes sob demanda</li>
+                        <li><strong>Hierarquia:</strong> Global > Projeto > Subpasta</li>
+                        <li><strong>CLAUDE.md Ideal:</strong> 200-300 linhas</li>
+                        <li><strong>Context Window:</strong> Espaco finito, gerenciar com /compact</li>
+                        <li><strong>Contexto Rico:</strong> Supera instrucoes longas</li>
+                    </ul>
+                </div>
+
+                <div class="expert-quotes">
+                    <h4>Especialistas Citados</h4>
+                    <ul>
+                        <li><strong>Barry Zhang</strong> (Anthropic): Progressive Disclosure</li>
+                        <li><strong>Dex Horthy</strong> (12 Factors): Context is King</li>
+                        <li><strong>Mahesh Murag</strong> (Anthropic): Hierarquia de contextos</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Navegacao -->
+            <div class="lesson-navigation">
+                <a href="aula-6b.html" class="nav-prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Aula 6B: Prompts Agenticos</span>
+                </a>
+                <a href="aula-8.html" class="nav-next">
+                    <span>Aula 8: Engenharia de Capacidades</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sistemas Agenticos</h4>
+                    <p>Curso pratico de IA Agentica para profissionais do Direito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navegacao</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="glossario.html">Glossario</a></li>
+                        <li><a href="recursos.html">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Para duvidas sobre o curso, entre em contato com o instrutor.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Curso de Sistemas Agenticos - Material Educacional</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

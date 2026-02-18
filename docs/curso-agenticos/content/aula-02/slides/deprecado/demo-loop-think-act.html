@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Loop Agentico - Think Act Observe Correct</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-purple: #a78bfa;
+            --super-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        /* Titulo */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Container do loop */
+        .loop-container {
+            position: relative;
+            width: 450px;
+            height: 450px;
+        }
+
+        /* Circulo central com logo */
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: rgba(190, 156, 109, 0.15);
+            border: 2px solid var(--super-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.2);
+        }
+
+        .center-icon {
+            font-size: 2.5em;
+        }
+
+        /* Nodes do loop */
+        .loop-node {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .loop-node:hover {
+            transform: scale(1.05);
+            border-color: var(--super-gold);
+        }
+
+        .loop-node.active {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.15);
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.4),
+                        0 0 60px rgba(190, 156, 109, 0.2);
+            transform: scale(1.1);
+        }
+
+        .loop-node.dimmed {
+            opacity: 0.3;
+            filter: grayscale(0.5);
+        }
+
+        /* Posicionamento dos nodes */
+        .loop-node.think { top: 0; left: 50%; transform: translateX(-50%); }
+        .loop-node.act { top: 50%; right: 0; transform: translateY(-50%); }
+        .loop-node.observe { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .loop-node.correct { top: 50%; left: 0; transform: translateY(-50%); }
+
+        .loop-node.active.think { transform: translateX(-50%) scale(1.1); }
+        .loop-node.active.act { transform: translateY(-50%) scale(1.1); }
+        .loop-node.active.observe { transform: translateX(-50%) scale(1.1); }
+        .loop-node.active.correct { transform: translateY(-50%) scale(1.1); }
+
+        /* Icone do node */
+        .node-icon {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+
+        /* Nome do node */
+        .node-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 1px;
+        }
+
+        /* Cores especificas */
+        .loop-node.think .node-icon { color: var(--super-purple); }
+        .loop-node.act .node-icon { color: var(--super-green); }
+        .loop-node.observe .node-icon { color: var(--super-blue); }
+        .loop-node.correct .node-icon { color: var(--super-amber); }
+
+        /* Setas do loop */
+        .arrow {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: rgba(190, 156, 109, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .arrow.active {
+            color: var(--super-gold);
+            transform: scale(1.3);
+            text-shadow: 0 0 20px rgba(190, 156, 109, 0.8);
+        }
+
+        .arrow.arrow-1 { top: 70px; right: 70px; }
+        .arrow.arrow-2 { bottom: 70px; right: 70px; }
+        .arrow.arrow-3 { bottom: 70px; left: 70px; }
+        .arrow.arrow-4 { top: 70px; left: 70px; }
+
+        /* Descricao abaixo */
+        .description-box {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            padding: 20px 30px;
+            text-align: center;
+            max-width: 500px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .description-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            color: var(--super-gold);
+            margin-bottom: 10px;
+        }
+
+        .description-text {
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.8);
+            line-height: 1.5;
+        }
+
+        /* Controles */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            padding: 10px 20px;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 8px;
+            color: var(--super-cream);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(190, 156, 109, 0.2);
+            border-color: var(--super-gold);
+        }
+
+        .control-btn.active {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+        }
+
+        /* Quote final */
+        .loop-quote {
+            margin-top: 20px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.6);
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .loop-quote .highlight {
+            color: var(--super-gold);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode h1 { font-size: 1.3em; margin-bottom: 15px; }
+        body.embed-mode .loop-container { width: 350px; height: 350px; }
+        body.embed-mode .center-circle { width: 80px; height: 80px; }
+        body.embed-mode .center-icon { font-size: 2em; }
+        body.embed-mode .loop-node { width: 100px; height: 100px; }
+        body.embed-mode .node-icon { font-size: 1.8em; margin-bottom: 5px; }
+        body.embed-mode .node-name { font-size: 0.8em; }
+        body.embed-mode .arrow { width: 45px; height: 45px; font-size: 1.2em; }
+        body.embed-mode .arrow.arrow-1 { top: 55px; right: 55px; }
+        body.embed-mode .arrow.arrow-2 { bottom: 55px; right: 55px; }
+        body.embed-mode .arrow.arrow-3 { bottom: 55px; left: 55px; }
+        body.embed-mode .arrow.arrow-4 { top: 55px; left: 55px; }
+        body.embed-mode .description-box { margin-top: 20px; padding: 15px 20px; min-height: 80px; }
+        body.embed-mode .description-title { font-size: 1.1em; margin-bottom: 8px; }
+        body.embed-mode .description-text { font-size: 0.85em; }
+        body.embed-mode .controls { margin-top: 15px; gap: 10px; }
+        body.embed-mode .control-btn { padding: 8px 15px; font-size: 0.8em; }
+        body.embed-mode .loop-quote { margin-top: 12px; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+    <h1>O Loop Agentico</h1>
+
+    <div class="loop-container">
+        <!-- Centro -->
+        <div class="center-circle">
+            <span class="center-icon">&#129302;</span>
+        </div>
+
+        <!-- Nodes -->
+        <div class="loop-node think" data-step="0">
+            <span class="node-icon">&#129504;</span>
+            <span class="node-name">THINK</span>
+        </div>
+
+        <div class="loop-node act" data-step="1">
+            <span class="node-icon">&#9889;</span>
+            <span class="node-name">ACT</span>
+        </div>
+
+        <div class="loop-node observe" data-step="2">
+            <span class="node-icon">&#128065;</span>
+            <span class="node-name">OBSERVE</span>
+        </div>
+
+        <div class="loop-node correct" data-step="3">
+            <span class="node-icon">&#128295;</span>
+            <span class="node-name">CORRECT</span>
+        </div>
+
+        <!-- Setas -->
+        <div class="arrow arrow-1">&#10145;</div>
+        <div class="arrow arrow-2">&#10145;</div>
+        <div class="arrow arrow-3">&#10145;</div>
+        <div class="arrow arrow-4">&#10145;</div>
+    </div>
+
+    <!-- Descricao -->
+    <div class="description-box">
+        <div class="description-title" id="desc-title">Clique para iniciar</div>
+        <div class="description-text" id="desc-text">Este loop roda ATE A TAREFA ESTAR COMPLETA (diferente do assistente que responde UMA VEZ)</div>
+    </div>
+
+    <!-- Controles -->
+    <div class="controls">
+        <button class="control-btn" id="btn-prev">&#10094; Anterior</button>
+        <button class="control-btn" id="btn-auto">&#9654; Auto</button>
+        <button class="control-btn" id="btn-next">Proximo &#10095;</button>
+    </div>
+
+    <!-- Quote -->
+    <div class="loop-quote">
+        "Um loop mestre simples, de <span class="highlight">thread unica</span>, combinado com ferramentas disciplinadas, entrega <span class="highlight">autonomia controlavel</span>." -- ZenML
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Data
+        const steps = [
+            { title: 'THINK', text: 'Planeja a acao. Analisa o contexto e decide qual ferramenta usar.', icon: '&#129504;' },
+            { title: 'ACT', text: 'Executa a acao. Usa bash, file operations, ou outras ferramentas.', icon: '&#9889;' },
+            { title: 'OBSERVE', text: 'Ve o resultado. Analisa a saida do comando ou operacao.', icon: '&#128065;' },
+            { title: 'CORRECT', text: 'Ajusta se preciso. Corrige erros ou muda a estrategia.', icon: '&#128295;' }
+        ];
+
+        const nodes = document.querySelectorAll('.loop-node');
+        const arrows = document.querySelectorAll('.arrow');
+        const descTitle = document.getElementById('desc-title');
+        const descText = document.getElementById('desc-text');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnAuto = document.getElementById('btn-auto');
+        const btnNext = document.getElementById('btn-next');
+
+        let currentStep = -1;
+        let autoInterval = null;
+
+        function setStep(step) {
+            currentStep = step;
+
+            // Reset all
+            nodes.forEach((node, i) => {
+                node.classList.remove('active', 'dimmed');
+                if (step >= 0 && i !== step) {
+                    node.classList.add('dimmed');
+                }
+                if (i === step) {
+                    node.classList.add('active');
+                }
+            });
+
+            arrows.forEach((arrow, i) => {
+                arrow.classList.remove('active');
+                // Arrow i conecta step i ao step i+1
+                if (step >= 0 && i === step) {
+                    arrow.classList.add('active');
+                }
+            });
+
+            // Update description
+            if (step >= 0 && step < steps.length) {
+                descTitle.textContent = steps[step].title;
+                descText.textContent = steps[step].text;
+            } else {
+                descTitle.textContent = 'Clique para iniciar';
+                descText.textContent = 'Este loop roda ATE A TAREFA ESTAR COMPLETA (diferente do assistente que responde UMA VEZ)';
+            }
+        }
+
+        function nextStep() {
+            setStep((currentStep + 1) % 4);
+        }
+
+        function prevStep() {
+            setStep(currentStep <= 0 ? 3 : currentStep - 1);
+        }
+
+        function toggleAuto() {
+            if (autoInterval) {
+                clearInterval(autoInterval);
+                autoInterval = null;
+                btnAuto.textContent = '▶ Auto';
+                btnAuto.classList.remove('active');
+            } else {
+                autoInterval = setInterval(nextStep, 1500);
+                btnAuto.textContent = '⏸ Pausar';
+                btnAuto.classList.add('active');
+            }
+        }
+
+        // Initialize
+        setStep(-1);
+
+        // Event listeners
+        btnPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            prevStep();
+        });
+
+        btnAuto.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleAuto();
+        });
+
+        btnNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            nextStep();
+        });
+
+        // Click on node
+        nodes.forEach((node, i) => {
+            node.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setStep(i);
+            });
+        });
+
+        // Click on body
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.control-btn') || e.target.closest('.loop-node')) return;
+            nextStep();
+        });
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (document.body.classList.contains('embed-mode')) return;
+
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStep();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevStep();
+            }
+        });
+
+        // Communication with parent
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data.action === 'nextStage') {
+                nextStep();
+                window.parent.postMessage({ type: 'loop-state', currentStep, completed: false }, '*');
+            } else if (data.action === 'prevStage') {
+                prevStep();
+                window.parent.postMessage({ type: 'loop-state', currentStep, completed: false }, '*');
+            } else if (data.action === 'reset') {
+                setStep(-1);
+            }
+        });
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'loop-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Padrões - Proposta C: Jornada Guiada</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --pink: #f472b6;
+            --amber: #fbbf24;
+            --blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 30% 20%, rgba(190, 156, 109, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 40% at 70% 80%, rgba(167, 139, 250, 0.05) 0%, transparent 50%),
+                var(--dark);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 3vh 4vw;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2vh;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--cream);
+            margin-top: 0.5vh;
+        }
+
+        /* Main Layout */
+        .main-content {
+            display: flex;
+            flex: 1;
+            gap: 3vw;
+        }
+
+        /* Flow Panel - Left */
+        .flow-panel {
+            flex: 0 0 35%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .flow-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+            color: var(--cream);
+            margin-bottom: 2vh;
+            text-align: center;
+        }
+
+        .question-flow {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5vh;
+        }
+
+        .question-node {
+            background: rgba(20, 20, 30, 0.8);
+            border: 2px solid rgba(190, 156, 109, 0.25);
+            border-radius: 14px;
+            padding: 1.5vh 1.5vw;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .question-node::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -1.5vh;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 1.5vh;
+            background: rgba(190, 156, 109, 0.3);
+        }
+
+        .question-node:last-child::after {
+            display: none;
+        }
+
+        .question-node:hover {
+            border-color: var(--gold);
+            background: rgba(30, 30, 45, 0.9);
+        }
+
+        .question-node.answered {
+            border-color: var(--green);
+            background: rgba(74, 222, 128, 0.08);
+        }
+
+        .question-node.answered::after {
+            background: var(--green);
+        }
+
+        .question-node.current {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.2);
+        }
+
+        .question-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+            color: var(--cream);
+            margin-bottom: 1vh;
+        }
+
+        .question-options {
+            display: flex;
+            gap: 0.8vw;
+        }
+
+        .option-btn {
+            flex: 1;
+            background: rgba(255, 244, 228, 0.05);
+            border: 1px solid rgba(255, 244, 228, 0.15);
+            border-radius: 8px;
+            padding: 0.8vh 1vw;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.8rem, 1vw, 0.95rem);
+            color: var(--cream);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            background: rgba(190, 156, 109, 0.15);
+            border-color: var(--gold);
+        }
+
+        .option-btn.selected {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--dark);
+        }
+
+        .question-node.answered .option-btn:not(.selected) {
+            opacity: 0.4;
+        }
+
+        /* Result Panel - Right */
+        .result-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Pattern Result Card */
+        .pattern-result {
+            background: rgba(20, 20, 30, 0.8);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 3vh 2.5vw;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+            transition: border-color 0.3s ease;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5vw;
+            margin-bottom: 2vh;
+        }
+
+        .result-badge {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: var(--gold);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .badge-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1;
+        }
+
+        .badge-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.5rem, 0.6vw, 0.55rem);
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        .result-titles {
+            flex: 1;
+        }
+
+        .result-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .result-technical {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.9rem, 1.1vw, 1rem);
+            color: var(--gold);
+            margin-top: 0.3vh;
+        }
+
+        /* Content sections */
+        .result-section {
+            margin-bottom: 2vh;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.8vh;
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 10px;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        .analogy-box {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.12), rgba(190, 156, 109, 0.04));
+            border: 1px solid rgba(190, 156, 109, 0.25);
+            border-radius: 12px;
+            padding: 1.5vh 1.5vw;
+        }
+
+        .analogy-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.3vw, 1.2rem);
+            color: var(--cream);
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        /* Diagram */
+        .diagram-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .diagram-container {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 110px;
+        }
+
+        .diagram-container svg {
+            width: 100%;
+            max-width: 480px;
+            height: 110px;
+        }
+
+        /* Example */
+        .example-box {
+            background: rgba(74, 222, 128, 0.08);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+            border-radius: 12px;
+            padding: 1.5vh 1.5vw;
+            margin-top: 2vh;
+        }
+
+        .example-box .section-label {
+            color: var(--green);
+        }
+
+        .example-box .section-label::before {
+            background: var(--green);
+        }
+
+        .example-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.1vw, 1rem);
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.5;
+        }
+
+        /* Waiting State */
+        .waiting-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            text-align: center;
+        }
+
+        .waiting-icon {
+            font-size: clamp(3rem, 5vw, 4rem);
+            margin-bottom: 2vh;
+            opacity: 0.6;
+        }
+
+        .waiting-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.3vw, 1.2rem);
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Reset button */
+        .reset-btn {
+            position: fixed;
+            bottom: 2vh;
+            right: 3vw;
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 8px;
+            padding: 0.8vh 1.5vw;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            background: rgba(190, 156, 109, 0.25);
+            border-color: var(--gold);
+        }
+
+        /* Direct pattern buttons */
+        .pattern-nav {
+            display: flex;
+            gap: 0.8vw;
+            margin-top: auto;
+            padding-top: 2vh;
+            border-top: 1px solid rgba(255, 244, 228, 0.1);
+        }
+
+        .pattern-btn {
+            flex: 1;
+            background: rgba(255, 244, 228, 0.05);
+            border: 1px solid rgba(255, 244, 228, 0.15);
+            border-radius: 8px;
+            padding: 0.8vh 0.5vw;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.85vw, 0.8rem);
+            color: rgba(255, 244, 228, 0.6);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .pattern-btn:hover {
+            background: rgba(190, 156, 109, 0.1);
+            border-color: var(--gold);
+            color: var(--cream);
+        }
+
+        .pattern-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--dark);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-node {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 2vh 3vw; }
+        body.embed-mode .header-title { font-size: clamp(1.3rem, 2.5vw, 2rem); }
+        body.embed-mode .pattern-result { padding: 2vh 2vw; }
+        body.embed-mode .result-badge { width: 65px; height: 65px; }
+        body.embed-mode .badge-number { font-size: clamp(1.5rem, 2.5vw, 2rem); }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Building Effective Agents</div>
+            <h1 class="header-title">5 Padrões de Workflow Agêntico</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="flow-panel">
+                <div class="flow-title">Qual é o seu desafio?</div>
+                <div class="question-flow" id="questionFlow">
+                    <!-- Questions generated by JS -->
+                </div>
+                <div class="pattern-nav" id="patternNav">
+                    <!-- Direct access buttons -->
+                </div>
+            </div>
+
+            <div class="result-panel">
+                <div class="pattern-result" id="patternResult">
+                    <div class="waiting-state" id="waitingState">
+                        <div class="waiting-icon">🤔</div>
+                        <div class="waiting-text">Responda as perguntas para descobrir<br>o padrão ideal para seu caso</div>
+                    </div>
+                    <div id="resultContent" style="display: none;">
+                        <!-- Result content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="reset-btn" id="resetBtn">↻ Recomeçar</button>
+
+    <script>
+        const patterns = {
+            chaining: {
+                number: 1,
+                name: "Encadeamento",
+                technical: "Prompt Chaining",
+                color: "#fbbf24",
+                analogy: '"Como uma linha de montagem: cada estação faz sua parte e passa para a próxima."',
+                example: "Pipeline de sentença: Relatório → Fundamentação → Dispositivo. Cada etapa usa o resultado da anterior para construir o documento completo.",
+                diagram: `
+                    <defs>
+                        <marker id="arr1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 Z" fill="#fbbf24"/>
+                        </marker>
+                    </defs>
+                    <g transform="translate(15, 30)">
+                        <rect x="0" y="0" width="90" height="45" rx="8" fill="#fbbf24" opacity="0.85"/>
+                        <text x="45" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="600">Relatório</text>
+                        <path d="M 100 22 L 125 22" stroke="#fbbf24" stroke-width="3" marker-end="url(#arr1)"/>
+                        <rect x="135" y="0" width="90" height="45" rx="8" fill="#fbbf24" opacity="0.85"/>
+                        <text x="180" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="600">Fundament.</text>
+                        <path d="M 235 22 L 260 22" stroke="#fbbf24" stroke-width="3" marker-end="url(#arr1)"/>
+                        <rect x="270" y="0" width="90" height="45" rx="8" fill="#fbbf24" opacity="0.85"/>
+                        <text x="315" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="600">Dispositivo</text>
+                    </g>
+                `
+            },
+            routing: {
+                number: 2,
+                name: "Roteamento",
+                technical: "Routing",
+                color: "#60a5fa",
+                analogy: '"Como uma triagem de hospital: cada paciente vai para o especialista certo."',
+                example: "Classificador de processos: identifica se é BPC, Aposentadoria ou Auxílio-Doença e direciona para o fluxo especializado.",
+                diagram: `
+                    <defs>
+                        <marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 Z" fill="#60a5fa"/>
+                        </marker>
+                    </defs>
+                    <g transform="translate(30, 5)">
+                        <rect x="0" y="35" width="70" height="35" rx="8" fill="#60a5fa" opacity="0.85"/>
+                        <text x="35" y="57" text-anchor="middle" fill="white" font-size="10" font-weight="600">Processo</text>
+                        <polygon points="100,52 135,20 135,85" fill="#60a5fa" opacity="0.85"/>
+                        <text x="120" y="57" text-anchor="middle" fill="white" font-size="12">?</text>
+                        <path d="M 75 52 L 100 52" stroke="#60a5fa" stroke-width="2"/>
+                        <path d="M 140 28 L 185 12" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr2)"/>
+                        <path d="M 140 52 L 185 52" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr2)"/>
+                        <path d="M 140 77 L 185 92" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr2)"/>
+                        <rect x="195" y="0" width="95" height="25" rx="5" fill="#60a5fa" opacity="0.6"/>
+                        <text x="242" y="17" text-anchor="middle" fill="white" font-size="10">BPC</text>
+                        <rect x="195" y="40" width="95" height="25" rx="5" fill="#60a5fa" opacity="0.85"/>
+                        <text x="242" y="57" text-anchor="middle" fill="white" font-size="10">Aposentadoria</text>
+                        <rect x="195" y="80" width="95" height="25" rx="5" fill="#60a5fa" opacity="0.6"/>
+                        <text x="242" y="97" text-anchor="middle" fill="white" font-size="10">Auxílio-Doença</text>
+                    </g>
+                `
+            },
+            parallel: {
+                number: 3,
+                name: "Paralelização",
+                technical: "Parallelization",
+                color: "#a78bfa",
+                analogy: '"Como uma banca de correção: 3 professores corrigem a mesma prova ao mesmo tempo."',
+                example: "Revisão tripla: revisores ortográfico, jurídico e estilístico analisam em paralelo. Resultados consolidados ao final.",
+                diagram: `
+                    <g transform="translate(15, 5)">
+                        <rect x="0" y="35" width="60" height="35" rx="6" fill="#a78bfa" opacity="0.85"/>
+                        <text x="30" y="57" text-anchor="middle" fill="white" font-size="9" font-weight="600">Sentença</text>
+                        <path d="M 65 52 L 95 18" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 65 52 L 95 52" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 65 52 L 95 87" stroke="#a78bfa" stroke-width="2"/>
+                        <rect x="100" y="3" width="100" height="28" rx="5" fill="#a78bfa" opacity="0.7"/>
+                        <text x="150" y="21" text-anchor="middle" fill="white" font-size="9">Ortográfico</text>
+                        <rect x="100" y="38" width="100" height="28" rx="5" fill="#a78bfa" opacity="0.7"/>
+                        <text x="150" y="56" text-anchor="middle" fill="white" font-size="9">Jurídico</text>
+                        <rect x="100" y="73" width="100" height="28" rx="5" fill="#a78bfa" opacity="0.7"/>
+                        <text x="150" y="91" text-anchor="middle" fill="white" font-size="9">Estilístico</text>
+                        <path d="M 205 17 L 235 52" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 205 52 L 235 52" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 205 87 L 235 52" stroke="#a78bfa" stroke-width="2"/>
+                        <rect x="240" y="35" width="70" height="35" rx="6" fill="#4ade80" opacity="0.85"/>
+                        <text x="275" y="57" text-anchor="middle" fill="white" font-size="9" font-weight="600">Consolidado</text>
+                    </g>
+                `
+            },
+            orchestrator: {
+                number: 4,
+                name: "Orquestrador",
+                technical: "Orchestrator-Workers",
+                color: "#22d3ee",
+                analogy: '"Como um maestro: decide quem toca o quê, quando, e combina tudo no final."',
+                example: "Pesquisa jurídica: orquestrador decide quais bases pesquisar (STF, STJ, TRFs) baseado no tema. Delega e sintetiza.",
+                diagram: `
+                    <defs>
+                        <marker id="arr4" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <path d="M0,0 L6,3 L0,6 Z" fill="#22d3ee"/>
+                        </marker>
+                    </defs>
+                    <g transform="translate(70, 0)">
+                        <circle cx="130" cy="22" r="20" fill="#22d3ee" opacity="0.85"/>
+                        <text x="130" y="18" text-anchor="middle" fill="white" font-size="7" font-weight="600">Orques-</text>
+                        <text x="130" y="27" text-anchor="middle" fill="white" font-size="7" font-weight="600">trador</text>
+                        <path d="M 115 40 L 55 65" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4" marker-end="url(#arr4)"/>
+                        <path d="M 130 42 L 130 65" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4" marker-end="url(#arr4)"/>
+                        <path d="M 145 40 L 205 65" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4" marker-end="url(#arr4)"/>
+                        <rect x="10" y="70" width="70" height="30" rx="5" fill="#22d3ee" opacity="0.65"/>
+                        <text x="45" y="89" text-anchor="middle" fill="white" font-size="10">STF</text>
+                        <rect x="95" y="70" width="70" height="30" rx="5" fill="#22d3ee" opacity="0.65"/>
+                        <text x="130" y="89" text-anchor="middle" fill="white" font-size="10">STJ</text>
+                        <rect x="180" y="70" width="70" height="30" rx="5" fill="#22d3ee" opacity="0.65"/>
+                        <text x="215" y="89" text-anchor="middle" fill="white" font-size="10">TRFs</text>
+                        <text x="130" y="58" text-anchor="middle" fill="#22d3ee" font-size="7" opacity="0.8">delega dinamicamente</text>
+                    </g>
+                `
+            },
+            evaluator: {
+                number: 5,
+                name: "Avaliador",
+                technical: "Evaluator-Optimizer",
+                color: "#f472b6",
+                analogy: '"Como um editor de texto: escreve, revisa, reescreve até ficar perfeito."',
+                example: "Maker-Checker: gerador cria minuta, avaliador verifica conformidade. Loop continua até aprovação ou limite de iterações.",
+                diagram: `
+                    <defs>
+                        <marker id="arr5" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <path d="M0,0 L6,3 L0,6 Z" fill="#f472b6"/>
+                        </marker>
+                        <marker id="arr5g" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <path d="M0,0 L6,3 L0,6 Z" fill="#4ade80"/>
+                        </marker>
+                    </defs>
+                    <g transform="translate(20, 15)">
+                        <rect x="0" y="15" width="85" height="40" rx="6" fill="#f472b6" opacity="0.85"/>
+                        <text x="42" y="32" text-anchor="middle" fill="white" font-size="9" font-weight="600">Gerador</text>
+                        <text x="42" y="43" text-anchor="middle" fill="white" font-size="7" opacity="0.9">cria minuta</text>
+                        <path d="M 95 35 L 125 35" stroke="#f472b6" stroke-width="2" marker-end="url(#arr5)"/>
+                        <rect x="135" y="15" width="85" height="40" rx="6" fill="#f472b6" opacity="0.85"/>
+                        <text x="177" y="32" text-anchor="middle" fill="white" font-size="9" font-weight="600">Avaliador</text>
+                        <text x="177" y="43" text-anchor="middle" fill="white" font-size="7" opacity="0.9">verifica</text>
+                        <path d="M 177 60 Q 177 80 110 80 Q 42 80 42 60" stroke="#f472b6" stroke-width="2" fill="none" stroke-dasharray="4" marker-end="url(#arr5)"/>
+                        <text x="110" y="75" text-anchor="middle" fill="#f472b6" font-size="7">feedback</text>
+                        <path d="M 230 35 L 260 35" stroke="#4ade80" stroke-width="2" marker-end="url(#arr5g)"/>
+                        <text x="245" y="28" text-anchor="middle" fill="#4ade80" font-size="7">OK?</text>
+                        <rect x="270" y="15" width="70" height="40" rx="6" fill="#4ade80" opacity="0.85"/>
+                        <text x="305" y="40" text-anchor="middle" fill="white" font-size="10" font-weight="600">Output</text>
+                    </g>
+                `
+            }
+        };
+
+        const questions = [
+            {
+                id: 'q1',
+                text: 'Seu problema tem etapas fixas e previsíveis?',
+                options: [
+                    { text: 'Sim', next: 'q2' },
+                    { text: 'Não', next: 'q3' }
+                ]
+            },
+            {
+                id: 'q2',
+                text: 'Os diferentes tipos de entrada precisam de tratamento diferente?',
+                options: [
+                    { text: 'Sim', result: 'routing' },
+                    { text: 'Não', result: 'chaining' }
+                ]
+            },
+            {
+                id: 'q3',
+                text: 'Você pode dividir em partes que rodam ao mesmo tempo?',
+                options: [
+                    { text: 'Sim', result: 'parallel' },
+                    { text: 'Não', next: 'q4' }
+                ]
+            },
+            {
+                id: 'q4',
+                text: 'Precisa de um "chefe" que decide as subtarefas dinamicamente?',
+                options: [
+                    { text: 'Sim', result: 'orchestrator' },
+                    { text: 'Não', result: 'evaluator' }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+        let currentPattern = null;
+
+        function renderQuestions() {
+            const container = document.getElementById('questionFlow');
+            container.innerHTML = '';
+
+            questions.forEach((q, i) => {
+                const node = document.createElement('div');
+                node.className = 'question-node';
+                node.id = `question-${q.id}`;
+
+                if (i < currentQuestion) {
+                    node.classList.add('answered');
+                } else if (i === currentQuestion) {
+                    node.classList.add('current');
+                }
+
+                const optionsHtml = q.options.map((opt, oi) => {
+                    const isSelected = answers[q.id] === oi;
+                    return `<button class="option-btn ${isSelected ? 'selected' : ''}" data-question="${q.id}" data-option="${oi}">${opt.text}</button>`;
+                }).join('');
+
+                node.innerHTML = `
+                    <div class="question-text">${q.text}</div>
+                    <div class="question-options">${optionsHtml}</div>
+                `;
+
+                if (i > currentQuestion && !currentPattern) {
+                    node.style.opacity = '0.3';
+                    node.style.pointerEvents = 'none';
+                }
+
+                container.appendChild(node);
+            });
+
+            // Add click handlers
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', handleOptionClick);
+            });
+        }
+
+        function handleOptionClick(e) {
+            const questionId = e.target.dataset.question;
+            const optionIndex = parseInt(e.target.dataset.option);
+            const question = questions.find(q => q.id === questionId);
+            const option = question.options[optionIndex];
+
+            answers[questionId] = optionIndex;
+
+            if (option.result) {
+                showPattern(option.result);
+            } else if (option.next) {
+                const nextIndex = questions.findIndex(q => q.id === option.next);
+                currentQuestion = nextIndex;
+                renderQuestions();
+            }
+        }
+
+        function showPattern(patternKey) {
+            currentPattern = patternKey;
+            const p = patterns[patternKey];
+
+            document.getElementById('waitingState').style.display = 'none';
+
+            const resultContent = document.getElementById('resultContent');
+            resultContent.style.display = 'flex';
+            resultContent.style.flexDirection = 'column';
+            resultContent.style.flex = '1';
+
+            resultContent.innerHTML = `
+                <div class="result-header">
+                    <div class="result-badge" style="background: ${p.color};">
+                        <div class="badge-number">${p.number}</div>
+                        <div class="badge-label">Padrão</div>
+                    </div>
+                    <div class="result-titles">
+                        <div class="result-name">${p.name}</div>
+                        <div class="result-technical" style="color: ${p.color};">${p.technical}</div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <div class="section-label">Pense assim</div>
+                    <div class="analogy-box">
+                        <div class="analogy-text">${p.analogy}</div>
+                    </div>
+                </div>
+
+                <div class="diagram-section result-section">
+                    <div class="section-label">Como funciona</div>
+                    <div class="diagram-container">
+                        <svg viewBox="0 0 450 110">${p.diagram}</svg>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <div class="section-label">Exemplo na prática</div>
+                    <div class="example-text">${p.example}</div>
+                </div>
+            `;
+
+            document.getElementById('patternResult').style.borderColor = p.color;
+
+            // Update nav buttons
+            updatePatternNav();
+            renderQuestions();
+        }
+
+        function renderPatternNav() {
+            const nav = document.getElementById('patternNav');
+            const patternKeys = Object.keys(patterns);
+
+            nav.innerHTML = patternKeys.map(key => {
+                const p = patterns[key];
+                return `<button class="pattern-btn" data-pattern="${key}">${p.number}</button>`;
+            }).join('');
+
+            nav.querySelectorAll('.pattern-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.pattern;
+                    showPattern(key);
+                });
+            });
+        }
+
+        function updatePatternNav() {
+            document.querySelectorAll('.pattern-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.pattern === currentPattern);
+            });
+        }
+
+        function reset() {
+            currentQuestion = 0;
+            answers = {};
+            currentPattern = null;
+
+            document.getElementById('waitingState').style.display = 'flex';
+            document.getElementById('resultContent').style.display = 'none';
+            document.getElementById('patternResult').style.borderColor = 'var(--gold)';
+
+            renderQuestions();
+            updatePatternNav();
+        }
+
+        // Initialize
+        renderQuestions();
+        renderPatternNav();
+
+        document.getElementById('resetBtn').addEventListener('click', reset);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '5') {
+                const keys = Object.keys(patterns);
+                showPattern(keys[parseInt(e.key) - 1]);
+            } else if (e.key === 'r' || e.key === 'R') {
+                reset();
+            }
+        });
+
+        // Embed mode
+        try {
+            if (window.self !== window.top) {
+                document.body.classList.add('embed-mode');
+            }
+        } catch (e) {
+            document.body.classList.add('embed-mode');
+        }
+    </script>
+</body>
+</html>

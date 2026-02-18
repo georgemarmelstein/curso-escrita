@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 6B: Engenharia de Prompt em Sistemas Agenticos | Sistemas Agenticos</title>
+    <meta name="description" content="Como orquestrar e escrever prompts em sistemas agenticos. CLAUDE.md, contratos de entrada e saida, orquestradores e ativacao progressiva.">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">S</span>
+                <span class="logo-text">Sistemas Agenticos</span>
+            </a>
+            <nav class="nav-main">
+                <ul>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Aulas</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="aula-0.html">Aula 0: Abertura</a></li>
+                            <li><a href="aula-1.html">Aula 1: Fundamentos</a></li>
+                            <li><a href="aula-2a.html">Aula 2A: Anatomia</a></li>
+                            <li><a href="aula-2b.html">Aula 2B: Claude Code</a></li>
+                            <li><a href="aula-3.html">Aula 3: Arquitetura</a></li>
+                            <li><a href="aula-4.html">Aula 4: Construindo</a></li>
+                            <li><a href="aula-5.html">Aula 5: Sistema CLERK</a></li>
+                            <li class="divider"></li>
+                            <li><a href="aula-6.html">Aula 6: Engenharia de Prompt</a></li>
+                            <li><a href="aula-6b.html" class="active">Aula 6B: Prompts Agenticos</a></li>
+                            <li><a href="aula-7.html">Aula 7: Engenharia de Contexto</a></li>
+                            <li><a href="aula-8.html">Aula 8: Engenharia de Capacidades</a></li>
+                            <li><a href="aula-9.html">Aula 9: Engenharia de Workflows</a></li>
+                            <li><a href="aula-10.html">Aula 10: Engenharia de Conexoes</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="glossario.html">Glossario</a></li>
+                    <li><a href="recursos.html">Recursos</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" aria-label="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+        <div class="container">
+            <span class="badge badge-module">Modulo 2</span>
+            <h1>Engenharia de Prompt em Sistemas Agenticos</h1>
+            <p class="lesson-subtitle">Toda instrucao que entra no contexto e um prompt. A diferenca: sistemas agenticos os acionam de forma progressiva e inteligente.</p>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    90 min
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    6 blocos
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Intermediario-Avancado
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lesson Content -->
+    <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+            <nav class="lesson-nav">
+                <h4>Nesta Aula</h4>
+                <ul>
+                    <li><a href="#principio" class="lesson-nav-link">Principio Fundamental</a></li>
+                    <li><a href="#bloco1" class="lesson-nav-link">1. Context Engineering</a></li>
+                    <li><a href="#bloco2" class="lesson-nav-link">2. CLAUDE.md em Profundidade</a></li>
+                    <li><a href="#bloco3" class="lesson-nav-link">3. Contratos de Entrada/Saida</a></li>
+                    <li><a href="#bloco4" class="lesson-nav-link">4. Prompts de Etapa</a></li>
+                    <li><a href="#bloco5" class="lesson-nav-link">5. Orquestradores</a></li>
+                    <li><a href="#bloco6" class="lesson-nav-link">6. Boas Praticas e Erros</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lesson-content">
+            <!-- Mobile TOC -->
+            <div class="mobile-toc">
+                <button class="mobile-toc-trigger">
+                    <span>Navegacao</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <nav class="mobile-toc-content">
+                    <ul>
+                        <li><a href="#principio">Principio Fundamental</a></li>
+                        <li><a href="#bloco1">1. Context Engineering</a></li>
+                        <li><a href="#bloco2">2. CLAUDE.md em Profundidade</a></li>
+                        <li><a href="#bloco3">3. Contratos de Entrada/Saida</a></li>
+                        <li><a href="#bloco4">4. Prompts de Etapa</a></li>
+                        <li><a href="#bloco5">5. Orquestradores</a></li>
+                        <li><a href="#bloco6">6. Boas Praticas e Erros</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Principio Fundamental -->
+            <section class="lesson-block" id="principio">
+                <h2>O Principio Fundamental</h2>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Insight Central</div>
+                    <p><strong>"Toda instrucao que entra no contexto E um prompt."</strong></p>
+                </div>
+
+                <p>Em sistemas agenticos:</p>
+                <ul>
+                    <li><code>CLAUDE.md</code> e um prompt (carregado automaticamente)</li>
+                    <li><code>orquestrador.md</code> e um prompt (carregado quando invocado)</li>
+                    <li><code>etapas/*.md</code> sao prompts (carregados pelo orquestrador)</li>
+                    <li><code>commands/*.md</code> sao prompts (carregados por <code>/comando</code>)</li>
+                    <li><code>skills/*/SKILL.md</code> sao prompts (carregados por contexto)</li>
+                </ul>
+
+                <p>A diferenca dos sistemas agenticos: <strong>esses prompts sao acionados de forma progressiva e inteligente</strong> - explicita ou implicitamente, pelo usuario ou pelo agente, na medida da necessidade.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    JANELA DE CONTEXTO                           │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ CLAUDE.md (sempre presente - "DNA" do projeto)          │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Prompt do usuario (a tarefa atual)                      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Orquestrador (se invocado - coordena execucao)          │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Etapa N (carregado pelo orquestrador quando necessario) │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Resultado da etapa anterior (contexto acumulado)        │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+            </section>
+
+            <!-- Bloco 1: Context Engineering -->
+            <section id="bloco1" class="lesson-block">
+                <h2>Bloco 1: De Prompt Engineering a Context Engineering</h2>
+                <span class="badge badge-time">15 min</span>
+
+                <h3>1.1 A Evolucao do Paradigma</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Prompt Engineering (2023)</th>
+                            <th>Context Engineering (2025)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Um prompt, uma resposta</td>
+                            <td>Multiplos prompts orquestrados</td>
+                        </tr>
+                        <tr>
+                            <td>Foco no "como perguntar"</td>
+                            <td>Foco em "qual contexto fornecer"</td>
+                        </tr>
+                        <tr>
+                            <td>Usuario controla tudo</td>
+                            <td>Sistema ativa prompts inteligentemente</td>
+                        </tr>
+                        <tr>
+                            <td>Estatico</td>
+                            <td>Dinamico e adaptativo</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>1.2 A Analogia do Gabinete Judicial</h3>
+
+                <p>Imagine um gabinete de magistrado bem organizado:</p>
+
+                <pre class="diagram"><code>GABINETE JUDICIAL                    SISTEMA AGENTICO
+─────────────────                    ─────────────────
+Manual de Procedimentos        →     CLAUDE.md
+Coordenador do Gabinete        →     Orquestrador
+Assessores Especializados      →     Subagentes (etapas)
+Modelos de Minutas             →     Templates em prompts
+Checklist de Conferencia       →     Validacoes entre etapas</code></pre>
+
+                <p>O magistrado nao precisa instruir cada assessor do zero a cada processo. O gabinete tem <strong>procedimentos documentados</strong> que sao acionados conforme a necessidade.</p>
+            </section>
+
+            <!-- Bloco 2: CLAUDE.md -->
+            <section id="bloco2" class="lesson-block">
+                <h2>Bloco 2: CLAUDE.md - O DNA do Projeto</h2>
+                <span class="badge badge-time">20 min</span>
+
+                <h3>2.1 O Que E o CLAUDE.md</h3>
+
+                <p>O <code>CLAUDE.md</code> e um arquivo especial que o Claude Code le automaticamente ao iniciar qualquer sessao no projeto. Ele funciona como:</p>
+
+                <ul>
+                    <li><strong>Manual de procedimentos</strong> do projeto</li>
+                    <li><strong>Memoria institucional</strong> das decisoes tomadas</li>
+                    <li><strong>Guia de estilo</strong> e convencoes</li>
+                    <li><strong>Mapa do territorio</strong> (estrutura, artefatos, fluxos)</li>
+                </ul>
+
+                <h3>2.2 Hierarquia de Carregamento</h3>
+
+                <pre class="diagram"><code>1. ~/.claude/CLAUDE.md          (global - todas as sessoes)
+       ↓
+2. ./CLAUDE.md                   (projeto - raiz do repositorio)
+       ↓
+3. ./subpasta/CLAUDE.md          (local - contexto especifico)</code></pre>
+
+                <p>O Claude combina todos os niveis, com o mais especifico tendo precedencia.</p>
+
+                <h3>2.3 Estrutura Recomendada</h3>
+
+                <pre><code># CLAUDE.md
+
+## Proposito do Projeto
+[Uma frase que define a razao de existir do projeto]
+
+## Filosofia
+[Principios que guiam todas as decisoes]
+
+## Estrutura do Repositorio
+[Mapa visual das pastas e seus propositos]
+
+## Artefatos Principais
+[Tabela com commands, skills, prompts disponiveis]
+
+## Fluxos de Trabalho
+[Diagramas ASCII dos pipelines principais]
+
+## Convencoes
+[Nomenclatura, idioma, formatacao]
+
+## Status e Pendencias
+[O que esta feito, o que falta fazer]</code></pre>
+
+                <h3>2.4 Boas Praticas para CLAUDE.md</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pratica</th>
+                            <th>Por que</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Seja conciso mas completo</strong></td>
+                            <td>O CLAUDE.md e lido em TODA sessao - cada token conta</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Use tabelas para estruturar</strong></td>
+                            <td>Facil de escanear, dificil de interpretar errado</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Documente decisoes, nao discussoes</strong></td>
+                            <td>"Usamos X" em vez de "Pensamos em X, Y, Z e decidimos X"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mantenha atualizado</strong></td>
+                            <td>CLAUDE.md desatualizado causa mais confusao que ajuda</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Inclua exemplos de uso</strong></td>
+                            <td>Commands com exemplos sao mais faceis de usar</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2.5 Erros Comuns no CLAUDE.md</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Erro</th>
+                            <th>Consequencia</th>
+                            <th>Correcao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Muito longo</strong></td>
+                            <td>Consome tokens, dilui foco</td>
+                            <td>Maximo 500 linhas uteis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Muito vago</strong></td>
+                            <td>Claude "adivinha" errado</td>
+                            <td>Seja especifico nas instrucoes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Desatualizado</strong></td>
+                            <td>Instrucoes contraditorias</td>
+                            <td>Revise a cada mudanca significativa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sem estrutura</strong></td>
+                            <td>Dificil encontrar informacao</td>
+                            <td>Use secoes e tabelas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Duplicacao</strong></td>
+                            <td>Inconsistencias inevitaveis</td>
+                            <td>Uma fonte de verdade</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 3: Contratos -->
+            <section id="bloco3" class="lesson-block">
+                <h2>Bloco 3: Contratos de Entrada e Saida</h2>
+                <span class="badge badge-time">15 min</span>
+
+                <h3>3.1 O Que Sao Contratos</h3>
+
+                <p>Um <strong>contrato</strong> define claramente:</p>
+                <ul>
+                    <li><strong>O que entra</strong> (entrada): Quais arquivos, em qual formato</li>
+                    <li><strong>O que sai</strong> (saida): Qual arquivo gerar, com qual estrutura</li>
+                    <li><strong>Quem executa</strong> (modelo): Qual modelo usar (opus, sonnet, haiku)</li>
+                    <li><strong>Contexto necessario</strong>: O que o executor precisa saber</li>
+                </ul>
+
+                <h3>3.2 Por Que Contratos Sao Essenciais</h3>
+
+                <pre class="diagram"><code>SEM contratos explicitos:
+─────────────────────────────
+"Gere um relatorio do processo"
+     ↓
+[Claude decide formato, estrutura, nivel de detalhe]
+     ↓
+Resultado imprevisivel
+
+COM contratos explicitos:
+─────────────────────────────
+ENTRADA: processo.txt (texto completo do processo)
+SAIDA: relatorio.md (formato Marmelstein)
+MODELO: opus
+CONTEXTO: Apenas o arquivo de entrada
+     ↓
+[Claude segue especificacao]
+     ↓
+Resultado previsivel e consistente</code></pre>
+
+                <h3>3.3 Exemplo Real: Tabela de Contratos</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Etapa</th>
+                            <th>Entrada</th>
+                            <th>Saida</th>
+                            <th>Modelo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Relatorio</td>
+                            <td>processo.txt</td>
+                            <td>relatorio-marmelstein.md</td>
+                            <td>opus</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Analise</td>
+                            <td>relatorio-marmelstein.md</td>
+                            <td>[NUM]-analise.md</td>
+                            <td>opus</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Fundamentacao</td>
+                            <td>relatorio.md + analise.md</td>
+                            <td>fundamentacao.md</td>
+                            <td>opus</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Merge</td>
+                            <td>relatorio.md + fundamentacao.md</td>
+                            <td>[NUM]-minuta.md</td>
+                            <td>opus</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-tip">
+                    <div class="callout-title">Observe</div>
+                    <ul>
+                        <li>Cada etapa sabe EXATAMENTE o que recebe</li>
+                        <li>Cada etapa sabe EXATAMENTE o que deve produzir</li>
+                        <li>A saida de uma etapa e a entrada da proxima</li>
+                        <li>Nao ha ambiguidade</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Bloco 4: Prompts de Etapa -->
+            <section id="bloco4" class="lesson-block">
+                <h2>Bloco 4: Escrevendo Prompts de Etapa</h2>
+                <span class="badge badge-time">20 min</span>
+
+                <h3>4.1 Estrutura de um Prompt de Etapa</h3>
+
+                <pre><code>&lt;!--
+ENTRADA: [arquivo de entrada]
+SAIDA: [arquivo de saida]
+CONTEXTO: [o que o subagente recebe]
+--&gt;
+
+&lt;persona&gt;
+[Quem o Claude deve "ser" para esta tarefa]
+&lt;/persona&gt;
+
+&lt;objetivo&gt;
+[O que deve ser alcancado - claro e mensuravel]
+&lt;/objetivo&gt;
+
+&lt;formato_saida&gt;
+[Template EXATO do que deve ser gerado]
+&lt;/formato_saida&gt;
+
+&lt;pecas_relevantes&gt;
+[O que considerar e o que ignorar]
+&lt;/pecas_relevantes&gt;
+
+&lt;armadilha&gt;
+[Erros comuns a evitar - experiencia destilada]
+&lt;/armadilha&gt;
+
+&lt;exemplo&gt;
+[Exemplo concreto de saida bem-sucedida]
+&lt;/exemplo&gt;</code></pre>
+
+                <h3>4.2 Cada Secao em Detalhe</h3>
+
+                <h4>&lt;persona&gt; - Quem Executar</h4>
+                <pre><code>&lt;persona&gt;
+Voce e um ASSESSOR JURIDICO DE ALTO NIVEL especializado em
+direito previdenciario. Sua funcao e extrair e organizar
+informacoes processuais com precisao cirurgica.
+
+Voce NAO julga. Voce NAO opina. Voce RELATA.
+&lt;/persona&gt;</code></pre>
+                <p><strong>Por que funciona:</strong> Define o papel claramente, estabelece limites ("NAO julga"), usa linguagem assertiva.</p>
+
+                <h4>&lt;objetivo&gt; - O Que Fazer</h4>
+                <pre><code>&lt;objetivo&gt;
+Elaborar o RELATORIO do processo seguindo o formato Marmelstein.
+
+O relatorio deve:
+1. Identificar as partes e a natureza da acao
+2. Resumir os fatos em ordem cronologica
+3. Listar os pedidos da parte autora
+4. Sintetizar a defesa (se houver)
+5. Registrar provas relevantes
+
+Extensao ideal: 1-2 paginas
+&lt;/objetivo&gt;</code></pre>
+                <p><strong>Por que funciona:</strong> Objetivo claro e verificavel, lista de entregas especificas, parametro de qualidade.</p>
+
+                <h4>&lt;armadilha&gt; - Experiencia Destilada</h4>
+                <pre><code>&lt;armadilha&gt;
+CUIDADO: Partes frequentemente anexam sentencas de OUTROS
+processos como "precedentes favoraveis".
+
+NAO confunda essas sentencas com a decisao do processo atual.
+Sempre verifique o numero do processo citado.
+
+Sinais de alerta:
+- "Conforme sentenca proferida no processo XXX..."
+- Numero de processo diferente nos autos
+- Data de julgamento anterior a distribuicao
+&lt;/armadilha&gt;</code></pre>
+                <p><strong>Por que funciona:</strong> Erro real (nao hipotetico), explicacao do porque, sinais concretos para detectar.</p>
+
+                <h3>4.3 O Principio da Altitude Correta</h3>
+
+                <pre class="diagram"><code>MUITO ALTO (vago demais):
+"Faca um bom relatorio"
+→ Claude decide tudo, resultado imprevisivel
+
+MUITO BAIXO (micro-gerenciamento):
+"Na linha 1, escreva 'RELATORIO' em maiusculas,
+ pule uma linha, na linha 3 escreva 'Trata-se de'..."
+→ Inflexivel, quebra com qualquer variacao
+
+ALTITUDE CORRETA:
+"Gere um relatorio no formato Marmelstein,
+ comecando com o tipo de acao e partes,
+ seguido de fatos em ordem cronologica..."
+→ Direcao clara + flexibilidade de execucao</code></pre>
+            </section>
+
+            <!-- Bloco 5: Orquestradores -->
+            <section id="bloco5" class="lesson-block">
+                <h2>Bloco 5: Orquestradores</h2>
+                <span class="badge badge-time">15 min</span>
+
+                <h3>5.1 O Que E um Orquestrador</h3>
+
+                <p>Um <strong>orquestrador</strong> e um prompt especializado que:</p>
+                <ol>
+                    <li>Conhece todas as etapas do pipeline</li>
+                    <li>Sabe a ordem de execucao</li>
+                    <li>Valida saidas entre etapas</li>
+                    <li>Decide quando parar ou prosseguir</li>
+                    <li>Coordena passagem de contexto</li>
+                </ol>
+
+                <h3>5.2 Fluxo Visual</h3>
+
+                <pre class="diagram"><code>processo.txt
+     │
+     ▼
+┌─────────────────────────────┐
+│   ETAPA 1: RELATORIO        │
+│   Entrada: processo.txt     │
+│   Saida: relatorio.md       │
+└─────────────┬───────────────┘
+              │
+              ▼
+┌─────────────────────────────┐
+│   ETAPA 2: ANALISE          │
+│   Entrada: relatorio.md     │
+│   Saida: analise.md         │
+└─────────────┬───────────────┘
+              │
+              ▼
+┌─────────────────────────────┐
+│   ETAPA 3: FUNDAMENTACAO    │
+│   Entrada: relatorio+analise│
+│   Saida: fundamentacao.md   │
+└─────────────┬───────────────┘
+              │
+              ▼
+┌─────────────────────────────┐
+│   ETAPA 4: MERGE            │
+│   Entrada: relatorio+fund   │
+│   Saida: minuta.md          │
+└─────────────────────────────┘</code></pre>
+
+                <h3>5.3 Ativacao Progressiva em Acao</h3>
+
+                <p>O orquestrador demonstra o principio de <strong>ativacao progressiva</strong>:</p>
+
+                <pre class="diagram"><code>CONTEXTO INICIAL (antes de iniciar):
+├── CLAUDE.md (sempre presente)
+└── Pedido do usuario: "Gere sentenca do processo X"
+
+ETAPA 1 (orquestrador carrega):
+├── CLAUDE.md
+├── orquestrador.md (carregado pelo comando)
+├── etapas/01-relatorio.md (carregado pelo orquestrador)
+└── processo.txt (entrada)
+
+ETAPA 2 (contexto muda):
+├── CLAUDE.md
+├── orquestrador.md
+├── etapas/02-analise.md (novo prompt)
+└── relatorio.md (saida anterior vira entrada)
+
+[E assim por diante...]</code></pre>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Observe</div>
+                    <p>O contexto muda DINAMICAMENTE. Nao carregamos tudo de uma vez - cada etapa recebe apenas o que precisa.</p>
+                </div>
+            </section>
+
+            <!-- Bloco 6: Boas Praticas e Erros -->
+            <section id="bloco6" class="lesson-block">
+                <h2>Bloco 6: Boas Praticas e Erros Comuns</h2>
+                <span class="badge badge-time">15 min</span>
+
+                <h3>6.1 Na Escrita de Prompts</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pratica</th>
+                            <th>Exemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Use delimitadores claros</strong></td>
+                            <td>&lt;persona&gt;, &lt;objetivo&gt;, &lt;formato_saida&gt;</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mostre, nao diga</strong></td>
+                            <td>Inclua &lt;exemplo&gt; completo, nao descricao</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Seja especifico sobre formato</strong></td>
+                            <td>Template literal, nao "use formato adequado"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Documente armadilhas</strong></td>
+                            <td>Erros reais que voce ja encontrou</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Limite o escopo</strong></td>
+                            <td>Uma tarefa por prompt de etapa</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>6.2 Erros em Prompts de Etapa</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Erro</th>
+                            <th>Consequencia</th>
+                            <th>Solucao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sem &lt;exemplo&gt;</strong></td>
+                            <td>Formato inconsistente</td>
+                            <td>Sempre inclua exemplo completo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Objetivo vago</strong></td>
+                            <td>Claude "adivinha"</td>
+                            <td>Liste entregas especificas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Persona ausente</strong></td>
+                            <td>Tom inconsistente</td>
+                            <td>Defina papel claramente</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Instrucoes contraditorias</strong></td>
+                            <td>Comportamento imprevisivel</td>
+                            <td>Revise para consistencia</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>6.3 Erros de Orquestracao</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Erro</th>
+                            <th>Consequencia</th>
+                            <th>Solucao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Paralelizar dependencias</strong></td>
+                            <td>Saida incorreta</td>
+                            <td>Sequencial quando depende</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nao validar saidas</strong></td>
+                            <td>Erros em cascata</td>
+                            <td>Validacao obrigatoria</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Contexto acumulado</strong></td>
+                            <td>Estouro de tokens</td>
+                            <td>Isolar contexto por etapa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sem tratamento de erro</strong></td>
+                            <td>Sistema trava</td>
+                            <td>Definir fallback</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Resumo -->
+            <section class="lesson-block" id="resumo">
+                <h2>Resumo da Aula</h2>
+
+                <div class="key-points">
+                    <h4>Conceitos-Chave</h4>
+                    <ul>
+                        <li><strong>Toda instrucao no contexto e prompt:</strong> CLAUDE.md, orquestradores, etapas</li>
+                        <li><strong>Ativacao progressiva:</strong> Carregar contexto quando necessario, nao tudo de uma vez</li>
+                        <li><strong>Contratos explicitos:</strong> Entrada, saida, modelo, validacao</li>
+                        <li><strong>Altitude correta:</strong> Nem vago demais, nem micro-gerenciamento</li>
+                        <li><strong>Validacao entre etapas:</strong> Verificar antes de prosseguir</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Formula de Sucesso</div>
+                    <pre><code>CLAUDE.md bem escrito
+    + Contratos explicitos
+    + Prompts estruturados
+    + Orquestracao clara
+    + Validacao entre etapas
+    = Sistema previsivel e confiavel</code></pre>
+                </div>
+            </section>
+
+            <!-- Checklist -->
+            <section class="lesson-block" id="checklist">
+                <h2>Checklist de Qualidade</h2>
+
+                <h4>Para Prompts de Etapa</h4>
+                <ul>
+                    <li>Tem &lt;persona&gt; definida?</li>
+                    <li>Tem &lt;objetivo&gt; claro e mensuravel?</li>
+                    <li>Tem &lt;formato_saida&gt; como template literal?</li>
+                    <li>Tem &lt;exemplo&gt; completo?</li>
+                    <li>Tem &lt;armadilha&gt; com erros reais?</li>
+                    <li>Contrato documentado no cabecalho?</li>
+                </ul>
+
+                <h4>Para Orquestradores</h4>
+                <ul>
+                    <li>Tabela de contratos completa?</li>
+                    <li>Fluxo visual (diagrama ASCII)?</li>
+                    <li>Regras de execucao claras?</li>
+                    <li>Validacao entre etapas definida?</li>
+                    <li>Tratamento de erro especificado?</li>
+                </ul>
+
+                <h4>Para CLAUDE.md</h4>
+                <ul>
+                    <li>Proposito do projeto claro?</li>
+                    <li>Estrutura do repositorio documentada?</li>
+                    <li>Commands e skills listados?</li>
+                    <li>Fluxos principais com diagrama?</li>
+                    <li>Atualizado com ultimo status?</li>
+                </ul>
+            </section>
+
+            <!-- Navegacao -->
+            <div class="lesson-navigation">
+                <a href="aula-6.html" class="nav-prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Aula 6: Engenharia de Prompt</span>
+                </a>
+                <a href="aula-7.html" class="nav-next">
+                    <span>Aula 7: Engenharia de Contexto</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sistemas Agenticos</h4>
+                    <p>Curso pratico de IA Agentica para profissionais do Direito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navegacao</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="glossario.html">Glossario</a></li>
+                        <li><a href="recursos.html">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Para duvidas sobre o curso, entre em contato com o instrutor.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Curso de Sistemas Agenticos - Material Educacional</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

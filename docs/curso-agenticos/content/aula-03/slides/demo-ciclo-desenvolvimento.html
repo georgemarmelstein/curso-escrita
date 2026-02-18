@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Ciclo Feature-Dev</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --gold-muted: rgba(190, 156, 109, 0.4);
+            --cream: #FFF4E4;
+            --cream-soft: rgba(255, 244, 228, 0.7);
+            --dark: #0a0a12;
+            --dark-elevated: #0f0f1a;
+
+            /* Phase accent colors */
+            --amber: #fbbf24;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+            --green: #4ade80;
+            --pink: #f472b6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--dark);
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            color: var(--cream);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           ATMOSPHERIC BACKGROUND
+           ═══════════════════════════════════════════════════════════ */
+        .atmosphere {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 100% 80% at 50% 100%, rgba(190, 156, 109, 0.06) 0%, transparent 60%),
+                linear-gradient(180deg, var(--dark) 0%, var(--dark-elevated) 100%);
+            z-index: 0;
+        }
+
+        /* Subtle grain texture */
+        .atmosphere::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════ */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 5vh 8vw 3vh;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid var(--gold-muted);
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--cream);
+        }
+
+        .header-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.9rem);
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN CONTENT - TIMELINE FLOW
+           ═══════════════════════════════════════════════════════════ */
+        .main {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 4vh 8vw;
+            overflow: hidden;
+        }
+
+        /* The golden thread connecting phases */
+        .timeline-thread {
+            position: absolute;
+            top: 50%;
+            left: 8vw;
+            right: 8vw;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--gold-muted) 10%,
+                var(--gold-muted) 90%,
+                transparent 100%
+            );
+            transform: translateY(-50%);
+        }
+
+        /* Phase cards container */
+        .phases {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            gap: 1vw;
+        }
+
+        /* Individual phase */
+        .phase {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .phase.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Phase number - the anchor point */
+        .phase-marker {
+            position: relative;
+            width: clamp(48px, 5vw, 64px);
+            height: clamp(48px, 5vw, 64px);
+            border-radius: 50%;
+            background: var(--dark);
+            border: 2px solid var(--gold-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2vh;
+            transition: all 0.4s ease;
+            z-index: 2;
+        }
+
+        .phase-number {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 600;
+            color: var(--gold-muted);
+            transition: color 0.4s ease;
+        }
+
+        .phase-icon {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            font-size: clamp(1.2rem, 1.5vw, 1.5rem);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.4s ease;
+        }
+
+        /* Phase name */
+        .phase-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1rem, 1.5vw, 1.4rem);
+            font-weight: 500;
+            color: var(--cream-soft);
+            margin-bottom: 1vh;
+            transition: all 0.4s ease;
+            letter-spacing: 0.02em;
+        }
+
+        /* Phase description - hidden by default */
+        .phase-desc {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(0.9rem, 1.1vw, 1.1rem);
+            font-style: italic;
+            color: transparent;
+            line-height: 1.5;
+            max-width: 180px;
+            height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           ACTIVE PHASE STATE
+           ═══════════════════════════════════════════════════════════ */
+        .phase.active {
+            flex: 2;
+        }
+
+        .phase.active .phase-marker {
+            border-color: var(--phase-color, var(--gold));
+            box-shadow:
+                0 0 0 4px var(--dark),
+                0 0 0 6px var(--phase-color, var(--gold)),
+                0 0 40px rgba(190, 156, 109, 0.3);
+            transform: scale(1.1);
+        }
+
+        .phase.active .phase-number {
+            color: var(--phase-color, var(--gold));
+        }
+
+        .phase.active .phase-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .phase.active .phase-name {
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+            color: var(--cream);
+        }
+
+        .phase.active .phase-desc {
+            color: var(--cream-soft);
+            height: auto;
+            margin-top: 1vh;
+            padding-top: 1vh;
+        }
+
+        /* Inactive phases fade slightly */
+        .phase:not(.active) {
+            opacity: 0.5;
+        }
+
+        .phase:not(.active):hover {
+            opacity: 0.8;
+        }
+
+        .phase:not(.active):hover .phase-marker {
+            border-color: var(--gold);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           DETAIL PANEL - ELEGANT CARD
+           ═══════════════════════════════════════════════════════════ */
+        .detail-card {
+            position: absolute;
+            bottom: 4vh;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg,
+                rgba(15, 15, 26, 0.95) 0%,
+                rgba(10, 10, 18, 0.98) 100%
+            );
+            border: 1px solid var(--gold-muted);
+            border-radius: 8px;
+            padding: 3vh 4vw;
+            display: flex;
+            align-items: center;
+            gap: 4vw;
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            animation: cardReveal 0.8s ease 1.5s forwards;
+            max-width: 800px;
+            width: 80vw;
+        }
+
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .detail-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+        }
+
+        .detail-phase {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .detail-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            font-weight: 600;
+            color: var(--cream);
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+
+        .detail-title-icon {
+            font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+        }
+
+        .detail-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(1rem, 1.3vw, 1.2rem);
+            color: var(--cream-soft);
+            line-height: 1.6;
+            max-width: 400px;
+        }
+
+        .detail-right {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5vh;
+            padding-left: 4vw;
+            border-left: 1px solid var(--gold-muted);
+        }
+
+        .detail-agents-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.8vw, 0.75rem);
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .detail-agents {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .agent-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--purple);
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+        }
+
+        .detail-command {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.8rem, 1vw, 0.95rem);
+            color: var(--cyan);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.8rem 1rem;
+            border-radius: 4px;
+        }
+
+        .detail-command::before {
+            content: '$ ';
+            color: var(--green);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           NAVIGATION
+           ═══════════════════════════════════════════════════════════ */
+        .nav {
+            position: absolute;
+            bottom: 2vh;
+            right: 8vw;
+            display: flex;
+            gap: 1rem;
+            z-index: 20;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--gold-muted);
+            background: transparent;
+            border-radius: 50%;
+            color: var(--gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE ADJUSTMENTS
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .header {
+            padding: 3vh 5vw 2vh;
+        }
+
+        body.embed-mode .header-title {
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+        }
+
+        body.embed-mode .main {
+            padding: 3vh 5vw;
+        }
+
+        body.embed-mode .detail-card {
+            padding: 2vh 3vw;
+            gap: 2vw;
+        }
+
+        body.embed-mode .phase-marker {
+            width: clamp(36px, 4vw, 48px);
+            height: clamp(36px, 4vw, 48px);
+        }
+    </style>
+</head>
+<body>
+    <div class="atmosphere"></div>
+
+    <header class="header">
+        <h1 class="header-title">Ciclo de Desenvolvimento</h1>
+        <span class="header-subtitle">Anthropic Feature-Dev</span>
+    </header>
+
+    <main class="main">
+        <div class="timeline-thread"></div>
+
+        <div class="phases" id="phases">
+            <!-- Phases generated by JS -->
+        </div>
+
+        <div class="detail-card" id="detailCard">
+            <div class="detail-left">
+                <span class="detail-phase" id="detailPhase">Fase 1 de 7</span>
+                <h2 class="detail-title">
+                    <span class="detail-title-icon" id="detailIcon">🎯</span>
+                    <span id="detailTitle">Descoberta</span>
+                </h2>
+                <p class="detail-text" id="detailText">
+                    Entender o que precisa ser construído.
+                </p>
+            </div>
+            <div class="detail-right">
+                <span class="detail-agents-label">Ferramentas</span>
+                <div class="detail-agents" id="detailAgents">
+                    <span class="agent-tag">Confirmar escopo</span>
+                </div>
+                <div class="detail-command" id="detailCommand">/feature-dev</div>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <button class="nav-btn" id="prevBtn">←</button>
+            <button class="nav-btn" id="nextBtn">→</button>
+        </nav>
+    </main>
+
+    <script>
+        const stages = [
+            {
+                name: 'Descoberta',
+                icon: '🎯',
+                color: '#fbbf24',
+                desc: 'Entender o que precisa ser construído. Clarificar requisitos e confirmar a visão.',
+                agents: ['Confirmar escopo'],
+                command: '/feature-dev'
+            },
+            {
+                name: 'Exploração',
+                icon: '🔍',
+                color: '#22d3ee',
+                desc: 'Analisar código existente. Traçar caminhos de execução e mapear arquitetura.',
+                agents: ['code-explorer', '×2-3'],
+                command: 'Task: code-explorer'
+            },
+            {
+                name: 'Perguntas',
+                icon: '❓',
+                color: '#a78bfa',
+                desc: 'Preencher lacunas e resolver ambiguidades antes de projetar.',
+                agents: ['Aguarda respostas'],
+                command: 'AskUserQuestion'
+            },
+            {
+                name: 'Arquitetura',
+                icon: '📐',
+                color: '#60a5fa',
+                desc: 'Projetar múltiplas abordagens com trade-offs claros.',
+                agents: ['code-architect', '×2-3'],
+                command: 'Task: code-architect'
+            },
+            {
+                name: 'Implementação',
+                icon: '💻',
+                color: '#4ade80',
+                desc: 'Construir a feature seguindo a arquitetura escolhida.',
+                agents: ['Edit', 'Write', 'Bash'],
+                command: 'Aguarda aprovação'
+            },
+            {
+                name: 'Revisão',
+                icon: '✅',
+                color: '#f472b6',
+                desc: 'Garantir código simples, DRY, elegante e correto.',
+                agents: ['code-reviewer', '×3'],
+                command: 'Task: code-reviewer'
+            },
+            {
+                name: 'Conclusão',
+                icon: '📋',
+                color: '#BE9C6D',
+                desc: 'Documentar decisões, arquivos modificados e próximos passos.',
+                agents: ['TodoWrite', 'Resumo'],
+                command: 'git commit'
+            }
+        ];
+
+        let currentStage = 0;
+        const totalStages = stages.length;
+
+        function createPhases() {
+            const container = document.getElementById('phases');
+
+            stages.forEach((stage, index) => {
+                const phase = document.createElement('div');
+                phase.className = 'phase';
+                phase.dataset.index = index;
+                phase.style.setProperty('--phase-color', stage.color);
+
+                phase.innerHTML = `
+                    <div class="phase-marker">
+                        <span class="phase-number">${index + 1}</span>
+                        <span class="phase-icon">${stage.icon}</span>
+                    </div>
+                    <span class="phase-name">${stage.name}</span>
+                    <p class="phase-desc">${stage.desc}</p>
+                `;
+
+                phase.addEventListener('click', () => selectStage(index));
+                container.appendChild(phase);
+
+                // Staggered reveal
+                setTimeout(() => {
+                    phase.classList.add('visible');
+                }, 200 + index * 100);
+            });
+        }
+
+        function selectStage(index) {
+            currentStage = index;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const stage = stages[currentStage];
+
+            // Update phases
+            document.querySelectorAll('.phase').forEach((phase, i) => {
+                phase.classList.toggle('active', i === currentStage);
+                phase.style.setProperty('--phase-color', stages[i].color);
+            });
+
+            // Update detail card
+            document.getElementById('detailPhase').textContent = `Fase ${currentStage + 1} de ${totalStages}`;
+            document.getElementById('detailIcon').textContent = stage.icon;
+            document.getElementById('detailTitle').textContent = stage.name;
+            document.getElementById('detailText').textContent = stage.desc;
+            document.getElementById('detailCommand').textContent = stage.command;
+
+            const agentsContainer = document.getElementById('detailAgents');
+            agentsContainer.innerHTML = stage.agents
+                .map(a => `<span class="agent-tag">${a}</span>`)
+                .join('');
+        }
+
+        // Navigation
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            currentStage = (currentStage - 1 + totalStages) % totalStages;
+            updateDisplay();
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentStage = (currentStage + 1) % totalStages;
+            updateDisplay();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                currentStage = (currentStage + 1) % totalStages;
+                updateDisplay();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                currentStage = (currentStage - 1 + totalStages) % totalStages;
+                updateDisplay();
+            }
+        });
+
+        // Auto-advance
+        let autoInterval;
+        function startAuto() {
+            autoInterval = setInterval(() => {
+                currentStage = (currentStage + 1) % totalStages;
+                updateDisplay();
+            }, 5000);
+        }
+
+        function stopAuto() {
+            if (autoInterval) clearInterval(autoInterval);
+        }
+
+        document.addEventListener('click', stopAuto);
+        document.addEventListener('keydown', stopAuto);
+
+        // Embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+
+        // Initialize
+        detectEmbedMode();
+        createPhases();
+        setTimeout(() => {
+            updateDisplay();
+            setTimeout(startAuto, 3000);
+        }, 500);
+    </script>
+</body>
+</html>

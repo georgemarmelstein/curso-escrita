@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Capacidades Web vs Desktop</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #FFF4E4;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #BE9C6D;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Main container */
+        .comparison-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            max-width: 900px;
+            margin-bottom: 25px;
+        }
+
+        /* Platform card */
+        .platform-card {
+            width: 380px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid;
+            transition: all 0.4s ease;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Web card */
+        .platform-card.web {
+            border-color: rgba(82, 135, 168, 0.5);
+        }
+        .platform-card.web:hover {
+            border-color: #5287A8;
+            box-shadow: 0 10px 40px rgba(82, 135, 168, 0.3);
+        }
+
+        /* Desktop card */
+        .platform-card.desktop {
+            border-color: rgba(190, 156, 109, 0.5);
+        }
+        .platform-card.desktop:hover {
+            border-color: #BE9C6D;
+            box-shadow: 0 10px 40px rgba(190, 156, 109, 0.3);
+        }
+
+        /* Card header */
+        .card-header {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .card-header .icon {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .card-header .title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .platform-card.web .title { color: #5287A8; }
+        .platform-card.desktop .title { color: #BE9C6D; }
+
+        .card-header .subtitle {
+            color: #888;
+            font-size: 0.75em;
+        }
+
+        /* Card body */
+        .card-body {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Capability row */
+        .capability-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .capability-row:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateX(5px);
+        }
+
+        .capability-row.highlight {
+            border: 2px solid;
+            animation: pulse-highlight 2s ease infinite;
+        }
+
+        .platform-card.web .capability-row.highlight {
+            border-color: rgba(239, 68, 68, 0.6);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .platform-card.desktop .capability-row.highlight {
+            border-color: rgba(34, 197, 94, 0.6);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        @keyframes pulse-highlight {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .capability-name {
+            font-size: 0.85em;
+            color: #ccc;
+        }
+
+        .capability-status {
+            font-size: 1.4em;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .capability-status.yes {
+            color: #4ade80;
+        }
+
+        .capability-status.no {
+            color: #ef4444;
+        }
+
+        /* Differential badge */
+        .differential-badge {
+            font-size: 0.6em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            animation: glow 2s ease infinite;
+        }
+
+        .platform-card.desktop .differential-badge {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1));
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            color: #4ade80;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.5); }
+        }
+
+        /* Info box */
+        .info-box {
+            max-width: 800px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.15), rgba(190, 156, 109, 0.05));
+            border: 2px solid #BE9C6D;
+            border-radius: 12px;
+            padding: 20px 30px;
+            text-align: center;
+        }
+
+        .info-box .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .info-box .header .icon {
+            font-size: 1.5em;
+        }
+
+        .info-box .header .title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #BE9C6D;
+        }
+
+        .info-box .acronym {
+            font-family: 'IBM Plex Mono', monospace;
+            color: #BE9C6D;
+            font-weight: 600;
+        }
+
+        .info-box .description {
+            font-family: 'IBM Plex Serif', serif;
+            font-size: 0.95em;
+            color: #FFF4E4;
+            line-height: 1.5;
+        }
+
+        .info-box .analogy {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(190, 156, 109, 0.3);
+            font-family: 'IBM Plex Serif', serif;
+            font-style: italic;
+            color: #BE9C6D;
+            font-size: 0.9em;
+        }
+
+        /* VS divider */
+        .vs-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #666;
+            position: relative;
+        }
+
+        .vs-divider::before,
+        .vs-divider::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(180deg, transparent, #666, transparent);
+        }
+
+        .vs-divider::before { top: -50px; }
+        .vs-divider::after { bottom: -50px; }
+
+        /* Embed mode */
+        body.embed-mode {
+            padding: 10px;
+            min-height: auto;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body.embed-mode h1 {
+            font-size: 1.1em;
+            margin-bottom: 12px;
+        }
+
+        body.embed-mode .comparison-container {
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        body.embed-mode .platform-card {
+            width: 320px;
+        }
+
+        body.embed-mode .card-header {
+            padding: 12px;
+        }
+
+        body.embed-mode .card-header .icon {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        body.embed-mode .card-header .title {
+            font-size: 1.2em;
+        }
+
+        body.embed-mode .card-body {
+            padding: 12px;
+        }
+
+        body.embed-mode .capability-row {
+            padding: 8px 10px;
+            margin-bottom: 5px;
+        }
+
+        body.embed-mode .capability-name {
+            font-size: 0.75em;
+        }
+
+        body.embed-mode .capability-status {
+            font-size: 1.2em;
+        }
+
+        body.embed-mode .info-box {
+            padding: 12px 20px;
+        }
+
+        body.embed-mode .info-box .header .title {
+            font-size: 0.95em;
+        }
+
+        body.embed-mode .info-box .description {
+            font-size: 0.85em;
+        }
+
+        body.embed-mode .info-box .analogy {
+            font-size: 0.8em;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        body.embed-mode .vs-divider {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Capacidades Agenticas Atuais</h1>
+
+    <div class="comparison-container">
+        <!-- Web Card -->
+        <div class="platform-card web">
+            <div class="card-header">
+                <span class="icon">🌐</span>
+                <div class="title">Claude Web</div>
+                <div class="subtitle">claude.ai</div>
+            </div>
+            <div class="card-body">
+                <div class="capability-row">
+                    <span class="capability-name">Artifacts</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Projects</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Conectores Nativos</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row highlight">
+                    <span class="capability-name">MCPs</span>
+                    <span class="capability-status no">✗</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Extended Thinking</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Research</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Analise PDF (30MB)</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- VS Divider -->
+        <div class="vs-divider">VS</div>
+
+        <!-- Desktop Card -->
+        <div class="platform-card desktop">
+            <div class="card-header">
+                <span class="icon">🖥️</span>
+                <div class="title">Claude Desktop</div>
+                <div class="subtitle">App nativo</div>
+            </div>
+            <div class="card-body">
+                <div class="capability-row">
+                    <span class="capability-name">Artifacts</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Projects</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Conectores Nativos</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row highlight">
+                    <span class="capability-name">MCPs</span>
+                    <span class="capability-status yes">✓</span>
+                    <span class="differential-badge">DIFERENCIAL</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Extended Thinking</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Research</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+                <div class="capability-row">
+                    <span class="capability-name">Analise PDF (30MB)</span>
+                    <span class="capability-status yes">✓</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <div class="header">
+            <span class="icon">🔌</span>
+            <span class="title">O que e MCP?</span>
+        </div>
+        <div class="description">
+            <span class="acronym">MCP</span> = Model Context Protocol<br>
+            No Desktop, voce pode "dar o computador" ao Claude.
+        </div>
+        <div class="analogy">
+            "E como se seu assessor tivesse credencial para acessar<br>
+            o SEI, o e-mail e o sistema de processos diretamente."
+        </div>
+    </div>
+
+    <script>
+        // Detectar modo embed
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Animacao de entrada dos cards
+        const cards = document.querySelectorAll('.platform-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 200 + index * 200);
+        });
+
+        // Animacao da info box
+        const infoBox = document.querySelector('.info-box');
+        infoBox.style.opacity = '0';
+        infoBox.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            infoBox.style.transition = 'all 0.5s ease';
+            infoBox.style.opacity = '1';
+            infoBox.style.transform = 'translateY(0)';
+        }, 800);
+
+        // Highlight sequencial das capacidades
+        const capabilities = document.querySelectorAll('.capability-row');
+        capabilities.forEach((cap, index) => {
+            cap.style.opacity = '0';
+            cap.style.transform = 'translateX(-20px)';
+            setTimeout(() => {
+                cap.style.transition = 'all 0.3s ease';
+                cap.style.opacity = '1';
+                cap.style.transform = 'translateX(0)';
+            }, 400 + index * 80);
+        });
+    </script>
+</body>
+</html>

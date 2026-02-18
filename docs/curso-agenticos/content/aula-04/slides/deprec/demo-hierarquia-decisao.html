@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Hierarquia de Decisão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        .bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(190, 156, 109, 0.05) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 3vh 5vw;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 4vh;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .header p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 0.8vh;
+        }
+
+        /* Pyramid */
+        .pyramid-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2vh;
+        }
+
+        .pyramid-level {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1vh;
+            opacity: 0;
+            transform: translateY(-20px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pyramid-level.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pyramid-level.active {
+            transform: scale(1.05);
+        }
+
+        .pyramid-level.dimmed {
+            opacity: 0.3;
+        }
+
+        /* Level boxes */
+        .level-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--level-color, var(--gold));
+            border-radius: 12px;
+            padding: 2vh 3vw;
+            text-align: center;
+            min-width: 250px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .level-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--level-color, var(--gold)), transparent);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .pyramid-level.active .level-box::before {
+            opacity: 0.2;
+        }
+
+        .level-icon {
+            font-size: clamp(1.8rem, 2.5vw, 2.2rem);
+            margin-bottom: 0.8vh;
+        }
+
+        .level-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+            font-weight: 600;
+            color: var(--level-color, var(--gold));
+            margin-bottom: 0.5vh;
+        }
+
+        .level-question {
+            font-size: clamp(0.75rem, 1vw, 0.88rem);
+            color: rgba(255, 244, 228, 0.6);
+            font-style: italic;
+        }
+
+        /* Connectors */
+        .connector {
+            display: flex;
+            align-items: center;
+            gap: 2vw;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .connector.visible {
+            opacity: 1;
+        }
+
+        .connector-line {
+            width: 2px;
+            height: 3vh;
+            background: var(--gold);
+            opacity: 0.3;
+        }
+
+        .connector-arrow {
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            color: var(--gold);
+            opacity: 0.5;
+        }
+
+        /* Split level */
+        .split-level {
+            display: flex;
+            gap: 4vw;
+        }
+
+        /* Level colors */
+        .level-orchestrator { --level-color: var(--gold); }
+        .level-worker { --level-color: var(--blue); }
+        .level-skill { --level-color: var(--green); }
+        .level-tool { --level-color: var(--purple); }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 2vw;
+            margin-top: 3vh;
+        }
+
+        .control-btn {
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            color: var(--gold);
+            padding: 1vh 2vw;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 1vw, 0.88rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(190, 156, 109, 0.25);
+        }
+
+        .control-btn.active {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        /* Footer insight */
+        .footer-insight {
+            text-align: center;
+            padding-top: 2vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2vh;
+        }
+
+        .insight-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .insight-text strong {
+            color: var(--gold);
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 2vh 3vw; }
+        body.embed-mode .level-box { padding: 1.5vh 2vw; min-width: 200px; }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Quem decide o quê?</h1>
+            <p>A hierarquia de decisão no sistema agêntico</p>
+        </div>
+
+        <div class="pyramid-container">
+            <!-- Level 1: Orchestrator -->
+            <div class="pyramid-level level-orchestrator visible active" id="level1" onclick="focusLevel(1)">
+                <div class="level-box">
+                    <div class="level-icon">🎯</div>
+                    <div class="level-name">ORQUESTRADOR</div>
+                    <div class="level-question">"O que fazer? Para quem?"</div>
+                </div>
+            </div>
+
+            <div class="connector visible" id="conn1">
+                <div class="connector-line"></div>
+                <span class="connector-arrow">↓</span>
+                <div class="connector-line"></div>
+            </div>
+
+            <!-- Level 2: Workers -->
+            <div class="pyramid-level level-worker" id="level2" onclick="focusLevel(2)">
+                <div class="split-level">
+                    <div class="level-box">
+                        <div class="level-icon">🔍</div>
+                        <div class="level-name">WORKER A</div>
+                        <div class="level-question">"Como fazer?"</div>
+                    </div>
+                    <div class="level-box">
+                        <div class="level-icon">📝</div>
+                        <div class="level-name">WORKER B</div>
+                        <div class="level-question">"Como fazer?"</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="connector" id="conn2">
+                <div class="connector-line"></div>
+                <span class="connector-arrow">↓</span>
+                <div class="connector-line"></div>
+            </div>
+
+            <!-- Level 3: Skills -->
+            <div class="pyramid-level level-skill" id="level3" onclick="focusLevel(3)">
+                <div class="split-level">
+                    <div class="level-box">
+                        <div class="level-icon">📚</div>
+                        <div class="level-name">SKILLS</div>
+                        <div class="level-question">"Qual expertise?"</div>
+                    </div>
+                    <div class="level-box">
+                        <div class="level-icon">📚</div>
+                        <div class="level-name">SKILLS</div>
+                        <div class="level-question">"Qual expertise?"</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="connector" id="conn3">
+                <div class="connector-line"></div>
+                <span class="connector-arrow">↓</span>
+                <div class="connector-line"></div>
+            </div>
+
+            <!-- Level 4: Tools -->
+            <div class="pyramid-level level-tool" id="level4" onclick="focusLevel(4)">
+                <div class="split-level">
+                    <div class="level-box">
+                        <div class="level-icon">🔧</div>
+                        <div class="level-name">TOOLS</div>
+                        <div class="level-question">"Qual capacidade?"</div>
+                    </div>
+                    <div class="level-box">
+                        <div class="level-icon">🔧</div>
+                        <div class="level-name">TOOLS</div>
+                        <div class="level-question">"Qual capacidade?"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn active" onclick="showAll()">Ver Tudo</button>
+            <button class="control-btn" onclick="animateSequence()">▶ Animar</button>
+            <button class="control-btn" onclick="resetView()">↺ Reset</button>
+        </div>
+
+        <div class="footer-insight">
+            <p class="insight-text">
+                <strong>De cima para baixo</strong>: estratégia → tática → execução
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 0;
+        let isAnimating = false;
+
+        function focusLevel(level) {
+            if (isAnimating) return;
+
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById('level' + i);
+                if (i === level) {
+                    el.classList.add('active');
+                    el.classList.remove('dimmed');
+                } else {
+                    el.classList.remove('active');
+                    el.classList.add('dimmed');
+                }
+            }
+        }
+
+        function showAll() {
+            if (isAnimating) return;
+
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById('level' + i);
+                el.classList.add('visible');
+                el.classList.remove('dimmed', 'active');
+            }
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('conn' + i).classList.add('visible');
+            }
+            document.getElementById('level1').classList.add('active');
+
+            document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.control-btn')[0].classList.add('active');
+        }
+
+        function animateSequence() {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            // Reset first
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('level' + i).classList.remove('visible', 'active', 'dimmed');
+            }
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('conn' + i).classList.remove('visible');
+            }
+
+            document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.control-btn')[1].classList.add('active');
+
+            // Animate levels one by one
+            const delays = [0, 800, 1600, 2400];
+
+            for (let i = 1; i <= 4; i++) {
+                setTimeout(() => {
+                    document.getElementById('level' + i).classList.add('visible', 'active');
+                    if (i > 1) {
+                        document.getElementById('level' + (i-1)).classList.remove('active');
+                    }
+                    if (i > 1) {
+                        document.getElementById('conn' + (i-1)).classList.add('visible');
+                    }
+
+                    if (i === 4) {
+                        setTimeout(() => {
+                            isAnimating = false;
+                            document.getElementById('level4').classList.remove('active');
+                            document.getElementById('level1').classList.add('active');
+                        }, 800);
+                    }
+                }, delays[i-1]);
+            }
+        }
+
+        function resetView() {
+            showAll();
+        }
+
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Initialize
+        showAll();
+    </script>
+</body>
+</html>

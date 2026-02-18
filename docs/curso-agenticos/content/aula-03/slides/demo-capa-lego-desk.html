@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Capa Lego Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER + LEGO COLORS
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+
+            /* Lego-inspired colors */
+            --lego-red: #c91a09;
+            --lego-blue: #0055bf;
+            --lego-yellow: #f5cd2f;
+            --lego-green: #4b9f4a;
+            --lego-orange: #fe8a18;
+            --lego-white: #f4f4f4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Desk surface gradient */
+        .desk-surface {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                linear-gradient(180deg,
+                    #0a0a12 0%,
+                    #12121c 40%,
+                    #1a1a28 100%);
+            z-index: 0;
+        }
+
+        /* Wood grain texture overlay */
+        .wood-texture {
+            position: fixed;
+            top: 60%; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg,
+                rgba(139, 90, 43, 0.03) 0%,
+                rgba(139, 90, 43, 0.05) 25%,
+                rgba(139, 90, 43, 0.03) 50%,
+                rgba(139, 90, 43, 0.05) 75%,
+                rgba(139, 90, 43, 0.03) 100%);
+            z-index: 1;
+        }
+
+        /* Ambient light from above */
+        .ambient-light {
+            position: fixed;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120%;
+            height: 60%;
+            background: radial-gradient(ellipse at center,
+                rgba(255, 244, 228, 0.08) 0%,
+                transparent 70%);
+            z-index: 2;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 30%,
+                rgba(10, 10, 18, 0.5) 80%,
+                rgba(10, 10, 18, 0.9) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           LEGO BLOCKS SCENE
+           ═══════════════════════════════════════════════════════════ */
+        .lego-scene {
+            position: relative;
+            width: 700px;
+            height: 350px;
+            perspective: 1000px;
+            margin-bottom: 40px;
+        }
+
+        /* Individual Lego brick */
+        .lego-brick {
+            position: absolute;
+            border-radius: 3px;
+            box-shadow:
+                inset 0 -3px 0 rgba(0,0,0,0.2),
+                0 8px 20px rgba(0,0,0,0.4);
+            transform-style: preserve-3d;
+            opacity: 0;
+            animation: brickAppear 0.6s ease forwards;
+        }
+
+        @keyframes brickAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) rotateX(20deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(5deg);
+            }
+        }
+
+        /* Brick studs (top bumps) */
+        .lego-brick::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+        }
+
+        .stud {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: inherit;
+            filter: brightness(1.1);
+            box-shadow:
+                inset 0 -2px 0 rgba(0,0,0,0.15),
+                0 2px 4px rgba(0,0,0,0.2);
+            position: absolute;
+            top: -10px;
+        }
+
+        /* Brick label */
+        .brick-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7em;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        /* Different brick sizes and positions */
+        .brick-llm {
+            width: 120px;
+            height: 50px;
+            background: var(--lego-yellow);
+            top: 60px;
+            left: 100px;
+            animation-delay: 0.2s;
+        }
+        .brick-llm .stud:nth-child(1) { left: 15px; }
+        .brick-llm .stud:nth-child(2) { left: 45px; }
+        .brick-llm .stud:nth-child(3) { left: 75px; }
+        .brick-llm .stud:nth-child(4) { left: 105px; }
+        .brick-llm .brick-label { color: #333; }
+
+        .brick-harness {
+            width: 160px;
+            height: 60px;
+            background: var(--super-gold);
+            top: 130px;
+            left: 180px;
+            animation-delay: 0.4s;
+            z-index: 2;
+        }
+        .brick-harness .stud:nth-child(1) { left: 15px; }
+        .brick-harness .stud:nth-child(2) { left: 55px; }
+        .brick-harness .stud:nth-child(3) { left: 95px; }
+        .brick-harness .stud:nth-child(4) { left: 135px; }
+
+        .brick-tools {
+            width: 100px;
+            height: 45px;
+            background: var(--lego-green);
+            top: 200px;
+            left: 120px;
+            animation-delay: 0.6s;
+        }
+        .brick-tools .stud:nth-child(1) { left: 15px; }
+        .brick-tools .stud:nth-child(2) { left: 50px; }
+        .brick-tools .stud:nth-child(3) { left: 85px; }
+
+        .brick-memory {
+            width: 100px;
+            height: 45px;
+            background: var(--lego-blue);
+            top: 200px;
+            left: 280px;
+            animation-delay: 0.8s;
+        }
+        .brick-memory .stud:nth-child(1) { left: 15px; }
+        .brick-memory .stud:nth-child(2) { left: 50px; }
+        .brick-memory .stud:nth-child(3) { left: 85px; }
+
+        .brick-gate {
+            width: 80px;
+            height: 35px;
+            background: var(--lego-red);
+            top: 80px;
+            left: 280px;
+            animation-delay: 1s;
+        }
+        .brick-gate .stud:nth-child(1) { left: 15px; }
+        .brick-gate .stud:nth-child(2) { left: 45px; }
+
+        .brick-mcp {
+            width: 90px;
+            height: 40px;
+            background: var(--super-purple);
+            top: 160px;
+            left: 400px;
+            animation-delay: 1.2s;
+        }
+        .brick-mcp .stud:nth-child(1) { left: 15px; }
+        .brick-mcp .stud:nth-child(2) { left: 50px; }
+
+        /* Scattered small bricks (unused pieces) */
+        .brick-small {
+            width: 40px;
+            height: 25px;
+            opacity: 0;
+            animation: smallBrickAppear 0.5s ease forwards;
+        }
+
+        @keyframes smallBrickAppear {
+            to { opacity: 0.6; }
+        }
+
+        .brick-small-1 {
+            background: var(--lego-orange);
+            top: 260px;
+            left: 450px;
+            animation-delay: 1.5s;
+            transform: rotate(-15deg);
+        }
+
+        .brick-small-2 {
+            background: var(--super-cyan);
+            top: 280px;
+            left: 80px;
+            animation-delay: 1.6s;
+            transform: rotate(10deg);
+        }
+
+        .brick-small-3 {
+            background: var(--super-pink);
+            top: 50px;
+            left: 450px;
+            animation-delay: 1.7s;
+            transform: rotate(-5deg);
+        }
+
+        /* Connection indicator (where blocks connect) */
+        .connection-glow {
+            position: absolute;
+            width: 160px;
+            height: 60px;
+            top: 125px;
+            left: 175px;
+            background: radial-gradient(ellipse at center,
+                rgba(190, 156, 109, 0.3) 0%,
+                transparent 70%);
+            animation: pulseGlow 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        /* Baseplate (building surface) */
+        .baseplate {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) rotateX(60deg);
+            width: 500px;
+            height: 150px;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(50, 50, 50, 0.3) 0px,
+                    rgba(50, 50, 50, 0.3) 2px,
+                    transparent 2px,
+                    transparent 20px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(50, 50, 50, 0.3) 0px,
+                    rgba(50, 50, 50, 0.3) 2px,
+                    transparent 2px,
+                    transparent 20px
+                );
+            background-color: rgba(30, 30, 40, 0.8);
+            border-radius: 4px;
+            opacity: 0;
+            animation: baseplateAppear 1s ease 0.1s forwards;
+        }
+
+        @keyframes baseplateAppear {
+            to { opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TITLE
+           ═══════════════════════════════════════════════════════════ */
+        .title-container {
+            text-align: center;
+            z-index: 20;
+            opacity: 0;
+            animation: titleFade 1s ease 1.8s forwards;
+        }
+
+        @keyframes titleFade {
+            to { opacity: 1; }
+        }
+
+        .title-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .title-main {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 2px;
+            text-shadow: 0 0 40px rgba(190, 156, 109, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .title-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.6);
+            font-weight: 300;
+        }
+
+        .title-sub span {
+            color: var(--super-gold);
+            font-weight: 500;
+        }
+
+        /* Instruction booklet hint */
+        .instruction-hint {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: hintAppear 1s ease 2.2s forwards;
+        }
+
+        @keyframes hintAppear {
+            to { opacity: 0.6; }
+        }
+
+        .hint-icon {
+            width: 24px;
+            height: 30px;
+            background: rgba(255, 244, 228, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6em;
+            color: var(--super-gold);
+        }
+
+        .hint-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .title-main { font-size: 2.4em; }
+        body.embed-mode .lego-scene { width: 600px; height: 300px; margin-bottom: 30px; }
+        body.embed-mode .lego-brick { transform: scale(0.85); }
+        body.embed-mode .instruction-hint { bottom: 20px; right: 25px; }
+    </style>
+</head>
+<body>
+    <div class="desk-surface"></div>
+    <div class="wood-texture"></div>
+    <div class="ambient-light"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="lego-scene">
+            <div class="baseplate"></div>
+            <div class="connection-glow"></div>
+
+            <!-- Main building blocks -->
+            <div class="lego-brick brick-llm">
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <span class="brick-label">LLM</span>
+            </div>
+
+            <div class="lego-brick brick-harness">
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <span class="brick-label">HARNESS</span>
+            </div>
+
+            <div class="lego-brick brick-tools">
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <span class="brick-label">TOOLS</span>
+            </div>
+
+            <div class="lego-brick brick-memory">
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <span class="brick-label">MEMORY</span>
+            </div>
+
+            <div class="lego-brick brick-gate">
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <span class="brick-label">GATE</span>
+            </div>
+
+            <div class="lego-brick brick-mcp">
+                <div class="stud"></div>
+                <div class="stud"></div>
+                <span class="brick-label">MCP</span>
+            </div>
+
+            <!-- Scattered unused pieces -->
+            <div class="lego-brick brick-small brick-small-1"></div>
+            <div class="lego-brick brick-small brick-small-2"></div>
+            <div class="lego-brick brick-small brick-small-3"></div>
+        </div>
+
+        <div class="title-container">
+            <div class="title-label">Aula 03</div>
+            <h1 class="title-main">Arquitetura de Agentes</h1>
+            <p class="title-sub">Montando sistemas com <span>blocos modulares</span></p>
+        </div>
+    </div>
+
+    <div class="instruction-hint">
+        <div class="hint-icon">?</div>
+        <span class="hint-text">7 blocos. Infinitas combinações.</span>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

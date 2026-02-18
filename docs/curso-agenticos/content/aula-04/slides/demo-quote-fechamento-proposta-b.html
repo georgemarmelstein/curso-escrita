@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encerramento - Proposta B</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 100%);
+            color: #FFF4E4;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            padding: 60px;
+        }
+
+        .timeline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 80px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #BE9C6D 0%, #BE9C6D 50%, #4ade80 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: drawLine 2s ease-out 0.5s forwards;
+        }
+
+        .node {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            flex: 1;
+            opacity: 0;
+        }
+
+        .node:nth-child(1) { animation: fadeInNode 0.8s ease-out 1s forwards; }
+        .node:nth-child(2) { animation: fadeInNode 0.8s ease-out 1.5s forwards; }
+        .node:nth-child(3) { animation: fadeInNode 0.8s ease-out 2s forwards; }
+
+        .node-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #0a0a12;
+            border: 3px solid #BE9C6D;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            transition: all 0.3s ease;
+        }
+
+        .node:nth-child(3) .node-icon {
+            border-color: #4ade80;
+        }
+
+        .node-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            color: #BE9C6D;
+            margin-bottom: 8px;
+        }
+
+        .node:nth-child(3) .node-label {
+            color: #4ade80;
+        }
+
+        .node-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #FFF4E4;
+        }
+
+        .quote-section {
+            background: rgba(190, 156, 109, 0.05);
+            border-left: 4px solid #BE9C6D;
+            padding: 50px 60px;
+            border-radius: 8px;
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 2.5s forwards;
+        }
+
+        .main-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-style: italic;
+            line-height: 1.4;
+            color: #FFF4E4;
+            margin-bottom: 30px;
+        }
+
+        .quote-attribution {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            color: #BE9C6D;
+            margin-bottom: 40px;
+        }
+
+        .karpathy-quote {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            font-weight: 300;
+            line-height: 1.6;
+            color: #FFF4E4;
+            opacity: 0.9;
+            padding-left: 30px;
+            border-left: 2px solid rgba(190, 156, 109, 0.3);
+        }
+
+        .karpathy-quote strong {
+            color: #BE9C6D;
+            font-weight: 500;
+        }
+
+        .connection-arrow {
+            font-size: 32px;
+            color: #BE9C6D;
+            opacity: 0;
+        }
+
+        .node:nth-child(2) .connection-arrow,
+        .node:nth-child(3) .connection-arrow {
+            position: absolute;
+            left: -40px;
+            top: 30px;
+            animation: fadeInArrow 0.6s ease-out 1.8s forwards;
+        }
+
+        @keyframes drawLine {
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        @keyframes fadeInNode {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInArrow {
+            to {
+                opacity: 0.5;
+            }
+        }
+
+        .glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(190, 156, 109, 0.08) 0%, transparent 70%);
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.4;
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: translateX(-50%) scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+
+    <div class="container">
+        <div class="timeline">
+            <div class="node">
+                <div class="node-icon">🔬</div>
+                <div class="node-label">Físico</div>
+                <div class="node-name">Feynman</div>
+            </div>
+
+            <div class="node">
+                <div class="connection-arrow">→</div>
+                <div class="node-icon">🤖</div>
+                <div class="node-label">Pioneiro IA</div>
+                <div class="node-name">Karpathy</div>
+            </div>
+
+            <div class="node">
+                <div class="connection-arrow">→</div>
+                <div class="node-icon">⚖️</div>
+                <div class="node-label">Próxima Geração</div>
+                <div class="node-name">Você</div>
+            </div>
+        </div>
+
+        <div class="quote-section">
+            <div class="main-quote">
+                "What I cannot create, I do not understand."
+            </div>
+
+            <div class="quote-attribution">
+                — Richard Feynman
+            </div>
+
+            <div class="karpathy-quote">
+                <strong>Andrej Karpathy:</strong> "If I can't build it, I don't understand it. Build the code, arrange it, get it to work. It's the only way to go."
+            </div>
+        </div>
+    </div>
+</body>
+</html>

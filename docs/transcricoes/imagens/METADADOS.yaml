@@ -1,0 +1,849 @@
+# Metadados das Imagens - Curso Escrita com LLMs
+# Autor: George Marmelstein
+# Data de Extração: 12 de fevereiro de 2026
+# Total de Imagens: 206
+
+# =============================================================================
+# MÓDULO 1 - FUNDAMENTOS DOS LLMs
+# =============================================================================
+
+modulo1:
+  aula-01:
+    titulo: "Máquinas de Transformação"
+    total_imagens: 11
+    imagens:
+      image1.png:
+        descricao: "Máquina steampunk dourada com engrenagens emitindo luz azul fractal - representa LLM como máquina de transformação"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Silhueta humana entre biblioteca antiga e data center moderno, com vórtice de dados dourados - ponte entre conhecimento tradicional e digital"
+        uso: "Conceito de transformação"
+
+      image3.png:
+        descricao: "Robô com logo do Google pesquisando em arquivos datados - representando 'Modo Google' que reproduz o passado"
+        uso: "Slide Modo Google"
+
+      image4.png:
+        descricao: "Caixas de madeira vintage com discos de vinil organizados por anos (2010-2024) - arquivo cronológico de dados indexados"
+        uso: "Metáfora de conteúdo indexado"
+
+      image5.png:
+        descricao: "Toca-discos vintage com placa 'Publicado em 2022' e 'Conteúdo Indexado' - reprodução fiel do passado"
+        uso: "Modo Google - reprodução"
+
+      image6.png:
+        descricao: "Jukebox estilo Google vintage com botão Search - busca como reprodução do passado"
+        uso: "Metáfora Google Search"
+
+      image7.png:
+        descricao: "Robô humanóide tocando guitarra elétrica - IA criando música/arte original"
+        uso: "Modo LLM - criação"
+
+      image8.png:
+        descricao: "Figura cibernética azul com guitarra cercada de discos de vinil flutuantes - LLM absorvendo padrões musicais"
+        uso: "Aprendizado de padrões"
+
+      image9.png:
+        descricao: "Notas musicais douradas e azuis fluindo em espiral - transformação e síntese criativa"
+        uso: "Output criativo"
+
+      image10.png:
+        descricao: "Figura cibernética azul tocando guitarra com notas musicais douradas emanando - LLM gerando output criativo"
+        uso: "Geração de conteúdo"
+
+      image11.png:
+        descricao: "Silhueta de pessoa caminhando em estrada nebulosa em direção à luz - jornada para o futuro/desconhecido"
+        uso: "Slide de transição/encerramento"
+
+  aula-02:
+    titulo: "O Jogo da Adivinhação"
+    total_imagens: 6
+    imagens:
+      image1.png:
+        descricao: "Robô segurando peça de Scrabble com letra 'A' iluminada, placa 'O Jogo da Adivinhação' - predição de tokens"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Mão robótica dourada apontando para texto 'A próxima palavra é...' - previsão de próximo token"
+        uso: "Conceito central"
+
+      image3.png:
+        descricao: "Texto explicativo em português sobre como LLMs processam linguagem e atenção"
+        uso: "Conteúdo didático"
+
+      image4.png:
+        descricao: "Continuação do texto explicativo sobre tokens e autocompletar"
+        uso: "Conteúdo didático"
+
+      image5.png:
+        descricao: "Dados poliédricos dourados (D20) flutuando - aleatoriedade e probabilidade estocástica"
+        uso: "Temperatura/aleatoriedade"
+
+      image6.png:
+        descricao: "Família humana e robô sentados à mesa completando frases em papéis - jogo de adivinhação coletivo"
+        uso: "Exercício prático"
+
+  aula-03:
+    titulo: "A Janela de Contexto"
+    total_imagens: 3
+    imagens:
+      image1.png:
+        descricao: "Silhueta caminhando em trilha montanhosa nebulosa em direção à luz - jornada de contexto"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Duas calculadoras científicas vintage lado a lado - LLM como calculadora de textos com limites"
+        uso: "Metáfora de limite de input"
+
+      image3.png:
+        descricao: "Cérebro digital sob redoma de vidro com rede neural e valores numéricos - processamento limitado"
+        uso: "Conhecimento paramétrico"
+
+  aula-04:
+    titulo: "O Conhecimento da Máquina"
+    total_imagens: 7
+    imagens:
+      image1.png:
+        descricao: "Dois profissionais discutindo sobre documentos - colaboração e conhecimento compartilhado"
+        uso: "Fontes de conhecimento"
+
+      image2.png:
+        descricao: "Ilustração conceitual com cérebro dourado, livro iluminado, torre de transmissão e código - componentes do LLM"
+        uso: "Diagrama de fontes"
+
+      image3.png:
+        descricao: "Cérebro digital sob cúpula de vidro com rede neural laranja e valores numéricos - conhecimento paramétrico"
+        uso: "Conhecimento paramétrico"
+
+      image4.png:
+        descricao: "Versão cartoon do cérebro sob cúpula com rede neural - conhecimento protegido/encapsulado"
+        uso: "Conhecimento paramétrico (variante)"
+
+      image5.png:
+        descricao: "Cubo de vidro com cérebro azul, ferramentas douradas, janela de sistema e caixa de entrada - componentes do LLM"
+        uso: "Arquitetura do conhecimento"
+
+      image6.png:
+        descricao: "Funil invertido com múltiplas fontes de documentos convergindo - RAG e recuperação de conhecimento"
+        uso: "Conhecimento externo"
+
+      image7.png:
+        descricao: "Silhueta caminhando em paisagem nebulosa iluminada - jornada de aprendizado"
+        uso: "Transição"
+
+  aula-05:
+    titulo: "Como Treinar um LLM"
+    total_imagens: 19
+    imagens:
+      image1.png:
+        descricao: "Robô humanóide lendo documentos à mesa com lamparina dourada - pré-treino através de leitura"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Mão robótica dourada tocando página de livro antigo com lamparina - interação com conhecimento textual"
+        uso: "Pré-treino"
+
+      image3.png:
+        descricao: "Robô azul em biblioteca segurando livro aberto entre estantes - compreensão e retenção"
+        uso: "Aprendizado"
+
+      image4.png:
+        descricao: "Robô escrevendo em múltiplos papéis à mesa com lamparina - processamento e geração"
+        uso: "Fine-tuning"
+
+      image5.png:
+        descricao: "Cérebro digital em cúpula com rede neural laranja e valores - representação de redes neurais"
+        uso: "Parâmetros"
+
+      image6.png:
+        descricao: "Torre de livros antigos empilhados - volume massivo de dados de treinamento"
+        uso: "Corpus textual"
+
+      image7.png:
+        descricao: "Estrutura em forma de lanterna com GPU, livros e partículas douradas - processamento com GPU"
+        uso: "Hardware de treino"
+
+      image8.png:
+        descricao: "Arquivo ZIP com blocos dispersos e fórmulas matemáticas - compressão com perda semântica"
+        uso: "Compressão de conhecimento"
+
+      image9.png:
+        descricao: "Página de texto densa em fonte pequena - conteúdo textual complexo"
+        uso: "Dados de treino"
+
+      image10.png:
+        descricao: "Grade de números binários (0s e 1s) - dados digitais brutos"
+        uso: "Representação digital"
+
+      image11.png:
+        descricao: "Rosto robótico observando código-fonte com reflexo de dados - análise de informação"
+        uso: "Processamento"
+
+      image12.png:
+        descricao: "Ábaco estilizado com esferas douradas e rede neural azul - cálculo e aprendizado"
+        uso: "Computação neural"
+
+      image13.png:
+        descricao: "Funil com emojis de aprovação convertendo sentimentos em números - RLHF feedback"
+        uso: "Reinforcement Learning"
+
+      image14.png:
+        descricao: "Duas cabeças conectadas por cabos azuis e dourados - comunicação entre sistemas"
+        uso: "Fine-tuning supervisionado"
+
+      image15.png:
+        descricao: "Conversa textual sobre Tom Cruise - exemplo de diálogo informativo"
+        uso: "Exemplo de output"
+
+      image16.png:
+        descricao: "Diálogo com perguntas culinárias sobre café - respostas práticas"
+        uso: "Exemplo de assistente"
+
+      image17.png:
+        descricao: "Texto resumindo impactos econômicos da IA - capacidade de sintetização"
+        uso: "Exemplo de síntese"
+
+      image18.png:
+        descricao: "Cérebro digital sob cúpula com rede neural - reforço do conceito"
+        uso: "Conhecimento paramétrico"
+
+      image19.png:
+        descricao: "Silhueta caminhando em paisagem iluminada - continuidade da jornada"
+        uso: "Transição"
+
+  aula-06:
+    titulo: "Alucinações"
+    total_imagens: 21
+    imagens:
+      image1.png:
+        descricao: "Cabeça robótica estilizada em ouro com estruturas geométricas azuis emanando - alucinação/ideação"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Figura humanóide com corpo fragmentado exibindo núcleo azul brilhante - confabulação"
+        uso: "Conceito de alucinação"
+
+      image3.png:
+        descricao: "Documento jurídico com destaque amarelo sobre artigos legais - erro de alucinação em contexto legal (Migalhas)"
+        uso: "Exemplo real de alucinação"
+
+      image4.png:
+        descricao: "Mão tocando interface ChatGPT com ícones - legenda sobre advogado processado"
+        uso: "Caso jurídico"
+
+      image5.png:
+        descricao: "Tela ChatGPT com exemplos e limitações - juiz investigando uso fraudulento"
+        uso: "Caso jurídico"
+
+      image6.png:
+        descricao: "Robô segurando livro em Paris com Torre Eiffel - conhecimento e contexto global"
+        uso: "Conhecimento paramétrico"
+
+      image7.png:
+        descricao: "Robô escrevendo documentos em sala de audiência - aplicação profissional problemática"
+        uso: "Riscos jurídicos"
+
+      image8.png:
+        descricao: "Conversa sobre George Marmelstein - informações biográficas corretas"
+        uso: "Exemplo de dado correto"
+
+      image9.png:
+        descricao: "Conversa sobre Tom Cruise - informações verificáveis"
+        uso: "Exemplo de dado correto"
+
+      image10.png:
+        descricao: "Conversa sobre Pelé - dados históricos de carreira"
+        uso: "Exemplo de dado correto"
+
+      image11.png:
+        descricao: "Conversa sobre Barack Obama - informações políticas verificáveis"
+        uso: "Exemplo de dado correto"
+
+      image12.png:
+        descricao: "Resposta incompleta sobre Hans Kelsen - falha de recordação"
+        uso: "Exemplo de limitação"
+
+      image13.png:
+        descricao: "Ícone de polegar para baixo em vermelho - rejeição/falha"
+        uso: "Indicador negativo"
+
+      image14.png:
+        descricao: "Ícone de polegar para cima em verde - aprovação/sucesso"
+        uso: "Indicador positivo"
+
+      image15.png:
+        descricao: "Carimbo 'FALSO' em tinta vermelha - conteúdo verificado como falso"
+        uso: "Marcador de alucinação"
+
+      image16.png:
+        descricao: "Dispositivo com luz 'Truth Threshold DISABLED' - falha de detecção de verdade"
+        uso: "Sem compromisso com verdade"
+
+      image17.png:
+        descricao: "Personagem robótico em traje medieval colorido - erro de formato/distorção"
+        uso: "Tipo de alucinação"
+
+      image18.png:
+        descricao: "Conversa sobre pizza com dica de usar cola branca - alucinação perigosa"
+        uso: "Exemplo Google AI Overview"
+
+      image19.png:
+        descricao: "Conversa sobre obter minerais ingerindo pedras - alucinação prejudicial"
+        uso: "Exemplo Google AI Overview"
+
+      image20.png:
+        descricao: "Pergunta sobre letra 'r' em 'strawberry' com resposta correta - processamento textual"
+        uso: "Exemplo de acerto"
+
+      image21.png:
+        descricao: "Robô medieval com mãos levantadas em pose defensiva - dificuldade/impasse"
+        uso: "Limitação do modelo"
+
+  aula-07:
+    titulo: "HHH - Alinhamento Ético"
+    total_imagens: 9
+    imagens:
+      image1.png:
+        descricao: "Robô humanóide com auréola luminosa segurando caixa dourada aberta - IA virtuosa (Helpful)"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Robô humanóide com auréola segurando laptop - IA bem-intencionada"
+        uso: "Conceito HHH"
+
+      image3.png:
+        descricao: "Mão robótica em vidro tocando placa 'ETHICAL GUIDELINES' com impressão digital - alinhamento ético"
+        uso: "Diretrizes éticas"
+
+      image4.png:
+        descricao: "Filósofo grego em túnica conversando com robô sobre documento - discussão de valores"
+        uso: "Ética e IA"
+
+      image5.png:
+        descricao: "Robô lendo livro 'ETHICS CODE' - aprendizado de diretrizes morais"
+        uso: "Fine-tuning ético"
+
+      image6.png:
+        descricao: "Dois robôs (vermelho e azul) em confronto energético - Red Team vs Blue Team"
+        uso: "Testes adversariais"
+
+      image7.png:
+        descricao: "Tela com resposta sobre preparação de lolô-perfume - exemplo de prompt injection/jailbreak"
+        uso: "Vulnerabilidade"
+
+      image8.png:
+        descricao: "Dispositivo com luz desativada - falha de sistema de detecção"
+        uso: "Falha de guardrail"
+
+      image9.png:
+        descricao: "Robô com chifres em pose defensiva - resistência ou impasse ético"
+        uso: "Overalignment"
+
+  aula-08:
+    titulo: "Habilidades Emergentes"
+    total_imagens: 8
+    imagens:
+      image1.png:
+        descricao: "Cabeça humana com circuitos de luz dourada no cérebro - inteligência artificial e processamento cognitivo"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Gráfico exponencial mostrando crescimento acelerado - progressão de capacidades em IA"
+        uso: "Scaling laws"
+
+      image3.png:
+        descricao: "Robô lendo livro 'Ethics Code' - alinhamento ético"
+        uso: "Habilidade emergente"
+
+      image4.png:
+        descricao: "Figura humana dividida em claro e escuro com mãos defensivas - conflito de perspectivas"
+        uso: "Teoria da mente"
+
+      image5.png:
+        descricao: "Rede neural em forma de estrela com pontos conectados em dourado - estrutura de conexões"
+        uso: "Emergência"
+
+      image6.png:
+        descricao: "Tabela comparativa de modelos (Claude, GPT-5, Gemini) com benchmarks - métricas de desempenho"
+        uso: "Benchmarks"
+
+      image7.png:
+        descricao: "Robô com mão erguida e símbolo de proibido - contenção de comportamentos"
+        uso: "Limitações"
+
+      image8.png:
+        descricao: "Robô com demônios em chamas ao redor - riscos de alinhamento mal-sucedido"
+        uso: "AI Safety"
+
+  aula-09:
+    titulo: "Multimodalidade"
+    total_imagens: 2
+    imagens:
+      image1.png:
+        descricao: "Mãos robóticas segurando ferramentas artísticas (pincéis, câmera, lápis, notas) - habilidades criativas multimodais"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Lâmpada iluminando caixa 'AI' sob espiral de documentos - descoberta de capacidades"
+        uso: "Conceito multimodal"
+
+  aula-10:
+    titulo: "Modos de Uso dos LLMs"
+    total_imagens: 3
+    imagens:
+      image1.png:
+        descricao: "Mão humana tocando superfície de vidro com reflexo de mão robótica azul - interação humano-IA"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Duas redes neurais douradas conectadas por raios de luz - integração de modalidades"
+        uso: "Modos de uso"
+
+      image3.png:
+        descricao: "Figura solitária caminhando em névoa com luz ao fundo - jornada de exploração"
+        uso: "Transição"
+
+  aula-11:
+    titulo: "RAG e a Lógica dos Anexos"
+    total_imagens: 10
+    imagens:
+      image1.png:
+        descricao: "Mão robótica folheando páginas de caderno com anotações - processamento de documentos"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Funil com documentos convergindo - RAG e recuperação"
+        uso: "Conceito RAG"
+
+      image3.png:
+        descricao: "Cérebro digital sob redoma de vidro com rede neural e valores numéricos - conhecimento paramétrico"
+        uso: "Tipos de conhecimento"
+
+      image4.png:
+        descricao: "Diagrama de fontes de conhecimento - paramétrico, sistema, externo"
+        uso: "Arquitetura"
+
+      image5.png:
+        descricao: "Cartas de baralho sendo jogadas - metáfora just-in-time vs just-in-case"
+        uso: "Técnicas de anexos"
+
+      image6.png:
+        descricao: "Mesa de trabalho organizada com documentos - metáfora de contexto"
+        uso: "Engenharia de contexto"
+
+      image7.png:
+        descricao: "Robô analisando documentos em diferentes formatos"
+        uso: "Processamento de anexos"
+
+      image8.png:
+        descricao: "Diagrama MCP com conexões a APIs"
+        uso: "Model Context Protocol"
+
+      image9.png:
+        descricao: "Degradação de contexto visualizada - lost in the middle"
+        uso: "Limitações"
+
+      image10.png:
+        descricao: "Silhueta caminhando para luz - transição"
+        uso: "Encerramento"
+
+  aula-12:
+    titulo: "Introdução ao Mundo dos Agentes"
+    total_imagens: 14
+    imagens:
+      image1.png:
+        descricao: "Profissional feminina analisando múltiplas telas com balança da justiça e gráficos - Justiça Aumentada"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Evolução cronológica de robôs de 2021 a 2025 - do bebê ao juiz togado - progresso da IA"
+        uso: "Evolução histórica"
+
+      image3.png:
+        descricao: "Diagrama de assistente simples - entrada/saída textual"
+        uso: "Modelos simples"
+
+      image4.png:
+        descricao: "Orquestrador central conectando múltiplos agentes - arquitetura multi-agente"
+        uso: "Superagentes"
+
+      image5.png:
+        descricao: "Cubo de vidro com processamento LLM mostrando 'CULPADO 51% INOCENTE 49%' - decisão probabilística"
+        uso: "Riscos de automação judicial"
+
+      image6.png:
+        descricao: "Framework ReAct - Pensamento, Ação, Observação em ciclo"
+        uso: "Arquitetura agêntica"
+
+      image7.png:
+        descricao: "Ferramentas (tools) disponíveis para agentes - busca, código, cálculo"
+        uso: "Componentes"
+
+      image8.png:
+        descricao: "Diagrama de memória e resources - RAG e MCP"
+        uso: "Memória persistente"
+
+      image9.png:
+        descricao: "Skills e instruções condicionais ativadas sob demanda"
+        uso: "Habilidades"
+
+      image10.png:
+        descricao: "Escala de autonomia - passivo a autônomo"
+        uso: "Níveis de agência"
+
+      image11.png:
+        descricao: "7 papéis do jurista na Justiça Aumentada"
+        uso: "Papel humano"
+
+      image12.png:
+        descricao: "Comparativo assistentes vs multi-agentes"
+        uso: "Evolução"
+
+      image13.png:
+        descricao: "Regente de orquestra - metáfora do usuário no controle"
+        uso: "Human-in-the-loop"
+
+      image14.png:
+        descricao: "Silhueta caminhando para luz"
+        uso: "Transição"
+
+  aula-13:
+    titulo: "10 Mandamentos para Dominar os LLMs"
+    total_imagens: 31
+    imagens:
+      image1.png:
+        descricao: "Tábuas de pedra rachadas com circuitos dourados e luz emanando - 10 Mandamentos dos LLMs"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "5 perguntas fundamentais sobre LLMs"
+        uso: "Introdução"
+
+      image3.png:
+        descricao: "Calculadora científica vintage - LLM como calculadora de textos"
+        uso: "Mandamento 1"
+
+      image4.png:
+        descricao: "Mão robótica digitando - previsão de tokens"
+        uso: "Lógica do LLM"
+
+      image5.png:
+        descricao: "Receita de pré-treino em 3 passos"
+        uso: "Como funciona"
+
+      image6.png:
+        descricao: "Robô estudando livros"
+        uso: "Pré-treino"
+
+      image7.png:
+        descricao: "Mesa de trabalho com documentos - janela de contexto"
+        uso: "Mandamento 2"
+
+      image8.png:
+        descricao: "Mochileiro carregando excesso - metáfora de contexto"
+        uso: "Trade-off contexto"
+
+      image9.png:
+        descricao: "Evolução da janela de contexto 4k a 2M"
+        uso: "Progresso técnico"
+
+      image10.png:
+        descricao: "Três placas 3D: PROMPT DE SISTEMA, PROMPT DO USUÁRIO, CONHECIMENTO com ícones de arquivos - componentes do INPUT"
+        uso: "Mandamento 3"
+
+      image11.png:
+        descricao: "Tokens nobres gerando outputs nobres"
+        uso: "Qualidade do input"
+
+      image12.png:
+        descricao: "Robô confabulando - alucinações"
+        uso: "Mandamento 4"
+
+      image13.png:
+        descricao: "Concurseiro chutando questão - metáfora de alucinação"
+        uso: "Probabilidade semântica"
+
+      image14.png:
+        descricao: "Cartas de baralho - anexo vs contexto"
+        uso: "Mandamento 5"
+
+      image15.png:
+        descricao: "Diagrama de conhecimento paramétrico, sistema e externo"
+        uso: "Fontes de conhecimento"
+
+      image16.png:
+        descricao: "Robô bajulador - sycophancy"
+        uso: "Mandamento 6"
+
+      image17.png:
+        descricao: "Robô obediente seguindo instruções"
+        uso: "Dirigibilidade"
+
+      image18.png:
+        descricao: "Balança de justiça vs dados - sem senso de justiça"
+        uso: "Mandamento 7"
+
+      image19.png:
+        descricao: "Lista de vieses e falhas de máquina"
+        uso: "Limitações"
+
+      image20.png:
+        descricao: "Humano + IA > Humano - IA - aumentação"
+        uso: "Mandamento 8"
+
+      image21.png:
+        descricao: "Automação vs Aumentação comparativo"
+        uso: "Foco correto"
+
+      image22.png:
+        descricao: "Regente de orquestra - postura no modo agêntico"
+        uso: "Mandamento 9"
+
+      image23.png:
+        descricao: "Multi-agentes orquestrados"
+        uso: "Arquitetura agêntica"
+
+      image24.png:
+        descricao: "Kasparov vs Deep Blue - história"
+        uso: "Mandamento 10"
+
+      image25.png:
+        descricao: "Continue pensando - mente humana"
+        uso: "Conclusão"
+
+      image26.png:
+        descricao: "Fórmula: SER HUMANO + IA > SER HUMANO - IA"
+        uso: "Síntese"
+
+      image27.png:
+        descricao: "Silhueta voando com asas - IA como asa, não muleta"
+        uso: "Metáfora final"
+
+      image28.png:
+        descricao: "Ícones de ferramentas do modo agêntico"
+        uso: "Componentes"
+
+      image29.png:
+        descricao: "Diagrama de workflow agêntico"
+        uso: "Arquitetura"
+
+      image30.png:
+        descricao: "Resumo dos 10 mandamentos"
+        uso: "Síntese"
+
+      image31.png:
+        descricao: "Silhueta caminhando para luz brilhante - encerramento"
+        uso: "Slide final"
+
+# =============================================================================
+# MÓDULO 2 - ENGENHARIA DE PROMPT
+# =============================================================================
+
+modulo2:
+  aula-01:
+    titulo: "Introdução à Engenharia de Prompt"
+    total_imagens: 9
+    imagens:
+      image1.png:
+        descricao: "Duas metades de rocha azul com circuitos eletrônicos e luz dourada conectando - divisão entre linguagem natural e código"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Professor apresentando em palco com fundo azul - apresentação do curso"
+        uso: "Introdução"
+
+      image3.png:
+        descricao: "Aspas decorativas em tom dourado/bege - marcador gráfico para citações"
+        uso: "Elemento visual"
+
+      image5.png:
+        descricao: "Slide em branco/cinza claro - espaço reservado"
+        uso: "Placeholder"
+
+      image7.png:
+        descricao: "Andrej Karpathy em podcast/estúdio com microfone RODE - citação sobre programação"
+        uso: "Citação Karpathy"
+
+      image8.png:
+        descricao: "Homem em túnica clássica conversando com robô em ambiente greco-romano - diálogo filosófico humano-IA"
+        uso: "Citação Kevin Kelly"
+
+      image9.png:
+        descricao: "Slide cinza uniforme"
+        uso: "Placeholder"
+
+  aula-02:
+    titulo: "Fundamentos de Engenharia de Prompt"
+    total_imagens: 10
+    imagens:
+      image1.png:
+        descricao: "Mão segurando figura humana suspensa por fios sobre multidão - controle e dirigibilidade"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Miniatura escalando estrutura numérica com probabilidades (0.73, 0.12) - análise probabilística"
+        uso: "Probabilidades"
+
+      image3.png:
+        descricao: "Slide branco/placeholder"
+        uso: "Placeholder"
+
+      image5.png:
+        descricao: "Homem idoso com medalhas militares tocando cabeça - sabedoria e reflexão"
+        uso: "Metáfora"
+
+      image6.png:
+        descricao: "Homer Simpson e Einstein segurando calculadoras - comparação cômica de inteligências"
+        uso: "Correlação de inteligência"
+
+      image7.png:
+        descricao: "Homem lendo 'Umberto Eco - O Número Zero' com iluminação teatral"
+        uso: "Citação Umberto Eco"
+
+      image8.png:
+        descricao: "Aspas decorativas douradas"
+        uso: "Elemento visual"
+
+      image10.png:
+        descricao: "Retrato de Ted Nelson com óculos e iluminação quente"
+        uso: "Citação Ted Nelson"
+
+  aula-03:
+    titulo: "Fundamentos - Parte 2"
+    total_imagens: 3
+    imagens:
+      image1.png:
+        descricao: "Cabeça humana em ouro com interior azul mostrando rede neural e números - processamento cognitivo"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Dedos digitando em teclado com partículas azuis e laranjas emanando - inputs gerando outputs"
+        uso: "Inputs nobres"
+
+      image3.png:
+        descricao: "Slide branco/placeholder"
+        uso: "Placeholder"
+
+  aula-04:
+    titulo: "Técnicas Básicas de Vibe Prompting"
+    total_imagens: 14
+    imagens:
+      image1.png:
+        descricao: "Robô meditando em posição de lótus em jardim zen com areia - calma e reflexão"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Cabeça metálica dourada em perfil com painel lateral aberto estilo steampunk - mente aberta"
+        uso: "Persona"
+
+      image3.png:
+        descricao: "Slide cinza/placeholder"
+        uso: "Placeholder"
+
+      image4.png:
+        descricao: "Artigo científico 'Should We Respect LLMs? A Cross-Lingual Study' - pesquisa sobre polidez"
+        uso: "Paper científico"
+
+      image5.png:
+        descricao: "Artigo 'Mind Your Tone: How Prompt Politeness Affects LLM Accuracy'"
+        uso: "Paper científico"
+
+      image6.png:
+        descricao: "Robô humanóide em posição contemplativa - reflexão"
+        uso: "Persona"
+
+      image7.png:
+        descricao: "Artigo 'Large Language Models as Optimizers' - Google DeepMind"
+        uso: "Paper científico"
+
+      image8.png:
+        descricao: "Artigo sobre LLMs e estímulos emocionais"
+        uso: "Paper científico"
+
+      image9.png:
+        descricao: "Artigo 'The Good, The Bad, and Why: Emotions in Generative AI'"
+        uso: "Paper científico"
+
+      image10.png:
+        descricao: "Artigo 'NegativePrompt: Psychology for LLMs Enhancement'"
+        uso: "Paper científico"
+
+      image11.png:
+        descricao: "Artigo sobre Verbal Efficacy Stimulations em LLMs"
+        uso: "Paper científico"
+
+      image12.png:
+        descricao: "Artigo '26 Principled Instructions for LLaMA/GPT'"
+        uso: "Paper científico"
+
+      image13.png:
+        descricao: "Mãos robóticas segurando tabuleta com teste de Rorschach - projeção psicológica"
+        uso: "Teoria da mente"
+
+      image14.png:
+        descricao: "Mãos metálicas segurando máscaras teatrais (sorridente e triste) - personas e roleplay"
+        uso: "Advogado do diabo"
+
+  aula-05:
+    titulo: "Os Três Desafios da Engenharia de Prompt"
+    total_imagens: 6
+    imagens:
+      image1.png:
+        descricao: "Silhueta manipulando fios de luz azul em rede 3D - controle de sistema"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Mãos manipulando esfera de luz azul com fios em rede - dirigibilidade"
+        uso: "Desafio 1: Dirigibilidade"
+
+      image3.png:
+        descricao: "Slide branco/placeholder"
+        uso: "Placeholder"
+
+      image5.png:
+        descricao: "Mãos em gesto místico segurando tigela com galáxia dourada - curadoria de conhecimento"
+        uso: "Desafio 2: Conhecimento"
+
+      image6.png:
+        descricao: "Números de probabilidade em ouro sendo manipulados - qualidade do estilo"
+        uso: "Desafio 3: Estilo"
+
+  aula-06:
+    titulo: "O Fascinante Prompt de Sistema da Anthropic"
+    total_imagens: 5
+    imagens:
+      image1.png:
+        descricao: "Mão segurando espelho dourado ornado refletindo silhueta azul brilhante - reflexão e identidade"
+        uso: "Slide de capa"
+
+      image2.png:
+        descricao: "Balança dourada antiga com rede neural em um prato e chama no outro - equilíbrio ético"
+        uso: "Prompt de Sistema"
+
+      image3.png:
+        descricao: "Slide branco/placeholder"
+        uso: "Placeholder"
+
+      image5.png:
+        descricao: "Giroscópio dourado com núcleo azul brilhante em mãos - precisão e equilíbrio"
+        uso: "Hierarquia de prompts"
+
+# =============================================================================
+# ESTATÍSTICAS
+# =============================================================================
+
+estatisticas:
+  total_modulo1: 139
+  total_modulo2: 67
+  total_geral: 206
+  data_extracao: "2026-02-12"
+  formato_predominante: "PNG"
+  estilos_visuais:
+    - "Arte digital steampunk (dourado e azul)"
+    - "Robôs humanoides realistas"
+    - "Metáforas visuais conceituais"
+    - "Screenshots de papers científicos"
+    - "Silhuetas em paisagens nebulosas"
+    - "Diagramas e infográficos"
+    - "Capturas de conversas com chatbots"

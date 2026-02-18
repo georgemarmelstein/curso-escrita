@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta A - O Portal Invertido</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--super-bg-dark);
+            overflow: hidden;
+        }
+
+        /* Caverna - fundo com textura de rocha */
+        .cave-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 100%, rgba(30, 25, 20, 0.9) 0%, transparent 70%),
+                radial-gradient(ellipse 100% 80% at 50% 50%, transparent 40%, rgba(10, 10, 18, 0.95) 100%),
+                linear-gradient(180deg, #0a0a12 0%, #1a1510 50%, #0d0d15 100%);
+            z-index: 0;
+        }
+
+        /* Sombras nas paredes da caverna */
+        .shadows {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .shadow-figure {
+            position: absolute;
+            opacity: 0.15;
+            filter: blur(3px);
+            animation: shadowFlicker 4s ease-in-out infinite;
+        }
+
+        .shadow-figure:nth-child(1) {
+            left: 5%;
+            top: 30%;
+            width: 80px;
+            height: 200px;
+            background: linear-gradient(180deg, #2a2520 0%, transparent 100%);
+            border-radius: 50% 50% 0 0;
+            animation-delay: 0s;
+        }
+
+        .shadow-figure:nth-child(2) {
+            left: 12%;
+            top: 35%;
+            width: 60px;
+            height: 180px;
+            background: linear-gradient(180deg, #252015 0%, transparent 100%);
+            border-radius: 50% 50% 0 0;
+            animation-delay: 1s;
+        }
+
+        .shadow-figure:nth-child(3) {
+            right: 8%;
+            top: 32%;
+            width: 70px;
+            height: 190px;
+            background: linear-gradient(180deg, #2a2520 0%, transparent 100%);
+            border-radius: 50% 50% 0 0;
+            animation-delay: 0.5s;
+        }
+
+        .shadow-figure:nth-child(4) {
+            right: 15%;
+            top: 38%;
+            width: 55px;
+            height: 170px;
+            background: linear-gradient(180deg, #201a15 0%, transparent 100%);
+            border-radius: 50% 50% 0 0;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes shadowFlicker {
+            0%, 100% { opacity: 0.15; transform: scaleY(1); }
+            50% { opacity: 0.1; transform: scaleY(1.02); }
+        }
+
+        /* O Portal - Terminal como fonte de luz */
+        .portal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+
+        .portal-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse at center,
+                rgba(190, 156, 109, 0.3) 0%,
+                rgba(190, 156, 109, 0.1) 30%,
+                transparent 70%);
+            filter: blur(40px);
+            animation: portalPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes portalPulse {
+            0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .terminal-frame {
+            position: relative;
+            width: 500px;
+            background: rgba(15, 15, 25, 0.95);
+            border-radius: 12px;
+            border: 2px solid rgba(190, 156, 109, 0.5);
+            box-shadow:
+                0 0 60px rgba(190, 156, 109, 0.3),
+                0 0 120px rgba(190, 156, 109, 0.15),
+                inset 0 0 30px rgba(190, 156, 109, 0.05);
+            overflow: hidden;
+            animation: terminalFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes terminalFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .terminal-header {
+            background: linear-gradient(180deg, rgba(190, 156, 109, 0.2) 0%, rgba(190, 156, 109, 0.1) 100%);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: rgba(190, 156, 109, 0.7);
+            margin-left: 10px;
+        }
+
+        .terminal-body {
+            padding: 25px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: var(--super-cream);
+            min-height: 150px;
+        }
+
+        .terminal-line {
+            margin-bottom: 12px;
+            opacity: 0;
+            animation: typeLine 0.5s ease forwards;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 0.5s; }
+        .terminal-line:nth-child(2) { animation-delay: 1.5s; }
+        .terminal-line:nth-child(3) { animation-delay: 2.5s; }
+
+        @keyframes typeLine {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .prompt {
+            color: var(--super-gold);
+        }
+
+        .command {
+            color: var(--super-cream);
+        }
+
+        .output {
+            color: rgba(255, 244, 228, 0.7);
+            font-size: 0.85em;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--super-gold);
+            margin-left: 2px;
+            animation: cursorBlink 1s infinite;
+        }
+
+        @keyframes cursorBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Partículas de luz emanando do terminal */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        /* Texto superior */
+        .header-text {
+            position: fixed;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .aula-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: var(--super-gold);
+            opacity: 0.6;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            animation: fadeIn 1s ease 0.3s both;
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2em;
+            font-weight: 700;
+            color: var(--super-cream);
+            line-height: 1.2;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+            animation: fadeInDown 1s ease 0.5s both;
+        }
+
+        .main-title .highlight {
+            color: var(--super-gold);
+            display: block;
+            font-style: italic;
+        }
+
+        /* Texto inferior - a revelação */
+        .revelation {
+            position: fixed;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+            max-width: 700px;
+        }
+
+        .revelation-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.8);
+            line-height: 1.6;
+            animation: fadeIn 1s ease 3s both;
+        }
+
+        .revelation-text em {
+            color: var(--super-gold);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Embed mode */
+        body.embed-mode .main-title { font-size: 2.2em; }
+        body.embed-mode .terminal-frame { width: 380px; }
+        body.embed-mode .terminal-body { padding: 15px; min-height: 100px; }
+        body.embed-mode .revelation-text { font-size: 0.9em; }
+        body.embed-mode .header-text { top: 5%; }
+        body.embed-mode .revelation { bottom: 5%; }
+    </style>
+</head>
+<body>
+    <div class="cave-background"></div>
+
+    <div class="shadows">
+        <div class="shadow-figure"></div>
+        <div class="shadow-figure"></div>
+        <div class="shadow-figure"></div>
+        <div class="shadow-figure"></div>
+    </div>
+
+    <div class="particles" id="particles"></div>
+
+    <div class="header-text">
+        <div class="aula-number">AULA 02</div>
+        <h1 class="main-title">
+            Desvendando o
+            <span class="highlight">Claude Code</span>
+        </h1>
+    </div>
+
+    <div class="portal">
+        <div class="portal-glow"></div>
+        <div class="terminal-frame">
+            <div class="terminal-header">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+                <span class="terminal-title">~ terminal</span>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-line">
+                    <span class="prompt">$</span> <span class="command">claude</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output">Iniciando Claude Code...</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="prompt">claude></span> <span class="cursor"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="revelation">
+        <p class="revelation-text">
+            Na caverna, as sombras parecem a realidade.<br>
+            Aqui, <em>o terminal é o portal</em> — não a prisão.
+        </p>
+    </div>
+
+    <script>
+        // Partículas emanando do terminal
+        const particlesContainer = document.getElementById('particles');
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+
+            // Posição inicial próxima ao centro (terminal)
+            const startX = centerX + (Math.random() - 0.5) * 200;
+            const startY = centerY + (Math.random() - 0.5) * 100;
+
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+
+            // Direção de movimento (para fora)
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 200 + Math.random() * 300;
+            const endX = startX + Math.cos(angle) * distance;
+            const endY = startY + Math.sin(angle) * distance;
+
+            particle.animate([
+                {
+                    opacity: 0.8,
+                    transform: 'scale(1)',
+                    left: startX + 'px',
+                    top: startY + 'px'
+                },
+                {
+                    opacity: 0,
+                    transform: 'scale(0.2)',
+                    left: endX + 'px',
+                    top: endY + 'px'
+                }
+            ], {
+                duration: 2000 + Math.random() * 2000,
+                easing: 'ease-out'
+            });
+
+            particlesContainer.appendChild(particle);
+
+            setTimeout(() => particle.remove(), 4000);
+        }
+
+        // Criar partículas periodicamente
+        setInterval(createParticle, 150);
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

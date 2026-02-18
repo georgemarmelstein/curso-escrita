@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Que E o Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--super-bg-dark) 0%, var(--super-bg-section) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            color: var(--super-gold);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .title p {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        /* Comparison container */
+        .comparison-container {
+            display: flex;
+            gap: 30px;
+            max-width: 900px;
+            margin-bottom: 30px;
+        }
+
+        .comparison-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(190, 156, 109, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.5s ease;
+        }
+
+        .comparison-card.nao {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .comparison-card.e {
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .comparison-card.active {
+            transform: scale(1.03);
+            box-shadow: 0 15px 50px rgba(190, 156, 109, 0.2);
+        }
+
+        .comparison-card.nao.active {
+            border-color: var(--super-red);
+            box-shadow: 0 15px 50px rgba(239, 68, 68, 0.2);
+        }
+
+        .comparison-card.e.active {
+            border-color: var(--super-green);
+            box-shadow: 0 15px 50px rgba(74, 222, 128, 0.2);
+        }
+
+        .comparison-card.dimmed {
+            opacity: 0.3;
+            transform: scale(0.95);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            font-size: 2em;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .comparison-card.nao .card-title {
+            color: var(--super-red);
+        }
+
+        .comparison-card.e .card-title {
+            color: var(--super-green);
+        }
+
+        .card-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 0.95em;
+            color: var(--super-cream);
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.4s ease;
+        }
+
+        .card-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .card-item.highlighted {
+            background: rgba(190, 156, 109, 0.15);
+            border-left: 3px solid var(--super-gold);
+        }
+
+        .comparison-card.nao .card-item::before {
+            content: '✗';
+            color: var(--super-red);
+            font-weight: 700;
+        }
+
+        .comparison-card.e .card-item::before {
+            content: '✓';
+            color: var(--super-green);
+            font-weight: 700;
+        }
+
+        /* Quote box */
+        .quote-box {
+            max-width: 800px;
+            padding: 25px 40px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .quote-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .quote-source {
+            font-size: 0.85em;
+            color: var(--super-gold);
+        }
+
+        /* Navigation */
+        .nav-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 12px var(--super-gold-light);
+            transform: scale(1.3);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 20px; }
+        body.embed-mode .title { margin-bottom: 25px; }
+        body.embed-mode .title h1 { font-size: 1.5em; }
+        body.embed-mode .comparison-container { gap: 20px; margin-bottom: 20px; }
+        body.embed-mode .comparison-card { padding: 20px; }
+        body.embed-mode .card-header { margin-bottom: 15px; }
+        body.embed-mode .card-icon { font-size: 1.6em; }
+        body.embed-mode .card-title { font-size: 1.2em; }
+        body.embed-mode .card-items { gap: 10px; }
+        body.embed-mode .card-item { padding: 8px 12px; font-size: 0.85em; }
+        body.embed-mode .quote-box { padding: 18px 30px; }
+        body.embed-mode .quote-text { font-size: 1em; }
+        body.embed-mode .nav-indicator { bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>O Que E o Claude Code</h1>
+        <p>Clique para explorar a definicao</p>
+    </div>
+
+    <div class="comparison-container">
+        <div class="comparison-card nao" data-side="nao">
+            <div class="card-header">
+                <div class="card-icon">&#10060;</div>
+                <div class="card-title">NAO E</div>
+            </div>
+            <div class="card-items">
+                <div class="card-item" data-index="0">Uma IDE</div>
+                <div class="card-item" data-index="1">Um plugin de codigo</div>
+                <div class="card-item" data-index="2">Uma ferramenta so pra devs</div>
+                <div class="card-item" data-index="3">Uma interface grafica</div>
+            </div>
+        </div>
+
+        <div class="comparison-card e" data-side="e">
+            <div class="card-header">
+                <div class="card-icon">&#9989;</div>
+                <div class="card-title">E</div>
+            </div>
+            <div class="card-items">
+                <div class="card-item" data-index="0">Um chat no terminal</div>
+                <div class="card-item" data-index="1">Um utilitario Unix</div>
+                <div class="card-item" data-index="2">Um operador do computador</div>
+                <div class="card-item" data-index="3">Um fantasma na maquina</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="quote-box">
+        <p class="quote-text">
+            "<span class="highlight">Claude Code is not a product</span> as much as it's a
+            <span class="highlight">Unix utility</span>."
+        </p>
+        <p class="quote-source">— Boris Cherny, Lead Engineer @ Anthropic, criador do Claude Code</p>
+    </div>
+
+    <div class="nav-indicator">
+        <div class="nav-dot active" data-index="0" title="Inicio"></div>
+        <div class="nav-dot" data-index="1" title="Item 1"></div>
+        <div class="nav-dot" data-index="2" title="Item 2"></div>
+        <div class="nav-dot" data-index="3" title="Item 3"></div>
+        <div class="nav-dot" data-index="4" title="Item 4"></div>
+        <div class="nav-dot" data-index="5" title="Quote"></div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // State
+        let currentStage = 0;
+        const totalStages = 6;
+        const naoItems = document.querySelectorAll('.comparison-card.nao .card-item');
+        const eItems = document.querySelectorAll('.comparison-card.e .card-item');
+        const quoteBox = document.querySelector('.quote-box');
+        const dots = document.querySelectorAll('.nav-dot');
+        const naoCard = document.querySelector('.comparison-card.nao');
+        const eCard = document.querySelector('.comparison-card.e');
+
+        function updateDisplay() {
+            // Reset
+            naoCard.classList.remove('active', 'dimmed');
+            eCard.classList.remove('active', 'dimmed');
+            naoItems.forEach(item => item.classList.remove('visible', 'highlighted'));
+            eItems.forEach(item => item.classList.remove('visible', 'highlighted'));
+            quoteBox.classList.remove('visible');
+
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentStage);
+            });
+
+            if (currentStage === 0) {
+                // Initial state - nothing highlighted
+                return;
+            }
+
+            if (currentStage >= 1 && currentStage <= 4) {
+                // Show items progressively
+                const itemIndex = currentStage - 1;
+
+                naoCard.classList.add('active');
+                eCard.classList.add('active');
+
+                // Show all previous items
+                for (let i = 0; i <= itemIndex; i++) {
+                    naoItems[i].classList.add('visible');
+                    eItems[i].classList.add('visible');
+                }
+
+                // Highlight current
+                naoItems[itemIndex].classList.add('highlighted');
+                eItems[itemIndex].classList.add('highlighted');
+            }
+
+            if (currentStage === 5) {
+                // Show quote, all items visible
+                naoItems.forEach(item => item.classList.add('visible'));
+                eItems.forEach(item => item.classList.add('visible'));
+                quoteBox.classList.add('visible');
+            }
+        }
+
+        function nextStage() {
+            currentStage = (currentStage + 1) % totalStages;
+            updateDisplay();
+        }
+
+        function prevStage() {
+            currentStage = currentStage === 0 ? totalStages - 1 : currentStage - 1;
+            updateDisplay();
+        }
+
+        // Initialize
+        updateDisplay();
+
+        // Dot click
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                currentStage = i;
+                updateDisplay();
+            });
+        });
+
+        // Click anywhere
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-dot')) return;
+            nextStage();
+        });
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevStage();
+            }
+        });
+    </script>
+</body>
+</html>

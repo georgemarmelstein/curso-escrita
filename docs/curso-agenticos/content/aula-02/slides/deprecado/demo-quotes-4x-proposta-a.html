@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotes 4x - Proposta A (Grid 2x2)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--super-bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        /* Fundo com partículas sutis */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(190, 156, 109, 0.05) 0%, transparent 40%),
+                radial-gradient(ellipse at 80% 70%, rgba(190, 156, 109, 0.03) 0%, transparent 40%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* Título da seção */
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 10px;
+        }
+
+        .section-title .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        /* Grid 2x2 */
+        .quotes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        /* Card de quote */
+        .quote-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(190, 156, 109, 0.15);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            opacity: 0.4;
+            transform: scale(0.98);
+            cursor: pointer;
+        }
+
+        .quote-card.highlighted {
+            opacity: 1;
+            transform: scale(1);
+            border-color: rgba(190, 156, 109, 0.5);
+            box-shadow: 0 10px 40px rgba(190, 156, 109, 0.15);
+        }
+
+        .quote-card.all-visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Número do card */
+        .card-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            opacity: 0.5;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        /* Texto da quote */
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1em;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Tradução */
+        .quote-translation {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.5);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Autor */
+        .quote-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(190, 156, 109, 0.1);
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--super-gold-dark), var(--super-gold));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: var(--super-bg-dark);
+            font-weight: 600;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        .author-role {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: var(--super-gold);
+            opacity: 0.7;
+        }
+
+        /* Navegação */
+        .nav-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 35px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        .nav-dot:hover {
+            background: var(--super-gold-light);
+        }
+
+        /* Instrução */
+        .click-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            opacity: 0.5;
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 25px; }
+        body.embed-mode .section-title h2 { font-size: 1.5em; }
+        body.embed-mode .quotes-grid { gap: 15px; }
+        body.embed-mode .quote-card { padding: 20px; }
+        body.embed-mode .quote-text { font-size: 0.95em; }
+        body.embed-mode .quote-translation { font-size: 0.7em; }
+        body.embed-mode .author-avatar { width: 32px; height: 32px; font-size: 0.75em; }
+        body.embed-mode .click-hint { display: none; }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+
+    <div class="container">
+        <div class="section-title">
+            <h2>Por Que Abraçar o Terminal?</h2>
+            <p class="subtitle">O que dizem os criadores e pioneiros</p>
+        </div>
+
+        <div class="quotes-grid">
+            <!-- Quote 1: Fantasma na máquina -->
+            <div class="quote-card" data-index="0">
+                <div class="card-number">01</div>
+                <p class="quote-text">
+                    "It's a <span class="highlight">ghost in your computer</span> that can do things for you."
+                </p>
+                <p class="quote-translation">
+                    "É um fantasma no seu computador que pode fazer coisas por você."
+                </p>
+                <div class="quote-author">
+                    <div class="author-avatar">AK</div>
+                    <div class="author-info">
+                        <div class="author-name">Andrej Karpathy</div>
+                        <div class="author-role">Ex-Director of AI @ Tesla</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quote 2: Não há jeito único -->
+            <div class="quote-card" data-index="1">
+                <div class="card-number">02</div>
+                <p class="quote-text">
+                    "There is <span class="highlight">no one correct way</span> to use Claude Code: we intentionally build it so you can <span class="highlight">hack it however you like</span>."
+                </p>
+                <p class="quote-translation">
+                    "Não há uma única forma correta de usar: construímos intencionalmente para você hackear como quiser."
+                </p>
+                <div class="quote-author">
+                    <div class="author-avatar">BC</div>
+                    <div class="author-info">
+                        <div class="author-name">Boris Cherny</div>
+                        <div class="author-role">Criador do Claude Code</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quote 3: 5 Claudes em paralelo -->
+            <div class="quote-card" data-index="2">
+                <div class="card-number">03</div>
+                <p class="quote-text">
+                    "I run <span class="highlight">5 Claudes in parallel</span> in my terminal. I number my tabs 1-5 and use notifications to know when one needs input."
+                </p>
+                <p class="quote-translation">
+                    "Eu rodo 5 Claudes em paralelo no meu terminal. Numero minhas abas de 1-5."
+                </p>
+                <div class="quote-author">
+                    <div class="author-avatar">BC</div>
+                    <div class="author-info">
+                        <div class="author-name">Boris Cherny</div>
+                        <div class="author-role">Criador do Claude Code</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quote 4: 10X mais poderoso -->
+            <div class="quote-card" data-index="3">
+                <div class="card-number">04</div>
+                <p class="quote-text">
+                    "I could be <span class="highlight">10X more powerful</span> if I just properly string together what has become available over the last year."
+                </p>
+                <p class="quote-translation">
+                    "Eu poderia ser 10X mais poderoso se conectasse corretamente o que se tornou disponível."
+                </p>
+                <div class="quote-author">
+                    <div class="author-avatar">AK</div>
+                    <div class="author-info">
+                        <div class="author-name">Andrej Karpathy</div>
+                        <div class="author-role">Ex-Director of AI @ Tesla</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-indicator">
+            <div class="nav-dot active" data-index="0"></div>
+            <div class="nav-dot" data-index="1"></div>
+            <div class="nav-dot" data-index="2"></div>
+            <div class="nav-dot" data-index="3"></div>
+            <div class="nav-dot" data-index="4"></div>
+        </div>
+    </div>
+
+    <div class="click-hint">[ clique para avançar ]</div>
+
+    <script>
+        const cards = document.querySelectorAll('.quote-card');
+        const dots = document.querySelectorAll('.nav-dot');
+        let currentState = 0;
+        const totalStates = 5; // 0=all, 1-4=individual
+
+        function updateDisplay() {
+            cards.forEach((card, i) => {
+                card.classList.remove('highlighted', 'all-visible');
+
+                if (currentState === 0) {
+                    // Todos visíveis
+                    card.classList.add('all-visible');
+                } else {
+                    // Spotlight em um
+                    if (i === currentState - 1) {
+                        card.classList.add('highlighted');
+                    }
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentState);
+            });
+        }
+
+        function nextState() {
+            currentState = (currentState + 1) % totalStates;
+            updateDisplay();
+        }
+
+        function goToState(index) {
+            currentState = index;
+            updateDisplay();
+        }
+
+        // Clique no body avança
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-dot')) return;
+            nextState();
+        });
+
+        // Clique nos dots vai direto
+        dots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                goToState(parseInt(dot.dataset.index));
+            });
+        });
+
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextState();
+            } else if (e.key === 'ArrowLeft') {
+                currentState = (currentState - 1 + totalStates) % totalStates;
+                updateDisplay();
+            }
+        });
+
+        // Inicializar
+        updateDisplay();
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

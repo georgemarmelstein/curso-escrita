@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Capa Maestro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Ambient gradients */
+        .ambient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 100% 80% at 50% 120%, rgba(190, 156, 109, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 20% 30%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 30%, rgba(74, 222, 128, 0.08) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        /* Grain */
+        .grain {
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 0%,
+                rgba(10, 10, 18, 0.2) 50%,
+                rgba(10, 10, 18, 0.7) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAESTRO VISUALIZATION
+           ═══════════════════════════════════════════════════════════ */
+        .orchestra-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            margin-bottom: 40px;
+        }
+
+        /* Central maestro figure (abstract) */
+        .maestro {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .maestro-core {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 30% 30%, var(--super-gold-light), var(--super-gold));
+            border-radius: 50%;
+            box-shadow:
+                0 0 60px rgba(190, 156, 109, 0.4),
+                0 0 100px rgba(190, 156, 109, 0.2);
+            animation: maestroPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes maestroPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(190, 156, 109, 0.4), 0 0 100px rgba(190, 156, 109, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(190, 156, 109, 0.5), 0 0 120px rgba(190, 156, 109, 0.3); }
+        }
+
+        /* Baton (abstract line) */
+        .baton {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--super-gold), transparent);
+            transform-origin: left center;
+            animation: conduct 2s ease-in-out infinite;
+        }
+
+        @keyframes conduct {
+            0%, 100% { transform: rotate(-20deg); }
+            25% { transform: rotate(15deg); }
+            50% { transform: rotate(-10deg); }
+            75% { transform: rotate(20deg); }
+        }
+
+        /* Orchestral rings */
+        .ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1px solid rgba(190, 156, 109, 0.15);
+            opacity: 0;
+            animation: ringExpand 4s ease-out infinite;
+        }
+
+        .ring:nth-child(1) { animation-delay: 0s; }
+        .ring:nth-child(2) { animation-delay: 1s; }
+        .ring:nth-child(3) { animation-delay: 2s; }
+        .ring:nth-child(4) { animation-delay: 3s; }
+
+        @keyframes ringExpand {
+            0% { width: 60px; height: 60px; opacity: 0.6; }
+            100% { width: 500px; height: 500px; opacity: 0; }
+        }
+
+        /* Instrument nodes */
+        .instrument {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .instrument-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid;
+            transition: all 0.3s ease;
+        }
+
+        .instrument:hover .instrument-icon {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px currentColor;
+        }
+
+        .instrument-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7em;
+            font-weight: 500;
+            color: rgba(255, 244, 228, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Instrument positions (around the maestro) */
+        .instrument.llm {
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 0.3s;
+        }
+        .instrument.llm .instrument-icon {
+            border-color: var(--super-gold);
+            color: var(--super-gold);
+        }
+
+        .instrument.tools {
+            top: 35%;
+            left: 10%;
+            animation-delay: 0.5s;
+        }
+        .instrument.tools .instrument-icon {
+            border-color: var(--super-green);
+            color: var(--super-green);
+        }
+
+        .instrument.mcp {
+            top: 35%;
+            right: 10%;
+            animation-delay: 0.7s;
+        }
+        .instrument.mcp .instrument-icon {
+            border-color: var(--super-purple);
+            color: var(--super-purple);
+        }
+
+        .instrument.memory {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 0.9s;
+        }
+        .instrument.memory .instrument-icon {
+            border-color: var(--super-cyan);
+            color: var(--super-cyan);
+        }
+
+        .instrument.context {
+            bottom: 20%;
+            right: 20%;
+            animation-delay: 1.1s;
+        }
+        .instrument.context .instrument-icon {
+            border-color: var(--super-pink);
+            color: var(--super-pink);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Connection lines from instruments to maestro */
+        .connection-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--super-gold), transparent);
+            transform-origin: left center;
+            opacity: 0.3;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TITLE
+           ═══════════════════════════════════════════════════════════ */
+        .title-container {
+            text-align: center;
+            z-index: 20;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.5s forwards;
+        }
+
+        .title-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .title-main {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3.2em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 3px;
+            text-shadow: 0 0 60px rgba(190, 156, 109, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .title-sub {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.3em;
+            color: rgba(255, 244, 228, 0.6);
+            font-style: italic;
+        }
+
+        /* Philosophy quote */
+        .philosophy {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s ease 2s forwards;
+        }
+
+        .philosophy-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.4);
+            font-style: italic;
+        }
+
+        .philosophy-text span {
+            color: var(--super-gold);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .title-main { font-size: 2.5em; }
+        body.embed-mode .orchestra-container { width: 500px; height: 350px; margin-bottom: 30px; }
+        body.embed-mode .instrument-icon { width: 42px; height: 42px; font-size: 1em; }
+        body.embed-mode .philosophy { bottom: 25px; }
+    </style>
+</head>
+<body>
+    <div class="ambient"></div>
+    <div class="grain"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="orchestra-container">
+            <!-- Expanding rings -->
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+
+            <!-- Instruments -->
+            <div class="instrument llm">
+                <div class="instrument-icon">LLM</div>
+                <span class="instrument-label">Inteligência</span>
+            </div>
+
+            <div class="instrument tools">
+                <div class="instrument-icon">T</div>
+                <span class="instrument-label">Tools</span>
+            </div>
+
+            <div class="instrument mcp">
+                <div class="instrument-icon">MCP</div>
+                <span class="instrument-label">Protocolo</span>
+            </div>
+
+            <div class="instrument memory">
+                <div class="instrument-icon">M</div>
+                <span class="instrument-label">Memória</span>
+            </div>
+
+            <div class="instrument context">
+                <div class="instrument-icon">C</div>
+                <span class="instrument-label">Contexto</span>
+            </div>
+
+            <!-- Maestro (central) -->
+            <div class="maestro">
+                <div class="maestro-core"></div>
+                <div class="baton"></div>
+            </div>
+        </div>
+
+        <div class="title-container">
+            <div class="title-label">Aula 03</div>
+            <h1 class="title-main">Construindo Sistemas Agênticos</h1>
+            <p class="title-sub">O humano não opera. O humano rege.</p>
+        </div>
+    </div>
+
+    <div class="philosophy">
+        <p class="philosophy-text">"<span>Regência Cognitiva</span>: orquestrar inteligências para resolver problemas"</p>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'capa-maestro-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

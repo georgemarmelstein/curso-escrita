@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote - Karpathy Alien Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* Foto de fundo com blur */
+        .bg-photo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('andrej-karpathy.jpg');
+            background-size: cover;
+            background-position: center top;
+            filter: brightness(0.3) blur(3px);
+            transform: scale(1.05);
+            z-index: 1;
+        }
+
+        /* Overlay escuro */
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at center,
+                rgba(10, 10, 18, 0.6) 0%,
+                rgba(10, 10, 18, 0.85) 100%
+            );
+            z-index: 2;
+        }
+
+        /* Card central glassmorphism */
+        .quote-card {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            padding: 60px 80px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            animation: scaleIn 0.8s ease both;
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Foto do autor - circular */
+        .author-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center top;
+            border: 3px solid var(--super-gold);
+            margin-bottom: 25px;
+            animation: fadeInDown 1s ease 0.3s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Citacao em ingles */
+        .quote-english {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quote-english .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        /* Citacao em portugues */
+        .quote-translation {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.6);
+            line-height: 1.5;
+            margin-bottom: 30px;
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border-left: 3px solid var(--super-gold);
+            animation: fadeInUp 1s ease 0.7s both;
+        }
+
+        .quote-translation::before {
+            content: 'Traducao: ';
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .decorative-bar {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--super-gold), transparent);
+            margin: 0 auto 20px;
+            animation: expandBar 0.8s ease 0.9s both;
+        }
+
+        @keyframes expandBar {
+            from { width: 0; }
+            to { width: 80px; }
+        }
+
+        .author-info {
+            animation: fadeInUp 1s ease 1.1s both;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 1px;
+        }
+
+        .author-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 5px;
+        }
+
+        /* Badge inferior */
+        .topic-badge {
+            position: absolute;
+            bottom: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 25px;
+            background: var(--super-gold);
+            border-radius: 20px;
+            animation: fadeInUp 1s ease 1.3s both;
+        }
+
+        .topic-badge span {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: var(--super-bg-dark);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Embed mode */
+        body.embed-mode .quote-card { padding: 35px 45px; max-width: 750px; }
+        body.embed-mode .author-photo { width: 60px; height: 60px; margin-bottom: 18px; }
+        body.embed-mode .quote-english { font-size: 1.25em; margin-bottom: 15px; }
+        body.embed-mode .quote-translation { font-size: 0.85em; padding: 12px 18px; margin-bottom: 20px; }
+        body.embed-mode .author-name { font-size: 1em; }
+        body.embed-mode .author-title { font-size: 0.75em; }
+        body.embed-mode .topic-badge { bottom: -35px; padding: 8px 18px; }
+        body.embed-mode .topic-badge span { font-size: 0.7em; }
+    </style>
+</head>
+<body>
+    <div class="bg-photo"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="quote-card">
+        <img src="andrej-karpathy.jpg" alt="Andrej Karpathy" class="author-photo">
+
+        <p class="quote-english">
+            "Clearly some <span class="highlight">powerful alien tool</span> was handed around
+            except it comes with <span class="highlight">no manual</span>."
+        </p>
+
+        <p class="quote-translation">
+            "Claramente alguma ferramenta alienigena poderosa foi distribuida,
+            exceto que ela vem sem manual."
+        </p>
+
+        <div class="decorative-bar"></div>
+
+        <div class="author-info">
+            <div class="author-name">Andrej Karpathy</div>
+            <div class="author-title">Ex-Director of AI @ Tesla | Co-founder OpenAI</div>
+        </div>
+
+        <div class="topic-badge">
+            <span>Esta Aula E O Manual</span>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

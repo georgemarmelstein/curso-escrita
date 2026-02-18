@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Janela de Contexto</title>
+
+    <!-- Google Fonts: Crimson Pro + Source Sans 3 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #194A68;
+            --primary-light: #2a6a8f;
+            --gold: #BE9C6D;
+            --gold-light: #d4b896;
+            --cream: #FFF4E4;
+            --cream-dark: #f5e6d3;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555;
+            --border-light: rgba(25, 74, 104, 0.15);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--cream-dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px;
+            color: var(--text-primary);
+        }
+
+        /* Embed mode */
+        body.embed-mode {
+            padding: 12px;
+            min-height: auto;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body.embed-mode h1,
+        body.embed-mode .subtitle {
+            display: none;
+        }
+
+        body.embed-mode .demo-container {
+            height: 100%;
+            gap: 16px;
+        }
+
+        body.embed-mode .context-window {
+            min-height: auto;
+            padding: 14px;
+        }
+
+        body.embed-mode .controls-panel {
+            padding: 14px;
+            max-width: 260px;
+        }
+
+        body.embed-mode .blocks-area {
+            min-height: 200px;
+            padding: 12px;
+        }
+
+        body.embed-mode .block {
+            padding: 8px 12px;
+        }
+
+        body.embed-mode .block-icon {
+            font-size: 1.2em;
+            width: 28px;
+        }
+
+        body.embed-mode .block-name {
+            font-size: 0.8em;
+        }
+
+        body.embed-mode .block-size {
+            font-size: 0.65em;
+        }
+
+        body.embed-mode .add-btn {
+            padding: 8px 10px;
+            font-size: 0.8em;
+        }
+
+        body.embed-mode .mode-toggle {
+            margin-bottom: 10px;
+        }
+
+        body.embed-mode .mode-btn {
+            padding: 6px 8px;
+            font-size: 0.7em;
+        }
+
+        body.embed-mode .cost-explanation {
+            display: none;
+        }
+
+        body.embed-mode .external-storage {
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        h1 {
+            font-family: 'Crimson Pro', Georgia, serif;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.6em;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-size: 0.95em;
+        }
+
+        /* Container principal */
+        .demo-container {
+            display: flex;
+            gap: 24px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Janela de contexto */
+        .context-window {
+            flex: 2;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            padding: 20px;
+            min-height: 480px;
+            position: relative;
+            box-shadow: var(--shadow-md);
+        }
+
+        .context-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--cream-dark);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .context-title {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.1em;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .header-indicators {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Indicador de custo */
+        .cost-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            padding: 6px 12px;
+            background: var(--cream);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+
+        .cost-label {
+            font-size: 0.65em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .cost-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Barra de preenchimento */
+        .fill-bar-container {
+            width: 160px;
+            height: 24px;
+            background: var(--cream-dark);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .fill-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--gold-light), var(--gold));
+            border-radius: 12px;
+            transition: all 0.5s ease;
+        }
+
+        .fill-bar.warning {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+        }
+
+        .fill-bar.danger {
+            background: linear-gradient(90deg, #f87171, #ef4444);
+        }
+
+        .fill-bar.critical {
+            background: linear-gradient(90deg, #dc2626, #991b1b);
+            animation: pulse-critical 0.5s ease infinite;
+        }
+
+        @keyframes pulse-critical {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .fill-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Area dos blocos */
+        .blocks-area {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 300px;
+            padding: 16px;
+            background: var(--cream);
+            border-radius: 12px;
+            border: 2px dashed var(--border-light);
+            position: relative;
+        }
+
+        .blocks-area.drag-over {
+            border-color: var(--primary);
+            background: rgba(25, 74, 104, 0.05);
+        }
+
+        .empty-hint {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            padding: 40px 20px;
+        }
+
+        /* Blocos */
+        .block {
+            background: white;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border-light);
+            animation: block-enter 0.3s ease;
+            transition: all 0.4s ease;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            cursor: grab;
+        }
+
+        .block:active {
+            cursor: grabbing;
+        }
+
+        .block.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+
+        .block.drag-over {
+            border-color: var(--primary);
+            border-width: 2px;
+        }
+
+        @keyframes block-enter {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .block-order {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.65em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .block-delete {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: var(--color-danger);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+
+        .block:hover .block-delete {
+            opacity: 1;
+        }
+
+        .block-delete:hover {
+            transform: scale(1.1);
+        }
+
+        .block-icon {
+            font-size: 1.5em;
+            width: 36px;
+            text-align: center;
+        }
+
+        .block-content {
+            flex: 1;
+        }
+
+        .block-name {
+            font-weight: 600;
+            font-size: 0.9em;
+            color: var(--text-primary);
+        }
+
+        .block-size {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Estados de "esquecimento" - modo sliding */
+        .block.fade-level-1 { opacity: 0.85; }
+        .block.fade-level-2 { opacity: 0.7; filter: grayscale(15%); }
+        .block.fade-level-3 { opacity: 0.55; filter: grayscale(30%); }
+        .block.fade-level-4 { opacity: 0.4; filter: grayscale(45%) blur(0.5px); }
+        .block.fade-level-5 { opacity: 0.25; filter: grayscale(60%) blur(1px); }
+        .block.fade-level-6 {
+            opacity: 0.15;
+            filter: grayscale(75%) blur(1.5px);
+            pointer-events: none;
+        }
+
+        /* System prompt nunca esquece */
+        .block.system.fade-level-1,
+        .block.system.fade-level-2,
+        .block.system.fade-level-3,
+        .block.system.fade-level-4,
+        .block.system.fade-level-5,
+        .block.system.fade-level-6 {
+            opacity: 1 !important;
+            filter: none !important;
+            pointer-events: auto !important;
+        }
+
+        .block.sliding-out {
+            animation: slide-out 0.5s ease forwards;
+        }
+
+        @keyframes slide-out {
+            to {
+                opacity: 0;
+                transform: translateX(-30px) scale(0.9);
+                max-height: 0;
+                padding: 0;
+                margin: 0;
+            }
+        }
+
+        /* Cores por tipo */
+        .block.system {
+            border-left: 4px solid var(--gold);
+            background: linear-gradient(90deg, rgba(190,156,109,0.12), white);
+        }
+
+        .block.user {
+            border-left: 4px solid var(--primary);
+            background: linear-gradient(90deg, rgba(25,74,104,0.08), white);
+        }
+
+        .block.response {
+            border-left: 4px solid var(--color-success);
+            background: linear-gradient(90deg, rgba(16,185,129,0.08), white);
+        }
+
+        .block.attachment {
+            border-left: 4px solid #8b5cf6;
+            background: linear-gradient(90deg, rgba(139,92,246,0.08), white);
+        }
+
+        .block.web {
+            border-left: 4px solid #06b6d4;
+            background: linear-gradient(90deg, rgba(6,182,212,0.08), white);
+        }
+
+        .block.compacted {
+            border-left: 4px solid var(--gold);
+            border-style: dashed;
+            background: linear-gradient(90deg, rgba(190,156,109,0.2), white);
+        }
+
+        .block.chunk {
+            border-left: 4px solid #a855f7;
+            background: linear-gradient(90deg, rgba(168,85,247,0.08), white);
+            padding: 8px 12px;
+        }
+
+        .block.chunk .block-icon {
+            font-size: 1.2em;
+            width: 28px;
+        }
+
+        /* Mensagem de status */
+        .status-message {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .status-message.visible {
+            opacity: 1;
+        }
+
+        .status-message.info {
+            background: rgba(25,74,104,0.1);
+            border: 1px solid var(--primary-light);
+            color: var(--primary);
+        }
+
+        .status-message.warning {
+            background: rgba(245,158,11,0.15);
+            border: 1px solid #f59e0b;
+            color: #b45309;
+        }
+
+        .status-message.error {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid #ef4444;
+            color: #dc2626;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(-50%); }
+            25% { transform: translateX(calc(-50% - 5px)); }
+            75% { transform: translateX(calc(-50% + 5px)); }
+        }
+
+        /* Armazenamento externo (RAG) */
+        .external-storage {
+            margin-top: 16px;
+            background: var(--cream);
+            border: 2px dashed var(--border-light);
+            border-radius: 12px;
+            padding: 14px;
+            display: none;
+        }
+
+        .external-storage.visible {
+            display: block;
+            animation: fade-in 0.3s ease;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .storage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .storage-title {
+            font-family: 'Crimson Pro', Georgia, serif;
+            color: var(--primary);
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .storage-subtitle {
+            font-size: 0.7em;
+            color: var(--text-secondary);
+        }
+
+        .storage-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 40px;
+        }
+
+        .storage-hint {
+            color: var(--text-secondary);
+            font-size: 0.75em;
+            text-align: center;
+            width: 100%;
+            padding: 8px;
+        }
+
+        .stored-doc {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stored-doc .doc-icon {
+            font-size: 1.3em;
+        }
+
+        .stored-doc .doc-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stored-doc .doc-name {
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .stored-doc .doc-size {
+            font-size: 0.65em;
+            color: var(--text-secondary);
+        }
+
+        .stored-doc .doc-status {
+            font-size: 0.6em;
+            color: var(--color-success);
+        }
+
+        .stored-doc .doc-delete {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 16px;
+            height: 16px;
+            background: var(--color-danger);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.6em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .stored-doc:hover .doc-delete {
+            opacity: 1;
+        }
+
+        .stored-doc.searching {
+            animation: doc-search 0.5s ease infinite;
+        }
+
+        @keyframes doc-search {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); }
+            50% { box-shadow: 0 0 15px 3px rgba(168, 85, 247, 0.6); }
+        }
+
+        /* Painel de controles */
+        .controls-panel {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .controls-title {
+            font-family: 'Crimson Pro', Georgia, serif;
+            color: var(--primary);
+            font-size: 0.95em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        /* Toggle de modo */
+        .mode-toggle {
+            display: flex;
+            background: var(--cream);
+            border-radius: 8px;
+            padding: 3px;
+            border: 1px solid var(--border-light);
+            margin-bottom: 12px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 8px 6px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.75em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .mode-btn .mode-icon {
+            font-size: 1.2em;
+        }
+
+        .mode-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .mode-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .add-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .add-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background: var(--cream);
+            color: var(--text-primary);
+        }
+
+        .add-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .add-btn:active {
+            transform: scale(0.98);
+        }
+
+        .add-btn .icon {
+            font-size: 1.1em;
+            width: 22px;
+            text-align: center;
+        }
+
+        /* Botoes de acao */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .compact-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--gold);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .compact-btn:hover {
+            background: var(--gold-light);
+            transform: scale(1.02);
+        }
+
+        .compact-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reset-btn {
+            padding: 10px 14px;
+            background: var(--cream);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.8em;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            background: var(--cream-dark);
+            color: var(--text-primary);
+        }
+
+        /* Explicacao */
+        .cost-explanation {
+            padding: 12px;
+            background: var(--cream);
+            border-radius: 8px;
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .cost-explanation h4 {
+            font-family: 'Crimson Pro', Georgia, serif;
+            color: var(--primary);
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+
+        .cost-formula {
+            background: white;
+            padding: 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            color: var(--primary);
+            margin: 8px 0;
+        }
+
+        /* Animacao de colapso */
+        .context-window.collapse {
+            animation: collapse-shake 0.6s ease;
+        }
+
+        @keyframes collapse-shake {
+            0%, 100% { transform: rotate(0); }
+            10%, 30%, 50%, 70%, 90% { transform: rotate(-1deg); }
+            20%, 40%, 60%, 80% { transform: rotate(1deg); }
+        }
+
+        /* Tooltips */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.75em;
+            font-weight: 400;
+            white-space: normal;
+            width: max-content;
+            max-width: 220px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+            pointer-events: none;
+            line-height: 1.4;
+            box-shadow: var(--shadow-md);
+        }
+
+        [data-tooltip]::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 2px);
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--text-primary);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        [data-tooltip]:hover::after,
+        [data-tooltip]:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Tooltip para botoes na parte inferior e header */
+        .action-buttons [data-tooltip]::after,
+        .header-indicators [data-tooltip]::after {
+            bottom: auto;
+            top: calc(100% + 8px);
+        }
+
+        .action-buttons [data-tooltip]::before,
+        .header-indicators [data-tooltip]::before {
+            bottom: auto;
+            top: calc(100% + 2px);
+            border-top-color: transparent;
+            border-bottom-color: var(--text-primary);
+        }
+
+        /* Responsivo */
+        @media (max-width: 800px) {
+            .demo-container {
+                flex-direction: column;
+            }
+            .controls-panel {
+                order: -1;
+                max-width: none;
+            }
+            .add-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .add-btn {
+                flex: 1;
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>A Janela de Contexto</h1>
+    <p class="subtitle">Simule uma conversa e veja como a janela vai enchendo</p>
+
+    <div class="demo-container">
+        <div class="context-window" id="contextWindow">
+            <div class="context-header">
+                <span class="context-title">Janela de Contexto (200K tokens)</span>
+                <div class="header-indicators">
+                    <div class="cost-indicator" data-tooltip="Quanto voce pagaria por CADA resposta da IA com esse contexto acumulado.">
+                        <span class="cost-label">Custo/Resposta</span>
+                        <span class="cost-value" id="costValue">$0.00</span>
+                    </div>
+                    <div class="fill-bar-container" data-tooltip="Porcentagem da janela de contexto ocupada. 100% = limite atingido.">
+                        <div class="fill-bar" id="fillBar"></div>
+                        <span class="fill-text" id="fillText">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="blocks-area" id="blocksArea">
+                <div class="empty-hint" id="emptyHint">
+                    Clique nos botoes ao lado para simular uma conversa
+                </div>
+            </div>
+
+            <div class="status-message" id="statusMessage"></div>
+
+            <!-- Armazenamento externo (RAG) -->
+            <div class="external-storage" id="externalStorage">
+                <div class="storage-header">
+                    <span class="storage-title">Armazenamento Externo</span>
+                    <span class="storage-subtitle">Documentos indexados (fora do contexto)</span>
+                </div>
+                <div class="storage-area" id="storageArea">
+                    <div class="storage-hint" id="storageHint">
+                        No modo RAG, anexos ficam aqui e apenas chunks entram no contexto
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <div>
+                <h3 class="controls-title">Modo de Anexo</h3>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="modeStuffing" onclick="setParadigm('stuffing')" data-tooltip="Documento INTEIRO entra na janela de contexto. Simples, mas consome muito espaco.">
+                        <span class="mode-icon">📄</span>
+                        <span>Stuffing</span>
+                    </button>
+                    <button class="mode-btn" id="modeRAG" onclick="setParadigm('rag')" data-tooltip="Documento fica em banco externo. So trechos relevantes (chunks) entram no contexto. Mais eficiente!">
+                        <span class="mode-icon">🔍</span>
+                        <span>RAG</span>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="controls-title">Quando Transborda</h3>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="modeCollapse" onclick="setMode('collapse')" data-tooltip="Ao atingir 100%, a IA PARA de funcionar. Erro total. E o comportamento padrao da maioria das APIs.">
+                        <span class="mode-icon">💥</span>
+                        <span>Colapso</span>
+                    </button>
+                    <button class="mode-btn" id="modeSliding" onclick="setMode('sliding')" data-tooltip="Mensagens antigas vao 'desbotando' para dar espaco as novas. A IA esquece o inicio da conversa.">
+                        <span class="mode-icon">🔄</span>
+                        <span>Deslizante</span>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="controls-title">Adicionar Elementos</h3>
+                <div class="add-buttons" id="addButtons">
+                    <button class="add-btn" draggable="true" data-type="system" onclick="addBlock('system')" data-tooltip="Instrucoes invisiveis que definem o comportamento da IA. Sempre presente, nunca esquecido.">
+                        <span class="icon">🤖</span>
+                        <span>System Prompt</span>
+                    </button>
+                    <button class="add-btn" draggable="true" data-type="user" onclick="addBlock('user')" data-tooltip="Sua mensagem para a IA. Geralmente pequena (~1K tokens).">
+                        <span class="icon">💬</span>
+                        <span>Sua Pergunta</span>
+                    </button>
+                    <button class="add-btn" draggable="true" data-type="response" onclick="addBlock('response')" data-tooltip="Resposta gerada pela IA. Tambem ocupa espaco na janela!">
+                        <span class="icon">🤖</span>
+                        <span>Resposta da IA</span>
+                    </button>
+                    <button class="add-btn" draggable="true" data-type="attachment" onclick="addBlock('attachment')" data-tooltip="Documento PDF anexado. MUITO grande (~30K tokens). Principal vilao do consumo de contexto!">
+                        <span class="icon">📎</span>
+                        <span>Anexar PDF</span>
+                    </button>
+                    <button class="add-btn" draggable="true" data-type="web" onclick="addBlock('web')" data-tooltip="Resultado de busca na internet. Traz muito conteudo (~18K tokens).">
+                        <span class="icon">🌐</span>
+                        <span>Busca Web</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="compact-btn" onclick="compactContext()" data-tooltip="Resume toda a conversa em um bloco menor (20% do tamanho). Perde detalhes, mas libera espaco.">
+                    📦 Compactar
+                </button>
+                <button class="reset-btn" onclick="resetDemo()" data-tooltip="Limpa tudo e recomeca do zero.">
+                    🔄 Reset
+                </button>
+            </div>
+
+            <div class="cost-explanation">
+                <h4>Por que o custo aumenta?</h4>
+                <p>Cada resposta da IA processa <strong>TODO</strong> o contexto acumulado.</p>
+                <div class="cost-formula">
+                    Custo = Tokens × $0.003 / 1K
+                </div>
+                <p><strong>Colapso:</strong> Ao atingir 100%, tudo falha.<br>
+                <strong>Deslizante:</strong> Blocos antigos "desbotam" - a IA esquece o inicio.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuracao dos blocos
+        const blockTypes = {
+            system: {
+                icon: '🤖',
+                name: 'System Prompt',
+                size: 1.5,
+                sizeText: '3K tokens (1.5%)',
+                tokens: 3000
+            },
+            user: {
+                icon: '💬',
+                name: 'Sua Pergunta',
+                size: 0.5,
+                sizeText: '1K tokens (0.5%)',
+                tokens: 1000
+            },
+            response: {
+                icon: '🤖',
+                name: 'Resposta da IA',
+                size: 1.5,
+                sizeText: '3K tokens (1.5%)',
+                tokens: 3000
+            },
+            attachment: {
+                icon: '📎',
+                name: 'Anexo PDF',
+                size: 15,
+                sizeText: '30K tokens (15%)',
+                tokens: 30000
+            },
+            web: {
+                icon: '🌐',
+                name: 'Busca Web',
+                size: 9,
+                sizeText: '18K tokens (9%)',
+                tokens: 18000
+            },
+            compacted: {
+                icon: '📦',
+                name: 'Conversa Compactada',
+                size: 0,
+                sizeText: '',
+                tokens: 0
+            },
+            chunk1: {
+                icon: '🧩',
+                name: 'Chunk 1',
+                size: 1,
+                sizeText: '2K tokens (1%)',
+                tokens: 2000
+            },
+            chunk2: {
+                icon: '🧩',
+                name: 'Chunk 2',
+                size: 1,
+                sizeText: '2K tokens (1%)',
+                tokens: 2000
+            },
+            chunk3: {
+                icon: '🧩',
+                name: 'Chunk 3',
+                size: 0.5,
+                sizeText: '1K tokens (0.5%)',
+                tokens: 1000
+            }
+        };
+
+        const pricePerThousand = 0.003;
+        let blocks = [];
+        let blockCounter = 0;
+        let mode = 'collapse';
+        let paradigm = 'stuffing';
+        let storedDocuments = [];
+        let docCounter = 0;
+        let draggedBlock = null;
+
+        // Paradigma: Stuffing vs RAG
+        function setParadigm(newParadigm) {
+            paradigm = newParadigm;
+            document.getElementById('modeStuffing').classList.toggle('active', paradigm === 'stuffing');
+            document.getElementById('modeRAG').classList.toggle('active', paradigm === 'rag');
+
+            const externalStorage = document.getElementById('externalStorage');
+            if (paradigm === 'rag') {
+                externalStorage.classList.add('visible');
+                showStatus('Modo RAG: Anexos ficam no armazenamento externo, apenas chunks entram no contexto.', 'info');
+            } else {
+                externalStorage.classList.remove('visible');
+                showStatus('Modo Stuffing: Anexos entram inteiros na janela de contexto.', 'info');
+            }
+            setTimeout(hideStatus, 3000);
+        }
+
+        // Modo: Colapso vs Deslizante
+        function setMode(newMode) {
+            mode = newMode;
+            document.getElementById('modeCollapse').classList.toggle('active', mode === 'collapse');
+            document.getElementById('modeSliding').classList.toggle('active', mode === 'sliding');
+
+            // Resetar estados visuais
+            blocks.forEach(b => {
+                for (let i = 1; i <= 6; i++) {
+                    b.element.classList.remove(`fade-level-${i}`);
+                }
+                b.element.classList.remove('sliding-out');
+            });
+
+            updateVisuals();
+        }
+
+        // Adicionar bloco
+        function addBlock(type) {
+            // No modo RAG, anexos vao para armazenamento externo
+            if (paradigm === 'rag' && (type === 'attachment' || type === 'web')) {
+                addToExternalStorage(type);
+
+                // Se ja tem prompt de usuario, busca chunks automaticamente
+                if (blocks.some(b => b.type === 'user')) {
+                    setTimeout(retrieveChunks, 500);
+                }
+                return;
+            }
+
+            const blockInfo = blockTypes[type];
+
+            // Esconder hint
+            const hint = document.getElementById('emptyHint');
+            if (hint) hint.style.display = 'none';
+
+            // Criar bloco
+            const block = document.createElement('div');
+            block.className = `block ${type}`;
+            block.id = `block-${blockCounter}`;
+            block.draggable = true;
+            block.innerHTML = `
+                <span class="block-order">${blocks.length + 1}</span>
+                <span class="block-delete" onclick="deleteBlock('${block.id}', event)">✕</span>
+                <span class="block-icon">${blockInfo.icon}</span>
+                <div class="block-content">
+                    <span class="block-name">${blockInfo.name}</span>
+                    <span class="block-size">${blockInfo.sizeText}</span>
+                </div>
+            `;
+
+            const blockData = {
+                id: block.id,
+                type: type,
+                size: blockInfo.size,
+                tokens: blockInfo.tokens,
+                element: block,
+                order: blocks.length + 1
+            };
+
+            setupBlockDrag(block, blockData);
+            blocks.push(blockData);
+            document.getElementById('blocksArea').appendChild(block);
+            blockCounter++;
+
+            // No modo RAG, ao adicionar prompt de usuario, busca chunks
+            if (paradigm === 'rag' && type === 'user' && storedDocuments.length > 0) {
+                setTimeout(retrieveChunks, 500);
+            }
+
+            updateVisuals();
+        }
+
+        // Adicionar ao armazenamento externo (RAG)
+        function addToExternalStorage(type) {
+            const blockInfo = blockTypes[type];
+            const storageArea = document.getElementById('storageArea');
+
+            const hint = document.getElementById('storageHint');
+            if (hint) hint.style.display = 'none';
+
+            const doc = document.createElement('div');
+            doc.className = 'stored-doc';
+            doc.id = `doc-${docCounter}`;
+            doc.innerHTML = `
+                <span class="doc-delete" onclick="removeStoredDoc('${doc.id}', event)">✕</span>
+                <span class="doc-icon">${blockInfo.icon}</span>
+                <div class="doc-info">
+                    <span class="doc-name">${blockInfo.name}</span>
+                    <span class="doc-size">${blockInfo.sizeText}</span>
+                    <span class="doc-status">✓ Indexado</span>
+                </div>
+            `;
+
+            storedDocuments.push({
+                id: doc.id,
+                type: type,
+                tokens: blockInfo.tokens,
+                size: blockInfo.size,
+                element: doc
+            });
+
+            storageArea.appendChild(doc);
+            docCounter++;
+
+            showStatus(`${blockInfo.name} indexado. Adicione uma pergunta para buscar chunks!`, 'info');
+            setTimeout(hideStatus, 3000);
+        }
+
+        // Remover documento do armazenamento
+        function removeStoredDoc(docId, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+            const docIndex = storedDocuments.findIndex(d => d.id === docId);
+            if (docIndex === -1) return;
+
+            const docData = storedDocuments[docIndex];
+            docData.element.style.opacity = '0';
+            docData.element.style.transform = 'scale(0.8)';
+
+            setTimeout(() => {
+                docData.element.remove();
+                storedDocuments.splice(docIndex, 1);
+
+                if (storedDocuments.length === 0) {
+                    const hint = document.getElementById('storageHint');
+                    if (hint) hint.style.display = 'block';
+                }
+            }, 300);
+        }
+
+        // Buscar chunks (RAG)
+        function retrieveChunks() {
+            if (storedDocuments.length === 0) return;
+
+            // Animar busca
+            storedDocuments.forEach(doc => {
+                doc.element.classList.add('searching');
+            });
+
+            setTimeout(() => {
+                storedDocuments.forEach(doc => {
+                    doc.element.classList.remove('searching');
+                });
+
+                // Adicionar chunks
+                const chunksToAdd = ['chunk1', 'chunk2', 'chunk3'];
+                chunksToAdd.forEach((chunkType, index) => {
+                    setTimeout(() => addChunkBlock(chunkType), index * 150);
+                });
+
+                showStatus(`Retrieval: ${chunksToAdd.length} chunks encontrados e adicionados!`, 'info');
+                setTimeout(hideStatus, 3000);
+            }, 600);
+        }
+
+        // Adicionar chunk
+        function addChunkBlock(chunkType) {
+            const blockInfo = blockTypes[chunkType];
+
+            const hint = document.getElementById('emptyHint');
+            if (hint) hint.style.display = 'none';
+
+            const block = document.createElement('div');
+            block.className = 'block chunk';
+            block.id = `block-${blockCounter}`;
+            block.innerHTML = `
+                <span class="block-order">${blocks.length + 1}</span>
+                <span class="block-delete" onclick="deleteBlock('${block.id}', event)">✕</span>
+                <span class="block-icon">${blockInfo.icon}</span>
+                <div class="block-content">
+                    <span class="block-name">${blockInfo.name}</span>
+                    <span class="block-size">${blockInfo.sizeText}</span>
+                </div>
+            `;
+
+            const blockData = {
+                id: block.id,
+                type: chunkType,
+                size: blockInfo.size,
+                tokens: blockInfo.tokens,
+                element: block,
+                order: blocks.length + 1
+            };
+
+            blocks.push(blockData);
+            document.getElementById('blocksArea').appendChild(block);
+            blockCounter++;
+
+            updateVisuals();
+        }
+
+        // Deletar bloco
+        function deleteBlock(blockId, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+            const blockIndex = blocks.findIndex(b => b.id === blockId);
+            if (blockIndex === -1) return;
+
+            const blockData = blocks[blockIndex];
+            blockData.element.style.opacity = '0';
+            blockData.element.style.transform = 'scale(0.9)';
+
+            setTimeout(() => {
+                blockData.element.remove();
+                blocks.splice(blockIndex, 1);
+                updateBlockOrders();
+                updateVisuals();
+
+                if (blocks.length === 0) {
+                    const hint = document.getElementById('emptyHint');
+                    if (hint) hint.style.display = 'block';
+                }
+            }, 200);
+        }
+
+        // Atualizar numeros de ordem
+        function updateBlockOrders() {
+            blocks.forEach((block, index) => {
+                block.order = index + 1;
+                const orderEl = block.element.querySelector('.block-order');
+                if (orderEl) orderEl.textContent = index + 1;
+            });
+        }
+
+        // Compactar contexto
+        function compactContext() {
+            const nonSystemBlocks = blocks.filter(b => b.type !== 'system' && b.type !== 'compacted');
+            if (nonSystemBlocks.length < 2) {
+                showStatus('Nada para compactar ainda!', 'warning');
+                setTimeout(hideStatus, 2000);
+                return;
+            }
+
+            // Calcular tamanho compactado (20% do original)
+            const totalSize = nonSystemBlocks.reduce((sum, b) => sum + b.size, 0);
+            const totalTokens = nonSystemBlocks.reduce((sum, b) => sum + b.tokens, 0);
+            const compactedSize = totalSize * 0.2;
+            const compactedTokens = Math.round(totalTokens * 0.2);
+
+            // Animar remocao
+            nonSystemBlocks.forEach((b, i) => {
+                setTimeout(() => {
+                    b.element.style.opacity = '0';
+                    b.element.style.transform = 'scale(0.9)';
+                }, i * 50);
+            });
+
+            setTimeout(() => {
+                // Remover blocos antigos
+                nonSystemBlocks.forEach(b => {
+                    b.element.remove();
+                    const index = blocks.findIndex(bl => bl.id === b.id);
+                    if (index > -1) blocks.splice(index, 1);
+                });
+
+                // Criar bloco compactado
+                const block = document.createElement('div');
+                block.className = 'block compacted';
+                block.id = `block-${blockCounter}`;
+                block.innerHTML = `
+                    <span class="block-order">${blocks.length + 1}</span>
+                    <span class="block-delete" onclick="deleteBlock('${block.id}', event)">✕</span>
+                    <span class="block-icon">📦</span>
+                    <div class="block-content">
+                        <span class="block-name">Conversa Compactada</span>
+                        <span class="block-size">${Math.round(compactedTokens/1000)}K tokens (${compactedSize.toFixed(1)}%)</span>
+                    </div>
+                `;
+
+                const blockData = {
+                    id: block.id,
+                    type: 'compacted',
+                    size: compactedSize,
+                    tokens: compactedTokens,
+                    element: block,
+                    order: blocks.length + 1
+                };
+
+                blocks.push(blockData);
+                document.getElementById('blocksArea').appendChild(block);
+                blockCounter++;
+
+                updateBlockOrders();
+                updateVisuals();
+
+                showStatus(`Compactado! Economia de ${Math.round((1 - 0.2) * 100)}% de tokens.`, 'info');
+                setTimeout(hideStatus, 3000);
+            }, nonSystemBlocks.length * 50 + 300);
+        }
+
+        // Atualizar visuais
+        function updateVisuals() {
+            const totalSize = blocks.reduce((sum, b) => sum + b.size, 0);
+            const totalTokens = blocks.reduce((sum, b) => sum + b.tokens, 0);
+
+            // Barra de preenchimento
+            const fillBar = document.getElementById('fillBar');
+            const fillText = document.getElementById('fillText');
+            const displayPercent = mode === 'sliding' ? Math.min(totalSize, 100) : totalSize;
+
+            fillBar.style.width = Math.min(displayPercent, 100) + '%';
+            fillText.textContent = Math.round(totalSize) + '%';
+
+            // Cores da barra
+            fillBar.classList.remove('warning', 'danger', 'critical');
+            if (totalSize >= 100) {
+                fillBar.classList.add(mode === 'collapse' ? 'critical' : 'danger');
+            } else if (totalSize >= 80) {
+                fillBar.classList.add('danger');
+            } else if (totalSize >= 60) {
+                fillBar.classList.add('warning');
+            }
+
+            // Custo
+            const cost = (totalTokens / 1000) * pricePerThousand;
+            document.getElementById('costValue').textContent = '$' + cost.toFixed(2);
+
+            // Modo sliding: aplicar fade nos blocos antigos
+            if (mode === 'sliding' && totalSize > 100) {
+                const overflow = totalSize - 100;
+                let accumulated = 0;
+
+                blocks.forEach(block => {
+                    // Limpar classes anteriores
+                    for (let i = 1; i <= 6; i++) {
+                        block.element.classList.remove(`fade-level-${i}`);
+                    }
+
+                    accumulated += block.size;
+
+                    if (block.type === 'system') return; // System nunca esquece
+
+                    const fadeThreshold = overflow;
+                    if (accumulated <= fadeThreshold) {
+                        block.element.classList.add('fade-level-6');
+                    } else if (accumulated <= fadeThreshold + 5) {
+                        block.element.classList.add('fade-level-5');
+                    } else if (accumulated <= fadeThreshold + 10) {
+                        block.element.classList.add('fade-level-4');
+                    } else if (accumulated <= fadeThreshold + 15) {
+                        block.element.classList.add('fade-level-3');
+                    } else if (accumulated <= fadeThreshold + 20) {
+                        block.element.classList.add('fade-level-2');
+                    } else if (accumulated <= fadeThreshold + 25) {
+                        block.element.classList.add('fade-level-1');
+                    }
+                });
+
+                showStatus('Janela deslizante: blocos antigos estao sendo "esquecidos"...', 'warning');
+            } else if (mode === 'collapse' && totalSize >= 100) {
+                document.getElementById('contextWindow').classList.add('collapse');
+                setTimeout(() => {
+                    document.getElementById('contextWindow').classList.remove('collapse');
+                }, 600);
+                showStatus('COLAPSO! A janela esta cheia. Nenhuma resposta possivel!', 'error');
+            } else if (totalSize >= 80) {
+                showStatus('Cuidado! A janela esta quase cheia (' + Math.round(totalSize) + '%)', 'warning');
+            } else {
+                hideStatus();
+            }
+        }
+
+        // Drag and drop para blocos
+        function setupBlockDrag(blockElement, blockData) {
+            blockElement.addEventListener('dragstart', (e) => {
+                draggedBlock = blockData;
+                blockElement.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            blockElement.addEventListener('dragend', () => {
+                blockElement.classList.remove('dragging');
+                draggedBlock = null;
+                document.querySelectorAll('.block.drag-over').forEach(el => el.classList.remove('drag-over'));
+            });
+
+            blockElement.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                if (draggedBlock && draggedBlock.id !== blockData.id) {
+                    blockElement.classList.add('drag-over');
+                }
+            });
+
+            blockElement.addEventListener('dragleave', () => {
+                blockElement.classList.remove('drag-over');
+            });
+
+            blockElement.addEventListener('drop', (e) => {
+                e.preventDefault();
+                blockElement.classList.remove('drag-over');
+
+                if (!draggedBlock || draggedBlock.id === blockData.id) return;
+
+                // Reordenar
+                const fromIndex = blocks.findIndex(b => b.id === draggedBlock.id);
+                const toIndex = blocks.findIndex(b => b.id === blockData.id);
+
+                if (fromIndex > -1 && toIndex > -1) {
+                    const [removed] = blocks.splice(fromIndex, 1);
+                    blocks.splice(toIndex, 0, removed);
+
+                    // Reordenar no DOM
+                    const blocksArea = document.getElementById('blocksArea');
+                    blocks.forEach(b => blocksArea.appendChild(b.element));
+
+                    updateBlockOrders();
+                    updateVisuals();
+                }
+            });
+        }
+
+        // Drag from buttons
+        document.querySelectorAll('.add-btn[draggable="true"]').forEach(btn => {
+            btn.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', btn.dataset.type);
+                e.dataTransfer.effectAllowed = 'copy';
+            });
+        });
+
+        document.getElementById('blocksArea').addEventListener('dragover', (e) => {
+            e.preventDefault();
+            document.getElementById('blocksArea').classList.add('drag-over');
+        });
+
+        document.getElementById('blocksArea').addEventListener('dragleave', () => {
+            document.getElementById('blocksArea').classList.remove('drag-over');
+        });
+
+        document.getElementById('blocksArea').addEventListener('drop', (e) => {
+            e.preventDefault();
+            document.getElementById('blocksArea').classList.remove('drag-over');
+
+            const type = e.dataTransfer.getData('text/plain');
+            if (type && blockTypes[type] && !draggedBlock) {
+                addBlock(type);
+            }
+        });
+
+        // Status messages
+        function showStatus(message, type) {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.className = `status-message ${type} visible`;
+        }
+
+        function hideStatus() {
+            const status = document.getElementById('statusMessage');
+            status.classList.remove('visible');
+        }
+
+        // Reset
+        function resetDemo() {
+            blocks = [];
+            blockCounter = 0;
+            storedDocuments = [];
+            docCounter = 0;
+
+            document.getElementById('blocksArea').innerHTML = `
+                <div class="empty-hint" id="emptyHint">
+                    Clique nos botoes ao lado para simular uma conversa
+                </div>
+            `;
+
+            document.getElementById('storageArea').innerHTML = `
+                <div class="storage-hint" id="storageHint">
+                    No modo RAG, anexos ficam aqui e apenas chunks entram no contexto
+                </div>
+            `;
+
+            document.getElementById('fillBar').style.width = '0%';
+            document.getElementById('fillBar').classList.remove('warning', 'danger', 'critical');
+            document.getElementById('fillText').textContent = '0%';
+            document.getElementById('costValue').textContent = '$0.00';
+
+            hideStatus();
+        }
+
+        // Detectar embed mode
+        if (window.self !== window.top) {
+            document.body.classList.add('embed-mode');
+        }
+    </script>
+</body>
+</html>

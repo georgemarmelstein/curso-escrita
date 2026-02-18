@@ -1,0 +1,577 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║               📚 MATERIAL DE AULA 4 - CONHECIMENTO DA MÁQUINA                 ║
+║                                                                               ║
+║                         🎯 COMECE POR AQUI! 🎯                                ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+==============================================================================
+                           📋 O QUE VOCÊ TEM AQUI
+==============================================================================
+
+✅ 37 PDFs científicos organizados em 4 categorias:
+   📊 5 Surveys de 2024-2025 (visão geral completa)
+   🔬 18 Papers de 2025 (pesquisas mais recentes)
+   🔄 3 Papers sobre RAG (conhecimento externo)
+   📖 11 Papers Fundamentais 2019-2024 (base teórica sólida)
+
+✅ Documentação completa:
+   📄 INDICE_COMPLETO_PDFS.md (descrição detalhada de TODOS)
+   📝 COMECE_AQUI.txt (este guia rápido)
+
+✅ Total: ~700 páginas de conteúdo científico de altíssima qualidade
+
+==============================================================================
+                    🚀 INÍCIO RÁPIDO - 3 CENÁRIOS
+==============================================================================
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO 1: "Tenho 2 horas e preciso dar aula amanhã!" ⏰                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+→ LEIA APENAS ESTES 3 PAPERS (90 minutos):
+
+   1. Papers_Fundamentais/2019_LAMA_Language_Models_as_Knowledge_Bases.pdf [30 min]
+      • O paper MAIS IMPORTANTE sobre knowledge probing
+      • Introduziu benchmark LAMA
+      • LEIA: Introdução + Método + Resultados principais
+      • Você PRECISA conhecer este paper
+
+   2. Papers_Fundamentais/2022_ROME_Locating_Editing_Factual_Associations.pdf [30 min]
+      • Localiza onde conhecimento factual é armazenado
+      • Método ROME para knowledge editing
+      • LEIA: Introdução + Localização + Método ROME
+      • Essencial para knowledge editing
+
+   3. Papers_Fundamentais/2020_RAG_Original_Paper.pdf [30 min]
+      • Paper ORIGINAL de RAG
+      • Conhecimento externo vs paramétrico
+      • LEIA: Introdução + Método + Experimentos
+      • Base de RAG, método principal de conhecimento externo
+
+→ FOLHEIE ESTE (20 minutos):
+
+   4. Surveys_2025/2024_Survey_Knowledge_Editing_LLMs.pdf
+      • Survey completo de knowledge editing
+      • Veja tabela com métodos (ROME, MEMIT, etc.)
+      • Use para overview dos métodos
+
+→ PREPARE (10 minutos):
+   • 1 slide explicando 3 tipos de conhecimento
+   • 1 slide com diagrama de knowledge neurons
+   • 1 slide explicando ROME method
+   • 1 slide mostrando RAG pipeline
+
+✅ RESULTADO: Material suficiente para 90 minutos de aula!
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO 2: "Tenho 1-2 dias para preparar bem" 📚                        │
+└─────────────────────────────────────────────────────────────────────────┘
+
+DIA 1 - MANHÃ (3-4 horas): Fundamentos
+
+   1. Papers_Fundamentais/2019_LAMA_Language_Models_as_Knowledge_Bases.pdf [COMPLETO]
+   2. Papers_Fundamentais/2021_Knowledge_Neurons_Pretrained_Transformers.pdf [COMPLETO]
+   3. Papers_Fundamentais/2022_ROME_Locating_Editing_Factual_Associations.pdf [COMPLETO]
+      • Entenda localização de conhecimento
+
+DIA 1 - TARDE (3-4 horas): Knowledge Editing e RAG
+
+   4. Papers_Fundamentais/2022_MEMIT_Mass_Editing_Memory.pdf
+      • Escalabilidade de knowledge editing
+
+   5. Papers_Fundamentais/2020_RAG_Original_Paper.pdf [COMPLETO]
+      • Base de conhecimento externo
+
+   6. Papers_Fundamentais/2024_Generalization_vs_Memorization.pdf
+      • Quando conhecimento é memorizado vs generalizado
+
+DIA 2 - MANHÃ (3-4 horas): Estado da Arte
+
+   7. Surveys_2025/2024_Survey_Knowledge_Editing_LLMs.pdf
+      • Survey completo de métodos
+
+   8. Surveys_2025/2025_Survey_LLM_Inference_External_Knowledge.pdf
+      • Taxonomia completa de conhecimento externo
+
+   9. Papers_2025/2025_Bridging_External_Parametric_Knowledge.pdf
+      • Conflitos de conhecimento - tema central!
+
+   10. Papers_2025/2025_Rethinking_Parametric_Knowledge.pdf
+       • Três tipos de conhecimento paramétrico
+
+DIA 2 - TARDE (2-3 horas): Surveys e Revisão
+
+   11. RAG_Papers/2025_Survey_RAG_Comprehensive.pdf
+       • Survey completo de RAG
+
+   12. Surveys_2025/2025_Survey_Domain_Specific_Knowledge_Injection.pdf
+       • Como injetar conhecimento especializado
+
+   13. Revisão e preparação de slides
+
+✅ RESULTADO: Aula profunda e muito bem fundamentada!
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO 3: "Quero dominar o tema completamente" 🎓                      │
+└─────────────────────────────────────────────────────────────────────────┘
+
+SEMANA 1: Papers Fundamentais (11 papers)
+   → Todos os Papers Fundamentais (pasta Papers_Fundamentais/)
+   → Focus: Base teórica sólida
+   → Ordem: LAMA → Knowledge Neurons → ROME → MEMIT → RAG → resto
+
+SEMANA 2: Surveys (5 papers)
+   → Todos os Surveys (Surveys_2025/)
+   → Focus: Estado da arte completo
+   → Ordem: Knowledge Editing → External Knowledge → Domain Injection
+
+SEMANA 3: Papers de 2025 (18 papers)
+   → Todos os Papers 2025 (Papers_2025/)
+   → Focus: Técnicas cutting-edge
+   → Priorize: Parametric knowledge → Conflicts → KG integration
+
+SEMANA 4: RAG e Síntese (3 papers + síntese)
+   → RAG papers (RAG_Papers/)
+   → Síntese de tudo
+   → Prepare material didático final
+
+✅ RESULTADO: Você será um EXPERT no tema!
+
+==============================================================================
+                        🎯 ESTRUTURA SUGERIDA DA AULA
+==============================================================================
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 1: Conceitos Fundamentais [25 min]                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • O que é conhecimento em LLMs?
+   • Três tipos de conhecimento:
+     1. Paramétrico (armazenado nos pesos do modelo)
+     2. Contextual (fornecido no prompt)
+     3. Externo (RAG, Knowledge Graphs)
+
+   📚 Papers de apoio:
+      - LAMA (conceitos fundamentais)
+      - Survey External Knowledge (taxonomia)
+
+   💡 Dica: Use diagrama de Venn mostrando interseção dos três tipos
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 2: Conhecimento Paramétrico [30 min] 🧠                           │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • Como conhecimento é armazenado nos pesos?
+   • Knowledge Neurons: neurons específicos encodam fatos
+   • Localização: MLP layers, middle-to-deep layers
+   • Três tipos de conhecimento paramétrico:
+     - Prompt-agnostic (sempre respondível)
+     - Prompt-sensitive (depende do prompt)
+     - Unanswerable (modelo não sabe)
+
+   • Memorização vs. Generalização
+     - Memorização: reprodução verbatim
+     - Generalização: aplicação a novos casos
+
+   📚 Papers de apoio:
+      - LAMA ⭐ (benchmark de probing)
+      - Knowledge Neurons ⭐ (localização)
+      - ROME (onde conhecimento está)
+      - Rethinking Parametric Knowledge (três tipos)
+      - Generalization vs Memorization
+
+   💡 Dica: Mostre exemplo de LAMA probe: "Paris is the capital of [MASK]"
+           Visualize knowledge neurons ativados
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 3: Knowledge Editing [30 min] ✏️                                  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • Por que editar conhecimento?
+     - Atualizar fatos desatualizados
+     - Corrigir informação incorreta
+     - Remover conhecimento sensível
+
+   • Método ROME (Rank-One Model Editing)
+     - Localiza onde fact está armazenado
+     - Edita weight matrix para mudar fact
+     - Mantém outros fatos intactos
+
+   • Método MEMIT (Mass-Editing Memory)
+     - Escala ROME para MILHARES de facts
+     - Edição em massa eficiente
+
+   • Outros métodos: BaFT, GRACE, SERAC, WISE
+
+   • Desafios:
+     - Locality (não afetar fatos não-relacionados)
+     - Generalization (generalizar edição)
+     - Scalability (escalar para milhares)
+
+   📚 Papers de apoio:
+      - Knowledge Editing Survey ⭐ (overview completo)
+      - ROME ⭐ (método fundamental)
+      - MEMIT (escalabilidade)
+      - BaFT (estado-da-arte 2025)
+
+   💡 Dica: Demonstração ao vivo de knowledge editing
+           Mostre "antes" e "depois" de editar fact
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 4: Conhecimento Externo (RAG) [25 min] 🔄                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • Por que conhecimento externo?
+     - Conhecimento paramétrico pode estar desatualizado
+     - Não escalável adicionar tudo aos pesos
+     - Permite uso de conhecimento privado/proprietário
+
+   • RAG (Retrieval-Augmented Generation)
+     - Retrieve: busca documentos relevantes
+     - Augment: adiciona ao contexto
+     - Generate: gera resposta com conhecimento externo
+
+   • Knowledge Graphs
+     - Conhecimento estruturado em triplas (subject, relation, object)
+     - Integração com LLMs para reasoning
+
+   • Arquiteturas:
+     - Retriever-centric
+     - Generator-centric
+     - Hybrid
+
+   📚 Papers de apoio:
+      - RAG Original Paper ⭐ (seminal)
+      - RAG Comprehensive Survey (estado-da-arte)
+      - Knowledge-Oriented RAG Survey
+      - Agentic RAG (evoluções recentes)
+      - Unifying LLMs + KGs
+
+   💡 Dica: Mostre pipeline visual de RAG
+           Compare resposta com/sem retrieval
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 5: Knowledge Conflicts [20 min] ⚔️                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • O que são knowledge conflicts?
+     - Conhecimento paramétrico contradiz conhecimento externo
+     - Informação no contexto contradiz conhecimento do modelo
+     - Como LLM decide em quem confiar?
+
+   • Tipos de conflitos:
+     - Parametric vs External
+     - Context vs Internal
+     - Temporal (conhecimento desatualizado)
+
+   • Métodos de resolução:
+     - DSSP-RAG: Separa semântica shared vs private
+     - CK-PLUG: Confidence Gain para detectar conflitos
+     - ParamMute: Suprime FFNs com conhecimento conflitante
+
+   • Quando confiar em parâmetros vs contexto?
+     - Depende de confiabilidade de cada fonte
+     - Timestamp de conhecimento
+     - Confidence scores
+
+   📚 Papers de apoio:
+      - Bridging External Parametric ⭐ (DSSP-RAG)
+      - Parameters vs Context ⭐ (CK-PLUG)
+      - ParamMute (localização de conflitos)
+      - Training Dynamics (como conflitos surgem)
+
+   💡 Dica: Exemplo concreto de conflito
+           "Quem é o presidente dos EUA?"
+           Parametric (desatualizado) vs Context (atualizado)
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 6: Knowledge Injection [15 min] 💉                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • Como adicionar novo conhecimento?
+
+   • Quatro abordagens:
+     1. Dynamic injection (durante inferência)
+     2. Static embedding (nos pesos)
+     3. Modular adapters (módulos especializados)
+     4. Prompt optimization (via prompts)
+
+   • Low-resource scenarios:
+     - Poucos milhares de tokens de dados
+     - Variações textuais ajudam muito
+     - Continued pretraining vs synthetic augmentation
+
+   • MEGa: Memory Embedded in Gated LLMs
+     - Cada memória em gated low-rank weights
+     - Adição incremental sem interferência
+
+   📚 Papers de apoio:
+      - Domain-Specific Knowledge Injection Survey
+      - Knowledge Injection Low-Resource
+      - MEGa Memory Embedded
+
+   💡 Dica: Compare efetividade das abordagens
+           Quando usar cada uma?
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 7: Futuro e Conclusões [15 min] 🔮                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • Tendências emergentes:
+     - Agentic RAG (agentes autônomos)
+     - Multimodal knowledge (imagens, vídeo)
+     - Dynamic knowledge graphs
+     - Continual learning of knowledge
+
+   • Desafios abertos:
+     - Conhecimento conflitante em escala
+     - Verificação de factualidade
+     - Privacy-preserving knowledge
+     - Efficient updating sem degradação
+
+   • Implicações práticas:
+     - Quando usar parametric vs external?
+     - Como manter conhecimento atualizado?
+     - Trade-offs: custo, latência, acurácia
+
+   📚 Papers de apoio:
+      - LLM Knowledge Graph Construction (tendências)
+      - Agentic RAG (evoluções)
+      - Knowledge Graphs LLMs Hallucinations
+
+   💡 Dica: Termine com provocação sobre futuro
+
+⏱️ TOTAL: ~160 minutos (2h40min) - Ajuste conforme necessário
+
+==============================================================================
+                       📊 PAPERS OBRIGATÓRIOS POR TEMA
+==============================================================================
+
+Se você só puder ler POUCOS papers, escolha por tema:
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Conhecimento Paramétrico                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. LAMA_Language_Models_as_Knowledge_Bases ⭐⭐⭐
+   2. Knowledge_Neurons_Pretrained_Transformers ⭐⭐⭐
+   3. Rethinking_Parametric_Knowledge ⭐⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Knowledge Editing                                                 │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. Survey_Knowledge_Editing_LLMs ⭐⭐⭐
+   2. ROME_Locating_Editing_Factual_Associations ⭐⭐⭐
+   3. MEMIT_Mass_Editing_Memory ⭐⭐
+   4. BaFT_Basis_Level_Knowledge_Editing ⭐⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Conhecimento Externo (RAG)                                        │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. RAG_Original_Paper ⭐⭐⭐
+   2. Survey_RAG_Comprehensive ⭐⭐⭐
+   3. Survey_LLM_Inference_External_Knowledge ⭐⭐
+   4. Survey_Agentic_RAG ⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Knowledge Conflicts                                               │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. Bridging_External_Parametric_Knowledge ⭐⭐⭐
+   2. Parameters_vs_Context_Knowledge_Reliance ⭐⭐
+   3. ParamMute_Knowledge_Critical_FFNs ⭐⭐
+   4. Training_Dynamics_Parametric_InContext ⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Memorização vs Generalização                                      │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. Generalization_vs_Memorization ⭐⭐⭐
+   2. Quantifying_Memorization_NLMs ⭐⭐
+   3. SoK_Memorization_LLMs ⭐⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Knowledge Graphs + LLMs                                           │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. Unifying_LLMs_Knowledge_Graphs ⭐⭐
+   2. LLM_Knowledge_Graph_Construction ⭐⭐
+   3. Optimizing_KG_LLM_Interface ⭐
+
+⭐⭐⭐ = Leitura essencial
+⭐⭐ = Leitura recomendada
+⭐ = Leitura complementar
+
+==============================================================================
+                         💡 DICAS PRÁTICAS PARA A AULA
+==============================================================================
+
+✅ FAÇA:
+
+   → Use MUITOS exemplos visuais
+     • Diagrama de três tipos de conhecimento
+     • Knowledge neurons (heatmap)
+     • ROME editing process (passo-a-passo)
+     • RAG pipeline (fluxo)
+     • Knowledge conflict (antes/depois)
+
+   → Demonstrações práticas
+     • LAMA probe: "Paris is the capital of [MASK]"
+     • Knowledge editing: Mudar fact e verificar
+     • RAG: Compare com/sem retrieval
+     • Knowledge conflict: Mostre contradição
+
+   → Use metáforas
+     • Conhecimento paramétrico = biblioteca pessoal
+     • Conhecimento externo = Google
+     • Knowledge editing = corrigir página de livro
+     • Knowledge conflict = duas fontes contradizem
+
+   → Conecte com aulas anteriores
+     • Aula 1: LLMs como transformadores (conhecimento transforma input)
+     • Aula 3: Context window (limita conhecimento contextual)
+     • Aula 6: Alucinações (conhecimento incorreto)
+
+❌ EVITE:
+
+   → Matemática pesada sem necessidade
+     • Foque em intuições
+     • Se mostrar equação, explique em português
+
+   → Excesso de detalhes de implementação
+     • "O quê" e "por quê" > "exatamente como"
+
+   → Comparações injustas
+     • Parametric e external têm trade-offs diferentes
+     • Contextos de uso são diferentes
+
+==============================================================================
+                           🎓 EXERCÍCIOS SUGERIDOS
+==============================================================================
+
+EXERCÍCIO 1: Knowledge Probing
+   • Use LAMA-style prompts
+   • Teste conhecimento factual do modelo
+   • Discussão: O que modelo sabe vs não sabe?
+
+EXERCÍCIO 2: Knowledge Conflict
+   • Forneça fato incorreto no contexto
+   • Veja se modelo confia em parametric ou context
+   • Discussão: Quando cada abordagem é melhor?
+
+EXERCÍCIO 3: RAG vs Parametric
+   • Mesma pergunta com/sem retrieval
+   • Compare qualidade e fontes
+   • Discussão: Quando vale overhead de RAG?
+
+EXERCÍCIO 4: Knowledge Editing Simulation
+   • "Edite" fact via prompt engineering
+   • Veja limitações vs true editing
+   • Discussão: Quando usar cada approach?
+
+==============================================================================
+                          📈 NÚMEROS E MÉTRICAS-CHAVE
+==============================================================================
+
+KNOWLEDGE EDITING METHODS:
+
+   ROME (2022):
+   - Edita 1 fact por vez
+   - Localiza em MLP layers
+   - Efficacy: ~90% success rate
+
+   MEMIT (2023):
+   - Edita milhares de facts simultaneamente
+   - Scales: GPT-J (6B), GPT-NeoX (20B)
+   - Orders of magnitude beyond prior work
+
+   BaFT (2025):
+   - Basis-level fine-tuning
+   - Superior locality-generalization trade-off
+
+MEMORIZATION:
+
+   Facts memorizados: ~30-50% de training data (depende de size)
+   Verbatim memorization: Raro, mas ocorre
+   Degradação: À medida que model size aumenta, mais memoriza facts
+
+KNOWLEDGE TYPES:
+
+   Parametric knowledge: Bilhões de facts encoded em weights
+   External knowledge: Ilimitado (dado retrieval capability)
+   Context window: Limita conhecimento contextual (128K-2M tokens)
+
+==============================================================================
+                             ❓ PERGUNTAS FREQUENTES
+==============================================================================
+
+P: Preciso ler todos os 37 papers?
+R: NÃO! Mínimo 3-5 papers fundamentais, ideal 10-12 papers.
+
+P: Qual ordem de leitura?
+R: Fundamentos primeiro (LAMA, ROME, RAG), depois estado-da-arte.
+
+P: Papers de 2025 são confiáveis?
+R: SIM! ArXiv com autores credenciados. Alguns em review, mas sólidos.
+
+P: Diferença entre parametric e external knowledge?
+R: Parametric = nos pesos do modelo (fixo após treino)
+   External = buscado em tempo real (sempre atualizado)
+
+P: ROME vs MEMIT vs BaFT?
+R: ROME (2022) = 1 fact, fundacional
+   MEMIT (2023) = milhares de facts, escalável
+   BaFT (2025) = estado-da-arte, melhor trade-off
+
+P: Quando usar RAG vs parametric?
+R: RAG: conhecimento atualizado, privado, specific domain
+   Parametric: common sense, reasoning geral, offline
+
+==============================================================================
+                              ✅ CHECKLIST FINAL
+==============================================================================
+
+Antes da aula:
+
+   [ ] Lido ao menos 5 papers (3 se tempo curto)
+   [ ] Preparado slides com conceitos principais
+   [ ] Coletado diagramas/figuras dos papers
+   [ ] Preparado demonstração de LAMA probe
+   [ ] Preparado exemplo de knowledge editing
+   [ ] Exemplo de RAG funcionando
+   [ ] Exemplo de knowledge conflict
+   [ ] Listado métodos de editing (ROME, MEMIT, etc.)
+   [ ] Preparado analogias para conceitos complexos
+   [ ] Revisado conexões com aulas anteriores
+
+==============================================================================
+                            🎯 PRÓXIMOS PASSOS
+==============================================================================
+
+1. Escolha seu cenário (1, 2 ou 3)
+2. Abra INDICE_COMPLETO_PDFS.md para detalhes
+3. Comece lendo papers na ordem sugerida
+4. Faça anotações e marque figuras
+5. Prepare slides conforme avança
+6. Teste demonstrações práticas
+7. Revise checklist final
+
+==============================================================================
+
+         💬 "Knowledge is power, but knowing where it's stored
+                    is the key to wielding that power"
+                              - Anonymous ML Researcher
+
+==============================================================================
+
+Última atualização: 31/10/2025
+Para: George Marmelstein
+Aula: 4 - Conhecimento da Máquina
+
+                              BOA AULA! 🚀

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Espectro de Permissoes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        /* Titulo */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 35px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Slider container */
+        .slider-container {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        /* Labels */
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .slider-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slider-label.left { color: var(--super-green); }
+        .slider-label.right { color: var(--super-red); }
+
+        /* Slider track */
+        .slider-track {
+            position: relative;
+            height: 60px;
+            background: linear-gradient(90deg,
+                rgba(74, 222, 128, 0.2) 0%,
+                rgba(96, 165, 250, 0.2) 33%,
+                rgba(251, 191, 36, 0.2) 66%,
+                rgba(239, 68, 68, 0.2) 100%
+            );
+            border-radius: 30px;
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        /* Mode buttons */
+        .mode-btn {
+            flex: 1;
+            height: 44px;
+            margin: 0 5px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 22px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mode-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(190, 156, 109, 0.3);
+        }
+
+        .mode-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.4);
+        }
+
+        .mode-btn.active.mode-0 {
+            background: rgba(74, 222, 128, 0.3);
+            border-color: var(--super-green);
+            color: var(--super-green);
+        }
+
+        .mode-btn.active.mode-1 {
+            background: rgba(96, 165, 250, 0.3);
+            border-color: var(--super-blue);
+            color: var(--super-blue);
+        }
+
+        .mode-btn.active.mode-2 {
+            background: rgba(251, 191, 36, 0.3);
+            border-color: var(--super-amber);
+            color: var(--super-amber);
+        }
+
+        .mode-btn.active.mode-3 {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: var(--super-red);
+            color: var(--super-red);
+        }
+
+        .mode-icon {
+            font-size: 1.2em;
+        }
+
+        /* Description panel */
+        .description-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            min-height: 280px;
+            transition: all 0.4s ease;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel-icon {
+            font-size: 3em;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .panel-icon.mode-0 { background: rgba(74, 222, 128, 0.15); border: 2px solid var(--super-green); }
+        .panel-icon.mode-1 { background: rgba(96, 165, 250, 0.15); border: 2px solid var(--super-blue); }
+        .panel-icon.mode-2 { background: rgba(251, 191, 36, 0.15); border: 2px solid var(--super-amber); }
+        .panel-icon.mode-3 { background: rgba(239, 68, 68, 0.15); border: 2px solid var(--super-red); }
+
+        .panel-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .panel-title.mode-0 { color: var(--super-green); }
+        .panel-title.mode-1 { color: var(--super-blue); }
+        .panel-title.mode-2 { color: var(--super-amber); }
+        .panel-title.mode-3 { color: var(--super-red); }
+
+        .panel-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .panel-description {
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        /* Features grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid;
+            transition: border-color 0.3s ease;
+        }
+
+        .feature-item.mode-0 { border-color: var(--super-green); }
+        .feature-item.mode-1 { border-color: var(--super-blue); }
+        .feature-item.mode-2 { border-color: var(--super-amber); }
+        .feature-item.mode-3 { border-color: var(--super-red); }
+
+        .feature-icon {
+            font-size: 1.3em;
+        }
+
+        .feature-text {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        /* Warning box */
+        .warning-box {
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .warning-box.visible {
+            display: block;
+        }
+
+        .warning-text {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.9);
+        }
+
+        .warning-icon {
+            color: var(--super-red);
+            margin-right: 10px;
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode h1 { font-size: 1.3em; margin-bottom: 25px; }
+        body.embed-mode .slider-container { margin-bottom: 30px; }
+        body.embed-mode .slider-track { height: 50px; }
+        body.embed-mode .mode-btn { height: 36px; font-size: 0.8em; }
+        body.embed-mode .description-panel { padding: 22px; min-height: 240px; }
+        body.embed-mode .panel-icon { font-size: 2.2em; width: 55px; height: 55px; }
+        body.embed-mode .panel-title { font-size: 1.5em; }
+        body.embed-mode .panel-subtitle { font-size: 0.85em; }
+        body.embed-mode .panel-description { font-size: 0.9em; margin-bottom: 15px; }
+        body.embed-mode .features-grid { gap: 10px; }
+        body.embed-mode .feature-item { padding: 10px 12px; }
+        body.embed-mode .feature-text { font-size: 0.85em; }
+        body.embed-mode .warning-box { margin-top: 15px; padding: 12px 15px; }
+        body.embed-mode .warning-text { font-size: 0.85em; }
+    </style>
+</head>
+<body>
+    <h1>Espectro de Permissoes</h1>
+
+    <!-- Slider -->
+    <div class="slider-container">
+        <div class="slider-labels">
+            <span class="slider-label left">&#128274; RESTRITO</span>
+            <span class="slider-label right">LIBERADO &#128275;</span>
+        </div>
+        <div class="slider-track">
+            <button class="mode-btn mode-0 active" data-mode="0">
+                <span class="mode-icon">&#128274;</span>
+                <span>Default</span>
+            </button>
+            <button class="mode-btn mode-1" data-mode="1">
+                <span class="mode-icon">&#9998;</span>
+                <span>acceptEdits</span>
+            </button>
+            <button class="mode-btn mode-2" data-mode="2">
+                <span class="mode-icon">&#9889;</span>
+                <span>Auto-Accept</span>
+            </button>
+            <button class="mode-btn mode-3" data-mode="3">
+                <span class="mode-icon">&#9888;</span>
+                <span>YOLO</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Description panel -->
+    <div class="description-panel">
+        <div class="panel-header">
+            <div class="panel-icon mode-0" id="panel-icon">&#128274;</div>
+            <div>
+                <div class="panel-title mode-0" id="panel-title">Modo Default</div>
+                <div class="panel-subtitle" id="panel-subtitle">O modo mais seguro para aprender</div>
+            </div>
+        </div>
+        <div class="panel-description" id="panel-desc">
+            No modo padrao, o Claude pede permissao para cada nova acao. "Posso ler este arquivo?", "Posso executar este comando?". Ideal para iniciantes que querem entender o que esta acontecendo.
+        </div>
+        <div class="features-grid" id="features-grid">
+            <div class="feature-item mode-0">
+                <span class="feature-icon">&#128221;</span>
+                <span class="feature-text">Pede permissao para cada acao</span>
+            </div>
+            <div class="feature-item mode-0">
+                <span class="feature-icon">&#128065;</span>
+                <span class="feature-text">Voce ve tudo antes de executar</span>
+            </div>
+            <div class="feature-item mode-0">
+                <span class="feature-icon">&#128737;</span>
+                <span class="feature-text">Maximo controle</span>
+            </div>
+            <div class="feature-item mode-0">
+                <span class="feature-icon">&#127891;</span>
+                <span class="feature-text">Ideal para aprendizado</span>
+            </div>
+        </div>
+        <div class="warning-box" id="warning-box">
+            <span class="warning-icon">&#9888;</span>
+            <span class="warning-text" id="warning-text"></span>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Data
+        const modes = [
+            {
+                icon: '&#128274;',
+                title: 'Modo Default',
+                subtitle: 'O modo mais seguro para aprender',
+                desc: 'No modo padrao, o Claude pede permissao para cada nova acao. "Posso ler este arquivo?", "Posso executar este comando?". Ideal para iniciantes que querem entender o que esta acontecendo.',
+                features: [
+                    { icon: '&#128221;', text: 'Pede permissao para cada acao' },
+                    { icon: '&#128065;', text: 'Voce ve tudo antes de executar' },
+                    { icon: '&#128737;', text: 'Maximo controle' },
+                    { icon: '&#127891;', text: 'Ideal para aprendizado' }
+                ],
+                warning: null
+            },
+            {
+                icon: '&#9998;',
+                title: 'acceptEdits',
+                subtitle: 'Edicoes de arquivos automaticas',
+                desc: 'Permite que o Claude edite arquivos sem pedir permissao a cada modificacao. Ainda pede confirmacao para comandos bash e outras operacoes potencialmente destrutivas.',
+                features: [
+                    { icon: '&#128196;', text: 'Edita arquivos livremente' },
+                    { icon: '&#9888;', text: 'Bash ainda requer permissao' },
+                    { icon: '&#9889;', text: 'Mais fluidez no trabalho' },
+                    { icon: '&#128260;', text: 'Bom para refatoracao' }
+                ],
+                warning: null
+            },
+            {
+                icon: '&#9889;',
+                title: 'Auto-Accept (Shift+Tab)',
+                subtitle: 'Executa sem pausar, mas voce ainda ve',
+                desc: 'O Claude executa acoes automaticamente sem pausar para confirmacao. Voce ainda ve tudo acontecendo em tempo real e pode intervir se necessario. Ativado com Shift+Tab.',
+                features: [
+                    { icon: '&#9889;', text: 'Execucao continua' },
+                    { icon: '&#128065;', text: 'Voce ainda ve tudo' },
+                    { icon: '&#9995;', text: 'Pode intervir a qualquer momento' },
+                    { icon: '&#128337;', text: 'Ideal para tarefas conhecidas' }
+                ],
+                warning: 'Atencao: Use apenas quando confiar na tarefa. Mantenha git para reverter se necessario.'
+            },
+            {
+                icon: '&#9888;',
+                title: 'YOLO Mode',
+                subtitle: '--dangerously-skip-permissions',
+                desc: 'Modo totalmente desacompanhado. O Claude executa tudo sem pedir permissao, ate a tarefa estar completa. Use apenas em ambientes isolados (containers, VMs) e SEMPRE com controle de versao.',
+                features: [
+                    { icon: '&#128640;', text: 'Execucao autonoma total' },
+                    { icon: '&#128164;', text: 'Rode enquanto dorme' },
+                    { icon: '&#128230;', text: 'Para ambientes isolados' },
+                    { icon: '&#9888;', text: 'Requer git para seguranca' }
+                ],
+                warning: 'NUNCA use em maquina de producao sem backup. Use controle de versao religiosamente. git reset --hard pode salvar voce.'
+            }
+        ];
+
+        // Elements
+        const panelIcon = document.getElementById('panel-icon');
+        const panelTitle = document.getElementById('panel-title');
+        const panelSubtitle = document.getElementById('panel-subtitle');
+        const panelDesc = document.getElementById('panel-desc');
+        const featuresGrid = document.getElementById('features-grid');
+        const warningBox = document.getElementById('warning-box');
+        const warningText = document.getElementById('warning-text');
+        const modeBtns = document.querySelectorAll('.mode-btn');
+
+        function setMode(modeIndex) {
+            const mode = modes[modeIndex];
+            if (!mode) return;
+
+            // Update panel
+            panelIcon.innerHTML = mode.icon;
+            panelIcon.className = 'panel-icon mode-' + modeIndex;
+
+            panelTitle.textContent = mode.title;
+            panelTitle.className = 'panel-title mode-' + modeIndex;
+
+            panelSubtitle.textContent = mode.subtitle;
+            panelDesc.textContent = mode.desc;
+
+            // Features
+            featuresGrid.innerHTML = mode.features.map(f =>
+                `<div class="feature-item mode-${modeIndex}">
+                    <span class="feature-icon">${f.icon}</span>
+                    <span class="feature-text">${f.text}</span>
+                </div>`
+            ).join('');
+
+            // Warning
+            if (mode.warning) {
+                warningBox.classList.add('visible');
+                warningText.textContent = mode.warning;
+            } else {
+                warningBox.classList.remove('visible');
+            }
+
+            // Update buttons
+            modeBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.dataset.mode) === modeIndex) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Click handlers
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setMode(parseInt(btn.dataset.mode));
+            });
+        });
+
+        // Initialize
+        setMode(0);
+
+        // Communication with parent
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data.action === 'setMode' && data.mode !== undefined) {
+                setMode(data.mode);
+            } else if (data.action === 'reset') {
+                setMode(0);
+            }
+        });
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'permissoes-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

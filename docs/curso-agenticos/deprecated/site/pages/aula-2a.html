@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aula 2A: Anatomia de um Sistema Agêntico - Conceitos fundamentais, níveis de autonomia e padrões arquiteturais.">
+
+  <title>Aula 2A: Anatomia de um Sistema Agêntico | Sistemas Agênticos</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖</text></svg>">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="../index.html" class="logo">
+          <div class="logo-icon">SA</div>
+          <div class="logo-text">
+            Sistemas Agênticos
+            <span>Curso para Juristas</span>
+          </div>
+        </a>
+
+        <nav class="nav-main">
+          <a href="../index.html" class="nav-link">Início</a>
+          <div class="nav-dropdown">
+            <button class="nav-link nav-dropdown-trigger active">
+              Aulas
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="nav-dropdown-menu">
+              <a href="aula-0.html" class="dropdown-item">
+                <span class="dropdown-item-number">0</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Apresentação ao Mundo Agêntico</div>
+                  <div class="dropdown-item-desc">Sensibilização e mudança de paradigma</div>
+                </div>
+              </a>
+              <a href="aula-1.html" class="dropdown-item">
+                <span class="dropdown-item-number">1</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">O Sistema Agêntico na Prática</div>
+                  <div class="dropdown-item-desc">Claude Web, Desktop e limitações</div>
+                </div>
+              </a>
+              <a href="aula-2a.html" class="dropdown-item active">
+                <span class="dropdown-item-number">2A</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Anatomia de um Sistema Agêntico</div>
+                  <div class="dropdown-item-desc">Conceitos fundamentais</div>
+                </div>
+              </a>
+              <a href="aula-2b.html" class="dropdown-item">
+                <span class="dropdown-item-number">2B</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Claude Code na Prática</div>
+                  <div class="dropdown-item-desc">Instalação e primeiros passos</div>
+                </div>
+              </a>
+              <a href="aula-3.html" class="dropdown-item">
+                <span class="dropdown-item-number">3</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Arquitetura de Agentes</div>
+                  <div class="dropdown-item-desc">Padrões e design de sistemas</div>
+                </div>
+              </a>
+              <a href="aula-4.html" class="dropdown-item">
+                <span class="dropdown-item-number">4</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Construindo os Primeiros Agentes</div>
+                  <div class="dropdown-item-desc">Skills, Commands e prática</div>
+                </div>
+              </a>
+              <a href="aula-5.html" class="dropdown-item">
+                <span class="dropdown-item-number">5</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Sistema Jurídico Agêntico</div>
+                  <div class="dropdown-item-desc">CLERK e aplicação prática</div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <a href="glossario.html" class="nav-link">Glossário</a>
+          <a href="recursos.html" class="nav-link">Recursos</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="theme-toggle" aria-label="Alternar tema">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </button>
+          <button class="mobile-menu-toggle" aria-label="Menu" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="site-main">
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+      <div class="container">
+        <div class="lesson-hero-content">
+          <nav class="lesson-breadcrumb">
+            <a href="../index.html">Início</a>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+            <span>Aula 2A</span>
+          </nav>
+
+          <div class="lesson-meta">
+            <span class="lesson-number">2A</span>
+            <div class="lesson-info">
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                ~50 min
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                5 blocos
+              </span>
+            </div>
+          </div>
+
+          <h1 class="lesson-title">Anatomia de um Sistema Agêntico</h1>
+          <p class="lesson-description">
+            Construir o modelo mental necessário para entender sistemas agênticos.
+            Níveis de autonomia, padrões arquiteturais e o papel do humano.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lesson Layout -->
+    <div class="container">
+      <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+          <nav class="lesson-nav">
+            <div class="lesson-nav-header">
+              <span class="lesson-nav-title">Conteúdo</span>
+              <span class="lesson-progress">5 blocos</span>
+            </div>
+            <ul class="lesson-nav-list">
+              <li class="lesson-nav-item">
+                <a href="#bloco-1" class="lesson-nav-link active">
+                  <span class="nav-block-number">01</span>
+                  <span>O Modelo Fundamental</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-2" class="lesson-nav-link">
+                  <span class="nav-block-number">02</span>
+                  <span>Níveis de Autonomia</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-3" class="lesson-nav-link">
+                  <span class="nav-block-number">03</span>
+                  <span>Pipeline Agêntico</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-4" class="lesson-nav-link">
+                  <span class="nav-block-number">04</span>
+                  <span>Ferramentas e Integrações</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-5" class="lesson-nav-link">
+                  <span class="nav-block-number">05</span>
+                  <span>O Papel do Humano</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <article class="lesson-content">
+          <!-- Mobile TOC -->
+          <div class="mobile-toc">
+            <button class="mobile-toc-trigger">
+              <span>Conteúdo da Aula</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="mobile-toc-content">
+              <ul class="mobile-toc-list">
+                <li><a href="#bloco-1">01. O Modelo Fundamental</a></li>
+                <li><a href="#bloco-2">02. Níveis de Autonomia</a></li>
+                <li><a href="#bloco-3">03. Pipeline Agêntico</a></li>
+                <li><a href="#bloco-4">04. Ferramentas e Integrações</a></li>
+                <li><a href="#bloco-5">05. O Papel do Humano</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Bloco 1 -->
+          <section id="bloco-1" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 01</span>
+              <h2 class="block-title">O Modelo Fundamental</h2>
+              <span class="block-duration">~10 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>ENTRADA - PROCESSAMENTO - SAIDA</h3>
+
+              <p>
+                <strong>O insight mais simples e mais poderoso:</strong>
+                Todo sistema agêntico, por mais complexo que seja, segue este modelo.
+                A diferença está na QUALIDADE de cada etapa.
+              </p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                                                                         │
+│    ENTRADA           PROCESSAMENTO           SAÍDA                      │
+│    ───────           ─────────────           ─────                      │
+│                                                                         │
+│    • Prompt          • Raciocínio            • Resposta                 │
+│    • Contexto        • Uso de ferramentas    • Arquivo                  │
+│    • Arquivos        • Consultas             • Ação                     │
+│    • Histórico       • Decisões              • Código                   │
+│                                                                         │
+│         │                   │                     │                     │
+│         ▼                   ▼                     ▼                     │
+│    ┌─────────┐        ┌──────────┐         ┌──────────┐                │
+│    │ VOCÊ    │   →    │ AGENTE   │    →    │ RESULTADO│                │
+│    │ decide  │        │ executa  │         │ entregue │                │
+│    └─────────┘        └──────────┘         └──────────┘                │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <h3>O Que Diferencia um Agente de um Chatbot</h3>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Chatbot</th>
+                    <th>Agente</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Responde perguntas</td>
+                    <td>Executa tarefas</td>
+                  </tr>
+                  <tr>
+                    <td>Uma resposta por vez</td>
+                    <td>Múltiplas etapas coordenadas</td>
+                  </tr>
+                  <tr>
+                    <td>Você dirige cada passo</td>
+                    <td>Ele planeja e executa</td>
+                  </tr>
+                  <tr>
+                    <td>Memória só da conversa</td>
+                    <td>Contexto persistente</td>
+                  </tr>
+                  <tr>
+                    <td>Sem ferramentas</td>
+                    <td>Usa ferramentas para agir</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="citation">
+                <div class="citation-avatar">DH</div>
+                <div class="citation-content">
+                  <p class="citation-text">
+                    "A IA não pode substituir o pensamento. Ela só pode amplificar
+                    o pensamento que você já fez."
+                  </p>
+                  <p class="citation-author">Dex Horthy</p>
+                  <p class="citation-source">Prefect - 12 Factor Agents</p>
+                </div>
+              </div>
+
+              <h3>Os 3 Pilares da Autonomia</h3>
+
+              <p>
+                Michele Catasta (Stanford/Google) identifica três pilares que determinam
+                o nível de autonomia de um agente:
+              </p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    3 PILARES DA AUTONOMIA                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐                  │
+│   │ CAPABILITY  │   │ VERIFICATION│   │   CONTEXT   │                  │
+│   │ Capacidade  │   │ Verificação │   │  Contexto   │                  │
+│   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘                  │
+│          │                 │                 │                          │
+│          ▼                 ▼                 ▼                          │
+│    O que o agente    Como garantir     Informações que                 │
+│    SABE fazer        que fez CERTO     o agente PRECISA                │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <div class="key-points">
+                <h4 class="key-points-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Aplicação Prática
+                </h4>
+                <ul>
+                  <li><strong>Capability:</strong> Quais ferramentas o agente tem? Quais tarefas sabe executar?</li>
+                  <li><strong>Verification:</strong> Como verificamos se a saída está correta? Há revisão?</li>
+                  <li><strong>Context:</strong> O agente tem todas as informações necessárias?</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Bloco 2 -->
+          <section id="bloco-2" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 02</span>
+              <h2 class="block-title">Níveis de Autonomia (L1-L5)</h2>
+              <span class="block-duration">~10 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>A Escala L1 a L5</h3>
+
+              <p>
+                Inspirada em carros autônomos, esta escala ajuda a entender
+                onde seu agente opera:
+              </p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                     ESCALA DE AUTONOMIA                                 │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  L1 │ OPERATOR      │ Humano faz tudo, IA sugere                       │
+│     │ (Operador)    │ "O que você acha dessa ideia?"                   │
+│─────┼───────────────┼───────────────────────────────────────────────── │
+│  L2 │ REVIEWER      │ IA faz, humano revisa TUDO                       │
+│     │ (Revisor)     │ "Aqui está o rascunho, aprove."                  │
+│─────┼───────────────┼───────────────────────────────────────────────── │
+│  L3 │ APPROVER      │ IA faz, humano aprova DECISÕES-CHAVE             │
+│     │ (Aprovador)   │ "Posso enviar esse e-mail?"                      │
+│─────┼───────────────┼───────────────────────────────────────────────── │
+│  L4 │ AUDITOR       │ IA faz, humano audita RESULTADOS                 │
+│     │ (Auditor)     │ "Processou 47 casos, veja o resumo."             │
+│─────┼───────────────┼───────────────────────────────────────────────── │
+│  L5 │ OBSERVER      │ IA faz tudo, humano OBSERVA                      │
+│     │ (Observador)  │ "Sistema rodando, métricas normais."             │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <h3>Onde Cada Nível Faz Sentido</h3>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nível</th>
+                    <th>Caso de Uso Jurídico</th>
+                    <th>Risco</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>L1</strong></td>
+                    <td>Tirar dúvidas de legislação</td>
+                    <td>Baixo</td>
+                  </tr>
+                  <tr>
+                    <td><strong>L2</strong></td>
+                    <td>Redigir minutas para revisão</td>
+                    <td>Médio</td>
+                  </tr>
+                  <tr>
+                    <td><strong>L3</strong></td>
+                    <td>Pipeline de relatórios com aprovação</td>
+                    <td>Médio</td>
+                  </tr>
+                  <tr>
+                    <td><strong>L4</strong></td>
+                    <td>Triagem automática de processos</td>
+                    <td>Alto</td>
+                  </tr>
+                  <tr>
+                    <td><strong>L5</strong></td>
+                    <td>Monitoramento de prazos</td>
+                    <td>Baixo (se bem configurado)</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="callout callout-warning">
+                <svg class="callout-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div class="callout-content">
+                  <h4>Princípio Fundamental</h4>
+                  <p>
+                    Quanto maior o impacto da decisão, menor deve ser a autonomia do agente.
+                  </p>
+                </div>
+              </div>
+
+              <h3>O Paradoxo da Confiança</h3>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                  PARADOXO DA CONFIANÇA                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   "Para confiar mais no agente, você precisa                           │
+│    ENTENDER MAIS do que ele faz."                                       │
+│                                                                         │
+│   CONFIANÇA CEGA ≠ CONFIANÇA INFORMADA                                 │
+│                                                                         │
+│   • Confiança cega: "A IA disse, deve estar certo"                     │
+│   • Confiança informada: "Entendo o processo, confio                   │
+│     nas etapas que verifiquei"                                         │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <div class="citation">
+                <div class="citation-avatar">K</div>
+                <div class="citation-content">
+                  <p class="citation-text">
+                    "Não dê ferramentas de IA para seus estagiários.
+                    Dê para seus seniores."
+                  </p>
+                  <p class="citation-author">Kitze</p>
+                  <p class="citation-source">Sobre Vibe Coding vs Vibe Engineering</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Bloco 3 -->
+          <section id="bloco-3" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 03</span>
+              <h2 class="block-title">Anatomia do Pipeline Agêntico</h2>
+              <span class="block-duration">~15 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>O Pipeline Agêntico</h3>
+
+              <p>
+                O que acontece no "PROCESSAMENTO" do modelo ENTRADA - PROCESSAMENTO - SAÍDA?
+              </p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    PIPELINE AGÊNTICO                                    │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ENTRADA                                                                │
+│     │                                                                   │
+│     ▼                                                                   │
+│  ┌──────────────┐                                                       │
+│  │   CONTEXTO   │ ← Quem sou? O que sei? Quais regras?                 │
+│  └──────┬───────┘                                                       │
+│         │                                                               │
+│         ▼                                                               │
+│  ┌──────────────┐                                                       │
+│  │  RACIOCÍNIO  │ ← Qual o plano? Quais etapas?                        │
+│  └──────┬───────┘                                                       │
+│         │                                                               │
+│         ▼                                                               │
+│  ┌──────────────┐                                                       │
+│  │ FERRAMENTAS  │ ← Preciso buscar? Ler? Executar?                     │
+│  └──────┬───────┘                                                       │
+│         │                                                               │
+│         ▼                                                               │
+│  ┌──────────────┐                                                       │
+│  │  VERIFICAÇÃO │ ← Está correto? Preciso ajustar?                     │
+│  └──────┬───────┘                                                       │
+│         │                                                               │
+│         ▼                                                               │
+│     SAÍDA                                                               │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <h3>Zona Inteligente vs Zona de Execução</h3>
+
+              <p>Conceito crucial para entender onde o LLM agrega valor:</p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│           ZONA INTELIGENTE vs ZONA DE EXECUÇÃO                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ZONA INTELIGENTE              ZONA DE EXECUÇÃO                        │
+│   (LLM decide)                  (LLM executa)                           │
+│   ────────────────              ──────────────────                      │
+│                                                                         │
+│   • Qual estratégia usar?       • Ler arquivo X                         │
+│   • Quais ferramentas chamar?   • Buscar no banco Y                     │
+│   • Como estruturar a resposta? • Escrever arquivo Z                    │
+│   • Quando pedir ajuda?         • Executar comando W                    │
+│                                                                         │
+│   ┌─────────────────┐           ┌─────────────────┐                    │
+│   │   CRIATIVIDADE  │           │  DETERMINISMO   │                    │
+│   │   JULGAMENTO    │           │  PRECISÃO       │                    │
+│   │   SÍNTESE       │           │  REPETIÇÃO      │                    │
+│   └─────────────────┘           └─────────────────┘                    │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <div class="callout">
+                <svg class="callout-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="callout-content">
+                  <h4>Insight Prático</h4>
+                  <p>
+                    Deixe o LLM pensar na zona inteligente.
+                    Deixe ferramentas determinísticas executar na zona de execução.
+                  </p>
+                </div>
+              </div>
+
+              <h3>O Padrão RPI (Research-Plan-Implement)</h3>
+
+              <p>Padrão identificado em agentes de alta performance:</p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    PADRÃO RPI                                           │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   R ─ RESEARCH (Pesquisar)                                              │
+│       │                                                                 │
+│       │  "Antes de agir, entender"                                      │
+│       │  • Ler documentos relevantes                                    │
+│       │  • Buscar precedentes                                           │
+│       │  • Mapear contexto                                              │
+│       │                                                                 │
+│       ▼                                                                 │
+│   P ─ PLAN (Planejar)                                                   │
+│       │                                                                 │
+│       │  "Antes de executar, planejar"                                  │
+│       │  • Definir etapas                                               │
+│       │  • Identificar dependências                                     │
+│       │  • Antecipar problemas                                          │
+│       │                                                                 │
+│       ▼                                                                 │
+│   I ─ IMPLEMENT (Implementar)                                           │
+│                                                                         │
+│       "Executar o plano"                                                │
+│       • Seguir etapas definidas                                         │
+│       • Verificar cada resultado                                        │
+│       • Ajustar se necessário                                           │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>RPI</th>
+                    <th>Equivalente Jurídico</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Research</strong></td>
+                    <td>Ler os autos, buscar jurisprudência</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Plan</strong></td>
+                    <td>Definir estrutura da sentença</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Implement</strong></td>
+                    <td>Redigir a decisão</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Os 12 Fatores de um Agente Bem Projetado</h3>
+
+              <p>Dex Horthy (Prefect) adaptou os "12 Factor Apps" para agentes:</p>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Fator</th>
+                    <th>Significado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><strong>Prompts são código</strong></td>
+                    <td>Versionados, testados, revisados</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td><strong>Context is King</strong></td>
+                    <td>Contexto rico > instruções longas</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td><strong>Ferramentas simples</strong></td>
+                    <td>Cada ferramenta faz UMA coisa bem</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td><strong>Ferramentas unificadas</strong></td>
+                    <td>Interface consistente</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td><strong>Crie, não oriente</strong></td>
+                    <td>Estruturar > instruir</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td><strong>Trate como junior</strong></td>
+                    <td>Instruções explícitas</td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td><strong>Outcomes, not operations</strong></td>
+                    <td>Defina resultados, não passos</td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td><strong>Contexto isolado</strong></td>
+                    <td>Cada tarefa com seu escopo</td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td><strong>Falhe graciosamente</strong></td>
+                    <td>Recuperação de erros</td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td><strong>Log tudo</strong></td>
+                    <td>Rastreabilidade</td>
+                  </tr>
+                  <tr>
+                    <td>11</td>
+                    <td><strong>Pequenas iterações</strong></td>
+                    <td>Evite mega-planos</td>
+                  </tr>
+                  <tr>
+                    <td>12</td>
+                    <td><strong>Controle o desvio</strong></td>
+                    <td>Limites claros</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Bloco 4 -->
+          <section id="bloco-4" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 04</span>
+              <h2 class="block-title">Ferramentas e Integrações</h2>
+              <span class="block-duration">~5 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>O Que São Ferramentas (Tools)</h3>
+
+              <p>
+                <strong>Ferramentas são a INTERFACE do agente com o mundo.</strong>
+              </p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                       FERRAMENTAS                                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ┌─────────────┐    ┌─────────────┐    ┌─────────────┐                │
+│   │    LER      │    │   BUSCAR    │    │  EXECUTAR   │                │
+│   │  arquivos   │    │ informação  │    │   ações     │                │
+│   └─────────────┘    └─────────────┘    └─────────────┘                │
+│                                                                         │
+│   Exemplos:                                                             │
+│   • Read (ler arquivo)                                                  │
+│   • Write (escrever arquivo)                                            │
+│   • Bash (executar comando)                                             │
+│   • WebSearch (buscar na web)                                           │
+│   • MCP Tools (ferramentas externas)                                    │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <h3>A Regra dos 50</h3>
+
+              <p>
+                Jeremiah Lowin (Prefect) descobriu um limite prático:
+              </p>
+
+              <div class="citation">
+                <div class="citation-avatar">JL</div>
+                <div class="citation-content">
+                  <p class="citation-text">
+                    "Acima de 50 ferramentas por agente, a performance degrada significativamente."
+                  </p>
+                  <p class="citation-author">Jeremiah Lowin</p>
+                  <p class="citation-source">Prefect</p>
+                </div>
+              </div>
+
+              <div class="key-points">
+                <h4 class="key-points-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Implicação
+                </h4>
+                <ul>
+                  <li>Não dê TODAS as ferramentas para UM agente</li>
+                  <li>Especialize agentes com conjuntos menores de ferramentas</li>
+                  <li>Use subagentes para tarefas específicas</li>
+                </ul>
+              </div>
+
+              <h3>Outcomes, Not Operations</h3>
+
+              <p>Princípio crucial para design de ferramentas:</p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│              OUTCOMES, NOT OPERATIONS                                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ❌ ERRADO: Ferramentas como OPERAÇÕES                                 │
+│      • open_file()                                                      │
+│      • read_line()                                                      │
+│      • close_file()                                                     │
+│                                                                         │
+│   ✅ CERTO: Ferramentas como RESULTADOS                                 │
+│      • get_document_content(path)                                       │
+│                                                                         │
+│   ────────────────────────────────────────────────────────────────      │
+│                                                                         │
+│   ❌ ERRADO: "Abra o arquivo, leia linha por linha..."                  │
+│   ✅ CERTO: "Obtenha o conteúdo do documento X"                         │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+            </div>
+          </section>
+
+          <!-- Bloco 5 -->
+          <section id="bloco-5" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 05</span>
+              <h2 class="block-title">O Papel do Humano</h2>
+              <span class="block-duration">~10 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>Três Papéis do Humano em Sistemas Agênticos</h3>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                 PAPÉIS DO HUMANO                                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ┌─────────────────┐                                                   │
+│   │    ARQUITETO    │  Define a estrutura                               │
+│   │                 │  • Quais agentes?                                 │
+│   │   (antes)       │  • Quais ferramentas?                             │
+│   │                 │  • Quais limites?                                 │
+│   └────────┬────────┘                                                   │
+│            │                                                            │
+│            ▼                                                            │
+│   ┌─────────────────┐                                                   │
+│   │   COMANDANTE    │  Dirige a execução                                │
+│   │                 │  • Qual tarefa agora?                             │
+│   │   (durante)     │  • Aprovar decisões-chave                         │
+│   │                 │  • Ajustar rumo                                   │
+│   └────────┬────────┘                                                   │
+│            │                                                            │
+│            ▼                                                            │
+│   ┌─────────────────┐                                                   │
+│   │    REVISOR      │  Valida resultados                                │
+│   │                 │  • Está correto?                                  │
+│   │   (depois)      │  • Precisa ajustar?                               │
+│   │                 │  • Aprendeu algo?                                 │
+│   └─────────────────┘                                                   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <h3>Padrões de Supervisão Humana</h3>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Padrão</th>
+                    <th>Descrição</th>
+                    <th>Uso</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>HITL</strong></td>
+                    <td>Human-in-the-loop (dentro do loop)</td>
+                    <td>Decisões críticas, ações irreversíveis</td>
+                  </tr>
+                  <tr>
+                    <td><strong>HOTL</strong></td>
+                    <td>Human-on-the-loop (monitora, pode intervir)</td>
+                    <td>Tarefas de baixo risco, alto volume</td>
+                  </tr>
+                  <tr>
+                    <td><strong>HOOTL</strong></td>
+                    <td>Human-out-of-the-loop (só vê resultado final)</td>
+                    <td>Automações maduras, bem testadas</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Checkpoints: Onde Inserir o Humano</h3>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                      CHECKPOINTS                                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   Checkpoint = ponto onde o agente PARA e pede aprovação                │
+│                                                                         │
+│   ┌─────────────────────────────────────────────────────────┐          │
+│   │                                                         │          │
+│   │   ENTRADA → [Tarefa 1] → ✓ → [Tarefa 2] → ✓ → SAÍDA    │          │
+│   │                         ↑               ↑               │          │
+│   │                    Checkpoint 1    Checkpoint 2         │          │
+│   │                                                         │          │
+│   └─────────────────────────────────────────────────────────┘          │
+│                                                                         │
+│   TIPOS DE CHECKPOINT:                                                  │
+│   ┌─────────────────┬───────────────────────────────────────┐          │
+│   │ ANTES de agir   │ Ações irreversíveis (deletar, enviar) │          │
+│   │ DEPOIS de agir  │ Validar qualidade (revisar minuta)    │          │
+│   │ POR AMOSTRAGEM  │ Alto volume (auditar 10% dos casos)   │          │
+│   │ POR EXCEÇÃO     │ Só quando detecta anomalia            │          │
+│   │ POR TEMPO       │ A cada X minutos/horas                │          │
+│   │ POR CUSTO       │ Quando tokens/$ ultrapassam limite    │          │
+│   └─────────────────┴───────────────────────────────────────┘          │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <h3>A Metáfora do Regente (Retomando)</h3>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    REGÊNCIA COGNITIVA                                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   "O regente não toca nenhum instrumento.                              │
+│    Mas sem ele, não há música."                                         │
+│                                                                         │
+│   ┌─────────────────────────────────────────┐                          │
+│   │                                         │                          │
+│   │              VOCÊ (Regente)             │                          │
+│   │                   │                     │                          │
+│   │         ┌─────────┼─────────┐           │                          │
+│   │         │         │         │           │                          │
+│   │         ▼         ▼         ▼           │                          │
+│   │      ┌─────┐  ┌─────┐  ┌─────┐          │                          │
+│   │      │Agent│  │Agent│  │Agent│          │                          │
+│   │      │  1  │  │  2  │  │  3  │          │                          │
+│   │      └─────┘  └─────┘  └─────┘          │                          │
+│   │                                         │                          │
+│   └─────────────────────────────────────────┘                          │
+│                                                                         │
+│   O regente:                                                            │
+│   • Define a PARTITURA (contexto, instruções)                           │
+│   • Marca o ANDAMENTO (prioridades, sequência)                          │
+│   • Corrige DESAFINAÇÕES (revisão, ajustes)                             │
+│   • Decide QUANDO PARAR (aprovação final)                               │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <h3>Vibe Engineering vs Vibe Coding</h3>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Vibe Coding (amador)</th>
+                    <th>Vibe Engineering (profissional)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>"Deixa a IA fazer"</td>
+                    <td>"Eu projeto, IA executa"</td>
+                  </tr>
+                  <tr>
+                    <td>Aceita primeira resposta</td>
+                    <td>Itera até qualidade</td>
+                  </tr>
+                  <tr>
+                    <td>Não entende o output</td>
+                    <td>Entende cada linha</td>
+                  </tr>
+                  <tr>
+                    <td>Não testa</td>
+                    <td>Testa rigorosamente</td>
+                  </tr>
+                  <tr>
+                    <td>Não documenta</td>
+                    <td>Documenta decisões</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="callout callout-success">
+                <svg class="callout-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="callout-content">
+                  <h4>Próximo Passo</h4>
+                  <p>
+                    Na Aula 2B, você vai colocar a mão na massa: instalar o Claude Code,
+                    criar seu primeiro CLAUDE.md, e experimentar Commands e Skills.
+                  </p>
+                </div>
+              </div>
+
+              <div class="key-points">
+                <h4 class="key-points-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Resumo da Aula
+                </h4>
+                <ul>
+                  <li><strong>Modelo:</strong> ENTRADA - PROCESSAMENTO - SAÍDA</li>
+                  <li><strong>Níveis:</strong> L1 (Operador) a L5 (Observador)</li>
+                  <li><strong>Pipeline:</strong> Contexto - Raciocínio - Ferramentas - Verificação</li>
+                  <li><strong>Zonas:</strong> Inteligente (LLM decide) vs Execução (LLM faz)</li>
+                  <li><strong>Padrão:</strong> RPI (Research - Plan - Implement)</li>
+                  <li><strong>Papéis:</strong> Arquiteto - Comandante - Revisor</li>
+                  <li><strong>Supervisão:</strong> HITL - HOTL - HOOTL</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Navigation -->
+          <nav class="lesson-navigation">
+            <a href="aula-1.html" class="lesson-nav-btn prev">
+              <span class="label">Aula Anterior</span>
+              <span class="title">← O Sistema Agêntico na Prática</span>
+            </a>
+            <a href="aula-2b.html" class="lesson-nav-btn next">
+              <span class="label">Próxima Aula</span>
+              <span class="title">Claude Code na Prática →</span>
+            </a>
+          </nav>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2025 Sistemas Agênticos. Curso educacional.</p>
+        <p>Feito com Claude Code</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

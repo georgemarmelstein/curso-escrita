@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O que são Agentes? - Definições</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+            padding: 30px;
+        }
+
+        /* Background gradient */
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(190, 156, 109, 0.06) 0%, transparent 50%),
+                linear-gradient(180deg, #08080f 0%, #0a0a14 100%);
+            z-index: 0;
+        }
+
+        /* Container principal */
+        .container {
+            position: relative;
+            z-index: 5;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Título */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 0.2s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(190, 156, 109, 0.6);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        /* Grid de quotes complexas */
+        .quotes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .quote-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 18px 20px;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: cardAppear 0.6s ease forwards;
+        }
+
+        .quote-card:nth-child(1) { animation-delay: 0.4s; }
+        .quote-card:nth-child(2) { animation-delay: 0.6s; }
+        .quote-card:nth-child(3) { animation-delay: 0.8s; }
+
+        @keyframes cardAppear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quote-card .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85em;
+            font-style: italic;
+            color: rgba(255, 244, 228, 0.75);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .quote-card .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        .quote-card .author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .quote-card .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+
+        .quote-card .author-info {
+            flex: 1;
+        }
+
+        .quote-card .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        .quote-card .author-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Seta de transição */
+        .transition-arrow {
+            text-align: center;
+            margin: 15px 0;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 1.2s forwards;
+        }
+
+        .transition-arrow span {
+            font-size: 1.8em;
+            color: var(--super-gold);
+            opacity: 0.5;
+        }
+
+        .transition-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-top: 5px;
+        }
+
+        /* Quote principal - George */
+        .main-quote {
+            background: rgba(74, 222, 128, 0.05);
+            border: 2px solid rgba(74, 222, 128, 0.3);
+            border-radius: 16px;
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            transform: scale(0.95);
+            animation: mainAppear 0.8s ease 1.5s forwards;
+        }
+
+        @keyframes mainAppear {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .main-quote::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 30px;
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            color: var(--super-green);
+            opacity: 0.3;
+            line-height: 1;
+        }
+
+        .main-quote .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .main-quote .quote-text .highlight {
+            color: var(--super-green);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .main-quote .decorative-bar {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--super-green), transparent);
+            margin: 0 auto 15px;
+        }
+
+        .main-quote .author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .main-quote .author-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(74, 222, 128, 0.2);
+            border: 2px solid var(--super-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .main-quote .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--super-green);
+        }
+
+        .main-quote .author-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Badge */
+        .simplicity-badge {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 20px;
+            background: var(--super-green);
+            border-radius: 20px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 2s forwards;
+        }
+
+        .simplicity-badge span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            font-weight: 600;
+            color: var(--super-bg-dark);
+            letter-spacing: 1px;
+        }
+
+        /* ============================================
+           EMBED MODE
+           ============================================ */
+        body.embed-mode { padding: 20px 30px; }
+        body.embed-mode .header { margin-bottom: 22px; }
+        body.embed-mode .header h1 { font-size: 2.2em; }
+        body.embed-mode .quotes-grid { gap: 15px; margin-bottom: 18px; }
+        body.embed-mode .quote-card { padding: 15px 18px; }
+        body.embed-mode .quote-card .quote-text { font-size: 0.95em; }
+        body.embed-mode .quote-card .author-name { font-size: 0.8em; }
+        body.embed-mode .quote-card .author-avatar { width: 36px; height: 36px; }
+        body.embed-mode .main-quote { padding: 28px 35px; }
+        body.embed-mode .main-quote .quote-text { font-size: 1.5em; }
+        body.embed-mode .main-quote .author-avatar { width: 50px; height: 50px; }
+        body.embed-mode .simplicity-badge { padding: 10px 24px; }
+        body.embed-mode .simplicity-badge span { font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Definições de Agentes</div>
+            <h1>O que os especialistas dizem?</h1>
+        </div>
+
+        <!-- Grid de quotes complexas -->
+        <div class="quotes-grid">
+            <div class="quote-card">
+                <p class="quote-text">
+                    "Agentes são <span class="highlight">sistemas autônomos</span> que percebem seu ambiente através de sensores e agem sobre ele através de atuadores para maximizar uma função de utilidade."
+                </p>
+                <div class="author">
+                    <div class="author-avatar">📚</div>
+                    <div class="author-info">
+                        <div class="author-name">Russell & Norvig</div>
+                        <div class="author-title">AI: A Modern Approach</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quote-card">
+                <p class="quote-text">
+                    "Definimos agentes como <span class="highlight">modelos usando ferramentas em loop</span>, com base em feedback do ambiente para guiar ações subsequentes."
+                </p>
+                <div class="author">
+                    <div class="author-avatar">🔷</div>
+                    <div class="author-info">
+                        <div class="author-name">Barry Zhang</div>
+                        <div class="author-title">Anthropic</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quote-card">
+                <p class="quote-text">
+                    "Um agente é um sistema que usa um LLM para <span class="highlight">raciocinar, planejar e executar</span> ações de forma iterativa até completar uma tarefa."
+                </p>
+                <div class="author">
+                    <div class="author-avatar">🧠</div>
+                    <div class="author-info">
+                        <div class="author-name">Harrison Chase</div>
+                        <div class="author-title">LangChain</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transição -->
+        <div class="transition-arrow">
+            <span>↓</span>
+            <div class="transition-label">traduzindo para o português...</div>
+        </div>
+
+        <!-- Quote principal - George -->
+        <div class="main-quote">
+            <p class="quote-text">
+                "Agentes são <span class="highlight">algumas linhas de texto</span><br>
+                em linguagem natural.<br>
+                Também conhecidos como <span class="highlight">prompts</span>."
+            </p>
+            <div class="decorative-bar"></div>
+            <div class="author">
+                <div class="author-avatar">⚖️</div>
+                <div class="author-info">
+                    <div class="author-name">George Marmelstein</div>
+                    <div class="author-title">Instrutor do Curso</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <div class="simplicity-badge">
+                <span>SIMPLICIDADE É PODER</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

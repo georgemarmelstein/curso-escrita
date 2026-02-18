@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Estrutura de Diretórios do Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #12121c;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-purple: #a78bfa;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-cyan: #22d3ee;
+
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(190, 156, 109, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            overflow-x: hidden;
+        }
+
+        /* Ambient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 20% 30%, rgba(25, 74, 104, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 80% 70%, rgba(190, 156, 109, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px 30px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════ */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 30px rgba(190, 156, 109, 0.25);
+        }
+
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 2px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           LEVEL FILTER TABS
+           ═══════════════════════════════════════════════════════════ */
+        .level-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .level-tab {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            font-weight: 500;
+            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: rgba(255, 244, 228, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .level-tab:hover {
+            border-color: var(--super-gold);
+            color: var(--super-cream);
+        }
+
+        .level-tab.active {
+            background: rgba(190, 156, 109, 0.15);
+            border-color: var(--super-gold);
+            color: var(--super-gold);
+        }
+
+        .level-tab[data-level="basico"] .level-dot { background: var(--super-green); }
+        .level-tab[data-level="util"] .level-dot { background: var(--super-amber); }
+        .level-tab[data-level="avancado"] .level-dot { background: var(--super-purple); }
+        .level-tab[data-level="todos"] .level-dot { background: var(--super-cream); }
+
+        .level-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .level-count {
+            font-size: 0.85em;
+            opacity: 0.6;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN LAYOUT
+           ═══════════════════════════════════════════════════════════ */
+        .main-content {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 30px;
+            flex: 1;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TREE CONTAINER
+           ═══════════════════════════════════════════════════════════ */
+        .tree-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            overflow-y: auto;
+            max-height: calc(100vh - 180px);
+        }
+
+        .tree-section {
+            margin-bottom: 8px;
+        }
+
+        .tree-section-header {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 8px 0 6px 0;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.1);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .tree-item {
+            padding: 5px 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 6px;
+            margin: 2px 0;
+        }
+
+        .tree-item:hover {
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .tree-item.active {
+            background: rgba(190, 156, 109, 0.2);
+            border-left: 3px solid var(--super-gold);
+            margin-left: -3px;
+        }
+
+        .tree-item.hidden {
+            display: none;
+        }
+
+        .tree-item.dimmed {
+            opacity: 0.25;
+        }
+
+        .tree-icon {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .tree-name {
+            flex: 1;
+        }
+
+        .tree-badge {
+            font-size: 0.65em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-basico { background: rgba(74, 222, 128, 0.2); color: var(--super-green); }
+        .badge-util { background: rgba(251, 191, 36, 0.2); color: var(--super-amber); }
+        .badge-avancado { background: rgba(167, 139, 250, 0.2); color: var(--super-purple); }
+
+        /* Tree indentation */
+        .tree-children {
+            padding-left: 20px;
+            border-left: 1px solid rgba(190, 156, 109, 0.1);
+            margin-left: 8px;
+        }
+
+        /* Color coding */
+        .folder { color: var(--super-gold); }
+        .file { color: var(--super-cream); }
+        .special { color: var(--super-green); }
+        .local { color: var(--super-amber); }
+        .secret { color: var(--super-red); }
+        .config { color: var(--super-cyan); }
+
+        /* ═══════════════════════════════════════════════════════════
+           DESCRIPTION PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .description-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .panel-icon {
+            font-size: 2.8em;
+            line-height: 1;
+        }
+
+        .panel-meta {
+            flex: 1;
+        }
+
+        .panel-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 4px;
+        }
+
+        .panel-type {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .panel-level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7em;
+            padding: 4px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .panel-description {
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .panel-description strong {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Features */
+        .features-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .panel-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            border-left: 3px solid var(--super-gold);
+        }
+
+        .feature-icon {
+            font-size: 1.1em;
+            width: 24px;
+            text-align: center;
+        }
+
+        .feature-text {
+            font-size: 0.88em;
+            color: rgba(255, 244, 228, 0.85);
+        }
+
+        /* Example section */
+        .example-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .example-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .example-code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82em;
+            color: var(--super-cream);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .example-code .comment { color: rgba(255, 244, 228, 0.4); }
+        .example-code .key { color: var(--super-gold); }
+        .example-code .string { color: var(--super-green); }
+
+        /* Quote */
+        .quote-section {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+        }
+
+        .quote-author {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            margin-top: 8px;
+        }
+
+        /* Warning */
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .warning-icon {
+            font-size: 1.2em;
+            color: var(--super-red);
+        }
+
+        .warning-text {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.5;
+        }
+
+        /* Tip */
+        .tip-box {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .tip-icon {
+            font-size: 1.2em;
+            color: var(--super-green);
+        }
+
+        .tip-text {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.5;
+        }
+
+        /* Default state */
+        .default-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            padding: 40px;
+        }
+
+        .default-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .default-text {
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .default-hint {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .container { padding: 15px 20px; }
+        body.embed-mode h1 { font-size: 1.4em; margin-bottom: 5px; }
+        body.embed-mode .subtitle { font-size: 0.7em; }
+        body.embed-mode .level-tabs { margin-bottom: 15px; gap: 6px; }
+        body.embed-mode .level-tab { padding: 6px 12px; font-size: 0.65em; }
+        body.embed-mode .main-content { gap: 20px; grid-template-columns: 350px 1fr; }
+        body.embed-mode .tree-container { padding: 15px; font-size: 0.78em; max-height: calc(100vh - 140px); }
+        body.embed-mode .tree-item { padding: 4px 6px; }
+        body.embed-mode .description-panel { padding: 20px; }
+        body.embed-mode .panel-icon { font-size: 2.2em; }
+        body.embed-mode .panel-title { font-size: 1.15em; }
+        body.embed-mode .panel-description { font-size: 0.85em; margin-bottom: 15px; }
+        body.embed-mode .feature-item { padding: 8px 12px; }
+        body.embed-mode .feature-text { font-size: 0.8em; }
+        body.embed-mode .example-code { font-size: 0.75em; padding: 10px 12px; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(190, 156, 109, 0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(190, 156, 109, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Estrutura de Diretorios</h1>
+            <div class="subtitle">// Anatomia de um Projeto Claude Code</div>
+        </header>
+
+        <!-- Level Filter Tabs -->
+        <nav class="level-tabs">
+            <button class="level-tab active" data-level="todos">
+                <span class="level-dot"></span>
+                Todos <span class="level-count">(24)</span>
+            </button>
+            <button class="level-tab" data-level="basico">
+                <span class="level-dot"></span>
+                Basico <span class="level-count">(5)</span>
+            </button>
+            <button class="level-tab" data-level="util">
+                <span class="level-dot"></span>
+                Util <span class="level-count">(9)</span>
+            </button>
+            <button class="level-tab" data-level="avancado">
+                <span class="level-dot"></span>
+                Avancado <span class="level-count">(10)</span>
+            </button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Tree -->
+            <div class="tree-container">
+                <!-- Root -->
+                <div class="tree-item folder" data-item="projeto" data-level="basico">
+                    <span class="tree-icon">&#128193;</span>
+                    <span class="tree-name">meu-projeto/</span>
+                    <span class="tree-badge badge-basico">raiz</span>
+                </div>
+
+                <div class="tree-children">
+                    <!-- SECTION: Arquivos Claude Code -->
+                    <div class="tree-section">
+                        <div class="tree-section-header">
+                            <span class="section-dot" style="background: var(--super-gold)"></span>
+                            Claude Code
+                        </div>
+
+                        <!-- CLAUDE.md (principal) -->
+                        <div class="tree-item special" data-item="claudemd" data-level="basico">
+                            <span class="tree-icon">&#11088;</span>
+                            <span class="tree-name">CLAUDE.md</span>
+                            <span class="tree-badge badge-basico">essencial</span>
+                        </div>
+
+                        <!-- CLAUDE.local.md -->
+                        <div class="tree-item local" data-item="claudelocal" data-level="util">
+                            <span class="tree-icon">&#128274;</span>
+                            <span class="tree-name">CLAUDE.local.md</span>
+                            <span class="tree-badge badge-util">pessoal</span>
+                        </div>
+
+                        <!-- .claude/ -->
+                        <div class="tree-item folder" data-item="dotclaude" data-level="basico">
+                            <span class="tree-icon">&#128194;</span>
+                            <span class="tree-name">.claude/</span>
+                            <span class="tree-badge badge-basico">config</span>
+                        </div>
+
+                        <div class="tree-children">
+                            <div class="tree-item file" data-item="settings" data-level="basico">
+                                <span class="tree-icon">&#9881;</span>
+                                <span class="tree-name">settings.json</span>
+                            </div>
+                            <div class="tree-item folder" data-item="commands" data-level="util">
+                                <span class="tree-icon">&#9889;</span>
+                                <span class="tree-name">commands/</span>
+                            </div>
+                            <div class="tree-item folder" data-item="skills" data-level="util">
+                                <span class="tree-icon">&#128161;</span>
+                                <span class="tree-name">skills/</span>
+                            </div>
+                            <div class="tree-item folder" data-item="agents" data-level="avancado">
+                                <span class="tree-icon">&#129302;</span>
+                                <span class="tree-name">agents/</span>
+                            </div>
+                            <div class="tree-item folder" data-item="rules" data-level="util">
+                                <span class="tree-icon">&#128220;</span>
+                                <span class="tree-name">rules/</span>
+                            </div>
+                            <div class="tree-item folder" data-item="specs" data-level="avancado">
+                                <span class="tree-icon">&#128203;</span>
+                                <span class="tree-name">specs/</span>
+                            </div>
+                            <div class="tree-item folder" data-item="hooks" data-level="avancado">
+                                <span class="tree-icon">&#128279;</span>
+                                <span class="tree-name">hooks/</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: Configuracao -->
+                    <div class="tree-section">
+                        <div class="tree-section-header">
+                            <span class="section-dot" style="background: var(--super-cyan)"></span>
+                            Configuracao
+                        </div>
+
+                        <div class="tree-item secret" data-item="env" data-level="util">
+                            <span class="tree-icon">&#128273;</span>
+                            <span class="tree-name">.env</span>
+                            <span class="tree-badge badge-util">segredo</span>
+                        </div>
+                        <div class="tree-item file" data-item="envexample" data-level="util">
+                            <span class="tree-icon">&#128196;</span>
+                            <span class="tree-name">.env.example</span>
+                        </div>
+                        <div class="tree-item folder" data-item="config" data-level="avancado">
+                            <span class="tree-icon">&#128194;</span>
+                            <span class="tree-name">config/</span>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: Codigo -->
+                    <div class="tree-section">
+                        <div class="tree-section-header">
+                            <span class="section-dot" style="background: var(--super-green)"></span>
+                            Codigo
+                        </div>
+
+                        <div class="tree-item folder" data-item="src" data-level="basico">
+                            <span class="tree-icon">&#128194;</span>
+                            <span class="tree-name">src/</span>
+                            <span class="tree-badge badge-basico">codigo</span>
+                        </div>
+                        <div class="tree-item folder" data-item="scripts" data-level="util">
+                            <span class="tree-icon">&#128194;</span>
+                            <span class="tree-name">scripts/</span>
+                        </div>
+                        <div class="tree-item folder" data-item="frontend" data-level="util">
+                            <span class="tree-icon">&#127912;</span>
+                            <span class="tree-name">frontend/</span>
+                        </div>
+                        <div class="tree-item folder" data-item="tests" data-level="util">
+                            <span class="tree-icon">&#128269;</span>
+                            <span class="tree-name">tests/</span>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: Dados e Saidas -->
+                    <div class="tree-section">
+                        <div class="tree-section-header">
+                            <span class="section-dot" style="background: var(--super-amber)"></span>
+                            Dados e Saidas
+                        </div>
+
+                        <div class="tree-item folder" data-item="data" data-level="util">
+                            <span class="tree-icon">&#128194;</span>
+                            <span class="tree-name">data/</span>
+                        </div>
+                        <div class="tree-item folder" data-item="output" data-level="avancado">
+                            <span class="tree-icon">&#128194;</span>
+                            <span class="tree-name">output/</span>
+                        </div>
+                        <div class="tree-item folder" data-item="temp" data-level="avancado">
+                            <span class="tree-icon">&#128465;</span>
+                            <span class="tree-name">temp/</span>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: Documentacao -->
+                    <div class="tree-section">
+                        <div class="tree-section-header">
+                            <span class="section-dot" style="background: var(--super-purple)"></span>
+                            Documentacao
+                        </div>
+
+                        <div class="tree-item folder" data-item="docs" data-level="util">
+                            <span class="tree-icon">&#128218;</span>
+                            <span class="tree-name">docs/</span>
+                        </div>
+                        <div class="tree-item folder" data-item="references" data-level="avancado">
+                            <span class="tree-icon">&#128214;</span>
+                            <span class="tree-name">references/</span>
+                        </div>
+                        <div class="tree-item file" data-item="readme" data-level="basico">
+                            <span class="tree-icon">&#128196;</span>
+                            <span class="tree-name">README.md</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Panel -->
+            <div class="description-panel" id="panel">
+                <div class="default-panel" id="default-panel">
+                    <div class="default-icon">&#128449;</div>
+                    <div class="default-text">Selecione um item na arvore</div>
+                    <div class="default-hint">Clique em qualquer arquivo ou pasta para ver detalhes</div>
+                </div>
+                <div id="panel-content" style="display: none;"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // Embed Mode Detection
+        // ═══════════════════════════════════════════════════════════
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // ═══════════════════════════════════════════════════════════
+        // Item Data (24 items)
+        // ═══════════════════════════════════════════════════════════
+        const items = {
+            // ===== BÁSICO (5) =====
+            'projeto': {
+                icon: '&#128193;',
+                title: 'meu-projeto/',
+                type: 'Diretorio Raiz',
+                level: 'basico',
+                desc: 'A raiz do seu projeto. <strong>O Claude Code opera dentro deste diretorio</strong> e tem acesso a todos os arquivos e subpastas. Pense nele como o "universo" que o Claude conhece.',
+                features: [
+                    { icon: '&#127968;', text: 'Workspace do Claude Code' },
+                    { icon: '&#128065;', text: 'Acesso total via ferramentas Read, Write, Bash' },
+                    { icon: '&#128230;', text: 'Tudo aqui pode ser lido e editado' }
+                ],
+                tip: 'Inicie o Claude Code sempre na raiz do projeto: cd meu-projeto && claude'
+            },
+
+            'claudemd': {
+                icon: '&#11088;',
+                title: 'CLAUDE.md',
+                type: 'Memoria Principal do Projeto',
+                level: 'basico',
+                desc: '<strong>O arquivo mais importante!</strong> E como um README para o Claude. Contem instrucoes permanentes que sao carregadas automaticamente no inicio de CADA sessao. Sobrevive a compactacao de contexto.',
+                features: [
+                    { icon: '&#129504;', text: 'Carregado automaticamente em cada sessao' },
+                    { icon: '&#128218;', text: 'Sobrevive a /compact (nunca esquecido)' },
+                    { icon: '&#128101;', text: 'Versionado no Git (compartilhado com equipe)' },
+                    { icon: '&#128295;', text: 'Use @imports para modularizar' }
+                ],
+                example: {
+                    title: 'Conteudo Tipico',
+                    code: '<span class="comment"># CLAUDE.md</span>\n\n<span class="comment">## Sobre o Projeto</span>\nEste e um sistema de gestao de tarefas.\n\n<span class="comment">## Convencoes</span>\n- Codigo em ingles\n- Documentacao em portugues\n- Testes obrigatorios\n\n<span class="comment">## Estrutura</span>\n@.claude/rules/coding-style.md'
+                },
+                quote: '"Um CLAUDE.md e como um README para o Claude."',
+                author: '— Steve Kinney'
+            },
+
+            'dotclaude': {
+                icon: '&#128194;',
+                title: '.claude/',
+                type: 'Diretorio de Configuracao',
+                level: 'basico',
+                desc: 'O "quartel-general" das configuracoes do Claude Code. Contem settings, comandos customizados, skills, agents e outras personalizacoes. <strong>Versionado no Git</strong> para compartilhar com a equipe.',
+                features: [
+                    { icon: '&#128736;', text: 'Todas as configuracoes do projeto' },
+                    { icon: '&#128230;', text: 'Versionado no Git (equipe compartilha)' },
+                    { icon: '&#127891;', text: 'Extensivel: commands, skills, agents, rules' }
+                ],
+                tip: 'Use /init para criar a estrutura basica automaticamente!'
+            },
+
+            'settings': {
+                icon: '&#9881;',
+                title: 'settings.json',
+                type: 'Configuracoes em JSON',
+                level: 'basico',
+                desc: 'Configuracoes do projeto em formato JSON. Define <strong>permissoes de ferramentas</strong>, modelo preferido, e comportamentos customizados.',
+                features: [
+                    { icon: '&#128274;', text: 'Regras allow/deny para ferramentas' },
+                    { icon: '&#129302;', text: 'Modelo preferido (sonnet, opus, haiku)' },
+                    { icon: '&#128295;', text: 'Configuracoes de hooks e MCP' }
+                ],
+                example: {
+                    title: 'Exemplo de Configuracao',
+                    code: '{\n  <span class="key">"permissions"</span>: {\n    <span class="key">"allow"</span>: [<span class="string">"Read"</span>, <span class="string">"Write"</span>, <span class="string">"Bash(npm run *)"</span>],\n    <span class="key">"deny"</span>: [<span class="string">"Bash(rm -rf *)"</span>]\n  },\n  <span class="key">"model"</span>: <span class="string">"sonnet"</span>\n}'
+                }
+            },
+
+            'readme': {
+                icon: '&#128196;',
+                title: 'README.md',
+                type: 'Documentacao para Humanos',
+                level: 'basico',
+                desc: 'Documentacao tradicional do projeto para desenvolvedores humanos. <strong>Diferente do CLAUDE.md</strong>: o README e para pessoas, o CLAUDE.md e para o Claude.',
+                features: [
+                    { icon: '&#128100;', text: 'Para desenvolvedores humanos' },
+                    { icon: '&#128196;', text: 'Instrucoes de instalacao e uso' },
+                    { icon: '&#128230;', text: 'Versionado no Git' }
+                ],
+                tip: 'CLAUDE.md e README.md se complementam. Um para IA, outro para humanos.'
+            },
+
+            // ===== ÚTIL (9) =====
+            'claudelocal': {
+                icon: '&#128274;',
+                title: 'CLAUDE.local.md',
+                type: 'Memoria Pessoal (Privada)',
+                level: 'util',
+                desc: 'Suas configuracoes <strong>pessoais e privadas</strong>. Automaticamente ignorado pelo Git. Ideal para preferencias individuais, atalhos pessoais ou segredos que so voce deve saber.',
+                features: [
+                    { icon: '&#128274;', text: 'Ignorado pelo .gitignore (privado)' },
+                    { icon: '&#128100;', text: 'Apenas para voce, nao vai pro repo' },
+                    { icon: '&#128273;', text: 'Ideal para caminhos locais e preferencias' }
+                ],
+                warning: 'NUNCA coloque API keys aqui! Use .env para segredos reais.',
+                example: {
+                    title: 'Uso Tipico',
+                    code: '<span class="comment"># CLAUDE.local.md</span>\n\n<span class="comment">## Minhas Preferencias</span>\n- Prefiro respostas em portugues\n- Meu editor e o VS Code\n- Meu terminal e o iTerm2\n\n<span class="comment">## Caminhos Locais</span>\n- Downloads: ~/Downloads/projetos/'
+                }
+            },
+
+            'commands': {
+                icon: '&#9889;',
+                title: 'commands/',
+                type: 'Slash Commands Customizados',
+                level: 'util',
+                desc: 'Cada arquivo .md nesta pasta vira um <strong>slash command</strong>! O nome do arquivo e o nome do comando. Use para criar atalhos para tarefas repetitivas.',
+                features: [
+                    { icon: '&#9889;', text: 'arquivo.md vira /arquivo' },
+                    { icon: '&#128260;', text: 'Atalhos para workflows repetitivos' },
+                    { icon: '&#128221;', text: 'Suporta $ARGUMENTS para parametros' }
+                ],
+                example: {
+                    title: 'Exemplo: review.md -> /review',
+                    code: '<span class="comment"># .claude/commands/review.md</span>\n\nRevise o codigo em $ARGUMENTS:\n- Verifique bugs e erros logicos\n- Sugira melhorias de performance\n- Aponte problemas de seguranca\n\n<span class="comment"># Uso: /review src/main.ts</span>'
+                }
+            },
+
+            'skills': {
+                icon: '&#128161;',
+                title: 'skills/',
+                type: 'Capacidades Modulares',
+                level: 'util',
+                desc: 'Skills sao <strong>especialidades reutilizaveis</strong>. Cada skill e uma pasta com SKILL.md como ponto de entrada. Pode incluir scripts, templates e exemplos.',
+                features: [
+                    { icon: '&#127891;', text: 'Expertise encapsulada e reutilizavel' },
+                    { icon: '&#128196;', text: 'SKILL.md como entrypoint obrigatorio' },
+                    { icon: '&#128230;', text: 'Pode ter scripts/, templates/, examples/' }
+                ],
+                example: {
+                    title: 'Estrutura de uma Skill',
+                    code: '<span class="comment">minha-skill/</span>\n├── SKILL.md          <span class="comment"># Instrucoes principais</span>\n├── templates/\n│   └── modelo.md     <span class="comment"># Templates para usar</span>\n├── scripts/\n│   └── valida.py     <span class="comment"># Scripts auxiliares</span>\n└── examples/\n    └── exemplo.md    <span class="comment"># Exemplos de uso</span>'
+                }
+            },
+
+            'rules': {
+                icon: '&#128220;',
+                title: 'rules/',
+                type: 'Regras Modulares',
+                level: 'util',
+                desc: 'Regras que podem ser <strong>importadas no CLAUDE.md</strong> usando @path/to/rule.md. Permite organizar instrucoes longas em arquivos separados.',
+                features: [
+                    { icon: '&#128220;', text: 'Importadas via @caminho no CLAUDE.md' },
+                    { icon: '&#128230;', text: 'Modularidade e organizacao' },
+                    { icon: '&#128260;', text: 'DRY: Don\'t Repeat Yourself' }
+                ],
+                example: {
+                    title: 'Import no CLAUDE.md',
+                    code: '<span class="comment"># CLAUDE.md</span>\n\n## Regras de Codigo\n@.claude/rules/coding-style.md\n@.claude/rules/testing-rules.md\n@.claude/rules/git-workflow.md'
+                }
+            },
+
+            'env': {
+                icon: '&#128273;',
+                title: '.env',
+                type: 'Variaveis de Ambiente (SEGREDO)',
+                level: 'util',
+                desc: '<strong>NUNCA versione este arquivo!</strong> Contem segredos como API keys, senhas de banco, tokens. O Claude pode ler mas NUNCA deve expor esses valores.',
+                features: [
+                    { icon: '&#128274;', text: 'OBRIGATORIO estar no .gitignore' },
+                    { icon: '&#128273;', text: 'API keys, tokens, senhas' },
+                    { icon: '&#9888;', text: 'Claude pode ler mas nao expoe' }
+                ],
+                warning: 'SEMPRE adicione .env ao .gitignore ANTES de criar o arquivo!',
+                example: {
+                    title: 'Conteudo Tipico',
+                    code: '<span class="comment"># .env - NUNCA commitar!</span>\n\n<span class="key">DATABASE_URL</span>=<span class="string">"postgres://user:pass@host/db"</span>\n<span class="key">ANTHROPIC_API_KEY</span>=<span class="string">"sk-ant-..."</span>\n<span class="key">SECRET_KEY</span>=<span class="string">"minha-chave-super-secreta"</span>'
+                }
+            },
+
+            'envexample': {
+                icon: '&#128196;',
+                title: '.env.example',
+                type: 'Template de Variaveis',
+                level: 'util',
+                desc: 'Mostra quais variaveis sao necessarias <strong>SEM os valores reais</strong>. Este arquivo DEVE ser versionado para ajudar novos desenvolvedores.',
+                features: [
+                    { icon: '&#128230;', text: 'Versionado no Git (sem segredos)' },
+                    { icon: '&#128196;', text: 'Documenta variaveis necessarias' },
+                    { icon: '&#128100;', text: 'Novos devs copiam para .env' }
+                ],
+                example: {
+                    title: 'Conteudo (SEM segredos)',
+                    code: '<span class="comment"># .env.example - Copie para .env</span>\n\n<span class="key">DATABASE_URL</span>=<span class="string">"sua-url-aqui"</span>\n<span class="key">ANTHROPIC_API_KEY</span>=<span class="string">"sua-chave-aqui"</span>\n<span class="key">SECRET_KEY</span>=<span class="string">"gere-uma-chave"</span>'
+                }
+            },
+
+            'scripts': {
+                icon: '&#128194;',
+                title: 'scripts/',
+                type: 'Scripts Utilitarios',
+                level: 'util',
+                desc: 'Scripts auxiliares que o Claude pode executar. <strong>Nao sao o codigo principal</strong> - sao ferramentas de apoio como deploy, setup, migracao, etc.',
+                features: [
+                    { icon: '&#128736;', text: 'Automacao de tarefas' },
+                    { icon: '&#128295;', text: 'Deploy, setup, migracao, seeds' },
+                    { icon: '&#128187;', text: 'Claude pode executar via Bash' }
+                ],
+                example: {
+                    title: 'Scripts Comuns',
+                    code: '<span class="comment">scripts/</span>\n├── setup.sh          <span class="comment"># Configuracao inicial</span>\n├── deploy.sh         <span class="comment"># Deploy para producao</span>\n├── seed-db.py        <span class="comment"># Popular banco de dados</span>\n├── migrate.py        <span class="comment"># Migracoes de schema</span>\n└── generate-docs.sh  <span class="comment"># Gerar documentacao</span>'
+                }
+            },
+
+            'frontend': {
+                icon: '&#127912;',
+                title: 'frontend/',
+                type: 'Interface do Usuario',
+                level: 'util',
+                desc: 'Codigo do frontend em projetos full-stack. Pode conter React, Vue, Next.js, ou qualquer framework. <strong>Separado do backend</strong> para clareza.',
+                features: [
+                    { icon: '&#127912;', text: 'React, Vue, Next.js, Svelte, etc.' },
+                    { icon: '&#128194;', text: 'Componentes, paginas, assets' },
+                    { icon: '&#128260;', text: 'Separacao clara frontend/backend' }
+                ],
+                example: {
+                    title: 'Estrutura Tipica',
+                    code: '<span class="comment">frontend/</span>\n├── src/\n│   ├── components/   <span class="comment"># Componentes reutilizaveis</span>\n│   ├── pages/        <span class="comment"># Paginas/rotas</span>\n│   ├── hooks/        <span class="comment"># Custom hooks</span>\n│   └── styles/       <span class="comment"># CSS/SCSS</span>\n├── public/           <span class="comment"># Assets estaticos</span>\n└── package.json'
+                }
+            },
+
+            'tests': {
+                icon: '&#128269;',
+                title: 'tests/',
+                type: 'Testes Automatizados',
+                level: 'util',
+                desc: 'Testes unitarios, de integracao e e2e. <strong>Claude pode executar testes</strong> para validar mudancas antes de commitar.',
+                features: [
+                    { icon: '&#9989;', text: 'Testes unitarios e de integracao' },
+                    { icon: '&#128269;', text: 'Claude valida mudancas com testes' },
+                    { icon: '&#128736;', text: 'CI/CD executa automaticamente' }
+                ],
+                tip: 'Peca ao Claude para rodar testes apos cada mudanca significativa!'
+            },
+
+            // ===== AVANÇADO (10) =====
+            'agents': {
+                icon: '&#129302;',
+                title: 'agents/',
+                type: 'Configuracoes de Subagentes',
+                level: 'avancado',
+                desc: 'Definicoes de <strong>subagentes especializados</strong>. Cada agente tem sua propria "personalidade", ferramentas permitidas e capacidades. Invocados via Task tool.',
+                features: [
+                    { icon: '&#129302;', text: 'Subagentes com contexto isolado' },
+                    { icon: '&#127919;', text: 'Invocados via Task tool' },
+                    { icon: '&#128260;', text: 'Especializacao por dominio' }
+                ],
+                example: {
+                    title: 'Estrutura de um Agente',
+                    code: '<span class="comment"># .claude/agents/code-reviewer.md</span>\n\n---\nname: code-reviewer\nallowed-tools: Read, Grep, Glob\n---\n\n<identidade>\n  Voce e um revisor de codigo rigoroso.\n</identidade>\n\n<instrucoes>\n  1. Leia o codigo indicado\n  2. Identifique bugs e problemas\n  3. Sugira melhorias\n</instrucoes>'
+                }
+            },
+
+            'specs': {
+                icon: '&#128203;',
+                title: 'specs/',
+                type: 'Especificacoes e Templates',
+                level: 'avancado',
+                desc: 'Templates e especificacoes para <strong>padronizar a criacao de artefatos</strong>. Define como agents, skills e commands devem ser estruturados.',
+                features: [
+                    { icon: '&#128203;', text: 'Templates para novos artefatos' },
+                    { icon: '&#128220;', text: 'Checklists de validacao' },
+                    { icon: '&#128260;', text: 'Padronizacao do projeto' }
+                ],
+                example: {
+                    title: 'Estrutura Tipica',
+                    code: '<span class="comment">specs/</span>\n├── templates/\n│   ├── agent.md      <span class="comment"># Template de agente</span>\n│   ├── skill.md      <span class="comment"># Template de skill</span>\n│   └── command.md    <span class="comment"># Template de comando</span>\n└── referencias/\n    └── checklist.md  <span class="comment"># Validacao obrigatoria</span>'
+                }
+            },
+
+            'hooks': {
+                icon: '&#128279;',
+                title: 'hooks/',
+                type: 'Ganchos de Eventos',
+                level: 'avancado',
+                desc: 'Scripts que <strong>interceptam operacoes do Claude</strong>. Executam automaticamente antes/depois de acoes como editar arquivos ou fazer commits.',
+                features: [
+                    { icon: '&#128279;', text: 'Pre/post operacoes do Claude' },
+                    { icon: '&#128736;', text: 'Validacao automatica' },
+                    { icon: '&#9888;', text: 'Pode bloquear acoes perigosas' }
+                ],
+                example: {
+                    title: 'Hooks Disponiveis',
+                    code: '<span class="comment"># Em settings.json:</span>\n{\n  <span class="key">"hooks"</span>: {\n    <span class="key">"pre-edit"</span>: <span class="string">"./hooks/lint.sh"</span>,\n    <span class="key">"post-edit"</span>: <span class="string">"prettier --write ${file}"</span>,\n    <span class="key">"pre-commit"</span>: <span class="string">"npm run test"</span>\n  }\n}'
+                }
+            },
+
+            'config': {
+                icon: '&#128194;',
+                title: 'config/',
+                type: 'Configuracoes por Ambiente',
+                level: 'avancado',
+                desc: 'Configuracoes separadas por ambiente: <strong>development, staging, production</strong>. Permite comportamentos diferentes em cada ambiente.',
+                features: [
+                    { icon: '&#128295;', text: 'Configs por ambiente' },
+                    { icon: '&#128260;', text: 'Separacao dev/staging/prod' },
+                    { icon: '&#128230;', text: 'Versionado (sem segredos)' }
+                ],
+                example: {
+                    title: 'Estrutura Tipica',
+                    code: '<span class="comment">config/</span>\n├── default.json      <span class="comment"># Config base</span>\n├── development.json  <span class="comment"># Dev local</span>\n├── staging.json      <span class="comment"># Ambiente de teste</span>\n└── production.json   <span class="comment"># Producao</span>'
+                }
+            },
+
+            'src': {
+                icon: '&#128194;',
+                title: 'src/',
+                type: 'Codigo-Fonte Principal',
+                level: 'basico',
+                desc: 'O <strong>codigo principal do projeto</strong>. Onde vive a logica de negocios, APIs, servicos e toda a implementacao core.',
+                features: [
+                    { icon: '&#128187;', text: 'Codigo-fonte principal' },
+                    { icon: '&#128260;', text: 'Logica de negocios' },
+                    { icon: '&#127919;', text: 'Onde o Claude mais atua' }
+                ],
+                tip: 'Mantenha src/ organizado! Claude navega melhor em projetos bem estruturados.'
+            },
+
+            'data': {
+                icon: '&#128194;',
+                title: 'data/',
+                type: 'Dados de Entrada',
+                level: 'util',
+                desc: 'Dados de entrada para o sistema: <strong>datasets, arquivos processados, inputs</strong>. Diferente de output/ que contem resultados.',
+                features: [
+                    { icon: '&#128196;', text: 'Arquivos de entrada' },
+                    { icon: '&#128230;', text: 'Datasets e recursos' },
+                    { icon: '&#128260;', text: 'Inputs para processamento' }
+                ],
+                example: {
+                    title: 'Estrutura Tipica',
+                    code: '<span class="comment">data/</span>\n├── raw/              <span class="comment"># Dados brutos</span>\n├── processed/        <span class="comment"># Dados processados</span>\n├── uploads/          <span class="comment"># Uploads de usuarios</span>\n└── seeds/            <span class="comment"># Dados de seed</span>'
+                }
+            },
+
+            'output': {
+                icon: '&#128194;',
+                title: 'output/',
+                type: 'Resultados e Saidas',
+                level: 'avancado',
+                desc: 'Onde o sistema <strong>salva resultados</strong>: relatorios gerados, exports, builds, artefatos produzidos pelo processamento.',
+                features: [
+                    { icon: '&#128196;', text: 'Resultados de processamento' },
+                    { icon: '&#128230;', text: 'Relatorios e exports' },
+                    { icon: '&#128260;', text: 'Checkpoints auditaveis' }
+                ],
+                tip: 'Adicione output/ ao .gitignore se os arquivos forem grandes ou temporarios.'
+            },
+
+            'temp': {
+                icon: '&#128465;',
+                title: 'temp/',
+                type: 'Arquivos Temporarios',
+                level: 'avancado',
+                desc: 'Arquivos temporarios que <strong>podem ser deletados</strong> a qualquer momento. Cache, downloads parciais, arquivos de sessao.',
+                features: [
+                    { icon: '&#128465;', text: 'Pode ser deletado sem problemas' },
+                    { icon: '&#128260;', text: 'Cache e arquivos de sessao' },
+                    { icon: '&#9888;', text: 'SEMPRE no .gitignore' }
+                ],
+                warning: 'SEMPRE adicione temp/ ao .gitignore!'
+            },
+
+            'docs': {
+                icon: '&#128218;',
+                title: 'docs/',
+                type: 'Documentacao do Projeto',
+                level: 'util',
+                desc: 'Documentacao tecnica, guias, tutoriais. <strong>Para humanos entenderem o projeto</strong>. Pode incluir diagramas, ADRs, e specs.',
+                features: [
+                    { icon: '&#128218;', text: 'Documentacao tecnica' },
+                    { icon: '&#128196;', text: 'Guias e tutoriais' },
+                    { icon: '&#128202;', text: 'Diagramas e ADRs' }
+                ],
+                example: {
+                    title: 'Estrutura Tipica',
+                    code: '<span class="comment">docs/</span>\n├── architecture/     <span class="comment"># Diagramas de arquitetura</span>\n├── api/              <span class="comment"># Documentacao de API</span>\n├── guides/           <span class="comment"># Guias de uso</span>\n└── adr/              <span class="comment"># Architecture Decisions</span>'
+                }
+            },
+
+            'references': {
+                icon: '&#128214;',
+                title: 'references/',
+                type: 'Material de Referencia',
+                level: 'avancado',
+                desc: 'Documentos de referencia <strong>extensos demais para CLAUDE.md</strong>. Manuais, specs externas, papers. Claude le sob demanda.',
+                features: [
+                    { icon: '&#128214;', text: 'Documentos longos de referencia' },
+                    { icon: '&#128196;', text: 'Manuais e especificacoes externas' },
+                    { icon: '&#129504;', text: 'Claude le quando precisa' }
+                ],
+                tip: 'Use @references/manual.md no CLAUDE.md para Claude ler quando relevante.'
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // DOM Elements
+        // ═══════════════════════════════════════════════════════════
+        const treeItems = document.querySelectorAll('.tree-item');
+        const levelTabs = document.querySelectorAll('.level-tab');
+        const defaultPanel = document.getElementById('default-panel');
+        const panelContent = document.getElementById('panel-content');
+
+        // ═══════════════════════════════════════════════════════════
+        // Level Filter
+        // ═══════════════════════════════════════════════════════════
+        let currentLevel = 'todos';
+
+        levelTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                currentLevel = tab.dataset.level;
+
+                // Update active tab
+                levelTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Filter tree items
+                treeItems.forEach(item => {
+                    const itemLevel = item.dataset.level;
+                    if (currentLevel === 'todos' || itemLevel === currentLevel) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+
+                // Reset selection
+                treeItems.forEach(item => item.classList.remove('active', 'dimmed'));
+                showDefaultPanel();
+            });
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // Panel Rendering
+        // ═══════════════════════════════════════════════════════════
+        function showDefaultPanel() {
+            defaultPanel.style.display = 'flex';
+            panelContent.style.display = 'none';
+        }
+
+        function selectItem(itemId) {
+            const data = items[itemId];
+            if (!data) return;
+
+            defaultPanel.style.display = 'none';
+            panelContent.style.display = 'block';
+
+            // Build level badge
+            const levelColors = {
+                'basico': { bg: 'rgba(74, 222, 128, 0.2)', color: 'var(--super-green)', label: 'Basico' },
+                'util': { bg: 'rgba(251, 191, 36, 0.2)', color: 'var(--super-amber)', label: 'Util' },
+                'avancado': { bg: 'rgba(167, 139, 250, 0.2)', color: 'var(--super-purple)', label: 'Avancado' }
+            };
+            const levelStyle = levelColors[data.level];
+
+            let html = `
+                <div class="panel-header">
+                    <span class="panel-icon">${data.icon}</span>
+                    <div class="panel-meta">
+                        <div class="panel-title">${data.title}</div>
+                        <div class="panel-type">${data.type}</div>
+                        <span class="panel-level-badge" style="background: ${levelStyle.bg}; color: ${levelStyle.color}">
+                            <span style="width: 6px; height: 6px; border-radius: 50%; background: currentColor;"></span>
+                            ${levelStyle.label}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="panel-description">${data.desc}</div>
+            `;
+
+            // Warning box
+            if (data.warning) {
+                html += `
+                    <div class="warning-box">
+                        <span class="warning-icon">&#9888;</span>
+                        <span class="warning-text">${data.warning}</span>
+                    </div>
+                `;
+            }
+
+            // Tip box
+            if (data.tip) {
+                html += `
+                    <div class="tip-box">
+                        <span class="tip-icon">&#128161;</span>
+                        <span class="tip-text">${data.tip}</span>
+                    </div>
+                `;
+            }
+
+            // Features
+            if (data.features && data.features.length > 0) {
+                html += `
+                    <div class="features-title">Caracteristicas</div>
+                    <div class="panel-features">
+                        ${data.features.map(f => `
+                            <div class="feature-item">
+                                <span class="feature-icon">${f.icon}</span>
+                                <span class="feature-text">${f.text}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // Example
+            if (data.example) {
+                html += `
+                    <div class="example-section">
+                        <div class="example-title">${data.example.title}</div>
+                        <div class="example-code">${data.example.code}</div>
+                    </div>
+                `;
+            }
+
+            // Quote
+            if (data.quote) {
+                html += `
+                    <div class="quote-section">
+                        <div class="quote-text">${data.quote}</div>
+                        <div class="quote-author">${data.author}</div>
+                    </div>
+                `;
+            }
+
+            panelContent.innerHTML = html;
+
+            // Highlight tree item
+            treeItems.forEach(item => {
+                item.classList.remove('active', 'dimmed');
+                if (item.dataset.item === itemId) {
+                    item.classList.add('active');
+                } else if (!item.classList.contains('hidden')) {
+                    item.classList.add('dimmed');
+                }
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Event Listeners
+        // ═══════════════════════════════════════════════════════════
+        treeItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const itemId = item.dataset.item;
+                if (items[itemId]) {
+                    selectItem(itemId);
+                }
+            });
+        });
+
+        // Click outside to reset
+        document.body.addEventListener('click', (e) => {
+            if (!e.target.closest('.tree-container') && !e.target.closest('.description-panel')) {
+                treeItems.forEach(item => item.classList.remove('active', 'dimmed'));
+                showDefaultPanel();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const visibleItems = [...treeItems].filter(i => !i.classList.contains('hidden'));
+            const activeIndex = visibleItems.findIndex(i => i.classList.contains('active'));
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextIndex = activeIndex < 0 ? 0 : (activeIndex + 1) % visibleItems.length;
+                const itemId = visibleItems[nextIndex].dataset.item;
+                if (items[itemId]) selectItem(itemId);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevIndex = activeIndex <= 0 ? visibleItems.length - 1 : activeIndex - 1;
+                const itemId = visibleItems[prevIndex].dataset.item;
+                if (items[itemId]) selectItem(itemId);
+            } else if (e.key >= '1' && e.key <= '4') {
+                // Tab shortcuts
+                const tabIndex = parseInt(e.key) - 1;
+                if (levelTabs[tabIndex]) levelTabs[tabIndex].click();
+            }
+        });
+
+        // Communication with parent (Reveal.js)
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data.action === 'selectItem' && data.item) {
+                selectItem(data.item);
+            } else if (data.action === 'setLevel' && data.level) {
+                const tab = [...levelTabs].find(t => t.dataset.level === data.level);
+                if (tab) tab.click();
+            } else if (data.action === 'reset') {
+                treeItems.forEach(item => item.classList.remove('active', 'dimmed'));
+                showDefaultPanel();
+            }
+        });
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'estrutura-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

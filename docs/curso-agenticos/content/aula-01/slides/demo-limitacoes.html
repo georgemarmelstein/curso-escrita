@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Limitacoes do Claude Web/Desktop</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 50%, #2d1b1b 100%);
+            min-height: 100vh;
+            color: #FFF4E4;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #ef4444;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h1 .icon {
+            font-size: 1.2em;
+        }
+
+        /* Limitations container */
+        .limitations-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 700px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        /* Limitation card */
+        .limitation-card {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #ef4444;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .limitation-card:hover {
+            transform: translateX(10px);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 5px 25px rgba(239, 68, 68, 0.2);
+        }
+
+        .limitation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.1), transparent 30%);
+            pointer-events: none;
+        }
+
+        .limitation-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .limitation-icon {
+            font-size: 1.8em;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .limitation-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #FFF4E4;
+        }
+
+        .limitation-description {
+            font-family: 'IBM Plex Serif', serif;
+            font-size: 0.9em;
+            color: #aaa;
+            padding-left: 62px;
+            line-height: 1.5;
+        }
+
+        .limitation-description .highlight {
+            color: #ef4444;
+            font-weight: 500;
+        }
+
+        /* Warning footer */
+        .warning-footer {
+            max-width: 700px;
+            width: 100%;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.05));
+            border: 2px solid rgba(239, 68, 68, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            animation: pulse-warning 2s ease infinite;
+        }
+
+        @keyframes pulse-warning {
+            0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.4); }
+        }
+
+        .warning-footer .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .warning-footer .text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #ef4444;
+        }
+
+        .warning-footer .subtext {
+            font-family: 'IBM Plex Serif', serif;
+            font-size: 0.9em;
+            color: #ccc;
+            margin-top: 8px;
+        }
+
+        /* Embed mode */
+        body.embed-mode {
+            padding: 12px;
+            min-height: auto;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body.embed-mode h1 {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        body.embed-mode .limitations-container {
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        body.embed-mode .limitation-card {
+            padding: 12px 15px;
+        }
+
+        body.embed-mode .limitation-icon {
+            font-size: 1.4em;
+            width: 40px;
+            height: 40px;
+        }
+
+        body.embed-mode .limitation-title {
+            font-size: 0.95em;
+        }
+
+        body.embed-mode .limitation-description {
+            font-size: 0.8em;
+            padding-left: 52px;
+        }
+
+        body.embed-mode .warning-footer {
+            padding: 12px;
+        }
+
+        body.embed-mode .warning-footer .icon {
+            font-size: 1.5em;
+            margin-bottom: 6px;
+        }
+
+        body.embed-mode .warning-footer .text {
+            font-size: 0.95em;
+        }
+
+        body.embed-mode .warning-footer .subtext {
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        <span class="icon">🚫</span>
+        O Que Ainda Nao Consegue
+    </h1>
+
+    <div class="limitations-container">
+        <!-- Limitacao 1 -->
+        <div class="limitation-card">
+            <div class="limitation-header">
+                <div class="limitation-icon">🔄</div>
+                <div class="limitation-title">Sem Fluxo Continuo</div>
+            </div>
+            <div class="limitation-description">
+                Cada tarefa e isolada. <span class="highlight">VOCE e o middleware</span> entre uma conversa e outra.
+            </div>
+        </div>
+
+        <!-- Limitacao 2 -->
+        <div class="limitation-card">
+            <div class="limitation-header">
+                <div class="limitation-icon">📁</div>
+                <div class="limitation-title">Sem Acesso ao Filesystem</div>
+            </div>
+            <div class="limitation-description">
+                Nao le nem escreve arquivos locais diretamente. <span class="highlight">Voce precisa copiar/colar tudo.</span>
+            </div>
+        </div>
+
+        <!-- Limitacao 3 -->
+        <div class="limitation-card">
+            <div class="limitation-header">
+                <div class="limitation-icon">⚡</div>
+                <div class="limitation-title">Sem Execucao de Codigo Real</div>
+            </div>
+            <div class="limitation-description">
+                Artifacts sao apenas <span class="highlight">preview</span>. Nao roda scripts de producao.
+            </div>
+        </div>
+
+        <!-- Limitacao 4 -->
+        <div class="limitation-card">
+            <div class="limitation-header">
+                <div class="limitation-icon">🤖</div>
+                <div class="limitation-title">Sem Subagentes Verdadeiros</div>
+            </div>
+            <div class="limitation-description">
+                Nao delega para especialistas em paralelo. <span class="highlight">Uma conversa = um agente.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning footer -->
+    <div class="warning-footer">
+        <span class="icon">⚠️</span>
+        <div class="text">Voce precisa estar presente e clicar</div>
+        <div class="subtext">O humano ainda e o middleware entre cada etapa</div>
+    </div>
+
+    <script>
+        // Detectar modo embed
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Animacao sequencial dos cards
+        const cards = document.querySelectorAll('.limitation-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(-30px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.4s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateX(0)';
+            }, 200 + index * 150);
+        });
+
+        // Animacao do footer
+        const footer = document.querySelector('.warning-footer');
+        footer.style.opacity = '0';
+        footer.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            footer.style.transition = 'all 0.5s ease';
+            footer.style.opacity = '1';
+            footer.style.transform = 'scale(1)';
+        }, 1000);
+    </script>
+</body>
+</html>

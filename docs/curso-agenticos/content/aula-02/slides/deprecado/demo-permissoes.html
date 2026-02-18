@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Permissões</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-gold-subtle: rgba(190, 156, 109, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 100%);
+            color: var(--super-cream);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        body.embed-mode {
+            padding: 20px 30px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--super-gold);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        body.embed-mode .title h1 {
+            font-size: 1.8em;
+        }
+
+        /* NÍVEIS */
+        .levels-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .level {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            opacity: 0;
+            animation: fadeUp 0.5s ease-out forwards;
+        }
+
+        .level:nth-child(1) { animation-delay: 0.1s; }
+        .level:nth-child(2) { animation-delay: 0.25s; }
+        .level:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .level:hover {
+            border-color: var(--super-gold-subtle);
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(190, 156, 109, 0.15);
+        }
+
+        .level.active {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.08);
+            box-shadow: 0 8px 30px rgba(190, 156, 109, 0.25);
+        }
+
+        .level-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .level-icon {
+            font-size: 3em;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .level.active .level-icon {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        body.embed-mode .level-icon {
+            font-size: 2.3em;
+        }
+
+        .level-info {
+            flex: 1;
+        }
+
+        .level-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            color: var(--super-gold);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        body.embed-mode .level-name {
+            font-size: 1.3em;
+        }
+
+        .level-type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-gold-light);
+            font-weight: 500;
+        }
+
+        .level-badge {
+            padding: 6px 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .level.active .level-badge {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            border-color: var(--super-gold-light);
+        }
+
+        .level-desc {
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .level-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tool-tag {
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        .level.active .tool-tag {
+            background: rgba(190, 156, 109, 0.15);
+            border-color: var(--super-gold-subtle);
+            color: var(--super-gold-light);
+        }
+
+        body.embed-mode .level {
+            padding: 22px;
+            margin-bottom: 15px;
+        }
+
+        body.embed-mode .level-desc {
+            font-size: 0.88em;
+        }
+
+        body.embed-mode .tool-tag {
+            font-size: 0.75em;
+            padding: 4px 10px;
+        }
+
+        /* INDICADOR */
+        .nav-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 12px var(--super-gold-light);
+            transform: scale(1.3);
+        }
+
+        body.embed-mode .nav-indicator {
+            bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>Sistema de Permissões</h1>
+        <p>Clique nos níveis para explorar</p>
+    </div>
+
+    <div class="levels-container">
+        <div class="level active" data-level="0">
+            <div class="level-header">
+                <div class="level-icon">📖</div>
+                <div class="level-info">
+                    <div class="level-name">Read - Leitura</div>
+                    <div class="level-type">Sem aprovação necessária</div>
+                </div>
+                <div class="level-badge">LIVRE</div>
+            </div>
+            <div class="level-desc">
+                Claude pode ler qualquer arquivo do projeto sem pedir permissão.
+                É o nível mais seguro - apenas observa, não modifica nada.
+            </div>
+            <div class="level-tools">
+                <span class="tool-tag">Read</span>
+                <span class="tool-tag">Grep</span>
+                <span class="tool-tag">Glob</span>
+                <span class="tool-tag">WebFetch</span>
+                <span class="tool-tag">WebSearch</span>
+            </div>
+        </div>
+
+        <div class="level" data-level="1">
+            <div class="level-header">
+                <div class="level-icon">✏️</div>
+                <div class="level-info">
+                    <div class="level-name">Write - Escrita</div>
+                    <div class="level-type">Aprovação por sessão</div>
+                </div>
+                <div class="level-badge">SESSÃO</div>
+            </div>
+            <div class="level-desc">
+                Claude pode criar e modificar arquivos. Pede aprovação na primeira vez,
+                depois fica liberado até o fim da sessão.
+            </div>
+            <div class="level-tools">
+                <span class="tool-tag">Edit</span>
+                <span class="tool-tag">Write</span>
+                <span class="tool-tag">NotebookEdit</span>
+            </div>
+        </div>
+
+        <div class="level" data-level="2">
+            <div class="level-header">
+                <div class="level-icon">⚡</div>
+                <div class="level-info">
+                    <div class="level-name">Bash - Execução</div>
+                    <div class="level-type">Aprovação por comando</div>
+                </div>
+                <div class="level-badge">COMANDO</div>
+            </div>
+            <div class="level-desc">
+                Claude pode executar comandos no terminal. CADA comando individual
+                pede aprovação. Poder máximo, controle máximo.
+            </div>
+            <div class="level-tools">
+                <span class="tool-tag">npm run test</span>
+                <span class="tool-tag">git status</span>
+                <span class="tool-tag">python script.py</span>
+                <span class="tool-tag">ls -la</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-indicator">
+        <div class="nav-dot active" data-index="0" title="Read"></div>
+        <div class="nav-dot" data-index="1" title="Write"></div>
+        <div class="nav-dot" data-index="2" title="Bash"></div>
+    </div>
+
+    <script>
+        // Detecção de embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Navegação
+        let currentLevel = 0;
+        const levels = document.querySelectorAll('.level');
+        const dots = document.querySelectorAll('.nav-dot');
+
+        function updateDisplay() {
+            levels.forEach((level, i) => {
+                level.classList.toggle('active', i === currentLevel);
+            });
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentLevel);
+            });
+        }
+
+        // Click nos níveis
+        levels.forEach((level, i) => {
+            level.addEventListener('click', () => {
+                currentLevel = i;
+                updateDisplay();
+            });
+        });
+
+        // Click nos dots
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                currentLevel = i;
+                updateDisplay();
+            });
+        });
+
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                currentLevel = (currentLevel + 1) % 3;
+                updateDisplay();
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                currentLevel = (currentLevel - 1 + 3) % 3;
+                updateDisplay();
+            }
+        });
+    </script>
+</body>
+</html>

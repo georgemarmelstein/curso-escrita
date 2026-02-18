@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta C - O Olho Que Se Abre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--super-bg-dark);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Canvas para Matrix/código caindo */
+        canvas#matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* O olho central */
+        .eye-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .eye {
+            position: relative;
+            width: 300px;
+            height: 150px;
+            margin-bottom: 50px;
+        }
+
+        /* Pálpebra superior */
+        .eyelid-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(180deg, #0a0a12 0%, #15131a 100%);
+            border-radius: 150px 150px 0 0;
+            transform-origin: bottom center;
+            animation: blinkTop 6s ease-in-out infinite;
+            z-index: 20;
+        }
+
+        /* Pálpebra inferior */
+        .eyelid-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(0deg, #0a0a12 0%, #15131a 100%);
+            border-radius: 0 0 150px 150px;
+            transform-origin: top center;
+            animation: blinkBottom 6s ease-in-out infinite;
+            z-index: 20;
+        }
+
+        @keyframes blinkTop {
+            0%, 10% { transform: scaleY(1); }
+            15%, 85% { transform: scaleY(0.1); }
+            90%, 100% { transform: scaleY(1); }
+        }
+
+        @keyframes blinkBottom {
+            0%, 10% { transform: scaleY(1); }
+            15%, 85% { transform: scaleY(0.1); }
+            90%, 100% { transform: scaleY(1); }
+        }
+
+        /* A íris - o portal */
+        .iris {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 30% 30%, var(--super-gold-light) 0%, transparent 30%),
+                radial-gradient(circle at center, var(--super-gold) 0%, var(--super-gold-dark) 50%, #3a2a15 100%);
+            box-shadow:
+                0 0 30px rgba(190, 156, 109, 0.5),
+                0 0 60px rgba(190, 156, 109, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 15;
+            animation: irisPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes irisPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(190, 156, 109, 0.5), 0 0 60px rgba(190, 156, 109, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(190, 156, 109, 0.7), 0 0 100px rgba(190, 156, 109, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5); }
+        }
+
+        /* A pupila - o terminal */
+        .pupil {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #0a0a12;
+            z-index: 16;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .pupil-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5em;
+            color: var(--super-gold);
+            animation: cursorBlink 1s infinite;
+        }
+
+        @keyframes cursorBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        /* Reflexo no olho - mostra um universo */
+        .reflection {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 60% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 30% 70%, rgba(190, 156, 109, 0.1) 0%, transparent 30%);
+            z-index: 17;
+            pointer-events: none;
+        }
+
+        /* Contorno do olho */
+        .eye-outline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            border-radius: 50% / 40%;
+            z-index: 10;
+        }
+
+        /* Texto */
+        .title-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .aula-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-gold);
+            opacity: 0.6;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            font-weight: 700;
+            color: var(--super-cream);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.5);
+        }
+
+        .main-title .highlight {
+            color: var(--super-gold);
+            display: block;
+            font-style: italic;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.7);
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .subtitle em {
+            color: var(--super-gold);
+            font-style: normal;
+        }
+
+        /* Decoração lateral - colunas da caverna */
+        .cave-column {
+            position: fixed;
+            bottom: 0;
+            width: 80px;
+            height: 60%;
+            background: linear-gradient(180deg, transparent 0%, #15120d 30%, #1a1510 100%);
+            z-index: 5;
+            opacity: 0.7;
+        }
+
+        .cave-column.left {
+            left: 5%;
+            transform: perspective(500px) rotateY(15deg);
+        }
+
+        .cave-column.right {
+            right: 5%;
+            transform: perspective(500px) rotateY(-15deg);
+        }
+
+        /* Chão da caverna */
+        .cave-floor {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 15%;
+            background: linear-gradient(0deg, #0d0a08 0%, transparent 100%);
+            z-index: 3;
+        }
+
+        /* Embed mode */
+        body.embed-mode .eye { width: 200px; height: 100px; margin-bottom: 30px; }
+        body.embed-mode .iris { width: 80px; height: 80px; }
+        body.embed-mode .pupil { width: 35px; height: 35px; }
+        body.embed-mode .reflection { width: 70px; height: 70px; }
+        body.embed-mode .main-title { font-size: 2.2em; }
+        body.embed-mode .subtitle { font-size: 0.95em; }
+        body.embed-mode .cave-column { display: none; }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+
+    <div class="cave-column left"></div>
+    <div class="cave-column right"></div>
+    <div class="cave-floor"></div>
+
+    <div class="eye-container">
+        <div class="eye">
+            <div class="eye-outline"></div>
+            <div class="eyelid-top"></div>
+            <div class="eyelid-bottom"></div>
+            <div class="iris">
+                <div class="reflection"></div>
+                <div class="pupil">
+                    <span class="pupil-text">$_</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="title-section">
+            <div class="aula-number">AULA 02</div>
+            <h1 class="main-title">
+                Desvendando o
+                <span class="highlight">Claude Code</span>
+            </h1>
+            <p class="subtitle">
+                Abra os olhos. O terminal é a <em>janela</em>, não a parede.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Matrix rain sutil
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = document.documentElement.clientWidth || window.innerWidth;
+            canvas.height = document.documentElement.clientHeight || window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const chars = '$>_./claudeABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+        const fontSize = 12;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(10, 10, 18, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px JetBrains Mono, monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const brightness = Math.random();
+
+                if (brightness > 0.97) {
+                    ctx.fillStyle = 'rgba(190, 156, 109, 0.8)';
+                } else if (brightness > 0.8) {
+                    ctx.fillStyle = 'rgba(190, 156, 109, 0.4)';
+                } else {
+                    ctx.fillStyle = 'rgba(190, 156, 109, 0.15)';
+                }
+
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.98) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 60);
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

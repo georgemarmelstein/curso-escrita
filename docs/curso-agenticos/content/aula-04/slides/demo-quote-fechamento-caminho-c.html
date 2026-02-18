@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encerramento - Proposta C: O Horizonte</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a12;
+            color: #FFF4E4;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../../../site/assets/20260129_1754_Image Generation_simple_compose_01kg5rgpg5ef9bfyxj3rrhh129.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(10, 10, 18, 0.88) 0%,
+                rgba(10, 10, 18, 0.80) 50%,
+                rgba(10, 10, 18, 0.70) 100%
+            );
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1400px;
+            padding: 50px 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .quote-side {
+            padding-right: 30px;
+        }
+
+        .main-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-style: italic;
+            line-height: 1.35;
+            color: #FFF4E4;
+            margin-bottom: 25px;
+            opacity: 0;
+            animation: fadeInSlide 1.2s ease-out 0.5s forwards;
+        }
+
+        .quote-highlight {
+            color: #BE9C6D;
+            position: relative;
+        }
+
+        .main-attribution {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            color: #BE9C6D;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 1s forwards;
+        }
+
+        .divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, #BE9C6D, transparent);
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: expandDivider 0.8s ease-out 1.5s forwards;
+        }
+
+        .secondary-quote {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 1.6;
+            color: rgba(255, 244, 228, 0.6);
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 2s forwards;
+        }
+
+        .secondary-quote em {
+            font-style: italic;
+            color: rgba(255, 244, 228, 0.75);
+        }
+
+        .secondary-attribution {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(190, 156, 109, 0.5);
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 2.3s forwards;
+        }
+
+        .build-side {
+            position: relative;
+            height: 500px;
+        }
+
+        .code-terminal {
+            background: rgba(20, 20, 35, 0.65);
+            border: 1px solid rgba(190, 156, 109, 0.25);
+            border-radius: 12px;
+            padding: 25px 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            line-height: 1.9;
+            color: #4ade80;
+            height: 100%;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 2.5s forwards;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        .code-line {
+            opacity: 0;
+            margin-bottom: 10px;
+        }
+
+        .code-line.prompt { color: #BE9C6D; }
+        .code-line.comment { color: #6a7390; font-style: italic; }
+        .code-line.keyword { color: #4ade80; }
+        .code-line.output { color: #FFF4E4; padding-left: 15px; }
+        .code-line.success { color: #4ade80; font-weight: 500; }
+        .code-line.poetic { color: #BE9C6D; font-style: italic; }
+        .code-line.dim { color: rgba(255,244,228,0.5); }
+
+        .code-line:nth-child(2) { animation: typeIn 0.6s ease-out 2.8s forwards; }
+        .code-line:nth-child(3) { animation: typeIn 0.6s ease-out 3.2s forwards; }
+        .code-line:nth-child(4) { animation: typeIn 0.6s ease-out 3.6s forwards; }
+        .code-line:nth-child(5) { animation: typeIn 0.6s ease-out 4.0s forwards; }
+        .code-line:nth-child(6) { animation: typeIn 0.6s ease-out 4.4s forwards; }
+        .code-line:nth-child(7) { animation: typeIn 0.6s ease-out 4.8s forwards; }
+        .code-line:nth-child(8) { animation: typeIn 0.6s ease-out 5.2s forwards; }
+        .code-line:nth-child(9) { animation: typeIn 0.8s ease-out 5.8s forwards; }
+        .code-line:nth-child(10) { animation: typeIn 0.8s ease-out 6.4s forwards; }
+        .code-line:nth-child(11) { animation: typeIn 0.8s ease-out 7.0s forwards; }
+
+        .building-blocks {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 12px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 7.8s forwards;
+        }
+
+        .block {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.25), rgba(190, 156, 109, 0.1));
+            border: 1px solid rgba(190, 156, 109, 0.4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            backdrop-filter: blur(5px);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .block:nth-child(2) { animation-delay: 0.4s; }
+        .block:nth-child(3) { animation-delay: 0.8s; }
+
+        .glow-effect {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(74, 222, 128, 0.08) 0%, transparent 70%);
+            top: 50%;
+            right: -100px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 1;
+            animation: pulse 5s ease-in-out infinite;
+        }
+
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes expandDivider {
+            from { opacity: 0; width: 0; }
+            to { opacity: 1; width: 80px; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes typeIn {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: translateY(-50%) scale(1); }
+            50% { opacity: 0.7; transform: translateY(-50%) scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-image"></div>
+    <div class="background-overlay"></div>
+    <div class="glow-effect"></div>
+
+    <div class="container">
+        <div class="quote-side">
+            <div class="main-quote">
+                "Se eu não consigo <span class="quote-highlight">construir</span>, eu não <span class="quote-highlight">entendo</span>. Construa o sistema, organize-o, faça funcionar. É o único caminho."
+            </div>
+
+            <div class="main-attribution">
+                — Andrej Karpathy
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="secondary-quote">
+                <em>"O que eu não consigo criar, eu não entendo."</em>
+            </div>
+
+            <div class="secondary-attribution">
+                — Richard Feynman
+            </div>
+        </div>
+
+        <div class="build-side">
+            <div class="code-terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                </div>
+
+                <div class="code-line comment"># Cinco dias atrás, não existia caminho.</div>
+                <div class="code-line comment"># Agora existe. Vocês o fizeram.</div>
+                <div class="code-line prompt">$ claude --próximo passo</div>
+                <div class="code-line keyword">→ Calculando horizonte...</div>
+                <div class="code-line output">O caminho que vocês abriram</div>
+                <div class="code-line output">não termina aqui.</div>
+                <div class="code-line output">Ele termina onde vocês decidirem.</div>
+                <div class="code-line dim">  </div>
+                <div class="code-line success">✨ Caminhante: agora o caminho é seu.</div>
+                <div class="code-line success" style="color: rgba(255,244,228,0.7); font-weight: 400;">   Eu estarei aqui. É só chamar.</div>
+            </div>
+
+            <div class="building-blocks">
+                <div class="block">🚀</div>
+                <div class="block">🌅</div>
+                <div class="block">♾️</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

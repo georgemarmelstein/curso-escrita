@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitetura de Agentes - Aula 03</title>
+    <!-- Google Fonts - Stack SUPER -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    <style>
+        /* ============================================
+           VARIAVEIS CSS - PALETA SUPER
+           ============================================ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --r-main-font: 'Inter', sans-serif;
+            --r-heading-font: 'Playfair Display', serif;
+            --r-main-color: #FFF4E4;
+            --r-heading-color: #BE9C6D;
+            --r-background-color: #0a0a12;
+        }
+
+        /* ============================================
+           TIPOGRAFIA
+           ============================================ */
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            text-transform: none;
+            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+            color: var(--super-gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .reveal p, .reveal li, .reveal blockquote {
+            font-family: 'Inter', sans-serif;
+            color: var(--super-cream);
+        }
+        .reveal pre, .reveal code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ============================================
+           LAYOUT BASE
+           ============================================ */
+        .reveal section {
+            text-align: center;
+        }
+        .reveal ul {
+            list-style-type: none;
+        }
+        .reveal ul li::before {
+            content: ">";
+            color: var(--super-gold);
+            display: inline-block;
+            width: 1.5em;
+            margin-left: -1.5em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .reveal blockquote {
+            background: none;
+            box-shadow: none;
+            font-style: italic;
+            border-left: 3px solid var(--super-gold);
+            padding-left: 20px;
+        }
+        .reveal pre {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border-radius: 8px;
+        }
+
+        /* ============================================
+           OVERLAYS
+           ============================================ */
+        .reveal .slides section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(10, 10, 18, 0.3) 0%,
+                rgba(10, 10, 18, 0.5) 50%,
+                rgba(10, 10, 18, 0.8) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .reveal .slides section.no-overlay::before {
+            display: none;
+        }
+
+        .reveal .slides section h1,
+        .reveal .slides section h2,
+        .reveal .slides section h3,
+        .reveal .slides section h4,
+        .reveal .slides section > div,
+        .reveal .slides section > p,
+        .reveal .slides section > ul,
+        .reveal .slides section > blockquote {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ============================================
+           IFRAMES PARA DEMOS
+           ============================================ */
+        .demo-iframe-container {
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0 0 0 -50vw;
+            position: relative;
+            left: 50%;
+        }
+        .demo-iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0;
+        }
+
+        /* ============================================
+           SLIDES DE TRANSICAO
+           ============================================ */
+        .section-title {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: rgba(190, 156, 109, 0.6);
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+        .section-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 15px;
+            letter-spacing: 2px;
+        }
+
+        /* ============================================
+           SLIDE DE CONCLUSAO
+           ============================================ */
+        .conclusion-box {
+            background: rgba(190, 156, 109, 0.1);
+            border: 2px solid var(--super-gold);
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .conclusion-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: var(--super-cream);
+            line-height: 1.6;
+        }
+        .conclusion-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* ============================================
+           ASSINATURA DO AUTOR
+           ============================================ */
+        .author-signature {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            font-family: 'Inter', 'Montserrat', sans-serif;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 2px;
+            color: rgba(190, 156, 109, 0.6);
+            text-transform: uppercase;
+            z-index: 9999;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="author-signature">George Marmelstein</div>
+        <div class="slides">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
+         BLOCO 1: A HISTORIA - O CAOS DO VIBE CODING
+         ═══════════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- SLIDE 1 - CAPA -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-capa.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- SLIDE 2 - QUOTE KARPATHY: VIBE CODING -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-quote-karpathy-vibe.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- SLIDE 3 - EXERCÍCIO: VIBE CODING NA PRÁTICA -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-exercicio-vibe-coding.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- SLIDE 4 - O CAOS DO VIBE CODING -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-caos-vibe-coding.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- SLIDE 5 - OS 5 PROBLEMAS DO VIBE CODING -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-5-problemas-vibe.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
+         BLOCO 2: O PADRÃO OCULTO - O CICLO DE DESENVOLVIMENTO
+         ═══════════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- SLIDE 6 - TRANSIÇÃO: Bloco 2 -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="section-title">
+            <span class="section-number">// BLOCO 02</span>
+            <h2 style="font-size: 2.5em;">O Padrão Oculto</h2>
+            <span class="section-label">O Ciclo de Desenvolvimento</span>
+        </div>
+    </section>
+
+    <!-- SLIDE 7 - QUOTE AL HARRIS -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-quote-al-harris.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- SLIDE 8 - SISTEMA MARMELSTEIN -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-sistema-marmelstein.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
+         BLOCO 3: WORKFLOW HUMANO-AGENTE - O SUPERPOWERS
+         ═══════════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- SLIDE 9 - QUOTE JESSE VINCENT -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-quote-jesse-vincent.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
+         BLOCO 4: WORKFLOW AGENTE-AGENTE - OS 5 PADRÕES
+         ═══════════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- SLIDE 10 - TRANSIÇÃO: Workflow Agente-Agente -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-transicao-padroes.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- SLIDE 11 - WORKFLOW BUILDER -->
+    <section class="no-overlay" data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="resources/demo-workflow-builder.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            backgroundTransition: 'fade',
+            slideNumber: true,
+            controls: true,
+            progress: true,
+            center: true,
+            keyboard: true,
+        });
+
+        // Comunicacao com iframes para avancar demos
+        Reveal.on('slidechanged', event => {
+            const iframe = event.currentSlide.querySelector('iframe');
+            if (iframe && iframe.contentWindow) {
+                // Reset demo ao entrar no slide
+                iframe.contentWindow.postMessage({ action: 'reset' }, '*');
+            }
+        });
+
+        // Avancar demo com tecla Space quando dentro de iframe
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'ArrowRight') {
+                const currentSlide = Reveal.getCurrentSlide();
+                const iframe = currentSlide.querySelector('iframe');
+                if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({ action: 'nextStage' }, '*');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

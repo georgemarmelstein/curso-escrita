@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Pipeline Sentença</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #FFF4E4;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        /* Dark scrollbar */
+        body::-webkit-scrollbar {
+            width: 6px;
+        }
+        body::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+        }
+        body::-webkit-scrollbar-thumb {
+            background: rgba(190,156,109,0.3);
+            border-radius: 3px;
+        }
+
+        h1 {
+            color: #BE9C6D;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.85em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Pipeline container */
+        .pipeline-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Human input */
+        .human-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .human-icon {
+            font-size: 2.5em;
+        }
+
+        .command-box {
+            background: rgba(74, 222, 128, 0.15);
+            border: 2px solid #4ade80;
+            border-radius: 10px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .command-box .prompt {
+            color: #4ade80;
+            font-weight: 500;
+        }
+
+        .command-box .command {
+            color: #FFF4E4;
+            font-weight: 600;
+        }
+
+        .command-box .process-number {
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        /* Arrow */
+        .arrow {
+            font-size: 1.5em;
+            color: #BE9C6D;
+            animation: pulse-arrow 1.5s ease infinite;
+        }
+
+        @keyframes pulse-arrow {
+            0%, 100% { opacity: 0.5; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(3px); }
+        }
+
+        /* Orchestrator */
+        .orchestrator-box {
+            background: linear-gradient(135deg, rgba(190,156,109,0.15), rgba(190,156,109,0.05));
+            border: 2px solid #BE9C6D;
+            border-radius: 12px;
+            padding: 15px 30px;
+            text-align: center;
+            position: relative;
+            min-width: 280px;
+        }
+
+        .orchestrator-box .icon {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .orchestrator-box .title {
+            color: #BE9C6D;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .orchestrator-box .desc {
+            color: #888;
+            font-size: 0.75em;
+            margin-top: 4px;
+        }
+
+        .orchestrator-box.active {
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.4);
+            animation: glow-orch 2s ease infinite;
+        }
+
+        @keyframes glow-orch {
+            0%, 100% { box-shadow: 0 0 20px rgba(190, 156, 109, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(190, 156, 109, 0.5); }
+        }
+
+        /* Parallel section */
+        .parallel-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .parallel-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #BE9C6D;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .parallel-label::before,
+        .parallel-label::after {
+            content: '';
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #BE9C6D, transparent);
+        }
+
+        .parallel-arrows {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+        }
+
+        .parallel-arrows .arrow-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #BE9C6D;
+            font-size: 1.2em;
+        }
+
+        /* Subagents row */
+        .subagents-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .subagent-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 2px solid rgba(99, 102, 241, 0.4);
+            border-radius: 10px;
+            padding: 12px 16px;
+            text-align: center;
+            min-width: 140px;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .subagent-box.active {
+            opacity: 1;
+            border-color: #6366f1;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .subagent-box.completed {
+            opacity: 1;
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        .subagent-box .icon {
+            font-size: 1.6em;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .subagent-box .name {
+            color: #a5b4fc;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .subagent-box .type {
+            color: #666;
+            font-size: 0.7em;
+            margin-top: 2px;
+        }
+
+        .subagent-box .status {
+            font-size: 0.65em;
+            margin-top: 6px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .subagent-box .status.running {
+            color: #fbbf24;
+        }
+
+        .subagent-box .status.done {
+            color: #4ade80;
+        }
+
+        /* Consolidation */
+        .consolidation-box {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05));
+            border: 2px solid rgba(34, 197, 94, 0.5);
+            border-radius: 12px;
+            padding: 15px 30px;
+            text-align: center;
+            min-width: 250px;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .consolidation-box.active {
+            opacity: 1;
+            border-color: #22c55e;
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.3);
+        }
+
+        .consolidation-box .icon {
+            font-size: 1.8em;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .consolidation-box .title {
+            color: #86efac;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .consolidation-box .desc {
+            color: #666;
+            font-size: 0.7em;
+            margin-top: 4px;
+        }
+
+        /* Output */
+        .output-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0.5;
+            transition: all 0.5s ease;
+        }
+
+        .output-section.active {
+            opacity: 1;
+        }
+
+        .output-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid rgba(34, 197, 94, 0.5);
+            border-radius: 10px;
+            padding: 12px 20px;
+            text-align: center;
+        }
+
+        .output-box.active {
+            border-color: #22c55e;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
+        }
+
+        .output-box .icon {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .output-box .title {
+            color: #86efac;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .human-review {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .human-review .icon {
+            font-size: 2em;
+        }
+
+        .human-review .label {
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        .human-review .highlight {
+            color: #BE9C6D;
+            font-weight: 600;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #BE9C6D, #8B7355);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(190,156,109,0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #FFF4E4;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Speed control */
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+
+        .speed-control label {
+            color: #888;
+            font-size: 0.8em;
+        }
+
+        .speed-control input[type="range"] {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .speed-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #BE9C6D;
+            cursor: pointer;
+        }
+
+        .speed-control #speed-label {
+            color: #BE9C6D;
+            font-size: 0.75em;
+            min-width: 60px;
+        }
+
+        /* Key insight */
+        .key-insight {
+            margin-top: 20px;
+            padding: 15px 25px;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 10px;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        .key-insight .icon {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+
+        .key-insight .text {
+            color: #FFF4E4;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .key-insight .highlight {
+            color: #BE9C6D;
+            font-weight: 600;
+        }
+
+        /* Embed mode */
+        body.embed-mode {
+            padding: 10px;
+            min-height: auto;
+            height: 100vh;
+        }
+
+        body.embed-mode h1 {
+            font-size: 1.2em;
+            margin-bottom: 4px;
+        }
+
+        body.embed-mode .subtitle {
+            font-size: 0.75em;
+            margin-bottom: 12px;
+        }
+
+        body.embed-mode .pipeline-container {
+            gap: 8px;
+        }
+
+        body.embed-mode .human-icon {
+            font-size: 1.8em;
+        }
+
+        body.embed-mode .command-box {
+            padding: 8px 16px;
+            font-size: 0.85em;
+        }
+
+        body.embed-mode .orchestrator-box {
+            padding: 10px 20px;
+            min-width: 200px;
+        }
+
+        body.embed-mode .orchestrator-box .icon {
+            font-size: 1.5em;
+        }
+
+        body.embed-mode .orchestrator-box .title {
+            font-size: 0.9em;
+        }
+
+        body.embed-mode .subagent-box {
+            padding: 8px 12px;
+            min-width: 110px;
+        }
+
+        body.embed-mode .subagent-box .icon {
+            font-size: 1.2em;
+        }
+
+        body.embed-mode .subagent-box .name {
+            font-size: 0.75em;
+        }
+
+        body.embed-mode .consolidation-box {
+            padding: 10px 20px;
+            min-width: 180px;
+        }
+
+        body.embed-mode .output-box {
+            padding: 8px 15px;
+        }
+
+        body.embed-mode .output-box .icon {
+            font-size: 1.5em;
+        }
+
+        body.embed-mode .key-insight {
+            padding: 10px 15px;
+            margin-top: 12px;
+        }
+
+        body.embed-mode .key-insight .text {
+            font-size: 0.8em;
+        }
+
+        body.embed-mode .controls {
+            margin-top: 12px;
+        }
+
+        body.embed-mode .btn {
+            padding: 8px 16px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pipeline Sentença</h1>
+    <p class="subtitle">Clique em "Executar" para ver o fluxo de dados entre agentes</p>
+
+    <div class="pipeline-container">
+        <!-- Human Input -->
+        <div class="human-section">
+            <span class="human-icon">👤</span>
+            <div class="command-box">
+                <span class="prompt">$</span>
+                <span class="command">/pipeline-sentenca</span>
+                <span class="process-number">0814624-28.2019.4.05.8100</span>
+            </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <!-- Orchestrator -->
+        <div class="orchestrator-box" id="orchestrator">
+            <span class="icon">🎼</span>
+            <span class="title">ORQUESTRADOR</span>
+            <span class="desc">calcula paths e delega</span>
+        </div>
+
+        <!-- Parallel Section -->
+        <div class="parallel-section">
+            <div class="parallel-label">Em Paralelo</div>
+            <div class="parallel-arrows">
+                <div class="arrow-branch">↓</div>
+                <div class="arrow-branch">↓</div>
+                <div class="arrow-branch">↓</div>
+            </div>
+        </div>
+
+        <!-- Subagents Row -->
+        <div class="subagents-row">
+            <div class="subagent-box" id="sub-extracao">
+                <span class="icon">🤖</span>
+                <span class="name">Extração</span>
+                <span class="type">linha-tempo</span>
+                <span class="status" id="status-extracao">aguardando</span>
+            </div>
+            <div class="subagent-box" id="sub-bnp">
+                <span class="icon">🤖</span>
+                <span class="name">Pesquisa BNP</span>
+                <span class="type">precedentes</span>
+                <span class="status" id="status-bnp">aguardando</span>
+            </div>
+            <div class="subagent-box" id="sub-cjf">
+                <span class="icon">🤖</span>
+                <span class="name">Pesquisa CJF</span>
+                <span class="type">jurisprudência</span>
+                <span class="status" id="status-cjf">aguardando</span>
+            </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <!-- Consolidation -->
+        <div class="consolidation-box" id="consolidation">
+            <span class="icon">🔄</span>
+            <span class="title">CONSOLIDAÇÃO</span>
+            <span class="desc">merge dos paths</span>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <!-- Fundamentação -->
+        <div class="subagent-box" id="sub-fundamentacao" style="min-width: 200px;">
+            <span class="icon">🤖</span>
+            <span class="name">Fundamentação</span>
+            <span class="type">+ minuta final</span>
+            <span class="status" id="status-fundamentacao">aguardando</span>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <!-- Output -->
+        <div class="output-section" id="output-section">
+            <div class="output-box" id="output-box">
+                <span class="icon">📄</span>
+                <span class="title">ARTEFATO FINAL</span>
+            </div>
+            <div class="arrow" style="transform: rotate(-90deg);">→</div>
+            <div class="human-review">
+                <span class="icon">👤</span>
+                <div>
+                    <span class="label">Human</span>
+                    <span class="highlight">(revisão)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Insight -->
+    <div class="key-insight">
+        <div class="icon">💡</div>
+        <div class="text">
+            O humano aparece nas <span class="highlight">DUAS PONTAS</span>: no início (dá o comando) e no final (revisa).<br>
+            No meio, os agentes trabalham <span class="highlight">sozinhos</span>, em paralelo, cada um com seu <span class="highlight">contexto isolado</span>.
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button class="btn btn-primary" onclick="executePipeline()">
+            <span>▶</span> Executar Pipeline
+        </button>
+        <button class="btn btn-secondary" onclick="resetDemo()">
+            <span>↺</span> Reiniciar
+        </button>
+        <div class="speed-control">
+            <label>Velocidade:</label>
+            <input type="range" id="speed-slider" min="1" max="5" value="3" oninput="updateSpeed(this.value)">
+            <span id="speed-label">Normal</span>
+        </div>
+    </div>
+
+    <script>
+        // Detectar modo embed
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Speed control
+        let speedMultiplier = 1;
+        const speedLabels = ['Muito Lento', 'Lento', 'Normal', 'Rápido', 'Muito Rápido'];
+
+        function updateSpeed(value) {
+            const speeds = [2, 1.5, 1, 0.6, 0.3];
+            speedMultiplier = speeds[value - 1];
+            document.getElementById('speed-label').textContent = speedLabels[value - 1];
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms * speedMultiplier));
+        }
+
+        let isRunning = false;
+
+        async function executePipeline() {
+            if (isRunning) return;
+            isRunning = true;
+            resetDemo();
+
+            // Ativar orquestrador
+            await sleep(300);
+            document.getElementById('orchestrator').classList.add('active');
+
+            // Ativar subagentes em paralelo
+            await sleep(500);
+
+            const subagentes = ['sub-extracao', 'sub-bnp', 'sub-cjf'];
+            const statuses = ['status-extracao', 'status-bnp', 'status-cjf'];
+
+            // Todos começam juntos
+            subagentes.forEach((id, i) => {
+                document.getElementById(id).classList.add('active');
+                const status = document.getElementById(statuses[i]);
+                status.textContent = 'executando...';
+                status.classList.add('running');
+            });
+
+            // Completam em tempos diferentes (simulando paralelo)
+            await sleep(600);
+            completeSubagent('sub-extracao', 'status-extracao');
+
+            await sleep(400);
+            completeSubagent('sub-bnp', 'status-bnp');
+
+            await sleep(300);
+            completeSubagent('sub-cjf', 'status-cjf');
+
+            // Consolidação
+            await sleep(400);
+            document.getElementById('consolidation').classList.add('active');
+
+            // Fundamentação
+            await sleep(500);
+            document.getElementById('sub-fundamentacao').classList.add('active');
+            document.getElementById('status-fundamentacao').textContent = 'executando...';
+            document.getElementById('status-fundamentacao').classList.add('running');
+
+            await sleep(700);
+            completeSubagent('sub-fundamentacao', 'status-fundamentacao');
+
+            // Output
+            await sleep(400);
+            document.getElementById('output-section').classList.add('active');
+            document.getElementById('output-box').classList.add('active');
+
+            isRunning = false;
+        }
+
+        function completeSubagent(subId, statusId) {
+            const sub = document.getElementById(subId);
+            const status = document.getElementById(statusId);
+
+            sub.classList.remove('active');
+            sub.classList.add('completed');
+            status.textContent = 'concluído ✓';
+            status.classList.remove('running');
+            status.classList.add('done');
+        }
+
+        function resetDemo() {
+            // Reset orchestrator
+            document.getElementById('orchestrator').classList.remove('active');
+
+            // Reset subagents
+            const subagentes = ['sub-extracao', 'sub-bnp', 'sub-cjf', 'sub-fundamentacao'];
+            const statuses = ['status-extracao', 'status-bnp', 'status-cjf', 'status-fundamentacao'];
+
+            subagentes.forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.classList.remove('active', 'completed');
+
+                const status = document.getElementById(statuses[i]);
+                status.textContent = 'aguardando';
+                status.classList.remove('running', 'done');
+            });
+
+            // Reset consolidation
+            document.getElementById('consolidation').classList.remove('active');
+
+            // Reset output
+            document.getElementById('output-section').classList.remove('active');
+            document.getElementById('output-box').classList.remove('active');
+
+            isRunning = false;
+        }
+    </script>
+</body>
+</html>

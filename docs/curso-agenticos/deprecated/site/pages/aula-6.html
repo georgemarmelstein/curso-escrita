@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 6: Engenharia de Prompt | Sistemas Agenticos</title>
+    <meta name="description" content="Anatomia do prompt eficaz, padrao SEMPRE/NUNCA/PREFERIR, Prompt Learning Loop e os 10 erros mais comuns">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">S</span>
+                <span class="logo-text">Sistemas Agenticos</span>
+            </a>
+            <nav class="nav-main">
+                <ul>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Aulas</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="aula-0.html">Aula 0: Abertura</a></li>
+                            <li><a href="aula-1.html">Aula 1: Fundamentos</a></li>
+                            <li><a href="aula-2a.html">Aula 2A: Anatomia</a></li>
+                            <li><a href="aula-2b.html">Aula 2B: Claude Code</a></li>
+                            <li><a href="aula-3.html">Aula 3: Arquitetura</a></li>
+                            <li><a href="aula-4.html">Aula 4: Construindo</a></li>
+                            <li><a href="aula-5.html">Aula 5: Sistema CLERK</a></li>
+                            <li class="divider"></li>
+                            <li><a href="aula-6.html" class="active">Aula 6: Engenharia de Prompt</a></li>
+                            <li><a href="aula-6b.html">Aula 6B: Prompts Agenticos</a></li>
+                            <li><a href="aula-7.html">Aula 7: Engenharia de Contexto</a></li>
+                            <li><a href="aula-8.html">Aula 8: Engenharia de Capacidades</a></li>
+                            <li><a href="aula-9.html">Aula 9: Engenharia de Workflows</a></li>
+                            <li><a href="aula-10.html">Aula 10: Engenharia de Conexoes</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="glossario.html">Glossario</a></li>
+                    <li><a href="recursos.html">Recursos</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" aria-label="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+        <div class="container">
+            <span class="badge badge-module">Modulo 2</span>
+            <h1>Engenharia de Prompt</h1>
+            <p class="lesson-subtitle">A arte de transformar instrucoes vagas em especificacoes precisas que o agente executa com consistencia</p>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    2h30
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    5 blocos
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Documentacao
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lesson Content -->
+    <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+            <nav class="lesson-nav">
+                <h4>Nesta Aula</h4>
+                <ul>
+                    <li><a href="#bloco1" class="lesson-nav-link">1. Paradigma Spec-Driven</a></li>
+                    <li><a href="#bloco2" class="lesson-nav-link">2. Anatomia do Prompt Eficaz</a></li>
+                    <li><a href="#bloco3" class="lesson-nav-link">3. Regras Explicitas</a></li>
+                    <li><a href="#bloco4" class="lesson-nav-link">4. Prompt Learning Loop</a></li>
+                    <li><a href="#bloco5" class="lesson-nav-link">5. Os 10 Erros Mais Comuns</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lesson-content">
+            <!-- Mobile TOC -->
+            <div class="mobile-toc">
+                <button class="mobile-toc-trigger">
+                    <span>Navegacao</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <nav class="mobile-toc-content">
+                    <ul>
+                        <li><a href="#bloco1">1. Paradigma Spec-Driven</a></li>
+                        <li><a href="#bloco2">2. Anatomia do Prompt Eficaz</a></li>
+                        <li><a href="#bloco3">3. Regras Explicitas</a></li>
+                        <li><a href="#bloco4">4. Prompt Learning Loop</a></li>
+                        <li><a href="#bloco5">5. Os 10 Erros Mais Comuns</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Introducao -->
+            <section class="lesson-block" id="intro">
+                <h2>A Arte de Especificar</h2>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Objetivo</div>
+                    <p>Dominar a arte de escrever prompts eficazes para sistemas agenticos. Transformar instrucoes vagas em especificacoes precisas que o agente executa com consistencia.</p>
+                </div>
+
+                <blockquote>
+                    <p>"If you get the spec right, the code almost writes itself."</p>
+                    <cite>Al Harris, Amazon Kiro (AI Engineer Summit 2024)</cite>
+                </blockquote>
+
+                <h3>Lema da Aula</h3>
+                <p><strong>"Se voce acertar a especificacao, o codigo quase escreve a si mesmo."</strong></p>
+
+                <h3>Pre-requisitos</h3>
+                <ul>
+                    <li>Modulo 1 completado (Aulas 0-5)</li>
+                    <li>Experiencia basica com Claude Code</li>
+                    <li>Compreensao de CLAUDE.md e contexto</li>
+                </ul>
+            </section>
+
+            <!-- Bloco 1: Paradigma Spec-Driven -->
+            <section id="bloco1" class="lesson-block">
+                <h2>Bloco 1: Paradigma Spec-Driven</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>1.1 Vibe Coding vs Vibe Engineering</h3>
+
+                <blockquote>
+                    <p>"Vibe Coding e quando voce nao sabe o que esta fazendo e deixa a IA fazer tudo. Vibe Engineering e quando voce sabe exatamente o que quer e usa IA para acelerar."</p>
+                    <cite>Kitze (AI Engineer Summit 2025)</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              VIBE CODING vs VIBE ENGINEERING                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   VIBE CODING (Anti-padrao):                                    │
+│   ─────────────────────────────                                 │
+│   "Gere uma minuta de sentenca para este processo de BPC"       │
+│                                                                 │
+│   O que acontece:                                               │
+│   • Agente ADIVINHA o formato                                   │
+│   • Agente INVENTA estrutura                                    │
+│   • Agente OMITE informacoes essenciais                         │
+│   • Voce RETRABALHA 80% do output                               │
+│                                                                 │
+│   VIBE ENGINEERING (Padrao correto):                            │
+│   ─────────────────────────────────────                         │
+│   "Gere minuta de sentenca com:                                 │
+│    - Estrutura: RELATORIO → FUNDAMENTACAO → DISPOSITIVO         │
+│    - Requerente: [nome completo]                                │
+│    - Fundamento: Art. 20 da Lei 8.742/93                        │
+│    - Citar: Tema 1038 do STF                                    │
+│    - Formato: Paragrafos numerados, sem bullets                 │
+│    SEMPRE verificar se ha laudo social nos autos."              │
+│                                                                 │
+│   O que acontece:                                               │
+│   • Agente SEGUE o formato                                      │
+│   • Agente USA estrutura definida                               │
+│   • Agente INCLUI informacoes especificadas                     │
+│   • Voce REVISA 20% (ajustes finos)                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>1.2 O Framework Spec-Driven</h3>
+
+                <p>Specs sao o contrato entre voce e o agente. Quanto mais claro o contrato, melhor a entrega.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                  FRAMEWORK SPEC-DRIVEN                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   FASE 1: REQUIREMENTS (O QUE)                                  │
+│   ──────────────────────────────                                │
+│   • User Story: "Como [papel], quero [acao] para [beneficio]"   │
+│   • Criterios de Aceitacao: Lista de verificacoes               │
+│   • Restricoes: O que NAO deve acontecer                        │
+│                                                                 │
+│   FASE 2: DESIGN (COMO)                                         │
+│   ─────────────────────                                         │
+│   • Entrada esperada: Formato, tamanho, tipo                    │
+│   • Saida esperada: Template, estrutura, campos                 │
+│   • Fluxo: Passos em ordem                                      │
+│                                                                 │
+│   FASE 3: TASKS (PASSOS)                                        │
+│   ─────────────────────                                         │
+│   • Cada tarefa: Uma acao verificavel                           │
+│   • Dependencias: O que precisa vir antes                       │
+│   • Criterio de sucesso: Como saber que terminou                │
+│                                                                 │
+│   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐       │
+│   │REQUIREMENTS │ ──▶ │   DESIGN    │ ──▶ │   TASKS     │       │
+│   │  (O que)    │     │  (Como)     │     │  (Passos)   │       │
+│   └─────────────┘     └─────────────┘     └─────────────┘       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th>Vibe Coding</th>
+                            <th>Vibe Engineering</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Voce sabe</strong></td>
+                            <td>O que quer vagamente</td>
+                            <td>Exatamente o que quer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Voce especifica</strong></td>
+                            <td>Resultado final</td>
+                            <td>Resultado + estrutura + regras</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Agente faz</strong></td>
+                            <td>Adivinhacao criativa</td>
+                            <td>Execucao precisa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Retrabalho</strong></td>
+                            <td>80% (frustrante)</td>
+                            <td>20% (refinamento)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 2: Anatomia do Prompt Eficaz -->
+            <section id="bloco2" class="lesson-block">
+                <h2>Bloco 2: Anatomia do Prompt Eficaz</h2>
+                <span class="badge badge-time">30 min</span>
+
+                <h3>2.1 Os 4 Componentes Obrigatorios</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              ANATOMIA DO PROMPT EFICAZ                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  1. CONTEXTO                                            │   │
+│   │  ─────────────                                          │   │
+│   │  Quem voce e, qual o dominio, qual a situacao           │   │
+│   │  "Voce e um assessor de gabinete de vara federal        │   │
+│   │   previdenciaria..."                                    │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                           │                                     │
+│                           ▼                                     │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  2. TAREFA                                              │   │
+│   │  ──────────                                             │   │
+│   │  O que fazer (verbo de acao + objeto)                   │   │
+│   │  "Gere um relatorio estruturado do processo..."         │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                           │                                     │
+│                           ▼                                     │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  3. REGRAS                                              │   │
+│   │  ──────────                                             │   │
+│   │  Restricoes e prioridades explicitas                    │   │
+│   │  "SEMPRE incluir... NUNCA omitir... PREFERIR..."        │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                           │                                     │
+│                           ▼                                     │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  4. SAIDA                                               │   │
+│   │  ─────────                                              │   │
+│   │  Formato esperado, template, estrutura                  │   │
+│   │  "Formato: ## SECAO com ### SUBSECAO..."                │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>2.2 Exemplo: Prompt Fraco vs Forte</h3>
+
+                <h4>Prompt FRACO</h4>
+                <pre><code>"Analise este documento e me de um resumo"</code></pre>
+                <p><strong>Problemas:</strong> Nao define formato, nao especifica o que incluir, nao estabelece restricoes.</p>
+
+                <h4>Prompt FORTE</h4>
+                <pre><code>"Analise este documento e gere um resumo estruturado com:
+1. FATOS: Lista cronologica dos eventos
+2. PARTES: Nome e qualificacao de cada parte
+3. PEDIDOS: Itemizacao do que e solicitado
+4. FUNDAMENTOS: Base legal citada
+
+SEMPRE incluir pagina de referencia.
+NUNCA omitir valores monetarios.
+PREFERIR citacoes diretas a parafrases."</code></pre>
+            </section>
+
+            <!-- Bloco 3: Regras Explicitas -->
+            <section id="bloco3" class="lesson-block">
+                <h2>Bloco 3: Regras Explicitas</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>3.1 O Padrao SEMPRE/NUNCA/PREFERIR</h3>
+
+                <blockquote>
+                    <p>"As regras sao como instrucoes para um novo estagiario. Quanto mais explicitas, menos erros. O que e 'obvio' para voce nao e 'obvio' para o agente."</p>
+                    <cite>Barry Zhang, Anthropic (AI Engineer Summit)</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              PADRAO SEMPRE/NUNCA/PREFERIR                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   SEMPRE (Obrigatorio - nunca pular)                            │
+│   ─────────────────────────────────────                         │
+│   • SEMPRE incluir referencia a pagina dos autos                │
+│   • SEMPRE citar o fundamento legal completo                    │
+│   • SEMPRE verificar se existe laudo pericial                   │
+│                                                                 │
+│   NUNCA (Proibido - erro grave se fizer)                        │
+│   ─────────────────────────────────────                         │
+│   • NUNCA omitir valores monetarios                             │
+│   • NUNCA inventar dados nao presentes nos autos                │
+│   • NUNCA incluir opiniao pessoal                               │
+│                                                                 │
+│   PREFERIR (Prioridade - quando houver escolha)                 │
+│   ────────────────────────────────────────────                  │
+│   • PREFERIR citacao direta a parafraseamento                   │
+│   • PREFERIR ordem cronologica a tematica                       │
+│   • PREFERIR bullet points a paragrafos longos                  │
+│                                                                 │
+│   Por que funciona:                                             │
+│   ─────────────────                                             │
+│   • LLMs processam instrucoes explicitas melhor que implicitas  │
+│   • SEMPRE/NUNCA criam restricoes fortes (hard constraints)     │
+│   • PREFERIR cria heuristicas de desempate (soft constraints)   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>3.2 Cobertura de Casos</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo de Regra</th>
+                            <th>O que cobre</th>
+                            <th>Exemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Requisitos</strong></td>
+                            <td>O que TEM que estar presente</td>
+                            <td>SEMPRE citar artigo de lei</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Restricoes</strong></td>
+                            <td>O que NAO pode acontecer</td>
+                            <td>NUNCA inventar jurisprudencia</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Prioridades</strong></td>
+                            <td>Desempate entre opcoes</td>
+                            <td>PREFERIR STJ sobre TRF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 4: Prompt Learning Loop -->
+            <section id="bloco4" class="lesson-block">
+                <h2>Bloco 4: Prompt Learning Loop</h2>
+                <span class="badge badge-time">30 min</span>
+
+                <h3>4.1 O Ciclo de Refinamento</h3>
+
+                <blockquote>
+                    <p>"O prompt perfeito nao existe na primeira tentativa. Existe apos 5-10 iteracoes com feedback especifico."</p>
+                    <cite>SallyAnn DeLucia, Arize (AI Engineer Summit)</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                 PROMPT LEARNING LOOP                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│         ┌──────────┐                                            │
+│         │ ESCREVER │ ◄─────────────────────────────┐            │
+│         │  prompt  │                               │            │
+│         └────┬─────┘                               │            │
+│              │                                     │            │
+│              ▼                                     │            │
+│         ┌──────────┐                               │            │
+│         │  RODAR   │                               │            │
+│         │  agente  │                               │            │
+│         └────┬─────┘                               │            │
+│              │                                     │            │
+│              ▼                                     │            │
+│         ┌──────────┐                               │            │
+│         │ AVALIAR  │                               │            │
+│         │  output  │                               │            │
+│         └────┬─────┘                               │            │
+│              │                                     │            │
+│              ▼                                     │            │
+│    ┌─────────────────────┐                         │            │
+│    │ Output aceitavel?   │                         │            │
+│    └──────────┬──────────┘                         │            │
+│               │                                    │            │
+│       ┌───────┴───────┐                            │            │
+│       │               │                            │            │
+│      SIM             NAO                           │            │
+│       │               │                            │            │
+│       ▼               ▼                            │            │
+│   ┌────────┐    ┌──────────┐                       │            │
+│   │ SALVAR │    │ REFINAR  │───────────────────────┘            │
+│   │ prompt │    │ com      │                                    │
+│   │ final  │    │ feedback │                                    │
+│   └────────┘    │ ESPECIFI-│                                    │
+│                 │   CO     │                                    │
+│                 └──────────┘                                    │
+│                                                                 │
+│   CRITERIO DE CONVERGENCIA:                                     │
+│   5 execucoes consecutivas com output aceitavel                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.2 Feedback Fraco vs Feedback Forte</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feedback Fraco</th>
+                            <th>Feedback Forte</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>"Esta errado"</td>
+                            <td>"O campo DATA esta no formato DD/MM/YYYY mas deveria ser YYYY-MM-DD"</td>
+                        </tr>
+                        <tr>
+                            <td>"Faltou informacao"</td>
+                            <td>"Faltou o campo VALOR_CAUSA que aparece na linha 47 da peticao inicial"</td>
+                        </tr>
+                        <tr>
+                            <td>"Ficou confuso"</td>
+                            <td>"A secao FATOS misturou alegacoes do autor com do reu - separar em FATOS_AUTOR e FATOS_REU"</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-tip">
+                    <div class="callout-title">Regra de Ouro</div>
+                    <p>Se voce nao consegue explicar O QUE esta errado e COMO deveria ser, o feedback nao vai melhorar o prompt.</p>
+                </div>
+            </section>
+
+            <!-- Bloco 5: Os 10 Erros Mais Comuns -->
+            <section id="bloco5" class="lesson-block">
+                <h2>Bloco 5: Os 10 Erros Mais Comuns</h2>
+                <span class="badge badge-time">20 min</span>
+
+                <h3>Lista de Anti-Padroes</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              OS 10 ERROS MAIS COMUNS                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. VAGUEZA EXCESSIVA                                           │
+│     ✗ "Analise o documento"                                     │
+│     ✓ "Extraia os 5 pedidos principais do documento"            │
+│                                                                 │
+│  2. AUSENCIA DE FORMATO                                         │
+│     ✗ "Me de um resumo"                                         │
+│     ✓ "Gere resumo em formato: ## SECAO > ### SUBSECAO"         │
+│                                                                 │
+│  3. REGRAS IMPLICITAS                                           │
+│     ✗ (assumir que agente sabe o "obvio")                       │
+│     ✓ "SEMPRE incluir referencia de pagina"                     │
+│                                                                 │
+│  4. CONTEXTO INSUFICIENTE                                       │
+│     ✗ "Gere uma minuta"                                         │
+│     ✓ "Gere minuta de sentenca de BPC para idoso urbano"        │
+│                                                                 │
+│  5. FALTA DE EXEMPLOS                                           │
+│     ✗ "Use o formato correto"                                   │
+│     ✓ "Use este formato: [EXEMPLO CONCRETO]"                    │
+│                                                                 │
+│  6. INSTRUCOES CONTRADITORIAS                                   │
+│     ✗ "Seja conciso mas inclua todos os detalhes"               │
+│     ✓ "Maximo 500 palavras, priorizando: X, Y, Z"               │
+│                                                                 │
+│  7. FEEDBACK VAGO                                               │
+│     ✗ "Esta errado, refaca"                                     │
+│     ✓ "O campo X esta incorreto. Deveria ser Y porque Z"        │
+│                                                                 │
+│  8. NAO ITERAR                                                  │
+│     ✗ Esperar resultado perfeito na primeira tentativa          │
+│     ✓ Planejar 5-10 iteracoes de refinamento                    │
+│                                                                 │
+│  9. IGNORAR EDGE CASES                                          │
+│     ✗ So testar com casos "normais"                             │
+│     ✓ Testar com: caso vazio, caso gigante, caso estranho       │
+│                                                                 │
+│ 10. NAO DOCUMENTAR                                              │
+│     ✗ Manter prompts so na memoria                              │
+│     ✓ Salvar em Commands/Skills com versionamento               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>Checklist de Validacao</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">Antes de considerar o prompt pronto</div>
+                    <ul>
+                        <li>Tem CONTEXTO explicito?</li>
+                        <li>Tem TAREFA clara com verbo de acao?</li>
+                        <li>Tem REGRAS no padrao SEMPRE/NUNCA/PREFERIR?</li>
+                        <li>Tem FORMATO de saida definido?</li>
+                        <li>Tem pelo menos 1 EXEMPLO concreto?</li>
+                        <li>Passou pelo Learning Loop (5+ iteracoes)?</li>
+                        <li>Foi testado com edge cases?</li>
+                        <li>Esta documentado em Command ou Skill?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Resumo -->
+            <section class="lesson-block" id="resumo">
+                <h2>Resumo da Aula</h2>
+
+                <div class="key-points">
+                    <h4>Conceitos-Chave</h4>
+                    <ul>
+                        <li><strong>Spec-Driven:</strong> Especificacao clara antes da execucao</li>
+                        <li><strong>Vibe Engineering:</strong> Saber exatamente o que quer</li>
+                        <li><strong>SEMPRE/NUNCA/PREFERIR:</strong> Padrao para regras explicitas</li>
+                        <li><strong>Prompt Learning Loop:</strong> Escrever → Rodar → Avaliar → Refinar</li>
+                        <li><strong>Convergencia:</strong> 5 execucoes consecutivas com output aceitavel</li>
+                    </ul>
+                </div>
+
+                <div class="expert-quotes">
+                    <h4>Especialistas Citados</h4>
+                    <ul>
+                        <li><strong>Al Harris</strong> (Amazon Kiro): Framework Spec-Driven</li>
+                        <li><strong>Kitze</strong>: Vibe Coding vs Vibe Engineering</li>
+                        <li><strong>Barry Zhang</strong> (Anthropic): Regras explicitas</li>
+                        <li><strong>SallyAnn DeLucia</strong> (Arize): Feedback especifico</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Navegacao -->
+            <div class="lesson-navigation">
+                <a href="aula-5.html" class="nav-prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Aula 5: Sistema CLERK</span>
+                </a>
+                <a href="aula-6b.html" class="nav-next">
+                    <span>Aula 6B: Prompts Agenticos</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sistemas Agenticos</h4>
+                    <p>Curso pratico de IA Agentica para profissionais do Direito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navegacao</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="glossario.html">Glossario</a></li>
+                        <li><a href="recursos.html">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Para duvidas sobre o curso, entre em contato com o instrutor.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Curso de Sistemas Agenticos - Material Educacional</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

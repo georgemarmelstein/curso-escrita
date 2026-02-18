@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Marmelstein - Metodologia de Desenvolvimento</title>
+    <!-- Google Fonts - Carregamento otimizado -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --gold-bright: #D4AF37;
+            --gold-muted: rgba(190, 156, 109, 0.5);
+            --cream: #FFF4E4;
+            --cream-soft: rgba(255, 244, 228, 0.9);
+            --dark: #0a0a12;
+            --phase-1: #fbbf24;
+            --phase-2: #22d3ee;
+            --phase-3: #a78bfa;
+            --phase-4: #60a5fa;
+            --phase-5: #f97316;
+            --phase-6: #4ade80;
+            --phase-7: #f472b6;
+            --glass-bg: rgba(10, 10, 18, 0.75);
+            --glass-border: rgba(190, 156, 109, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Image with Overlay */
+        .bg-image {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('../../../site/assets/20260115_1554_Image Generation_simple_compose_01kf1g3cwge5zb6hmy35ab5jsx.png') center center / cover no-repeat;
+            z-index: 0;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(10, 10, 18, 0.88) 0%,
+                rgba(10, 10, 18, 0.65) 40%,
+                rgba(10, 10, 18, 0.5) 60%,
+                rgba(10, 10, 18, 0.75) 100%
+            );
+            z-index: 1;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(10, 10, 18, 0.85) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            padding: 2.5vh 4vw;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 1.5vh;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 0.6vh 1.8vw;
+            margin-bottom: 1vh;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+            font-size: clamp(0.65rem, 0.85vw, 0.8rem);
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+            font-weight: 700;
+            color: var(--cream);
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .header-title .highlight {
+            background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2.5vh;
+        }
+
+        .timeline-wrapper {
+            position: relative;
+            padding: 0 2vw;
+        }
+
+        /* Glowing Thread */
+        .timeline-thread {
+            position: absolute;
+            top: 50%;
+            left: 8%;
+            right: 8%;
+            height: 4px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--gold-muted) 5%,
+                var(--gold) 50%,
+                var(--gold-muted) 95%,
+                transparent 100%
+            );
+            transform: translateY(-50%);
+            z-index: 0;
+            border-radius: 2px;
+            box-shadow:
+                0 0 20px rgba(190, 156, 109, 0.4),
+                0 0 40px rgba(190, 156, 109, 0.2);
+            animation: threadPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes threadPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(190, 156, 109, 0.4), 0 0 40px rgba(190, 156, 109, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(190, 156, 109, 0.6), 0 0 60px rgba(190, 156, 109, 0.3); }
+        }
+
+        /* Phases Container */
+        .phases {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Phase Item */
+        .phase {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1;
+            opacity: 0;
+            animation: phaseReveal 0.6s ease forwards;
+        }
+
+        .phase:nth-child(1) { animation-delay: 0.1s; }
+        .phase:nth-child(2) { animation-delay: 0.18s; }
+        .phase:nth-child(3) { animation-delay: 0.26s; }
+        .phase:nth-child(4) { animation-delay: 0.34s; }
+        .phase:nth-child(5) { animation-delay: 0.42s; }
+        .phase:nth-child(6) { animation-delay: 0.5s; }
+        .phase:nth-child(7) { animation-delay: 0.58s; }
+
+        @keyframes phaseReveal {
+            from { opacity: 0; transform: translateY(30px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .phase:not(.active) {
+            opacity: 0.4;
+            filter: grayscale(30%);
+        }
+
+        .phase:hover:not(.active) {
+            opacity: 0.7;
+            filter: grayscale(0%);
+        }
+
+        .phase.active {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        /* Phase Marker */
+        .phase-marker {
+            width: clamp(55px, 6vw, 75px);
+            height: clamp(55px, 6vw, 75px);
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 3px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+            margin-bottom: 1.2vh;
+            position: relative;
+        }
+
+        .phase-marker::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent, var(--phase-color), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+            animation: rotate 4s linear infinite paused;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .phase.active .phase-marker::before {
+            opacity: 1;
+            animation-play-state: running;
+        }
+
+        .phase.active .phase-marker {
+            border-color: var(--phase-color);
+            box-shadow:
+                0 0 30px color-mix(in srgb, var(--phase-color) 40%, transparent),
+                inset 0 0 20px color-mix(in srgb, var(--phase-color) 10%, transparent);
+        }
+
+        .phase-icon {
+            font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .phase[data-phase="1"] { --phase-color: var(--phase-1); }
+        .phase[data-phase="2"] { --phase-color: var(--phase-2); }
+        .phase[data-phase="3"] { --phase-color: var(--phase-3); }
+        .phase[data-phase="4"] { --phase-color: var(--phase-4); }
+        .phase[data-phase="5"] { --phase-color: var(--phase-5); }
+        .phase[data-phase="6"] { --phase-color: var(--phase-6); }
+        .phase[data-phase="7"] { --phase-color: var(--phase-7); }
+
+        /* Phase Labels */
+        .phase-name {
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            font-weight: 600;
+            color: var(--cream);
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .phase.active .phase-name {
+            color: var(--phase-color);
+        }
+
+        .phase-tool {
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+            font-size: clamp(0.65rem, 0.85vw, 0.8rem);
+            color: var(--gold);
+            margin-top: 0.4vh;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.4s ease;
+        }
+
+        .phase.active .phase-tool {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Detail Card */
+        .detail-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5vh 3vw;
+            margin: 0 5vw;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 38vh;
+        }
+
+        .detail-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--phase-color), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .detail-card.active::before {
+            opacity: 1;
+        }
+
+        .detail-card.active {
+            border-color: color-mix(in srgb, var(--phase-color) 50%, transparent);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px color-mix(in srgb, var(--phase-color) 15%, transparent);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5vw;
+            margin-bottom: 2vh;
+        }
+
+        .detail-icon-wrapper {
+            width: clamp(50px, 4vw, 60px);
+            height: clamp(50px, 4vw, 60px);
+            border-radius: 14px;
+            background: linear-gradient(135deg,
+                color-mix(in srgb, var(--phase-color) 20%, transparent),
+                color-mix(in srgb, var(--phase-color) 5%, transparent)
+            );
+            border: 1px solid color-mix(in srgb, var(--phase-color) 40%, transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.5rem, 2vw, 1.8rem);
+        }
+
+        .detail-info {
+            flex: 1;
+        }
+
+        .detail-title {
+            font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 0.2vh;
+        }
+
+        .detail-subtitle {
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+            font-size: clamp(0.75rem, 0.95vw, 0.9rem);
+            color: var(--gold);
+        }
+
+        /* Standard Content Layout */
+        .detail-content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2.5vw;
+        }
+
+        .detail-content.hidden {
+            display: none;
+        }
+
+        .detail-section h4 {
+            font-size: clamp(0.7rem, 0.85vw, 0.8rem);
+            font-weight: 600;
+            color: var(--cream-soft);
+            margin-bottom: 1vh;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        .detail-section p {
+            font-size: clamp(0.85rem, 1.05vw, 1rem);
+            color: var(--cream-soft);
+            line-height: 1.6;
+        }
+
+        .detail-outputs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6vh;
+        }
+
+        .output-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6vw;
+            padding: 0.6vh 1vw;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            font-size: clamp(0.75rem, 0.95vw, 0.9rem);
+            color: var(--cream-soft);
+        }
+
+        .output-icon {
+            color: var(--phase-color);
+            font-size: 0.85em;
+        }
+
+        /* ============================================
+           FEATURE-DEV SUB-PHASES (7 fases)
+           ============================================ */
+        .subphases-content {
+            display: none;
+        }
+
+        .subphases-content.visible {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subphases-label {
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+            font-size: clamp(0.6rem, 0.75vw, 0.7rem);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.2vh;
+            text-align: center;
+        }
+
+        .subphases-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.7vw;
+        }
+
+        .subphase {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 10px;
+            padding: 1.2vh 0.5vw;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .subphase::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30%;
+            height: 2px;
+            background: var(--phase-4);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .subphase:hover, .subphase.active {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: rgba(96, 165, 250, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .subphase:hover::before, .subphase.active::before {
+            opacity: 1;
+            width: 60%;
+        }
+
+        .subphase-number {
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+            font-size: clamp(0.55rem, 0.65vw, 0.65rem);
+            color: var(--phase-4);
+            opacity: 0.6;
+            margin-bottom: 0.4vh;
+        }
+
+        .subphase-icon {
+            font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+            margin-bottom: 0.4vh;
+        }
+
+        .subphase-name {
+            font-size: clamp(0.6rem, 0.75vw, 0.72rem);
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 0.2vh;
+            line-height: 1.2;
+        }
+
+        .subphase-desc {
+            font-size: clamp(0.5rem, 0.6vw, 0.6rem);
+            color: rgba(255, 244, 228, 0.6);
+            line-height: 1.25;
+        }
+
+        /* Connector line between subphases */
+        .subphases-connector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.8vh;
+            gap: 0.4vw;
+        }
+
+        .connector-segment {
+            height: 2px;
+            flex: 1;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(96, 165, 250, 0.4),
+                rgba(96, 165, 250, 0.4),
+                transparent
+            );
+            max-width: 10%;
+        }
+
+        .connector-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--phase-4);
+            box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+        }
+
+        /* Navigation Hint */
+        .nav-hint {
+            text-align: center;
+            margin-top: 1.5vh;
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+            font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .nav-hint kbd {
+            background: rgba(255, 244, 228, 0.1);
+            border: 1px solid rgba(255, 244, 228, 0.2);
+            padding: 0.2em 0.5em;
+            border-radius: 5px;
+            margin: 0 0.2em;
+        }
+
+        /* Embed Mode */
+        body.embed-mode .container { padding: 2vh 3vw; }
+        body.embed-mode .header-title { font-size: clamp(1.4rem, 2.5vw, 2rem); }
+        body.embed-mode .phase-marker { width: clamp(45px, 5vw, 60px); height: clamp(45px, 5vw, 60px); }
+        body.embed-mode .detail-card { padding: 2vh 2.5vw; margin: 0 3vw; min-height: 35vh; }
+        body.embed-mode .subphases-grid { gap: 0.5vw; }
+        body.embed-mode .subphase { padding: 1vh 0.4vw; }
+        body.embed-mode .subphase-icon { font-size: clamp(1rem, 1.3vw, 1.2rem); }
+        body.embed-mode .subphase-name { font-size: clamp(0.55rem, 0.68vw, 0.65rem); }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-badge">
+                <span class="header-label">Metodologia de Desenvolvimento</span>
+            </div>
+            <h1 class="header-title">Sistema <span class="highlight">Marmelstein</span></h1>
+        </div>
+
+        <div class="timeline-section">
+            <div class="timeline-wrapper">
+                <div class="timeline-thread"></div>
+                <div class="phases">
+                    <div class="phase active" data-phase="1">
+                        <div class="phase-marker">
+                            <span class="phase-icon">💡</span>
+                        </div>
+                        <div class="phase-name">Brainstorming</div>
+                        <div class="phase-tool">SuperPack</div>
+                    </div>
+                    <div class="phase" data-phase="2">
+                        <div class="phase-marker">
+                            <span class="phase-icon">📋</span>
+                        </div>
+                        <div class="phase-name">Planejamento</div>
+                        <div class="phase-tool">Writing Plan</div>
+                    </div>
+                    <div class="phase" data-phase="3">
+                        <div class="phase-marker">
+                            <span class="phase-icon">📜</span>
+                        </div>
+                        <div class="phase-name">Especificação</div>
+                        <div class="phase-tool">SuperJurista</div>
+                    </div>
+                    <div class="phase" data-phase="4">
+                        <div class="phase-marker">
+                            <span class="phase-icon">🔨</span>
+                        </div>
+                        <div class="phase-name">Implementação</div>
+                        <div class="phase-tool">Feature-Dev</div>
+                    </div>
+                    <div class="phase" data-phase="5">
+                        <div class="phase-marker">
+                            <span class="phase-icon">🧪</span>
+                        </div>
+                        <div class="phase-name">Teste</div>
+                        <div class="phase-tool">TDD</div>
+                    </div>
+                    <div class="phase" data-phase="6">
+                        <div class="phase-marker">
+                            <span class="phase-icon">📁</span>
+                        </div>
+                        <div class="phase-name">Init</div>
+                        <div class="phase-tool">CLAUDE.md</div>
+                    </div>
+                    <div class="phase" data-phase="7">
+                        <div class="phase-marker">
+                            <span class="phase-icon">🔄</span>
+                        </div>
+                        <div class="phase-name">Aprimoramento</div>
+                        <div class="phase-tool">Brainstorm + Feature-Dev</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-card" id="detail-card">
+                <div class="detail-header">
+                    <div class="detail-icon-wrapper" id="detail-icon-wrapper">
+                        <span id="detail-icon">💡</span>
+                    </div>
+                    <div class="detail-info">
+                        <div class="detail-title" id="detail-title">Brainstorming</div>
+                        <div class="detail-subtitle" id="detail-subtitle">SuperPack</div>
+                    </div>
+                </div>
+
+                <!-- Standard Content (phases 1,2,3,5) -->
+                <div class="detail-content" id="detail-content">
+                    <div class="detail-section">
+                        <h4>O que acontece</h4>
+                        <p id="detail-desc">Geração livre de ideias e exploração do problema. O agente questiona, sugere alternativas e refina conceitos antes de qualquer código.</p>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Entregáveis</h4>
+                        <div class="detail-outputs" id="detail-outputs">
+                            <div class="output-item"><span class="output-icon">→</span> Mapa de ideias refinado</div>
+                            <div class="output-item"><span class="output-icon">→</span> Decisões de arquitetura</div>
+                            <div class="output-item"><span class="output-icon">→</span> Riscos identificados</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature-Dev Sub-phases (phase 4 only) -->
+                <div class="subphases-content" id="subphases-content">
+                    <div class="subphases-label">As 7 Fases do Feature-Dev</div>
+
+                    <div class="subphases-connector">
+                        <div class="connector-dot"></div>
+                        <div class="connector-segment"></div>
+                        <div class="connector-dot"></div>
+                        <div class="connector-segment"></div>
+                        <div class="connector-dot"></div>
+                        <div class="connector-segment"></div>
+                        <div class="connector-dot"></div>
+                        <div class="connector-segment"></div>
+                        <div class="connector-dot"></div>
+                        <div class="connector-segment"></div>
+                        <div class="connector-dot"></div>
+                        <div class="connector-segment"></div>
+                        <div class="connector-dot"></div>
+                    </div>
+
+                    <div class="subphases-grid">
+                        <div class="subphase" data-subphase="1">
+                            <div class="subphase-number">01</div>
+                            <div class="subphase-icon">🎯</div>
+                            <div class="subphase-name">Descoberta</div>
+                            <div class="subphase-desc">Entender o que construir</div>
+                        </div>
+                        <div class="subphase" data-subphase="2">
+                            <div class="subphase-number">02</div>
+                            <div class="subphase-icon">🗺️</div>
+                            <div class="subphase-name">Exploração</div>
+                            <div class="subphase-desc">Mapear código existente</div>
+                        </div>
+                        <div class="subphase" data-subphase="3">
+                            <div class="subphase-number">03</div>
+                            <div class="subphase-icon">❓</div>
+                            <div class="subphase-name">Perguntas</div>
+                            <div class="subphase-desc">Esclarecer ambiguidades</div>
+                        </div>
+                        <div class="subphase" data-subphase="4">
+                            <div class="subphase-number">04</div>
+                            <div class="subphase-icon">🏗️</div>
+                            <div class="subphase-name">Arquitetura</div>
+                            <div class="subphase-desc">Propor abordagens</div>
+                        </div>
+                        <div class="subphase" data-subphase="5">
+                            <div class="subphase-number">05</div>
+                            <div class="subphase-icon">⚡</div>
+                            <div class="subphase-name">Implementação</div>
+                            <div class="subphase-desc">Codificar com aprovação</div>
+                        </div>
+                        <div class="subphase" data-subphase="6">
+                            <div class="subphase-number">06</div>
+                            <div class="subphase-icon">🔬</div>
+                            <div class="subphase-name">Revisão</div>
+                            <div class="subphase-desc">Validar qualidade</div>
+                        </div>
+                        <div class="subphase" data-subphase="7">
+                            <div class="subphase-number">07</div>
+                            <div class="subphase-icon">📝</div>
+                            <div class="subphase-name">Resumo</div>
+                            <div class="subphase-desc">Documentar o feito</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-hint">
+            Clique nas etapas ou use <kbd>←</kbd> <kbd>→</kbd> para navegar
+        </div>
+    </div>
+
+    <script>
+        const phases = [
+            {
+                icon: "💡",
+                title: "Brainstorming",
+                tool: "SuperPack",
+                desc: "Geração livre de ideias e exploração do problema. O agente questiona, sugere alternativas e refina conceitos antes de qualquer código.",
+                outputs: ["Mapa de ideias refinado", "Decisões de arquitetura", "Riscos identificados"],
+                hasSubphases: false
+            },
+            {
+                icon: "📋",
+                title: "Planejamento",
+                tool: "Writing Plan",
+                desc: "Transformação das ideias em tarefas ordenadas e dependências claras. Define o roteiro de implementação com checkpoints de validação.",
+                outputs: ["Lista de tarefas priorizadas", "Dependências mapeadas", "Critérios de aceite"],
+                hasSubphases: false
+            },
+            {
+                icon: "📜",
+                title: "Especificação",
+                tool: "SuperJurista",
+                desc: "Formalização dos requisitos em linguagem precisa. Documenta regras de negócio, restrições e comportamentos esperados.",
+                outputs: ["Documento de especificação", "Regras de negócio formais", "Casos de uso detalhados"],
+                hasSubphases: false
+            },
+            {
+                icon: "🔨",
+                title: "Implementação",
+                tool: "Feature-Dev",
+                desc: "Ciclo completo de desenvolvimento com 7 fases e subagentes especializados para garantir qualidade.",
+                outputs: ["Código implementado", "Arquitetura validada", "Documentação atualizada"],
+                hasSubphases: true
+            },
+            {
+                icon: "🧪",
+                title: "Teste",
+                tool: "TDD",
+                desc: "Validar com amostras pequenas antes de rodar tudo. Criar o teste primeiro prova que você entendeu o problema. Sempre pensar: 'E se falhar? Qual o plano B?'",
+                outputs: ["Teste criado antes do código", "Validação com amostra menor", "Plano de fallback definido"],
+                hasSubphases: false
+            },
+            {
+                icon: "📁",
+                title: "Init",
+                tool: "CLAUDE.md",
+                desc: "Documentação do projeto para futuras sessões. Registra decisões, padrões adotados e instruções para o agente.",
+                outputs: ["CLAUDE.md atualizado", "README documentado", "Padrões registrados"],
+                hasSubphases: false
+            },
+            {
+                icon: "🔄",
+                title: "Aprimoramento",
+                tool: "Brainstorm + Feature-Dev",
+                desc: "Ciclo de melhoria contínua. Usa brainstorming para identificar melhorias e feature-dev para implementá-las de forma estruturada.",
+                outputs: ["Melhorias identificadas", "Refinamentos implementados", "Qualidade elevada"],
+                hasSubphases: false
+            }
+        ];
+
+        let currentPhase = 0;
+        const phaseElements = document.querySelectorAll('.phase');
+        const detailCard = document.getElementById('detail-card');
+        const detailContent = document.getElementById('detail-content');
+        const subphasesContent = document.getElementById('subphases-content');
+
+        function updateDetail(index) {
+            const phase = phases[index];
+            const phaseColor = getComputedStyle(phaseElements[index]).getPropertyValue('--phase-color');
+
+            document.getElementById('detail-icon').textContent = phase.icon;
+            document.getElementById('detail-title').textContent = phase.title;
+            document.getElementById('detail-subtitle').textContent = phase.tool;
+            document.getElementById('detail-desc').textContent = phase.desc;
+
+            const outputsList = document.getElementById('detail-outputs');
+            outputsList.innerHTML = phase.outputs.map(o =>
+                `<div class="output-item"><span class="output-icon">→</span> ${o}</div>`
+            ).join('');
+
+            detailCard.style.setProperty('--phase-color', phaseColor);
+            document.getElementById('detail-icon-wrapper').style.setProperty('--phase-color', phaseColor);
+            detailCard.classList.add('active');
+
+            // Toggle between standard content and subphases
+            if (phase.hasSubphases) {
+                detailContent.classList.add('hidden');
+                subphasesContent.classList.add('visible');
+            } else {
+                detailContent.classList.remove('hidden');
+                subphasesContent.classList.remove('visible');
+            }
+        }
+
+        function setActivePhase(index) {
+            phaseElements.forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+            currentPhase = index;
+            updateDetail(index);
+        }
+
+        phaseElements.forEach((el, i) => {
+            el.addEventListener('click', () => setActivePhase(i));
+        });
+
+        // Subphase hover effects
+        document.querySelectorAll('.subphase').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                document.querySelectorAll('.subphase').forEach(s => s.classList.remove('active'));
+                el.classList.add('active');
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                setActivePhase((currentPhase + 1) % phases.length);
+            } else if (e.key === 'ArrowLeft') {
+                setActivePhase((currentPhase - 1 + phases.length) % phases.length);
+            }
+        });
+
+        // Initialize
+        updateDetail(0);
+
+        // Embed mode detection
+        try {
+            if (window.self !== window.top) {
+                document.body.classList.add('embed-mode');
+            }
+        } catch (e) {
+            document.body.classList.add('embed-mode');
+        }
+    </script>
+</body>
+</html>

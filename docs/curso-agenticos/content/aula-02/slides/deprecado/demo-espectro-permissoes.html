@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espectro de Permissoes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--super-bg-dark) 0%, var(--super-bg-section) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2em;
+            color: var(--super-gold);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        /* Spectrum bar */
+        .spectrum-container {
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 40px;
+        }
+
+        .spectrum-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+
+        .spectrum-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .spectrum-bar {
+            position: relative;
+            height: 12px;
+            background: linear-gradient(90deg,
+                var(--super-green) 0%,
+                var(--super-amber) 50%,
+                var(--super-red) 100%);
+            border-radius: 6px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .spectrum-marker {
+            position: absolute;
+            top: -8px;
+            width: 28px;
+            height: 28px;
+            background: var(--super-cream);
+            border: 3px solid var(--super-gold);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            transition: left 0.5s ease;
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.5);
+            cursor: pointer;
+        }
+
+        /* Cards container */
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Permission card */
+        .permission-card {
+            flex: 1;
+            max-width: 250px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(190, 156, 109, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .permission-card::before {
+            content: attr(data-number);
+            position: absolute;
+            top: -10px;
+            right: -5px;
+            font-family: 'Playfair Display', serif;
+            font-size: 5em;
+            font-weight: 700;
+            color: rgba(190, 156, 109, 0.05);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .permission-card.active {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.1);
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 50px rgba(190, 156, 109, 0.3);
+        }
+
+        .permission-card.dimmed {
+            opacity: 0.3;
+            transform: scale(0.95);
+        }
+
+        .card-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .permission-card.active .card-icon {
+            transform: scale(1.2);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            color: var(--super-gold);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-flag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 15px;
+        }
+
+        .card-desc {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.8);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .card-safety {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .safety-safe {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--super-green);
+            border: 1px solid var(--super-green);
+        }
+
+        .safety-caution {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--super-amber);
+            border: 1px solid var(--super-amber);
+        }
+
+        .safety-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--super-red);
+            border: 1px solid var(--super-red);
+        }
+
+        /* Recomendacao */
+        .recommendation {
+            margin-top: 40px;
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        .recommendation-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-text {
+            font-size: 1em;
+            color: var(--super-cream);
+            line-height: 1.6;
+        }
+
+        .recommendation-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Navigation */
+        .nav-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 12px var(--super-gold-light);
+            transform: scale(1.3);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 20px 30px; }
+        body.embed-mode .title { margin-bottom: 30px; }
+        body.embed-mode .title h1 { font-size: 1.6em; }
+        body.embed-mode .title p { font-size: 0.85em; }
+        body.embed-mode .spectrum-container { margin-bottom: 25px; }
+        body.embed-mode .cards-container { gap: 15px; }
+        body.embed-mode .permission-card { padding: 18px; max-width: 220px; }
+        body.embed-mode .card-icon { font-size: 2em; margin-bottom: 10px; }
+        body.embed-mode .card-title { font-size: 1.1em; }
+        body.embed-mode .card-flag { font-size: 0.65em; }
+        body.embed-mode .card-desc { font-size: 0.8em; margin-bottom: 12px; }
+        body.embed-mode .card-safety { font-size: 0.7em; padding: 5px 12px; }
+        body.embed-mode .recommendation { padding: 15px 25px; margin-top: 25px; }
+        body.embed-mode .recommendation-text { font-size: 0.9em; }
+        body.embed-mode .nav-indicator { bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>Espectro de Permissoes</h1>
+        <p>Quanto poder voce quer dar ao fantasma?</p>
+    </div>
+
+    <div class="spectrum-container">
+        <div class="spectrum-labels">
+            <span class="spectrum-label">Restrito</span>
+            <span class="spectrum-label">Liberado</span>
+        </div>
+        <div class="spectrum-bar">
+            <div class="spectrum-marker" id="marker" style="left: 0%;"></div>
+        </div>
+    </div>
+
+    <div class="cards-container">
+        <div class="permission-card active" data-index="0" data-number="01" data-position="0">
+            <div class="card-icon">&#128274;</div>
+            <div class="card-title">Default</div>
+            <div class="card-flag">(padrao)</div>
+            <div class="card-desc">Pede permissao para cada nova acao. Mais seguro para aprender.</div>
+            <div class="card-safety safety-safe">SEGURO</div>
+        </div>
+
+        <div class="permission-card" data-index="1" data-number="02" data-position="33">
+            <div class="card-icon">&#9997;</div>
+            <div class="card-title">acceptEdits</div>
+            <div class="card-flag">--allowedTools</div>
+            <div class="card-desc">Edita arquivos sem perguntar. Bom para produtividade.</div>
+            <div class="card-safety safety-caution">MODERADO</div>
+        </div>
+
+        <div class="permission-card" data-index="2" data-number="03" data-position="66">
+            <div class="card-icon">&#9889;</div>
+            <div class="card-title">Auto-Accept</div>
+            <div class="card-flag">Shift+Tab</div>
+            <div class="card-desc">Aceita tudo automaticamente. Voce ve acontecendo.</div>
+            <div class="card-safety safety-caution">ATENCAO</div>
+        </div>
+
+        <div class="permission-card" data-index="3" data-number="04" data-position="100">
+            <div class="card-icon">&#128165;</div>
+            <div class="card-title">YOLO</div>
+            <div class="card-flag">--dangerously-skip-permissions</div>
+            <div class="card-desc">Executa tudo sem perguntar. Use apenas em ambientes isolados!</div>
+            <div class="card-safety safety-danger">PERIGO</div>
+        </div>
+    </div>
+
+    <div class="recommendation">
+        <div class="recommendation-title">Recomendacao para Iniciantes</div>
+        <div class="recommendation-text">
+            Comece no modo <span class="highlight">Default</span>. Vejam as permissoes sendo pedidas.
+            Entendam o que o Claude quer fazer. Com o tempo, migrem para Auto-Accept.
+            <span class="highlight">YOLO e para usuarios avancados em ambientes controlados.</span>
+        </div>
+    </div>
+
+    <div class="nav-indicator">
+        <div class="nav-dot active" data-index="0" title="Default"></div>
+        <div class="nav-dot" data-index="1" title="acceptEdits"></div>
+        <div class="nav-dot" data-index="2" title="Auto-Accept"></div>
+        <div class="nav-dot" data-index="3" title="YOLO"></div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // State
+        let currentIndex = 0;
+        const cards = document.querySelectorAll('.permission-card');
+        const dots = document.querySelectorAll('.nav-dot');
+        const marker = document.getElementById('marker');
+
+        function updateDisplay() {
+            cards.forEach((card, i) => {
+                card.classList.remove('active', 'dimmed');
+                if (i === currentIndex) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.add('dimmed');
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
+
+            // Update marker position
+            const activeCard = cards[currentIndex];
+            const position = activeCard.dataset.position;
+            marker.style.left = position + '%';
+        }
+
+        function nextIndex() {
+            currentIndex = (currentIndex + 1) % 4;
+            updateDisplay();
+        }
+
+        function prevIndex() {
+            currentIndex = currentIndex === 0 ? 3 : currentIndex - 1;
+            updateDisplay();
+        }
+
+        // Initialize
+        updateDisplay();
+
+        // Card click
+        cards.forEach((card, i) => {
+            card.addEventListener('click', () => {
+                currentIndex = i;
+                updateDisplay();
+            });
+        });
+
+        // Dot click
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                currentIndex = i;
+                updateDisplay();
+            });
+        });
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextIndex();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevIndex();
+            }
+        });
+
+        // Click anywhere to advance (optional)
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.permission-card') || e.target.closest('.nav-dot')) return;
+            nextIndex();
+        });
+    </script>
+</body>
+</html>

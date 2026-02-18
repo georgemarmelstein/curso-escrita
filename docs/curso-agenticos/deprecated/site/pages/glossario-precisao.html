@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossario de Precisao - Sistemas Agenticos</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">&#9670;</span>
+        <span>Sistemas Agenticos</span>
+      </a>
+      <nav class="nav-main">
+        <a href="../index.html">Inicio</a>
+        <a href="aula-0.html">Aulas</a>
+        <a href="glossario.html" class="active">Glossario</a>
+        <a href="recursos.html">Recursos</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Alternar tema">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="lesson-hero">
+    <div class="container">
+      <div class="lesson-hero-content">
+        <span class="lesson-badge">Referencia Terminologica</span>
+        <h1>Glossario de Precisao</h1>
+        <p class="lesson-subtitle">Definicoes exatas dos especialistas com citacoes originais e traducoes</p>
+        <div class="lesson-meta">
+          <span class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            Citacoes dos Ases
+          </span>
+          <span class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
+            Ingles + Portugues
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+      <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+        <nav class="lesson-nav">
+          <h3>Navegacao Rapida</h3>
+          <ul>
+            <li><a href="#intro" class="lesson-nav-link">Introducao</a></li>
+            <li><a href="#agent" class="lesson-nav-link">Agent (Agente)</a></li>
+            <li><a href="#context-engineering" class="lesson-nav-link">Context Engineering</a></li>
+            <li><a href="#trust-model" class="lesson-nav-link">Trust the Model</a></li>
+            <li><a href="#mcp" class="lesson-nav-link">MCP</a></li>
+            <li><a href="#skills" class="lesson-nav-link">Skills</a></li>
+            <li><a href="#hooks" class="lesson-nav-link">Hooks</a></li>
+            <li><a href="#workflow" class="lesson-nav-link">Workflow vs Agent</a></li>
+            <li><a href="#outros" class="lesson-nav-link">Outros Termos</a></li>
+            <li><a href="#indice" class="lesson-nav-link">Indice por Tema</a></li>
+          </ul>
+          <div class="nav-divider"></div>
+          <h3>Glossarios</h3>
+          <ul>
+            <li><a href="glossario.html" class="lesson-nav-link">Taxonomia Completa</a></li>
+            <li><a href="glossario-precisao.html" class="lesson-nav-link active">Precisao Terminologica</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Content -->
+      <div class="lesson-content">
+
+        <!-- Link para outro glossario -->
+        <div class="callout callout-tip">
+          <div class="callout-title">Veja Tambem</div>
+          <p>Este glossario apresenta <strong>definicoes exatas com citacoes</strong>. Para a <strong>taxonomia hierarquica completa</strong> dos conceitos, consulte o <a href="glossario.html">Glossario e Taxonomia</a>.</p>
+        </div>
+
+        <!-- Introducao -->
+        <section id="intro" class="lesson-block">
+          <h2>Sobre Este Glossario</h2>
+
+          <div class="callout callout-context">
+            <div class="callout-title">Definicoes dos Especialistas</div>
+            <p>Este glossario estabelece o significado <strong>EXATO</strong> que os "Ases" (especialistas da Anthropic, HumanLayer, Pydantic, Prefect, PromptLayer) usam para cada termo. Inclui citacoes originais em ingles com traducao, exemplos de uso correto e incorreto.</p>
+          </div>
+
+          <h3>Fontes Citadas</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Especialista</th>
+                <th>Empresa</th>
+                <th>Palestra</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Barry Zhang</strong></td>
+                <td>Anthropic</td>
+                <td>How We Build Effective Agents</td>
+              </tr>
+              <tr>
+                <td><strong>Dex Horthy</strong></td>
+                <td>HumanLayer</td>
+                <td>12 Factor Agents</td>
+              </tr>
+              <tr>
+                <td><strong>Jared Zoneraich</strong></td>
+                <td>PromptLayer</td>
+                <td>How Claude Code Works</td>
+              </tr>
+              <tr>
+                <td><strong>Boris Cherny</strong></td>
+                <td>Anthropic</td>
+                <td>Claude Code Evolution</td>
+              </tr>
+              <tr>
+                <td><strong>Jeremiah Lowin</strong></td>
+                <td>Prefect</td>
+                <td>Your MCP Server is Bad</td>
+              </tr>
+              <tr>
+                <td><strong>Thariq Shihipar</strong></td>
+                <td>Anthropic</td>
+                <td>Agent SDK Workshop</td>
+              </tr>
+              <tr>
+                <td><strong>Samuel Colvin</strong></td>
+                <td>Pydantic</td>
+                <td>MCP is All You Need</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Formato das Entradas</h3>
+
+          <p>Cada termo segue esta estrutura:</p>
+          <ul>
+            <li><strong>Definicao Precisa</strong>: O que o termo significa EXATAMENTE</li>
+            <li><strong>Origem</strong>: Quem cunhou/popularizou, em qual contexto</li>
+            <li><strong>Citacao Original</strong>: Frase exata em ingles + traducao</li>
+            <li><strong>Uso Correto</strong>: Exemplos de aplicacao adequada</li>
+            <li><strong>Uso Incorreto</strong>: Antipadroes e equivocos comuns</li>
+          </ul>
+        </section>
+
+        <!-- Agent -->
+        <section id="agent" class="lesson-block">
+          <h2>Agent (Agente)</h2>
+
+          <p><strong>Definicao Precisa:</strong> Modelo de linguagem usando ferramentas em um loop. Os tres componentes essenciais sao: (1) Ambiente onde opera, (2) Ferramentas que pode usar, (3) System Prompt que define seu comportamento.</p>
+
+          <p><strong>Origem:</strong> Barry Zhang, Anthropic - "How We Build Effective Agents"</p>
+
+          <blockquote>
+            <p>"We define agents as models using tools in a loop."</p>
+            <p><em>— Barry Zhang, Anthropic</em></p>
+            <p><strong>Traducao:</strong> <em>"Definimos agentes como modelos usando ferramentas em um loop."</em></p>
+          </blockquote>
+
+          <h3>Uso Correto</h3>
+          <ul>
+            <li>"Este agente tem acesso a ferramentas de pesquisa e executa em loop ate encontrar a resposta"</li>
+            <li>"O agente recebeu bash, grep e read como ferramentas"</li>
+            <li>"Precisamos definir o ambiente (codebase) e as ferramentas (MCP servers) do agente"</li>
+          </ul>
+
+          <h3>Uso Incorreto</h3>
+          <ul>
+            <li><strong>X</strong> "Vou criar um agente" (quando na verdade e um prompt simples sem ferramentas)</li>
+            <li><strong>X</strong> "O agente respondeu" (quando foi apenas uma chamada de API sem loop)</li>
+            <li><strong>X</strong> "Agente de IA" como sinonimo generico de "IA" ou "chatbot"</li>
+          </ul>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Confusao Comum</div>
+            <ul>
+              <li><strong>Agent vs Assistant:</strong> Um assistant responde perguntas; um agent EXECUTA ACOES em loop</li>
+              <li><strong>Agent vs Workflow:</strong> Agent decide o caminho; workflow segue passos pre-determinados</li>
+              <li><strong>Agent vs Model:</strong> O model e o LLM; o agent e model + tools + loop + environment</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Context Engineering -->
+        <section id="context-engineering" class="lesson-block">
+          <h2>Context Engineering (Engenharia de Contexto)</h2>
+
+          <p><strong>Definicao Precisa:</strong> A arte e ciencia de gerenciar o que vai para o contexto do modelo. E o fator MAIS IMPORTANTE para qualidade de agentes. Nao e so o prompt - inclui ferramentas, arquivos, scripts, historico.</p>
+
+          <p><strong>Origem:</strong> Dex Horthy, HumanLayer - "12 Factor Agents"</p>
+
+          <blockquote>
+            <p>"Everything in making agents good is context engineering."</p>
+            <p><em>— Dex Horthy, HumanLayer</em></p>
+            <p><strong>Traducao:</strong> <em>"Tudo em fazer agentes bons e engenharia de contexto."</em></p>
+          </blockquote>
+
+          <h3>Uso Correto</h3>
+          <ul>
+            <li>"Precisamos fazer context engineering: o que entra, o que sai, quando compactar"</li>
+            <li>"O CLAUDE.md e context engineering - informacao sempre disponivel"</li>
+            <li>"Mover resultados para arquivos e context engineering"</li>
+          </ul>
+
+          <h3>Uso Incorreto</h3>
+          <ul>
+            <li><strong>X</strong> "Context engineering e so escrever bons prompts" (e muito mais amplo)</li>
+            <li><strong>X</strong> "Jogar tudo no contexto" (isso e anti-context engineering)</li>
+          </ul>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Distincao Importante</div>
+            <p><strong>Context Engineering vs Prompt Engineering:</strong> Prompt e parte do contexto, mas contexto inclui tools, files, history, etc.</p>
+          </div>
+        </section>
+
+        <!-- Trust the Model -->
+        <section id="trust-model" class="lesson-block">
+          <h2>Trust the Model (Confie no Modelo)</h2>
+
+          <p><strong>Definicao Precisa:</strong> Filosofia do Claude Code: de ferramentas ao modelo e saia do caminho. Menos scaffolding, mais confianca na capacidade do modelo.</p>
+
+          <p><strong>Origem:</strong> Jared Zoneraich, PromptLayer</p>
+
+          <blockquote>
+            <p>"Give it tools and then get out of the way."</p>
+            <p><em>— Jared Zoneraich, PromptLayer</em></p>
+            <p><strong>Traducao:</strong> <em>"De ferramentas a ele e saia do caminho."</em></p>
+          </blockquote>
+
+          <blockquote>
+            <p>"Simple is better than complex. Less scaffolding, more model."</p>
+            <p><em>— Jared Zoneraich, PromptLayer</em></p>
+            <p><strong>Traducao:</strong> <em>"Simples e melhor que complexo. Menos scaffolding, mais modelo."</em></p>
+          </blockquote>
+
+          <h3>Uso Correto</h3>
+          <ul>
+            <li>"Em vez de criar N regras, confiamos no modelo para decidir"</li>
+            <li>"Demos bash e saimos do caminho"</li>
+            <li>"Trust the model: ele sabe compor ferramentas"</li>
+          </ul>
+
+          <h3>Uso Incorreto</h3>
+          <ul>
+            <li><strong>X</strong> "Trust the model" como desculpa para nao testar</li>
+            <li><strong>X</strong> Nao ter nenhum guardrail ou validacao</li>
+          </ul>
+
+          <div class="callout callout-context">
+            <div class="callout-title">The Bitter Lesson</div>
+            <blockquote>
+              <p>"The more general model always wins."</p>
+              <p><em>— Boris Cherny, Anthropic</em></p>
+              <p><strong>Traducao:</strong> <em>"O modelo mais geral sempre vence."</em></p>
+            </blockquote>
+            <p>Principio de que abordagens mais gerais e escalaveis sempre vencem abordagens especializadas no longo prazo.</p>
+          </div>
+        </section>
+
+        <!-- MCP -->
+        <section id="mcp" class="lesson-block">
+          <h2>MCP (Model Context Protocol)</h2>
+
+          <p><strong>Definicao Precisa:</strong> Protocolo para comunicacao agente-ferramenta. Permite: tools dinamicas, streaming de logs, sampling (callback para LLM), e execucao como subprocesso via stdin/stdout.</p>
+
+          <p><strong>Origem:</strong> Anthropic; Samuel Colvin, Pydantic</p>
+
+          <blockquote>
+            <p>"MCP's way of being allowed to operate as effectively a subprocess over standard in and standard out is extremely useful."</p>
+            <p><em>— Samuel Colvin, Pydantic</em></p>
+            <p><strong>Traducao:</strong> <em>"A forma do MCP de poder operar efetivamente como um subprocesso via entrada e saida padrao e extremamente util."</em></p>
+          </blockquote>
+
+          <h3>Design de Ferramentas MCP</h3>
+
+          <blockquote>
+            <p>"You are not building a tool. You are building a user interface for AI."</p>
+            <p><em>— Jeremiah Lowin, Prefect</em></p>
+            <p><strong>Traducao:</strong> <em>"Voce nao esta construindo uma ferramenta. Voce esta construindo uma interface de usuario para IA."</em></p>
+          </blockquote>
+
+          <blockquote>
+            <p>"50 tools per agent max."</p>
+            <p><em>— Jeremiah Lowin, Prefect</em></p>
+            <p><strong>Traducao:</strong> <em>"50 ferramentas por agente no maximo."</em></p>
+          </blockquote>
+
+          <blockquote>
+            <p>"Outcomes not operations."</p>
+            <p><em>— Jeremiah Lowin, Prefect</em></p>
+            <p><strong>Traducao:</strong> <em>"Resultados, nao operacoes."</em></p>
+          </blockquote>
+
+          <blockquote>
+            <p>"Flatten arguments — no nested structures."</p>
+            <p><em>— Jeremiah Lowin, Prefect</em></p>
+            <p><strong>Traducao:</strong> <em>"Achate os argumentos — sem estruturas aninhadas."</em></p>
+          </blockquote>
+
+          <h3>Sampling (Callback para LLM)</h3>
+
+          <blockquote>
+            <p>"Sampling is this idea of a way where within MCP the server can effectively make a request back through the client to the LLM."</p>
+            <p><em>— Samuel Colvin, Pydantic</em></p>
+            <p><strong>Traducao:</strong> <em>"Sampling e essa ideia de uma forma onde, dentro do MCP, o servidor pode efetivamente fazer uma requisicao de volta atraves do cliente para o LLM."</em></p>
+          </blockquote>
+        </section>
+
+        <!-- Skills -->
+        <section id="skills" class="lesson-block">
+          <h2>Skills (no contexto Claude Code)</h2>
+
+          <p><strong>Definicao Precisa:</strong> Pastas com instrucoes especializadas que o agente pode acessar. Skills sao para instrucoes repetiveis que precisam de muita expertise. Nao sao codigo - sao conhecimento estruturado.</p>
+
+          <p><strong>Origem:</strong> Thariq Shihipar, Anthropic</p>
+
+          <blockquote>
+            <p>"Skills are really good for pretty repeatable instructions that need a lot of expertise in them... It's really just a very detailed and good prompt on how to do [something]."</p>
+            <p><em>— Thariq Shihipar, Anthropic</em></p>
+            <p><strong>Traducao:</strong> <em>"Skills sao muito boas para instrucoes bastante repetiveis que precisam de muita expertise... E realmente apenas um prompt muito detalhado e bom sobre como fazer [algo]."</em></p>
+          </blockquote>
+
+          <h3>Uso Correto</h3>
+          <ul>
+            <li>"A skill de frontend-design contem expertise de nosso melhor engenheiro"</li>
+            <li>"Skills sao pastas que o agente pode 'cd into' e ler"</li>
+            <li>"Criamos uma skill de relatorios judiciais com metodologia refinada"</li>
+          </ul>
+
+          <h3>Uso Incorreto</h3>
+          <ul>
+            <li><strong>X</strong> "Skill e um plugin de codigo" (nao e codigo, e prompt/conhecimento)</li>
+            <li><strong>X</strong> "Skill executa automaticamente" (precisa ser invocada)</li>
+            <li><strong>X</strong> Confundir com tools/ferramentas</li>
+          </ul>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Confusao Comum</div>
+            <ul>
+              <li><strong>Skill vs Command:</strong> Command e atalho invocado manualmente; Skill e expertise reutilizavel</li>
+              <li><strong>Skill vs Tool:</strong> Tool executa acao; Skill fornece conhecimento/metodologia</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Hooks -->
+        <section id="hooks" class="lesson-block">
+          <h2>Hooks</h2>
+
+          <p><strong>Definicao Precisa:</strong> Mecanismo para inserir verificacao DETERMINISTICA ou contexto adicional em pontos especificos do loop do agente. Hooks nao sao inteligencia - sao checkpoints programaticos.</p>
+
+          <p><strong>Origem:</strong> Thariq Shihipar, Anthropic</p>
+
+          <blockquote>
+            <p>"Hooks are a way of doing deterministic verification or inserting context."</p>
+            <p><em>— Thariq Shihipar, Anthropic</em></p>
+            <p><strong>Traducao:</strong> <em>"Hooks sao uma forma de fazer verificacao deterministica ou inserir contexto."</em></p>
+          </blockquote>
+
+          <h3>Uso Correto</h3>
+          <ul>
+            <li>"Usamos hook para verificar se o agente leu o arquivo antes de editar"</li>
+            <li>"O hook de pre-commit roda lint automaticamente"</li>
+            <li>"Hooks adicionam determinismo a um sistema estocastico"</li>
+          </ul>
+
+          <h3>Uso Incorreto</h3>
+          <ul>
+            <li><strong>X</strong> "Hook inteligente" (hooks sao deterministicos, nao inteligentes)</li>
+            <li><strong>X</strong> Usar hooks para logica complexa (devem ser simples e rapidos)</li>
+          </ul>
+        </section>
+
+        <!-- Workflow vs Agent -->
+        <section id="workflow" class="lesson-block">
+          <h2>Workflow vs Agent</h2>
+
+          <p><strong>Definicao Precisa:</strong> Workflow e sequencia de passos PRE-DETERMINADOS com baixa variabilidade. Oposto de Agent que decide o caminho. Use workflow quando quer consistencia; agent quando precisa de flexibilidade.</p>
+
+          <p><strong>Origem:</strong> Thariq Shihipar, Anthropic</p>
+
+          <blockquote>
+            <p>"Workflows are for things with very predetermined steps. The thing you're looking for is to not have a lot of variability."</p>
+            <p><em>— Thariq Shihipar, Anthropic</em></p>
+            <p><strong>Traducao:</strong> <em>"Workflows sao para coisas com passos muito predeterminados. O que voce busca e nao ter muita variabilidade."</em></p>
+          </blockquote>
+
+          <h3>Uso Correto</h3>
+          <ul>
+            <li>"Pipeline de sentenca e workflow: sempre relatar - analisar - minutar"</li>
+            <li>"Usamos workflow porque cada processo BPC segue mesmo padrao"</li>
+            <li>"Workflow garante consistencia; agent traz flexibilidade"</li>
+          </ul>
+
+          <h3>Uso Incorreto</h3>
+          <ul>
+            <li><strong>X</strong> "Workflow inteligente" (workflows sao deterministicos)</li>
+            <li><strong>X</strong> Usar agent para tarefas sempre identicas</li>
+          </ul>
+
+          <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                   WORKFLOW vs AGENT                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  WORKFLOW                        AGENT                           │
+│  ├── Passos fixos                ├── Decisao dinamica            │
+│  ├── Baixa variabilidade         ├── Alta variabilidade          │
+│  ├── Consistencia garantida      ├── Flexibilidade               │
+│  └── Deterministico              └── Estocastico                 │
+│                                                                  │
+│  QUANDO USAR:                                                    │
+│  ├── Processo BPC padrao  →  WORKFLOW                            │
+│  ├── Analise de caso novo →  AGENT                               │
+│  └── Pipeline repetitivo  →  WORKFLOW                            │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+        </section>
+
+        <!-- Outros Termos -->
+        <section id="outros" class="lesson-block">
+          <h2>Outros Termos Importantes</h2>
+
+          <h3>State in Files (Estado em Arquivos)</h3>
+
+          <blockquote>
+            <p>"At least in code the state is in the files of the codebase. If you're moving stuff to files, then you have a lot of flexibility to start fresh."</p>
+            <p><em>— Thariq Shihipar, Anthropic</em></p>
+            <p><strong>Traducao:</strong> <em>"Pelo menos em codigo, o estado esta nos arquivos do codebase. Se voce esta movendo coisas para arquivos, entao tem muita flexibilidade para comecar do zero."</em></p>
+          </blockquote>
+
+          <h3>Compact/Compaction (Compactacao)</h3>
+
+          <blockquote>
+            <p>"A lot of times when I talk to people who are using Claude Code, they're like, I'm on my fifth compact. I'm like, what? I've almost never done a compact before."</p>
+            <p><em>— Thariq Shihipar, Anthropic</em></p>
+            <p><strong>Traducao:</strong> <em>"Muitas vezes quando converso com pessoas usando Claude Code, elas dizem: estou no meu quinto compact. E eu penso: o que? Eu quase nunca fiz compact."</em></p>
+          </blockquote>
+
+          <h3>Think Like Your Agents (Pense Como Seus Agentes)</h3>
+
+          <blockquote>
+            <p>"Think like your agents — understand limited context window."</p>
+            <p><em>— Barry Zhang, Anthropic</em></p>
+            <p><strong>Traducao:</strong> <em>"Pense como seus agentes — entenda a janela de contexto limitada."</em></p>
+          </blockquote>
+
+          <h3>LM as Pure Function (LM como Funcao Pura)</h3>
+
+          <blockquote>
+            <p>"LMs are pure functions, tokens in, tokens out."</p>
+            <p><em>— Dex Horthy, HumanLayer</em></p>
+            <p><strong>Traducao:</strong> <em>"LMs sao funcoes puras, tokens entram, tokens saem."</em></p>
+          </blockquote>
+
+          <h3>Transcript Reading (Leitura de Transcritos)</h3>
+
+          <blockquote>
+            <p>"The number one thing, the metalearning for designing an agent loop to me is just to read the transcripts over and over again."</p>
+            <p><em>— Thariq Shihipar, Anthropic</em></p>
+            <p><strong>Traducao:</strong> <em>"A coisa numero um, o meta-aprendizado para projetar um loop de agente para mim e simplesmente ler os transcritos repetidamente."</em></p>
+          </blockquote>
+
+          <h3>Own Your Control Flow (Seja Dono do Seu Fluxo)</h3>
+
+          <blockquote>
+            <p>"Own your control flow."</p>
+            <p><em>— Dex Horthy, HumanLayer</em></p>
+            <p><strong>Traducao:</strong> <em>"Seja dono do seu fluxo de controle."</em></p>
+          </blockquote>
+
+          <h3>Bash is All You Need</h3>
+
+          <blockquote>
+            <p>"Bash is very composable — static scripts, low context usage."</p>
+            <p><em>— Thariq Shihipar, Anthropic</em></p>
+            <p><strong>Traducao:</strong> <em>"Bash e muito componivel — scripts estaticos, baixo uso de contexto."</em></p>
+          </blockquote>
+
+          <blockquote>
+            <p>"Bash is all you need."</p>
+            <p><em>— Jared Zoneraich, PromptLayer</em></p>
+            <p><strong>Traducao:</strong> <em>"Bash e tudo que voce precisa."</em></p>
+          </blockquote>
+        </section>
+
+        <!-- Indice por Tema -->
+        <section id="indice" class="lesson-block">
+          <h2>Indice de Citacoes por Tema</h2>
+
+          <h3>Arquitetura de Agentes</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Citacao Original</th>
+                <th>Traducao</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"We define agents as models using tools in a loop."</td>
+                <td><em>Definimos agentes como modelos usando ferramentas em um loop.</em></td>
+              </tr>
+              <tr>
+                <td>"Think like your agents — understand limited context window."</td>
+                <td><em>Pense como seus agentes — entenda a janela de contexto limitada.</em></td>
+              </tr>
+              <tr>
+                <td>"LMs are pure functions, tokens in, tokens out."</td>
+                <td><em>LMs sao funcoes puras, tokens entram, tokens saem.</em></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Engenharia de Contexto</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Citacao Original</th>
+                <th>Traducao</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"Everything in making agents good is context engineering."</td>
+                <td><em>Tudo em fazer agentes bons e engenharia de contexto.</em></td>
+              </tr>
+              <tr>
+                <td>"If you're moving stuff to files, then you have flexibility to start fresh."</td>
+                <td><em>Se voce esta movendo coisas para arquivos, tem flexibilidade para comecar do zero.</em></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Design de Ferramentas (MCP)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Citacao Original</th>
+                <th>Traducao</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"You are not building a tool. You are building a user interface for AI."</td>
+                <td><em>Voce nao esta construindo uma ferramenta. Esta construindo uma interface para IA.</em></td>
+              </tr>
+              <tr>
+                <td>"50 tools per agent max."</td>
+                <td><em>50 ferramentas por agente no maximo.</em></td>
+              </tr>
+              <tr>
+                <td>"Outcomes not operations."</td>
+                <td><em>Resultados, nao operacoes.</em></td>
+              </tr>
+              <tr>
+                <td>"Flatten arguments — no nested structures."</td>
+                <td><em>Achate os argumentos — sem estruturas aninhadas.</em></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Filosofia de Desenvolvimento</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Citacao Original</th>
+                <th>Traducao</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"The more general model always wins."</td>
+                <td><em>O modelo mais geral sempre vence.</em></td>
+              </tr>
+              <tr>
+                <td>"Give it tools and then get out of the way."</td>
+                <td><em>De ferramentas a ele e saia do caminho.</em></td>
+              </tr>
+              <tr>
+                <td>"Own your control flow."</td>
+                <td><em>Seja dono do seu fluxo de controle.</em></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Checklist -->
+        <section class="lesson-block">
+          <h2>Checklist: Devo Construir um Agente?</h2>
+
+          <p>Baseado em Barry Zhang (Anthropic):</p>
+
+          <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  CHECKLIST: DEVO CONSTRUIR UM AGENTE?                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  [ ] A tarefa e complexa o suficiente para justificar um loop? │
+│  [ ] O valor gerado justifica o custo de tokens?               │
+│  [ ] O modelo atual tem capacidade para a tarefa?              │
+│  [ ] O custo de erro e aceitavel? (agentes erram)              │
+│  [ ] Preciso de variabilidade ou consistencia e mais importante│
+│                                                                 │
+│  SE MAIORIA "SIM" → Agent                                       │
+│  SE MAIORIA "NAO" → Workflow ou chamada simples                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+        </section>
+
+        <!-- Navigation -->
+        <nav class="lesson-nav-footer">
+          <a href="glossario.html" class="nav-prev">
+            <span class="nav-label">Ver tambem</span>
+            <span class="nav-title">Glossario Taxonomico</span>
+          </a>
+          <a href="recursos.html" class="nav-next">
+            <span class="nav-label">Proximo</span>
+            <span class="nav-title">Recursos e Materiais</span>
+          </a>
+        </nav>
+
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Sistemas Agenticos</h4>
+          <p>Curso pratico de Claude Code para profissionais do Direito</p>
+        </div>
+        <div class="footer-section">
+          <h4>Navegacao</h4>
+          <ul>
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="aula-0.html">Aulas</a></li>
+            <li><a href="glossario.html">Glossario</a></li>
+            <li><a href="recursos.html">Recursos</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Filosofia</h4>
+          <p>Regencia Cognitiva: O humano dirige, a IA executa</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Janeiro 2026 - Material Educacional</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

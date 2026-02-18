@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Karpathy - Proposta C (Manual Ausente)</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+            position: relative;
+        }
+
+        /* Fundo com código ilegível */
+        .code-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 0.15;
+        }
+
+        .code-line {
+            white-space: nowrap;
+            font-size: 12px;
+            color: var(--super-gold);
+            animation: scroll-code 20s linear infinite;
+            margin: 2px 0;
+        }
+
+        .code-line:nth-child(odd) {
+            animation-duration: 25s;
+            animation-direction: reverse;
+        }
+
+        @keyframes scroll-code {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        /* Vignette */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center,
+                rgba(10, 10, 18, 0.7) 0%,
+                rgba(10, 10, 18, 0.9) 50%,
+                rgba(10, 10, 18, 0.98) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+            max-width: 1000px;
+        }
+
+        /* Manual visual */
+        .manual-visual {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .book {
+            width: 120px;
+            height: 160px;
+            background: linear-gradient(135deg, #2a2a3a, #1a1a2a);
+            border-radius: 4px 12px 12px 4px;
+            position: relative;
+            box-shadow:
+                -5px 5px 15px rgba(0,0,0,0.5),
+                inset -3px 0 10px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .book::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 8px;
+            background: linear-gradient(90deg, rgba(190, 156, 109, 0.3), transparent);
+            border-radius: 2px 0 0 2px;
+        }
+
+        .book.alien {
+            border: 2px solid var(--super-gold);
+            box-shadow:
+                0 0 30px rgba(190, 156, 109, 0.3),
+                -5px 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .book.alien .book-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .book.alien .book-label {
+            font-size: 0.6em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .book.manual {
+            border: 2px dashed var(--super-red);
+            opacity: 0.6;
+        }
+
+        .book.manual .book-icon {
+            font-size: 2.5em;
+            color: var(--super-red);
+            margin-bottom: 10px;
+        }
+
+        .book.manual .book-label {
+            font-size: 0.55em;
+            color: var(--super-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .book.manual::after {
+            content: '?';
+            position: absolute;
+            font-size: 4em;
+            color: rgba(239, 68, 68, 0.2);
+            font-weight: 700;
+        }
+
+        .connector {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .connector-line {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--super-gold), var(--super-red));
+            position: relative;
+        }
+
+        .connector-line::after {
+            content: '✕';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--super-red);
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .connector-text {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Quote */
+        .quote-section {
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease 0.3s both;
+        }
+
+        .quote {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2em;
+            font-weight: 500;
+            line-height: 1.5;
+            color: var(--super-cream);
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .quote::before {
+            content: '"';
+            position: absolute;
+            left: -30px;
+            top: -20px;
+            font-size: 4em;
+            color: rgba(190, 156, 109, 0.2);
+            font-family: Georgia, serif;
+        }
+
+        .highlight-alien {
+            color: var(--super-gold);
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(190, 156, 109, 0.4);
+        }
+
+        .highlight-manual {
+            color: var(--super-red);
+            font-weight: 700;
+            text-decoration: line-through;
+            text-decoration-thickness: 2px;
+        }
+
+        /* Autor */
+        .author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        .author-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--super-gold);
+            object-fit: cover;
+            filter: grayscale(30%);
+        }
+
+        .author-info {
+            text-align: left;
+        }
+
+        .author-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .author-title {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* CTA */
+        .cta {
+            padding: 20px 40px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.2), rgba(190, 156, 109, 0.1));
+            border: 2px solid var(--super-gold);
+            border-radius: 8px;
+            display: inline-block;
+            animation: fadeIn 1s ease 0.7s both, glow 2s ease infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(190, 156, 109, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(190, 156, 109, 0.4); }
+        }
+
+        .cta-label {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        .cta-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--super-green);
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 25px; }
+        body.embed-mode .book { width: 100px; height: 130px; }
+        body.embed-mode .book.alien .book-icon { font-size: 2.5em; }
+        body.embed-mode .manual-visual { gap: 30px; margin-bottom: 30px; }
+        body.embed-mode .quote { font-size: 1.6em; }
+        body.embed-mode .cta { padding: 15px 30px; }
+        body.embed-mode .cta-text { font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <!-- Código ilegível no fundo -->
+    <div class="code-background" id="code-bg"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <!-- Visual do manual -->
+        <div class="manual-visual">
+            <div class="book alien">
+                <span class="book-icon">&#128125;</span>
+                <span class="book-label">Ferramenta</span>
+            </div>
+            <div class="connector">
+                <div class="connector-line"></div>
+                <span class="connector-text">deveria vir com</span>
+            </div>
+            <div class="book manual">
+                <span class="book-icon">&#128214;</span>
+                <span class="book-label">Manual</span>
+            </div>
+        </div>
+
+        <!-- Quote -->
+        <div class="quote-section">
+            <p class="quote">
+                Claramente alguma <span class="highlight-alien">ferramenta alienígena</span> poderosa foi distribuída, exceto que ela vem <span class="highlight-manual">sem manual</span>.
+            </p>
+        </div>
+
+        <!-- Autor -->
+        <div class="author">
+            <img src="andrej-karpathy.jpg" alt="Andrej Karpathy" class="author-photo">
+            <div class="author-info">
+                <div class="author-name">Andrej Karpathy</div>
+                <div class="author-title">Ex-Tesla AI, OpenAI • Janeiro 2025</div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta">
+            <div class="cta-label">Este curso</div>
+            <div class="cta-text">&#128214; É o manual que faltava</div>
+        </div>
+    </div>
+
+    <script>
+        // Gerar código ilegível no fundo
+        function generateCodeBackground() {
+            const container = document.getElementById('code-bg');
+            const codeSnippets = [
+                'const agent = new ClaudeAgent({ model: "opus" });',
+                'await agent.orchestrate(subagents, task);',
+                'function processContext(tokens) { return optimize(tokens); }',
+                'MCP.connect("server://tools").then(pipe);',
+                'skill.execute({ prompt, context, tools });',
+                'const response = await claude.complete(messages);',
+                'harness.dispatch(agent, { isolated: true });',
+                'import { Task, Read, Write } from "@anthropic/tools";',
+            ];
+
+            for (let i = 0; i < 30; i++) {
+                const line = document.createElement('div');
+                line.className = 'code-line';
+                line.textContent = (codeSnippets[i % codeSnippets.length] + '   ').repeat(10);
+                container.appendChild(line);
+            }
+        }
+        generateCodeBackground();
+
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

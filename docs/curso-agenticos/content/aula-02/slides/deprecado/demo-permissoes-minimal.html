@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espectro de Permissoes - Minimal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--super-bg-dark);
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-bottom: 60px;
+            animation: fadeIn 0.8s ease both;
+        }
+
+        .spectrum-container {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .spectrum-card {
+            text-align: center;
+            padding: 50px 40px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            opacity: 0.25;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+            cursor: default;
+            min-width: 180px;
+        }
+
+        .spectrum-card.active {
+            opacity: 1;
+            transform: scale(1.08);
+        }
+
+        .spectrum-card[data-level="safe"].active {
+            border-color: var(--super-green);
+            box-shadow: 0 0 50px rgba(74, 222, 128, 0.3);
+        }
+
+        .spectrum-card[data-level="medium"].active {
+            border-color: var(--super-amber);
+            box-shadow: 0 0 50px rgba(251, 191, 36, 0.3);
+        }
+
+        .spectrum-card[data-level="danger"].active {
+            border-color: var(--super-red);
+            box-shadow: 0 0 50px rgba(239, 68, 68, 0.3);
+        }
+
+        .mode-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4em;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .spectrum-card[data-level="safe"] .mode-name { color: var(--super-green); }
+        .spectrum-card[data-level="medium"] .mode-name { color: var(--super-amber); }
+        .spectrum-card[data-level="danger"] .mode-name { color: var(--super-red); }
+
+        .mode-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            line-height: 1.5;
+        }
+
+        .arrow-connector {
+            font-size: 2em;
+            color: rgba(255, 244, 228, 0.2);
+        }
+
+        .spectrum-bar {
+            width: 100%;
+            max-width: 700px;
+            height: 6px;
+            background: linear-gradient(
+                90deg,
+                var(--super-green) 0%,
+                var(--super-amber) 50%,
+                var(--super-red) 100%
+            );
+            border-radius: 3px;
+            opacity: 0.4;
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        .spectrum-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 700px;
+            margin-top: 15px;
+            animation: fadeIn 1s ease 0.7s both;
+        }
+
+        .spectrum-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .spectrum-label.safe { color: var(--super-green); }
+        .spectrum-label.danger { color: var(--super-red); }
+
+        .hint {
+            position: absolute;
+            bottom: 30px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.3);
+            animation: fadeIn 1s ease 1s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Embed mode */
+        body.embed-mode .spectrum-card { padding: 30px 25px; min-width: 140px; }
+        body.embed-mode .mode-name { font-size: 1.1em; }
+        body.embed-mode .mode-desc { font-size: 0.75em; }
+        body.embed-mode .title { font-size: 1.2em; margin-bottom: 40px; }
+        body.embed-mode .spectrum-container { gap: 20px; }
+    </style>
+</head>
+<body>
+    <div class="title">O Espectro de Permissões</div>
+
+    <div class="spectrum-container">
+        <div class="spectrum-card" data-level="safe" data-index="0">
+            <div class="mode-name">Default</div>
+            <div class="mode-desc">Pede permissão<br>para cada ação</div>
+        </div>
+        <div class="arrow-connector">→</div>
+        <div class="spectrum-card" data-level="medium" data-index="1">
+            <div class="mode-name">Auto-Accept</div>
+            <div class="mode-desc">Executa mas<br>você vê tudo</div>
+        </div>
+        <div class="arrow-connector">→</div>
+        <div class="spectrum-card" data-level="danger" data-index="2">
+            <div class="mode-name">YOLO</div>
+            <div class="mode-desc">Sem limites<br>Use com cuidado</div>
+        </div>
+    </div>
+
+    <div class="spectrum-bar"></div>
+
+    <div class="spectrum-labels">
+        <div class="spectrum-label safe">Seguro</div>
+        <div class="spectrum-label danger">Perigoso</div>
+    </div>
+
+    <div class="hint">Clique para avançar</div>
+
+    <script>
+        const cards = document.querySelectorAll('.spectrum-card');
+        let current = -1;
+
+        function updateDisplay() {
+            cards.forEach((card, i) => {
+                card.classList.toggle('active', i === current || current === 3);
+            });
+        }
+
+        function next() {
+            current++;
+            if (current > 3) current = 0;
+            updateDisplay();
+        }
+
+        // Click to advance
+        document.body.addEventListener('click', next);
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                next();
+            }
+        });
+
+        // Start with first card
+        setTimeout(() => {
+            current = 0;
+            updateDisplay();
+        }, 500);
+
+        // Embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradigmas - Proposta C: Minimal Focus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        /* Grid de fundo sutil */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(190, 156, 109, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(190, 156, 109, 0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+        }
+
+        /* Container principal */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* Título minimalista */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 400;
+            color: rgba(255, 244, 228, 0.6);
+            text-align: center;
+            margin-bottom: 50px;
+            letter-spacing: 3px;
+        }
+
+        h1 span {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Cards container - horizontal */
+        .cards-row {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-bottom: 50px;
+        }
+
+        /* Card ultra minimal */
+        .minimal-card {
+            width: 300px;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px;
+            position: relative;
+        }
+
+        /* Linha dourada no topo */
+        .minimal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--super-gold);
+            border-radius: 2px;
+            transition: all 0.4s ease;
+        }
+
+        .minimal-card.spotlight::before {
+            width: 100%;
+        }
+
+        /* Estados */
+        .minimal-card.dimmed {
+            opacity: 0.15;
+            transform: scale(0.9);
+        }
+
+        .minimal-card.spotlight {
+            transform: scale(1.05);
+        }
+
+        /* Ícone grande central */
+        .card-icon-large {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+            transition: all 0.4s ease;
+        }
+
+        .minimal-card.spotlight .card-icon-large {
+            transform: scale(1.1);
+        }
+
+        /* Nome do produto */
+        .card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 5px;
+        }
+
+        .card-company {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-bottom: 20px;
+        }
+
+        /* Badge tipo */
+        .type-badge {
+            display: inline-block;
+            padding: 8px 24px;
+            background: transparent;
+            border: 2px solid var(--super-gold);
+            color: var(--super-gold);
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .minimal-card.spotlight .type-badge {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+        }
+
+        /* Quote */
+        .card-quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* Features como lista simples */
+        .features-list {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .features-list li {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.6);
+            margin-bottom: 8px;
+            position: relative;
+            list-style: none;
+        }
+
+        .features-list li::before {
+            content: '→';
+            position: absolute;
+            left: -20px;
+            color: var(--super-gold);
+        }
+
+        /* Ano discreto */
+        .card-year {
+            position: absolute;
+            top: 30px;
+            right: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(190, 156, 109, 0.5);
+        }
+
+        /* Convergência */
+        .convergence-section {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .convergence-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .convergence-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .convergence-divider .line {
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--super-gold), transparent);
+        }
+
+        .convergence-divider .icon {
+            font-size: 1.5em;
+            color: var(--super-gold);
+        }
+
+        .convergence-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+        }
+
+        .convergence-text {
+            font-size: 1em;
+            color: var(--super-cream);
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .convergence-text strong {
+            color: var(--super-gold);
+        }
+
+        .convergence-question {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.3em;
+            color: var(--super-gold);
+            padding: 25px;
+            background: rgba(190, 156, 109, 0.08);
+            border-left: 4px solid var(--super-gold);
+        }
+
+        /* Stage indicator */
+        .stage-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+        }
+
+        .stage-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: transparent;
+            border: 2px solid rgba(190, 156, 109, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stage-dot.active {
+            background: var(--super-gold);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 15px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 20px; }
+        body.embed-mode h1 { font-size: 1.2em; margin-bottom: 30px; }
+        body.embed-mode .cards-row { gap: 30px; margin-bottom: 30px; }
+        body.embed-mode .minimal-card { width: 260px; padding: 20px; }
+        body.embed-mode .card-icon-large { font-size: 3em; }
+        body.embed-mode .card-name { font-size: 1.4em; }
+        body.embed-mode .card-quote { font-size: 0.95em; }
+        body.embed-mode .convergence-question { font-size: 1.1em; padding: 15px; }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>TRÊS <span>PARADIGMAS</span> DE CONHECIMENTO</h1>
+
+        <div class="cards-row">
+            <!-- ChatGPT -->
+            <div class="minimal-card">
+                <span class="card-year">2022</span>
+                <span class="card-icon-large">💬</span>
+                <div class="card-name">ChatGPT</div>
+                <div class="card-company">OpenAI</div>
+                <div class="type-badge">PARAMÉTRICO</div>
+                <div class="card-quote">"O que a máquina aprendeu no treino"</div>
+                <ul class="features-list">
+                    <li>Conversa pura</li>
+                    <li>Limitado ao que "sabe"</li>
+                    <li>Fonte: treino do modelo</li>
+                </ul>
+            </div>
+
+            <!-- Claude -->
+            <div class="minimal-card">
+                <span class="card-year">2023</span>
+                <span class="card-icon-large">📎</span>
+                <div class="card-name">Claude</div>
+                <div class="card-company">Anthropic</div>
+                <div class="type-badge">CONTEXTUAL</div>
+                <div class="card-quote">"O que o usuário fornece"</div>
+                <ul class="features-list">
+                    <li>Botão de anexo</li>
+                    <li>Fonte de verdade = VOCÊ</li>
+                    <li>200K tokens de contexto</li>
+                </ul>
+            </div>
+
+            <!-- Perplexity -->
+            <div class="minimal-card">
+                <span class="card-year">2023</span>
+                <span class="card-icon-large">🌐</span>
+                <div class="card-name">Perplexity</div>
+                <div class="card-company">Perplexity AI</div>
+                <div class="type-badge">EXTERNO</div>
+                <div class="card-quote">"O que a web sabe em tempo real"</div>
+                <ul class="features-list">
+                    <li>Pesquisa ao vivo</li>
+                    <li>Fonte = O MUNDO</li>
+                    <li>Informação em tempo real</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Convergência -->
+        <div class="convergence-section">
+            <div class="convergence-divider">
+                <span class="line"></span>
+                <span class="icon">⟱</span>
+                <span class="line"></span>
+            </div>
+            <div class="convergence-title">CONVERGÊNCIA</div>
+            <div class="convergence-text">
+                Hoje, todos têm <strong>anexos</strong>, <strong>busca na web</strong> e <strong>raciocínio expandido</strong>.
+            </div>
+            <div class="convergence-question">
+                "Se todos já têm tudo... o que os agentes trazem de novo?"
+            </div>
+        </div>
+    </div>
+
+    <!-- Stage indicator -->
+    <div class="stage-indicator">
+        <div class="stage-dot" data-stage="0"></div>
+        <div class="stage-dot" data-stage="1"></div>
+        <div class="stage-dot" data-stage="2"></div>
+        <div class="stage-dot" data-stage="3"></div>
+    </div>
+
+    <script>
+        // Embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Progressive Spotlight
+        const cards = document.querySelectorAll('.minimal-card');
+        const convergence = document.querySelector('.convergence-section');
+        const stageDots = document.querySelectorAll('.stage-dot');
+        let currentStage = 0;
+
+        function setStage(stage) {
+            currentStage = stage;
+
+            stageDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === stage);
+            });
+
+            cards.forEach((card, i) => {
+                card.classList.remove('dimmed', 'spotlight');
+                if (stage < 3) {
+                    if (i === stage) {
+                        card.classList.add('spotlight');
+                    } else {
+                        card.classList.add('dimmed');
+                    }
+                }
+            });
+
+            convergence.classList.toggle('visible', stage === 3);
+        }
+
+        function nextStage() {
+            setStage((currentStage + 1) % 4);
+        }
+
+        setStage(0);
+
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.stage-dot')) {
+                setStage(parseInt(e.target.closest('.stage-dot').dataset.stage));
+                return;
+            }
+            nextStage();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setStage(currentStage <= 0 ? 3 : currentStage - 1);
+            }
+        });
+    </script>
+</body>
+</html>

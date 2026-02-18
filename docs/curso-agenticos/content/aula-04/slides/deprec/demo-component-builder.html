@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Component Builder: Monte seu Sistema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --gold-light: #d4b896;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --dark-card: #14141e;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+            --amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, rgba(20, 20, 30, 0.95) 0%, rgba(10, 10, 18, 0.9) 100%);
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .control-btn.primary {
+            background: rgba(74, 222, 128, 0.15);
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .control-btn.primary:hover {
+            background: rgba(74, 222, 128, 0.25);
+        }
+
+        /* Main layout */
+        .main {
+            display: flex;
+            height: calc(100vh - 56px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .component-palette {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .palette-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+
+        .palette-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--item-color, var(--gold));
+        }
+
+        .palette-item:active {
+            cursor: grabbing;
+        }
+
+        .palette-item.dragging {
+            opacity: 0.5;
+        }
+
+        .palette-icon {
+            font-size: 1.3rem;
+        }
+
+        .palette-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--item-color, var(--cream));
+        }
+
+        .item-orchestrator { --item-color: var(--gold); }
+        .item-worker { --item-color: var(--blue); }
+        .item-skill { --item-color: var(--green); }
+        .item-command { --item-color: var(--amber); }
+        .item-tool { --item-color: var(--purple); }
+        .item-memory { --item-color: var(--cyan); }
+
+        /* Templates */
+        .templates-section {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .template-btn {
+            width: 100%;
+            padding: 10px;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 8px;
+            color: var(--gold);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+
+        .template-btn:hover {
+            background: rgba(190, 156, 109, 0.2);
+        }
+
+        /* Canvas */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(190, 156, 109, 0.02) 0%, transparent 50%);
+        }
+
+        .canvas::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* Connections SVG */
+        .connections-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Dropped components */
+        .dropped-component {
+            position: absolute;
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: move;
+            z-index: 10;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            min-width: 100px;
+        }
+
+        .dropped-component:hover {
+            z-index: 20;
+            transform: scale(1.05);
+        }
+
+        .dropped-component.spotlight {
+            z-index: 25;
+            transform: scale(1.1);
+        }
+
+        .dropped-component .comp-icon {
+            font-size: 1.8rem;
+        }
+
+        .dropped-component .comp-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .comp-orchestrator {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.3), rgba(190, 156, 109, 0.1));
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.2);
+        }
+        .comp-orchestrator .comp-name { color: var(--gold-light); }
+        .comp-orchestrator.spotlight { box-shadow: 0 0 40px rgba(190, 156, 109, 0.4); }
+
+        .comp-worker {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.08));
+            border: 2px solid var(--blue);
+        }
+        .comp-worker .comp-name { color: var(--blue); }
+        .comp-worker.spotlight { box-shadow: 0 0 30px rgba(96, 165, 250, 0.4); }
+
+        .comp-skill {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.25), rgba(74, 222, 128, 0.08));
+            border: 2px solid var(--green);
+        }
+        .comp-skill .comp-name { color: var(--green); }
+        .comp-skill.spotlight { box-shadow: 0 0 30px rgba(74, 222, 128, 0.4); }
+
+        .comp-tool {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.25), rgba(167, 139, 250, 0.08));
+            border: 2px solid var(--purple);
+        }
+        .comp-tool .comp-name { color: var(--purple); }
+
+        .comp-memory {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.25), rgba(34, 211, 238, 0.08));
+            border: 2px solid var(--cyan);
+        }
+        .comp-memory .comp-name { color: var(--cyan); }
+
+        .dropped-component.dimmed {
+            opacity: 0.3;
+        }
+
+        /* Particle */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gold);
+            box-shadow: 0 0 10px var(--gold);
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Help text */
+        .help-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .help-text.hidden {
+            display: none;
+        }
+
+        .help-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .help-message {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        /* Info panel */
+        .info-panel {
+            width: 280px;
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .info-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-section {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .info-content {
+            font-size: 0.85rem;
+            color: rgba(255, 244, 228, 0.8);
+            line-height: 1.5;
+        }
+
+        .component-count {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .count-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+        }
+
+        /* Embed mode */
+        body.embed-mode .header { padding: 8px 15px; }
+        body.embed-mode .title { font-size: 1.1rem; }
+        body.embed-mode .sidebar { width: 170px; padding: 10px; }
+        body.embed-mode .palette-item { padding: 8px 10px; }
+        body.embed-mode .info-panel { width: 240px; padding: 15px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div>
+                <div class="title">Component Builder</div>
+                <div class="subtitle">Monte seu sistema agêntico</div>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="control-btn primary" onclick="playAnimation()">▶ Ver Fluxo</button>
+            <button class="control-btn" onclick="clearCanvas()">🗑️ Limpar</button>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="sidebar">
+            <div class="sidebar-title">Componentes</div>
+            <div class="component-palette">
+                <div class="palette-item item-orchestrator" draggable="true" data-type="orchestrator">
+                    <span class="palette-icon">🎯</span>
+                    <span class="palette-label">Orquestrador</span>
+                </div>
+                <div class="palette-item item-worker" draggable="true" data-type="worker">
+                    <span class="palette-icon">🤖</span>
+                    <span class="palette-label">Worker</span>
+                </div>
+                <div class="palette-item item-skill" draggable="true" data-type="skill">
+                    <span class="palette-icon">📚</span>
+                    <span class="palette-label">Skill</span>
+                </div>
+                <div class="palette-item item-tool" draggable="true" data-type="tool">
+                    <span class="palette-icon">🔧</span>
+                    <span class="palette-label">Tool</span>
+                </div>
+                <div class="palette-item item-memory" draggable="true" data-type="memory">
+                    <span class="palette-icon">🧠</span>
+                    <span class="palette-label">Memory</span>
+                </div>
+            </div>
+
+            <div class="templates-section">
+                <div class="sidebar-title">Templates</div>
+                <button class="template-btn" onclick="loadTemplate('relatorio')">📋 Gerador de Relatório</button>
+                <button class="template-btn" onclick="loadTemplate('pesquisa')">🔍 Pesquisa Jurídica</button>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <div class="canvas" id="canvas">
+                <svg class="connections-layer" id="connectionsLayer"></svg>
+                <div class="help-text" id="helpText">
+                    <div class="help-icon">📦</div>
+                    <div class="help-message">Arraste componentes para cá<br>ou escolha um template</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-title">Sistema Montado</div>
+
+            <div class="info-section">
+                <div class="info-label">Componentes</div>
+                <div class="component-count" id="componentCount">
+                    <span class="count-badge">Nenhum componente</span>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Fluxo</div>
+                <div class="info-content" id="flowDescription">
+                    Monte um sistema para ver o fluxo de execução.
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Dica</div>
+                <div class="info-content" style="font-size: 0.75rem; opacity: 0.6;">
+                    Comece com um Orquestrador, adicione Workers, e conecte Skills para cada especialidade.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        const droppedComponents = [];
+        let componentId = 0;
+        let isPlaying = false;
+
+        const componentNames = {
+            orchestrator: ['Orquestrador'],
+            worker: ['Explorer', 'Writer', 'Reviewer', 'Analyzer'],
+            skill: ['Skill'],
+            tool: ['Tools'],
+            memory: ['Memory']
+        };
+
+        const componentIcons = {
+            orchestrator: '🎯',
+            worker: '🤖',
+            skill: '📚',
+            tool: '🔧',
+            memory: '🧠'
+        };
+
+        // Drag and drop
+        document.querySelectorAll('.palette-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('type', item.dataset.type);
+                item.classList.add('dragging');
+            });
+
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+            });
+        });
+
+        const canvas = document.getElementById('canvas');
+
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        canvas.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const type = e.dataTransfer.getData('type');
+            if (!type) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            addComponent(type, x, y);
+        });
+
+        function addComponent(type, x, y) {
+            document.getElementById('helpText').classList.add('hidden');
+
+            const workerCount = droppedComponents.filter(c => c.type === 'worker').length;
+            const nameIndex = type === 'worker' ? workerCount % componentNames.worker.length : 0;
+            const name = componentNames[type][nameIndex];
+
+            const comp = {
+                id: componentId++,
+                type: type,
+                name: name,
+                x: x,
+                y: y
+            };
+
+            droppedComponents.push(comp);
+            renderComponent(comp);
+            updateConnections();
+            updateInfo();
+        }
+
+        function renderComponent(comp) {
+            const el = document.createElement('div');
+            el.className = `dropped-component comp-${comp.type}`;
+            el.id = `comp-${comp.id}`;
+            el.style.left = (comp.x - 50) + 'px';
+            el.style.top = (comp.y - 40) + 'px';
+
+            el.innerHTML = `
+                <span class="comp-icon">${componentIcons[comp.type]}</span>
+                <span class="comp-name">${comp.name}</span>
+            `;
+
+            // Make draggable within canvas
+            el.addEventListener('mousedown', startDrag);
+
+            canvas.appendChild(el);
+        }
+
+        let draggedElement = null;
+        let offsetX, offsetY;
+
+        function startDrag(e) {
+            if (isPlaying) return;
+            draggedElement = e.currentTarget;
+            const rect = draggedElement.getBoundingClientRect();
+            const canvasRect = canvas.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function drag(e) {
+            if (!draggedElement) return;
+            const canvasRect = canvas.getBoundingClientRect();
+            const x = e.clientX - canvasRect.left - offsetX;
+            const y = e.clientY - canvasRect.top - offsetY;
+
+            draggedElement.style.left = x + 'px';
+            draggedElement.style.top = y + 'px';
+
+            // Update component position
+            const id = parseInt(draggedElement.id.replace('comp-', ''));
+            const comp = droppedComponents.find(c => c.id === id);
+            if (comp) {
+                comp.x = x + 50;
+                comp.y = y + 40;
+            }
+
+            updateConnections();
+        }
+
+        function stopDrag() {
+            draggedElement = null;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        function updateConnections() {
+            const svg = document.getElementById('connectionsLayer');
+            const canvasRect = canvas.getBoundingClientRect();
+            svg.innerHTML = '';
+
+            // Add defs for markers
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            defs.innerHTML = `
+                <marker id="arrow-gold" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#BE9C6D"/>
+                </marker>
+            `;
+            svg.appendChild(defs);
+
+            // Find orchestrator
+            const orchestrator = droppedComponents.find(c => c.type === 'orchestrator');
+            if (!orchestrator) return;
+
+            const workers = droppedComponents.filter(c => c.type === 'worker');
+            const skills = droppedComponents.filter(c => c.type === 'skill');
+            const tools = droppedComponents.filter(c => c.type === 'tool');
+            const memory = droppedComponents.find(c => c.type === 'memory');
+
+            // Connect orchestrator to workers
+            workers.forEach(worker => {
+                drawConnection(orchestrator, worker);
+            });
+
+            // Connect workers to skills/tools
+            workers.forEach((worker, i) => {
+                if (skills[i]) drawConnection(worker, skills[i]);
+                if (tools[i]) drawConnection(worker, tools[i]);
+            });
+
+            // Connect orchestrator to memory
+            if (memory) {
+                drawConnection(orchestrator, memory, true);
+            }
+        }
+
+        function drawConnection(from, to, dashed = false) {
+            const svg = document.getElementById('connectionsLayer');
+            const fromEl = document.getElementById(`comp-${from.id}`);
+            const toEl = document.getElementById(`comp-${to.id}`);
+            if (!fromEl || !toEl) return;
+
+            const canvasRect = canvas.getBoundingClientRect();
+            const fromRect = fromEl.getBoundingClientRect();
+            const toRect = toEl.getBoundingClientRect();
+
+            const x1 = fromRect.left + fromRect.width / 2 - canvasRect.left;
+            const y1 = fromRect.top + fromRect.height / 2 - canvasRect.top;
+            const x2 = toRect.left + toRect.width / 2 - canvasRect.left;
+            const y2 = toRect.top + toRect.height / 2 - canvasRect.top;
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            path.setAttribute('x1', x1);
+            path.setAttribute('y1', y1);
+            path.setAttribute('x2', x2);
+            path.setAttribute('y2', y2);
+            path.setAttribute('stroke', dashed ? '#22d3ee' : '#BE9C6D');
+            path.setAttribute('stroke-width', '2');
+            path.setAttribute('opacity', '0.4');
+            if (dashed) path.setAttribute('stroke-dasharray', '6,4');
+
+            svg.appendChild(path);
+        }
+
+        function updateInfo() {
+            const counts = {};
+            droppedComponents.forEach(c => {
+                counts[c.type] = (counts[c.type] || 0) + 1;
+            });
+
+            const countDiv = document.getElementById('componentCount');
+            if (Object.keys(counts).length === 0) {
+                countDiv.innerHTML = '<span class="count-badge">Nenhum componente</span>';
+            } else {
+                countDiv.innerHTML = Object.entries(counts).map(([type, count]) =>
+                    `<span class="count-badge">${componentIcons[type]} ${count}</span>`
+                ).join('');
+            }
+
+            // Update flow description
+            const flowDiv = document.getElementById('flowDescription');
+            const hasOrch = counts.orchestrator > 0;
+            const hasWorkers = counts.worker > 0;
+            const hasSkills = counts.skill > 0;
+
+            if (hasOrch && hasWorkers && hasSkills) {
+                flowDiv.innerHTML = '✅ Sistema completo! Orquestrador coordena Workers que usam Skills para executar tarefas.';
+            } else if (hasOrch && hasWorkers) {
+                flowDiv.innerHTML = '⚠️ Adicione Skills para dar expertise aos Workers.';
+            } else if (hasOrch) {
+                flowDiv.innerHTML = '⚠️ Adicione Workers para executar subtarefas.';
+            } else {
+                flowDiv.innerHTML = '💡 Comece adicionando um Orquestrador.';
+            }
+        }
+
+        function loadTemplate(name) {
+            clearCanvas();
+
+            if (name === 'relatorio') {
+                addComponent('orchestrator', 400, 80);
+                addComponent('worker', 250, 200);
+                addComponent('worker', 550, 200);
+                addComponent('skill', 200, 340);
+                addComponent('skill', 500, 340);
+                addComponent('tool', 600, 340);
+                addComponent('memory', 650, 80);
+            } else if (name === 'pesquisa') {
+                addComponent('orchestrator', 400, 80);
+                addComponent('worker', 200, 180);
+                addComponent('worker', 400, 180);
+                addComponent('worker', 600, 180);
+                addComponent('skill', 150, 320);
+                addComponent('skill', 350, 320);
+                addComponent('tool', 550, 320);
+                addComponent('memory', 700, 80);
+            }
+
+            setTimeout(playAnimation, 500);
+        }
+
+        function playAnimation() {
+            if (isPlaying || droppedComponents.length === 0) return;
+            isPlaying = true;
+
+            // Dim all
+            document.querySelectorAll('.dropped-component').forEach(el => {
+                el.classList.add('dimmed');
+                el.classList.remove('spotlight');
+            });
+
+            // Build execution order
+            const orchestrator = droppedComponents.find(c => c.type === 'orchestrator');
+            const workers = droppedComponents.filter(c => c.type === 'worker');
+            const skills = droppedComponents.filter(c => c.type === 'skill');
+            const tools = droppedComponents.filter(c => c.type === 'tool');
+            const memory = droppedComponents.find(c => c.type === 'memory');
+
+            const sequence = [];
+            if (orchestrator) sequence.push([orchestrator]);
+            if (workers.length) sequence.push(workers);
+            if (skills.length || tools.length) sequence.push([...skills, ...tools]);
+            if (workers.length) sequence.push(workers);
+            if (orchestrator) sequence.push([orchestrator]);
+            if (memory) sequence.push([memory]);
+
+            playStep(sequence, 0);
+        }
+
+        function playStep(sequence, index) {
+            if (index >= sequence.length) {
+                isPlaying = false;
+                document.querySelectorAll('.dropped-component').forEach(el => {
+                    el.classList.remove('dimmed', 'spotlight');
+                });
+                return;
+            }
+
+            const layer = sequence[index];
+
+            document.querySelectorAll('.dropped-component').forEach(el => {
+                const id = parseInt(el.id.replace('comp-', ''));
+                const comp = droppedComponents.find(c => c.id === id);
+                if (layer.includes(comp)) {
+                    el.classList.remove('dimmed');
+                    el.classList.add('spotlight');
+                } else if (el.classList.contains('spotlight')) {
+                    el.classList.remove('spotlight');
+                    el.classList.add('dimmed');
+                }
+            });
+
+            // Animate particles
+            if (index > 0) {
+                const prev = sequence[index - 1];
+                prev.forEach(from => {
+                    layer.forEach(to => {
+                        animateParticle(from, to);
+                    });
+                });
+            }
+
+            setTimeout(() => playStep(sequence, index + 1), 1200);
+        }
+
+        function animateParticle(from, to) {
+            const fromEl = document.getElementById(`comp-${from.id}`);
+            const toEl = document.getElementById(`comp-${to.id}`);
+            if (!fromEl || !toEl) return;
+
+            const canvasRect = canvas.getBoundingClientRect();
+            const fromRect = fromEl.getBoundingClientRect();
+            const toRect = toEl.getBoundingClientRect();
+
+            const startX = fromRect.left + fromRect.width / 2 - canvasRect.left;
+            const startY = fromRect.top + fromRect.height / 2 - canvasRect.top;
+            const endX = toRect.left + toRect.width / 2 - canvasRect.left;
+            const endY = toRect.top + toRect.height / 2 - canvasRect.top;
+
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            canvas.appendChild(particle);
+
+            particle.animate([
+                { left: startX + 'px', top: startY + 'px', opacity: 1 },
+                { left: endX + 'px', top: endY + 'px', opacity: 0.5 }
+            ], {
+                duration: 600,
+                easing: 'ease-in-out'
+            }).onfinish = () => particle.remove();
+        }
+
+        function clearCanvas() {
+            droppedComponents.length = 0;
+            document.querySelectorAll('.dropped-component').forEach(el => el.remove());
+            document.getElementById('connectionsLayer').innerHTML = '';
+            document.getElementById('helpText').classList.remove('hidden');
+            updateInfo();
+        }
+
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

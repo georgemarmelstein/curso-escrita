@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definições - Proposta B: Destilação Alquímica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-bright: #d4a855;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #050508;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* Subtle radial glow */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 60% 40% at 50% 60%, rgba(190, 156, 109, 0.08) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Funil visual */
+        .funnel {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Zona de entrada - matéria bruta */
+        .raw-zone {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            opacity: 0;
+            animation: rawAppear 1s ease 0.3s forwards;
+        }
+
+        @keyframes rawAppear {
+            to { opacity: 1; }
+        }
+
+        .raw-block {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55em;
+            color: rgba(255, 244, 228, 0.25);
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .raw-block::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(190, 156, 109, 0.1) 50%, transparent 100%);
+            transform: translateX(-100%);
+            animation: dissolve 2s ease 1.5s forwards;
+        }
+
+        @keyframes dissolve {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+
+        .raw-block .author-tag {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 2px 8px;
+            background: rgba(190, 156, 109, 0.1);
+            border-radius: 3px;
+            font-size: 0.85em;
+            color: rgba(190, 156, 109, 0.4);
+        }
+
+        /* Animação de partículas descendo */
+        .particles {
+            position: relative;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .particle:nth-child(1) { left: 30%; animation: particleFall 1.5s ease 1.8s forwards; }
+        .particle:nth-child(2) { left: 40%; animation: particleFall 1.5s ease 1.9s forwards; }
+        .particle:nth-child(3) { left: 50%; animation: particleFall 1.5s ease 2s forwards; }
+        .particle:nth-child(4) { left: 60%; animation: particleFall 1.5s ease 2.1s forwards; }
+        .particle:nth-child(5) { left: 70%; animation: particleFall 1.5s ease 2.2s forwards; }
+
+        @keyframes particleFall {
+            0% { opacity: 0; top: 0; }
+            20% { opacity: 0.8; }
+            100% { opacity: 0; top: 100%; }
+        }
+
+        /* Linhas de funil convergindo */
+        .funnel-lines {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .funnel-line {
+            position: absolute;
+            top: 30%;
+            width: 1px;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(190, 156, 109, 0.1) 0%, rgba(190, 156, 109, 0.3) 100%);
+            opacity: 0;
+            animation: lineAppear 0.5s ease forwards;
+        }
+
+        .funnel-line:nth-child(1) { left: 20%; transform: rotate(15deg); animation-delay: 2s; }
+        .funnel-line:nth-child(2) { left: 80%; transform: rotate(-15deg); animation-delay: 2.1s; }
+
+        @keyframes lineAppear {
+            to { opacity: 1; }
+        }
+
+        /* Resultado puro - essência dourada */
+        .pure-essence {
+            margin-top: 30px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: essenceRise 1.2s cubic-bezier(0.16, 1, 0.3, 1) 2.5s forwards;
+        }
+
+        @keyframes essenceRise {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .essence-glow {
+            position: relative;
+            display: inline-block;
+        }
+
+        .essence-glow::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(190, 156, 109, 0.2) 0%, transparent 70%);
+            z-index: -1;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .essence-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8em;
+            font-weight: 600;
+            font-style: italic;
+            color: var(--super-gold);
+            line-height: 1.3;
+            text-shadow: 0 0 40px rgba(190, 156, 109, 0.4);
+        }
+
+        .essence-text .pure {
+            font-weight: 700;
+            font-style: normal;
+            color: var(--super-cream);
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Linha divisória zen */
+        .zen-line {
+            width: 120px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--super-gold), transparent);
+            margin: 30px auto;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Autor minimalista */
+        .author-minimal {
+            opacity: 0;
+            animation: fadeIn 0.8s ease 3.2s forwards;
+        }
+
+        .author-minimal span {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7em;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Badge zen */
+        .zen-badge {
+            margin-top: 35px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 3.5s forwards;
+        }
+
+        .zen-badge span {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65em;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--super-green);
+            padding: 10px 25px;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        /* ============================================
+           EMBED MODE
+           ============================================ */
+        body.embed-mode .raw-block { font-size: 0.65em; padding: 14px 24px; }
+        body.embed-mode .essence-text { font-size: 3.4em; }
+        body.embed-mode .author-minimal span { font-size: 0.8em; }
+        body.embed-mode .zen-badge span { font-size: 0.75em; }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <div class="funnel">
+            <!-- Matéria bruta -->
+            <div class="raw-zone">
+                <div class="raw-block">
+                    <span class="author-tag">R&N</span>
+                    sistemas autônomos // sensores // atuadores // função de utilidade // perceber ambiente // maximizar...
+                </div>
+                <div class="raw-block">
+                    <span class="author-tag">ANTHRO</span>
+                    modelos // ferramentas // loop // feedback // ambiente // guiar ações // subsequentes...
+                </div>
+                <div class="raw-block">
+                    <span class="author-tag">LANG</span>
+                    LLM // raciocinar // planejar // executar // iterativo // completar tarefa // sistema...
+                </div>
+            </div>
+
+            <!-- Partículas caindo -->
+            <div class="particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+
+            <!-- Linhas de funil -->
+            <div class="funnel-lines">
+                <div class="funnel-line"></div>
+                <div class="funnel-line"></div>
+            </div>
+
+            <!-- Essência pura -->
+            <div class="pure-essence">
+                <div class="essence-glow">
+                    <p class="essence-text">
+                        Algumas linhas de texto
+                        <span class="pure">em linguagem natural.</span>
+                    </p>
+                </div>
+
+                <div class="zen-line"></div>
+
+                <div class="author-minimal">
+                    <span>George Marmelstein</span>
+                </div>
+
+                <div class="zen-badge">
+                    <span>Simplicidade</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

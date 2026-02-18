@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal - Formas de Acesso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Spectral:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           PALETA SUPER - Sistema de Cores Unificado
+           ============================================ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-green-light: #86efac;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+            --super-gold-dim: rgba(190, 156, 109, 0.6);
+            --super-gold-subtle: rgba(190, 156, 109, 0.3);
+            --super-gold-ghost: rgba(190, 156, 109, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Spectral', Georgia, serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* ============================================
+           ATMOSPHERIC LAYERS - PALETA SUPER
+           ============================================ */
+
+        /* Film grain overlay */
+        .grain {
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.035;
+            pointer-events: none;
+            z-index: 100;
+            animation: grainShift 0.5s steps(1) infinite;
+        }
+
+        @keyframes grainShift {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-2%, -2%); }
+            50% { transform: translate(2%, 2%); }
+            75% { transform: translate(-1%, 1%); }
+        }
+
+        /* Radial glow - GOLD */
+        .ambient-glow {
+            position: fixed;
+            left: 22%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 650px;
+            height: 650px;
+            background: radial-gradient(circle,
+                rgba(190, 156, 109, 0.14) 0%,
+                rgba(190, 156, 109, 0.05) 40%,
+                transparent 70%);
+            z-index: 0;
+            animation: glowPulse 6s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* Floating particles - gold */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatUp 12s infinite ease-out;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 25%; animation-delay: 2s; }
+        .particle:nth-child(3) { left: 40%; animation-delay: 4s; }
+        .particle:nth-child(4) { left: 55%; animation-delay: 1s; }
+        .particle:nth-child(5) { left: 70%; animation-delay: 3s; }
+        .particle:nth-child(6) { left: 85%; animation-delay: 5s; }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.2; }
+            100% {
+                transform: translateY(-20vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 0%,
+                rgba(10, 10, 18, 0.4) 50%,
+                rgba(10, 10, 18, 0.95) 100%);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* Cage border - gold */
+        .cage-border {
+            position: fixed;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            border: 1px solid rgba(190, 156, 109, 0.08);
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        /* ============================================
+           BARRA DE PROGRESSO LATERAL
+           ============================================ */
+        .progress-bar {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 20;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.3s forwards;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.1);
+            border: 2px solid rgba(190, 156, 109, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .progress-dot.completed {
+            background: var(--super-green);
+            border-color: var(--super-green);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
+        }
+
+        .progress-dot.active {
+            background: var(--super-gold);
+            border-color: var(--super-gold-light);
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.5);
+        }
+
+        .progress-line {
+            width: 1px;
+            height: 30px;
+            background: rgba(190, 156, 109, 0.15);
+        }
+
+        .progress-line.completed {
+            background: var(--super-green);
+        }
+
+        .progress-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55em;
+            font-weight: 500;
+            color: rgba(255, 244, 228, 0.25);
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .progress-label.completed {
+            color: var(--super-green);
+        }
+
+        .progress-label.active {
+            color: var(--super-gold);
+        }
+
+        /* ============================================
+           LAYOUT ASSIMÉTRICO
+           ============================================ */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 50px;
+            align-items: center;
+            padding: 40px 70px 40px 100px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        /* ============================================
+           SCREENSHOT COM TRATAMENTO DRAMÁTICO
+           ============================================ */
+        .visual-side {
+            position: relative;
+            opacity: 0;
+            transform: translateX(-40px) rotateY(5deg);
+            animation: slideInDramatic 1s ease 0.4s forwards;
+        }
+
+        @keyframes slideInDramatic {
+            to {
+                opacity: 1;
+                transform: translateX(0) rotateY(0deg);
+            }
+        }
+
+        .screenshot-wrapper {
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .screenshot-frame {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            box-shadow:
+                0 30px 100px rgba(0, 0, 0, 0.6),
+                0 0 80px rgba(190, 156, 109, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            transform: rotateY(-2deg) rotateX(1deg);
+            transition: transform 0.5s ease;
+        }
+
+        .screenshot-frame:hover {
+            transform: rotateY(0deg) rotateX(0deg) scale(1.02);
+        }
+
+        /* Fade edges */
+        .screenshot-frame::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg,
+                transparent 60%,
+                rgba(10, 10, 18, 0.35) 100%);
+            pointer-events: none;
+        }
+
+        .screenshot-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            opacity: 0.92;
+        }
+
+        /* Decorative corner accents - gold */
+        .corner-accent {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            pointer-events: none;
+        }
+
+        .corner-accent.tl { top: -10px; left: -10px; border-right: none; border-bottom: none; }
+        .corner-accent.br { bottom: -10px; right: -10px; border-left: none; border-top: none; }
+
+        /* ============================================
+           CONTEÚDO - TIPOGRAFIA DRAMÁTICA
+           ============================================ */
+        .info-side {
+            opacity: 0;
+            transform: translateX(40px);
+            animation: slideInRight 1s ease 0.6s forwards;
+        }
+
+        @keyframes slideInRight {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.8em, 1.3vw, 1.1em);
+            font-weight: 500;
+            color: var(--super-gold);
+            background: transparent;
+            border: 1px solid var(--super-gold-subtle);
+            padding: 10px 24px;
+            border-radius: 2px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .badge .recommended {
+            color: var(--super-green);
+            font-weight: 600;
+        }
+
+        .main-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(3.5em, 7vw, 5.5em);
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 8px;
+            line-height: 1.0;
+            letter-spacing: -2px;
+        }
+
+        .main-title .highlight {
+            color: var(--super-green);
+            font-weight: 400;
+        }
+
+        .subtitle {
+            font-family: 'Spectral', Georgia, serif;
+            font-size: clamp(1.1em, 1.8vw, 1.5em);
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.55);
+            margin-bottom: 22px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ============================================
+           FEATURES - COMPACT 2-COLUMN GRID
+           ============================================ */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .feature-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: rgba(74, 222, 128, 0.04);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(74, 222, 128, 0.1);
+            border-radius: 4px;
+            border-left: 2px solid var(--super-green);
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:nth-child(1) { animation: fadeUp 0.5s ease 0.7s forwards; }
+        .feature-card:nth-child(2) { animation: fadeUp 0.5s ease 0.75s forwards; }
+        .feature-card:nth-child(3) { animation: fadeUp 0.5s ease 0.8s forwards; }
+        .feature-card:nth-child(4) { animation: fadeUp 0.5s ease 0.85s forwards; }
+        .feature-card:nth-child(5) { animation: fadeUp 0.5s ease 0.9s forwards; }
+        .feature-card:nth-child(6) { animation: fadeUp 0.5s ease 0.95s forwards; }
+
+        /* Full width for first card - highlight */
+        .feature-card.highlight {
+            grid-column: 1 / -1;
+            background: rgba(74, 222, 128, 0.08);
+            border-left-width: 3px;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feature-card:hover {
+            background: rgba(74, 222, 128, 0.1);
+            transform: translateX(4px);
+            border-color: rgba(74, 222, 128, 0.25);
+            box-shadow: -3px 0 20px rgba(74, 222, 128, 0.1);
+        }
+
+        .feature-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 5px;
+            background: rgba(74, 222, 128, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .feature-card.highlight .feature-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 1em;
+        }
+
+        .feature-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .feature-title {
+            font-family: 'Spectral', Georgia, serif;
+            font-size: clamp(1em, 1.6vw, 1.3em);
+            font-weight: 500;
+            color: var(--super-cream);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .feature-card.highlight .feature-title {
+            font-size: clamp(1.1em, 1.8vw, 1.5em);
+            color: var(--super-cream);
+        }
+
+        .feature-desc {
+            font-family: 'Spectral', Georgia, serif;
+            font-size: clamp(0.85em, 1.3vw, 1.1em);
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.4);
+            line-height: 1.3;
+        }
+
+        .feature-card.highlight .feature-desc {
+            font-size: clamp(0.9em, 1.4vw, 1.15em);
+        }
+
+        /* ============================================
+           EMBED MODE - AUMENTADO para projeção em sala
+           ============================================ */
+        body.embed-mode { height: 100vh; overflow: hidden; }
+        body.embed-mode .container {
+            padding: 25px 45px 25px 70px;
+            gap: 35px;
+            max-height: 100vh;
+        }
+        body.embed-mode .visual-side { flex: 0.9; }
+        body.embed-mode .screenshot-wrapper { padding: 12px; }
+        body.embed-mode .info-side { flex: 1.1; }
+        body.embed-mode .badge { padding: 8px 16px; font-size: clamp(0.75em, 1.1vw, 0.9em); margin-bottom: 12px; }
+        body.embed-mode .main-title { font-size: clamp(2.8em, 5.5vw, 4.2em); margin-bottom: 6px; }
+        body.embed-mode .subtitle { font-size: clamp(1em, 1.5vw, 1.25em); margin-bottom: 14px; }
+        body.embed-mode .features-grid { gap: 8px; }
+        body.embed-mode .feature-card { padding: 10px 14px; gap: 10px; }
+        body.embed-mode .feature-icon { width: 28px; height: 28px; font-size: 0.9em; }
+        body.embed-mode .feature-card.highlight .feature-icon { width: 32px; height: 32px; font-size: 1em; }
+        body.embed-mode .feature-title { font-size: clamp(0.9em, 1.3vw, 1.1em); }
+        body.embed-mode .feature-card.highlight .feature-title { font-size: clamp(1em, 1.5vw, 1.25em); }
+        body.embed-mode .feature-desc { font-size: clamp(0.8em, 1.15vw, 0.95em); }
+        body.embed-mode .feature-card.highlight .feature-desc { font-size: clamp(0.85em, 1.2vw, 1em); }
+        body.embed-mode .progress-bar { left: 25px; }
+        body.embed-mode .progress-dot { width: 10px; height: 10px; }
+        body.embed-mode .progress-label { font-size: 0.6em; }
+        body.embed-mode .progress-line { height: 30px; }
+        body.embed-mode .cage-border { top: 12px; left: 12px; right: 12px; bottom: 12px; }
+        body.embed-mode .corner-accent { width: 30px; height: 30px; }
+    </style>
+</head>
+<body>
+    <!-- Atmospheric layers -->
+    <div class="grain"></div>
+    <div class="ambient-glow"></div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="vignette"></div>
+    <div class="cage-border"></div>
+
+    <!-- Barra de progresso -->
+    <div class="progress-bar">
+        <div class="progress-step">
+            <div class="progress-dot completed"></div>
+            <span class="progress-label completed">Desktop</span>
+        </div>
+        <div class="progress-line completed"></div>
+        <div class="progress-step">
+            <div class="progress-dot completed"></div>
+            <span class="progress-label completed">IDE</span>
+        </div>
+        <div class="progress-line completed"></div>
+        <div class="progress-step">
+            <div class="progress-dot active"></div>
+            <span class="progress-label active">Terminal</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Screenshot com tratamento dramático -->
+        <div class="visual-side">
+            <div class="screenshot-wrapper">
+                <div class="corner-accent tl"></div>
+                <div class="corner-accent br"></div>
+                <div class="screenshot-frame">
+                    <img src="terminal.png" alt="Claude Code no Terminal">
+                </div>
+            </div>
+        </div>
+
+        <!-- Conteúdo -->
+        <div class="info-side">
+            <div class="badge">Forma 3 de 3 — <span class="recommended">Recomendado</span></div>
+            <h1 class="main-title">Terminal<span class="highlight">-First</span></h1>
+            <p class="subtitle">A aposta da Anthropic para a nova interface de trabalho</p>
+
+            <div class="features-grid">
+                <div class="feature-card highlight">
+                    <div class="feature-icon">🚀</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Primeiras inovações chegam aqui</div>
+                        <div class="feature-desc">Recursos novos aparecem primeiro no terminal</div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Paralelização poderosa</div>
+                        <div class="feature-desc">Múltiplos agentes simultâneos</div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💨</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Menos consumo de CPU</div>
+                        <div class="feature-desc">Mais recursos para o agente</div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Maior poder para o agente</div>
+                        <div class="feature-desc">Controle granular total</div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Qualquer sistema</div>
+                        <div class="feature-desc">Mac, Windows, Linux, servidores</div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🧩</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Mais recursos</div>
+                        <div class="feature-desc">Plugins, extensões, comandos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

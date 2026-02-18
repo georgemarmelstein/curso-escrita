@@ -1,0 +1,23 @@
+/* ==========================================================================
+   SISTEMAS AGENTICOS - Main CSS
+   Imports all stylesheets in correct order
+   ========================================================================== */
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+/* Design Tokens */
+@import 'variables.css';
+
+/* Base Styles */
+@import 'base.css';
+
+/* Layout System */
+@import 'layout.css';
+
+/* Components */
+@import 'components.css';
+
+/* Page-specific styles */
+@import 'pages/home.css';
+@import 'pages/lesson.css';

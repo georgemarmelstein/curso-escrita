@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Marmelstein - Proposta C: Constelação Orbital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --gold-muted: rgba(190, 156, 109, 0.3);
+            --cream: #FFF4E4;
+            --cream-soft: rgba(255, 244, 228, 0.8);
+            --dark: #0a0a12;
+            --phase-1: #fbbf24;
+            --phase-2: #22d3ee;
+            --phase-3: #a78bfa;
+            --phase-4: #60a5fa;
+            --phase-5: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .universe {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 50%, rgba(190, 156, 109, 0.06) 0%, transparent 50%),
+                var(--dark);
+        }
+
+        .stars {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--cream);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            padding: 3vh 0 1vh;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .orbital-system {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .center-node {
+            position: absolute;
+            width: clamp(100px, 12vw, 140px);
+            height: clamp(100px, 12vw, 140px);
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(190, 156, 109, 0.3), var(--dark));
+            border: 3px solid var(--gold);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 0 60px rgba(190, 156, 109, 0.2),
+                inset 0 0 30px rgba(190, 156, 109, 0.1);
+            z-index: 10;
+        }
+
+        .center-icon {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            margin-bottom: 0.5vh;
+        }
+
+        .center-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 0.85vw, 0.8rem);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .orbit {
+            position: absolute;
+            border: 1px dashed var(--gold-muted);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .orbit-1 { width: 55vmin; height: 55vmin; }
+        .orbit-2 { width: 75vmin; height: 75vmin; opacity: 0.6; }
+
+        .orbital-node {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5;
+        }
+
+        .node-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .node-marker {
+            width: clamp(55px, 7vw, 75px);
+            height: clamp(55px, 7vw, 75px);
+            border-radius: 50%;
+            background: var(--dark);
+            border: 3px solid var(--node-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            margin-bottom: 1vh;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .orbital-node:hover .node-marker,
+        .orbital-node.active .node-marker {
+            transform: scale(1.15);
+            box-shadow:
+                0 0 0 4px var(--dark),
+                0 0 0 6px var(--node-color),
+                0 0 40px color-mix(in srgb, var(--node-color) 40%, transparent);
+        }
+
+        .orbital-node.active .node-marker {
+            background: var(--node-color);
+        }
+
+        .node-name {
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            font-weight: 600;
+            color: var(--cream);
+            white-space: nowrap;
+        }
+
+        .node-tool {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+            color: var(--gold);
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .orbital-node:hover .node-tool,
+        .orbital-node.active .node-tool {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .orbital-node[data-node="1"] { --node-color: var(--phase-1); }
+        .orbital-node[data-node="2"] { --node-color: var(--phase-2); }
+        .orbital-node[data-node="3"] { --node-color: var(--phase-3); }
+        .orbital-node[data-node="4"] { --node-color: var(--phase-4); }
+        .orbital-node[data-node="5"] { --node-color: var(--phase-5); }
+
+        /* Position nodes around the orbit */
+        .orbital-node[data-node="1"] { top: 5%; left: 50%; transform: translateX(-50%); }
+        .orbital-node[data-node="2"] { top: 30%; right: 8%; }
+        .orbital-node[data-node="3"] { bottom: 15%; right: 18%; }
+        .orbital-node[data-node="4"] { bottom: 15%; left: 18%; }
+        .orbital-node[data-node="5"] { top: 30%; left: 8%; }
+
+        .connection-lines {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .connection-lines svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .connection {
+            stroke: var(--gold-muted);
+            stroke-width: 1;
+            fill: none;
+            stroke-dasharray: 8 4;
+            opacity: 0.4;
+        }
+
+        .connection.active {
+            stroke: var(--gold);
+            opacity: 0.8;
+            stroke-dasharray: none;
+            animation: pulseConnection 2s infinite;
+        }
+
+        @keyframes pulseConnection {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+        }
+
+        .detail-panel {
+            position: absolute;
+            bottom: 3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 30, 0.95);
+            border: 2px solid var(--gold-muted);
+            border-radius: 16px;
+            padding: 2vh 3vw;
+            min-width: 40vw;
+            max-width: 60vw;
+            text-align: center;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .detail-panel.active {
+            border-color: var(--node-color);
+        }
+
+        .detail-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 1vh;
+        }
+
+        .detail-desc {
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            color: var(--cream-soft);
+            line-height: 1.5;
+            margin-bottom: 1.5vh;
+        }
+
+        .detail-outputs {
+            display: flex;
+            justify-content: center;
+            gap: 1vw;
+            flex-wrap: wrap;
+        }
+
+        .output-tag {
+            background: rgba(255, 244, 228, 0.08);
+            border: 1px solid var(--gold-muted);
+            border-radius: 20px;
+            padding: 0.4vh 1vw;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--cream-soft);
+        }
+
+        .sequence-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.75vw, 0.7rem);
+            color: rgba(255, 244, 228, 0.3);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* Animations */
+        .orbital-node {
+            opacity: 0;
+            animation: nodeAppear 0.6s ease forwards;
+        }
+
+        .orbital-node[data-node="1"] { animation-delay: 0.2s; }
+        .orbital-node[data-node="2"] { animation-delay: 0.35s; }
+        .orbital-node[data-node="3"] { animation-delay: 0.5s; }
+        .orbital-node[data-node="4"] { animation-delay: 0.65s; }
+        .orbital-node[data-node="5"] { animation-delay: 0.8s; }
+
+        @keyframes nodeAppear {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Embed mode */
+        body.embed-mode .header { padding: 2vh 0 0.5vh; }
+        body.embed-mode .header-title { font-size: clamp(1.3rem, 2.2vw, 1.8rem); }
+        body.embed-mode .node-marker { width: clamp(45px, 6vw, 60px); height: clamp(45px, 6vw, 60px); }
+        body.embed-mode .detail-panel { padding: 1.5vh 2vw; min-width: 50vw; }
+    </style>
+</head>
+<body>
+    <div class="universe"></div>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Metodologia Orbital</div>
+            <h1 class="header-title">Sistema Marmelstein</h1>
+        </div>
+
+        <div class="orbital-system">
+            <div class="orbit orbit-2"></div>
+            <div class="orbit orbit-1"></div>
+
+            <div class="center-node">
+                <div class="center-icon">⚙️</div>
+                <div class="center-label">Sistema</div>
+            </div>
+
+            <div class="orbital-node active" data-node="1">
+                <div class="node-content">
+                    <div class="node-marker">💡</div>
+                    <div class="node-name">Brainstorming</div>
+                    <div class="node-tool">SuperPack</div>
+                </div>
+            </div>
+
+            <div class="orbital-node" data-node="2">
+                <div class="node-content">
+                    <div class="node-marker">📋</div>
+                    <div class="node-name">Planejamento</div>
+                    <div class="node-tool">Writing Plan</div>
+                </div>
+            </div>
+
+            <div class="orbital-node" data-node="3">
+                <div class="node-content">
+                    <div class="node-marker">📜</div>
+                    <div class="node-name">Especificação</div>
+                    <div class="node-tool">SuperJurista</div>
+                </div>
+            </div>
+
+            <div class="orbital-node" data-node="4">
+                <div class="node-content">
+                    <div class="node-marker">🔨</div>
+                    <div class="node-name">Implementação</div>
+                    <div class="node-tool">Feature-Dev</div>
+                </div>
+            </div>
+
+            <div class="orbital-node" data-node="5">
+                <div class="node-content">
+                    <div class="node-marker">📁</div>
+                    <div class="node-name">Init</div>
+                    <div class="node-tool">CLAUDE.md</div>
+                </div>
+            </div>
+
+            <div class="sequence-hint">1 → 2 → 3 → 4 → 5</div>
+        </div>
+
+        <div class="detail-panel" id="detail-panel">
+            <div class="detail-title" id="detail-title">Brainstorming</div>
+            <div class="detail-desc" id="detail-desc">
+                Geração livre de ideias e exploração do problema. O agente questiona, sugere alternativas e refina conceitos.
+            </div>
+            <div class="detail-outputs" id="detail-outputs">
+                <span class="output-tag">Mapa de ideias</span>
+                <span class="output-tag">Decisões</span>
+                <span class="output-tag">Riscos</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        const nodes = [
+            {
+                title: "Brainstorming",
+                desc: "Geração livre de ideias e exploração do problema. O agente questiona, sugere alternativas e refina conceitos.",
+                outputs: ["Mapa de ideias", "Decisões", "Riscos"]
+            },
+            {
+                title: "Planejamento",
+                desc: "Transformação das ideias em tarefas ordenadas. Define o roteiro de implementação com checkpoints.",
+                outputs: ["Tarefas", "Dependências", "Critérios"]
+            },
+            {
+                title: "Especificação",
+                desc: "Formalização dos requisitos em linguagem precisa. Documenta regras de negócio e restrições.",
+                outputs: ["Especificação", "Regras", "Casos de uso"]
+            },
+            {
+                title: "Implementação",
+                desc: "Ciclo de três fases: Exploração do código, Implementação das mudanças, Revisão da qualidade.",
+                outputs: ["Código", "Testes", "Review"]
+            },
+            {
+                title: "Init",
+                desc: "Documentação do projeto para futuras sessões. Registra decisões e padrões adotados.",
+                outputs: ["CLAUDE.md", "README", "Padrões"]
+            }
+        ];
+
+        let currentNode = 0;
+        const nodeElements = document.querySelectorAll('.orbital-node');
+        const detailPanel = document.getElementById('detail-panel');
+
+        function updateDetail(index) {
+            const node = nodes[index];
+            const nodeColor = getComputedStyle(nodeElements[index]).getPropertyValue('--node-color');
+
+            document.getElementById('detail-title').textContent = node.title;
+            document.getElementById('detail-desc').textContent = node.desc;
+
+            const outputsEl = document.getElementById('detail-outputs');
+            outputsEl.innerHTML = node.outputs.map(o => `<span class="output-tag">${o}</span>`).join('');
+
+            detailPanel.style.setProperty('--node-color', nodeColor);
+            detailPanel.classList.add('active');
+        }
+
+        function setActiveNode(index) {
+            nodeElements.forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+            currentNode = index;
+            updateDetail(index);
+        }
+
+        nodeElements.forEach((el, i) => {
+            el.addEventListener('click', () => setActiveNode(i));
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                setActiveNode((currentNode + 1) % nodes.length);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                setActiveNode((currentNode - 1 + nodes.length) % nodes.length);
+            }
+        });
+
+        // Initialize
+        updateDetail(0);
+
+        // Embed mode detection
+        try {
+            if (window.self !== window.top) {
+                document.body.classList.add('embed-mode');
+            }
+        } catch (e) {
+            document.body.classList.add('embed-mode');
+        }
+    </script>
+</body>
+</html>

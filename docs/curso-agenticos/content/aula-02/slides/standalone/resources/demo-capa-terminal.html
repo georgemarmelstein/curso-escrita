@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capa - Primeiros Passos com Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* =============================================
+           PALETA SUPER - Cores do Projeto
+           ============================================= */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            background: var(--super-bg-dark);
+        }
+
+        /* Imagem de fundo - Caverna */
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../../../site/assets/20260125_1105_Image Generation_simple_compose_01kftqh504f8hv46ba4smtz2c6.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* Overlay escuro para legibilidade */
+        .radial-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center,
+                rgba(10, 10, 18, 0.5) 0%,
+                rgba(10, 10, 18, 0.75) 50%,
+                rgba(10, 10, 18, 0.92) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Container principal */
+        .capa-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Numero do modulo */
+        .module-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1.1em, 2vw, 1.6em);
+            font-weight: 400;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: rgba(190, 156, 109, 0.8);
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease 0.2s both;
+        }
+
+        .module-number::before {
+            content: '// ';
+            color: rgba(190, 156, 109, 0.5);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Terminal Window */
+        .terminal-window {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(190, 156, 109, 0.1);
+            margin: 0 auto 25px;
+            max-width: 800px;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-titlebar {
+            background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #222;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .terminal-btn.close { background: #ff5f56; }
+        .terminal-btn.minimize { background: #ffbd2e; }
+        .terminal-btn.maximize { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.8em;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .terminal-title .mascot {
+            width: 20px;
+            height: 20px;
+            image-rendering: pixelated;
+        }
+
+        .terminal-body {
+            padding: 30px 40px;
+            text-align: left;
+            min-height: 200px;
+            font-size: clamp(1.1em, 2vw, 1.6em);
+        }
+
+        .terminal-line {
+            margin-bottom: 14px;
+            line-height: 1.6;
+            opacity: 0;
+            animation: typeLine 0.5s ease forwards;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 0.8s; }
+        .terminal-line:nth-child(2) { animation-delay: 1.3s; }
+        .terminal-line:nth-child(3) { animation-delay: 1.8s; }
+        .terminal-line:nth-child(4) { animation-delay: 2.3s; }
+        .terminal-line:nth-child(5) { animation-delay: 2.8s; }
+
+        @keyframes typeLine {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .prompt {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .command {
+            color: var(--super-cream);
+        }
+
+        .comment {
+            color: #666;
+            font-style: italic;
+        }
+
+        .output {
+            color: var(--super-green);
+        }
+
+        .highlight {
+            color: var(--super-gold-light);
+            font-weight: 600;
+        }
+
+        /* Cursor piscando */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: var(--super-gold);
+            margin-left: 5px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Titulo principal abaixo do terminal */
+        .main-title {
+            margin-bottom: 15px;
+            animation: fadeInUp 1s ease 3s both;
+        }
+
+        .title-line {
+            display: block;
+        }
+
+        .title-line.small {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.8em, 3vw, 2.5em);
+            font-weight: 300;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            color: rgba(255, 244, 228, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .title-line.large {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(4em, 8vw, 6em);
+            font-weight: 800;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, #BE9C6D 0%, #d4b896 40%, #BE9C6D 70%, #9a7d52 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 4s ease infinite;
+            filter: drop-shadow(0 0 30px rgba(190, 156, 109, 0.4));
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Barra decorativa */
+        .decorative-bar {
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--super-gold), transparent);
+            margin: 10px auto;
+            animation: expandBar 1s ease 3.2s both;
+            box-shadow: 0 0 15px rgba(190, 156, 109, 0.5);
+        }
+
+        @keyframes expandBar {
+            from { width: 0; opacity: 0; }
+            to { width: 150px; opacity: 1; }
+        }
+
+        /* Subtitulo */
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1.3em, 2.2vw, 1.8em);
+            font-weight: 400;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 3.4s both;
+        }
+
+        /* Barra inferior */
+        .bottom-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            animation: fadeInUp 1s ease 3.6s both;
+        }
+
+        .course-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 4px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .course-badge:hover {
+            border-color: rgba(190, 156, 109, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(190, 156, 109, 0.2);
+        }
+
+        .course-badge .icon { font-size: 1.5em; }
+
+        .course-badge .text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-badge .text .label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6em;
+            color: rgba(190, 156, 109, 0.7);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .course-badge .text .value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9em;
+            color: var(--super-cream);
+            font-weight: 500;
+        }
+
+        /* Embed mode - AUMENTADO para projeção em sala */
+        body.embed-mode { height: 100vh; overflow: hidden; }
+        body.embed-mode .capa-container { padding: 20px 25px; max-height: 100vh; }
+        body.embed-mode .module-number { font-size: clamp(1em, 1.6vw, 1.3em); margin-bottom: 12px; }
+        body.embed-mode .terminal-window { margin-bottom: 20px; max-width: 800px; }
+        body.embed-mode .terminal-body { padding: 18px 25px; min-height: 140px; font-size: clamp(1em, 1.6vw, 1.3em); line-height: 1.5; }
+        body.embed-mode .terminal-line { margin-bottom: 8px; }
+        body.embed-mode .main-title { margin-bottom: 10px; }
+        body.embed-mode .title-line.small { font-size: clamp(1.4em, 2.2vw, 1.8em); letter-spacing: 8px; margin-bottom: 3px; }
+        body.embed-mode .title-line.large { font-size: clamp(3em, 6vw, 4.5em); }
+        body.embed-mode .decorative-bar { width: 100px; height: 2px; margin: 8px auto; }
+        body.embed-mode .subtitle { font-size: clamp(1.1em, 1.7vw, 1.4em); margin-bottom: 20px; }
+        body.embed-mode .bottom-bar { gap: 15px; }
+        body.embed-mode .course-badge { padding: 10px 18px; }
+        body.embed-mode .course-badge .label { font-size: 0.6em; }
+        body.embed-mode .course-badge .value { font-size: 0.9em; }
+        body.embed-mode .course-badge .icon { font-size: 1.4em; }
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <div class="bg-image"></div>
+    <div class="radial-overlay"></div>
+
+    <!-- Container principal -->
+    <div class="capa-container">
+        <div class="module-number">Aula 02</div>
+
+        <!-- Terminal Window -->
+        <div class="terminal-window">
+            <div class="terminal-titlebar">
+                <div class="terminal-buttons">
+                    <span class="terminal-btn close"></span>
+                    <span class="terminal-btn minimize"></span>
+                    <span class="terminal-btn maximize"></span>
+                </div>
+                <div class="terminal-title">
+                    <img src="mascote.png" alt="Claude" class="mascot">
+                    claude-code
+                </div>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-line">
+                    <span class="prompt">$</span> <span class="command">claude</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output">Claude Code v1.0.0</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="comment"># Sua linha de montagem cognitiva para produção epistêmica aumentada e em escala</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="prompt">></span> <span class="highlight">Ola! Como posso ajudar?</span><span class="cursor"></span>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="main-title">
+            <span class="title-line small">Primeiros Passos</span>
+            <span class="title-line large">CLAUDE CODE</span>
+        </h1>
+
+        <div class="decorative-bar"></div>
+
+        <p class="subtitle">Instalação, configuração e primeiros comandos</p>
+
+        <div class="bottom-bar">
+            <div class="course-badge">
+                <span class="icon">&#128218;</span>
+                <div class="text">
+                    <span class="label">Curso</span>
+                    <span class="value">Sistemas Agênticos</span>
+                </div>
+            </div>
+            <div class="course-badge">
+                <span class="icon">&#9878;</span>
+                <div class="text">
+                    <span class="label">Publico</span>
+                    <span class="value">Juristas</span>
+                </div>
+            </div>
+            <div class="course-badge">
+                <span class="icon">&#128100;</span>
+                <div class="text">
+                    <span class="label">Instrutor</span>
+                    <span class="value">George Marmelstein</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

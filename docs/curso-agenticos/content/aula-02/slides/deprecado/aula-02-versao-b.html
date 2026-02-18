@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 02 - Desvendando o Claude Code | Versao B (Demo-Heavy)</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* =============================================
+           PALETA SUPER - Prussian Blue + Antique Gold
+           ============================================= */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+        }
+
+        /* Reset Reveal.js defaults */
+        .reveal {
+            font-family: 'Inter', sans-serif;
+            color: var(--super-cream);
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal .slides section {
+            background: var(--super-bg-dark);
+            padding: 0;
+        }
+
+        /* Titles */
+        .reveal h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--super-gold);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+        }
+
+        .reveal h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            color: var(--super-gold);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+        }
+
+        .reveal h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            color: var(--super-gold);
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+        }
+
+        /* Section slides (transitions) */
+        .section-slide {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--super-bg-dark) 0%, var(--super-bg-section) 100%);
+        }
+
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: rgba(190, 156, 109, 0.6);
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(190, 156, 109, 0.3);
+        }
+
+        .section-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.6);
+            letter-spacing: 2px;
+        }
+
+        /* Demo slides (iframes) */
+        .demo-slide {
+            padding: 0 !important;
+        }
+
+        .demo-slide iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Quote slides */
+        .quote-slide {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px !important;
+            background: linear-gradient(135deg, var(--super-bg-dark) 0%, var(--super-bg-section) 100%);
+        }
+
+        .quote-box {
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 20px;
+            padding: 50px 60px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.6em;
+            color: var(--super-cream);
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .quote-author {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            color: var(--super-gold);
+        }
+
+        .quote-translation {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.6);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(190, 156, 109, 0.2);
+            font-style: italic;
+        }
+
+        /* Progress bar */
+        .reveal .progress {
+            background: rgba(190, 156, 109, 0.2);
+            height: 4px;
+        }
+
+        .reveal .progress span {
+            background: var(--super-gold);
+        }
+
+        /* Controls */
+        .reveal .controls {
+            color: var(--super-gold);
+        }
+
+        /* Slide number */
+        .reveal .slide-number {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--super-gold);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 CAPA
+                 ============================================ -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-capa-terminal.html"></iframe>
+            </section>
+
+            <!-- ============================================
+                 ACT 1: O MUNDO ORDINARIO
+                 ============================================ -->
+            <section class="section-slide">
+                <div class="section-number">ACT 1</div>
+                <div class="section-title">O Mundo Ordinario</div>
+                <div class="section-subtitle">Recapitulacao e o Chamado Aceito</div>
+            </section>
+
+            <!-- Quote Karpathy - Ferramenta Alienigena -->
+            <section class="quote-slide">
+                <div class="quote-box">
+                    <div class="quote-text">
+                        "Clearly some <span class="highlight">powerful alien tool</span> was handed around except it comes with <span class="highlight">no manual</span>."
+                    </div>
+                    <div class="quote-author">-- Andrej Karpathy</div>
+                    <div class="quote-translation">
+                        "Claramente alguma ferramenta alienigena poderosa foi distribuida, exceto que ela vem sem manual."
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 ACT 2: O PORTAL
+                 ============================================ -->
+            <section class="section-slide">
+                <div class="section-number">ACT 2</div>
+                <div class="section-title">O Portal</div>
+                <div class="section-subtitle">O Que E o Claude Code</div>
+            </section>
+
+            <!-- Quote Boris Cherny - Unix Utility -->
+            <section class="quote-slide">
+                <div class="quote-box">
+                    <div class="quote-text">
+                        "Claude Code is <span class="highlight">not a product</span> as much as it's a <span class="highlight">Unix utility</span>."
+                    </div>
+                    <div class="quote-author">-- Boris Cherny, Lead Engineer @ Anthropic</div>
+                    <div class="quote-translation">
+                        "Claude Code nao e tanto um produto quanto um utilitario Unix."
+                    </div>
+                </div>
+            </section>
+
+            <!-- Demo: Metafora do Arreio (Cavalo + Arreio) -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-cavalo-arreio.html"></iframe>
+            </section>
+
+            <!-- Demo: Loop Think-Act-Observe-Correct -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-loop-think-act.html"></iframe>
+            </section>
+
+            <!-- ============================================
+                 ACT 3: SUPERANDO O GUARDIAO
+                 ============================================ -->
+            <section class="section-slide">
+                <div class="section-number">ACT 3</div>
+                <div class="section-title">Superando o Guardiao</div>
+                <div class="section-subtitle">Desmistificando o Terminal</div>
+            </section>
+
+            <!-- Quote - Terminal First -->
+            <section class="quote-slide">
+                <div class="quote-box">
+                    <div class="quote-text">
+                        "Think of it as having a <span class="highlight">pair programmer</span> you can talk to without ever taking your hands off the keyboard."
+                    </div>
+                    <div class="quote-author">-- Eesel.ai</div>
+                    <div class="quote-translation">
+                        "Pense nisso como ter um programador parceiro com quem voce pode conversar sem nunca tirar as maos do teclado."
+                    </div>
+                </div>
+            </section>
+
+            <!-- Demo: Evolucao do Terminal (existente) -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-evolucao.html"></iframe>
+            </section>
+
+            <!-- ============================================
+                 ACT 4: CRUZANDO O LIMIAR
+                 ============================================ -->
+            <section class="section-slide">
+                <div class="section-number">ACT 4</div>
+                <div class="section-title">Cruzando o Limiar</div>
+                <div class="section-subtitle">Instalando o Claude Code</div>
+            </section>
+
+            <!-- Demo: Context (existente) - uso do contexto -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-context.html"></iframe>
+            </section>
+
+            <!-- ============================================
+                 ACT 5: PRIMEIRAS PROVAS
+                 ============================================ -->
+            <section class="section-slide">
+                <div class="section-number">ACT 5</div>
+                <div class="section-title">Primeiras Provas</div>
+                <div class="section-subtitle">Primeiros Passos e Slash Commands</div>
+            </section>
+
+            <!-- Demo: Slash Commands Interativo -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-slash-commands.html"></iframe>
+            </section>
+
+            <!-- Demo: Clear vs Compact (existente) -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-clear-compact.html"></iframe>
+            </section>
+
+            <!-- ============================================
+                 ACT 6: ALIADOS E ARMAS
+                 ============================================ -->
+            <section class="section-slide">
+                <div class="section-number">ACT 6</div>
+                <div class="section-title">Aliados e Armas</div>
+                <div class="section-subtitle">Permissoes e Estrutura</div>
+            </section>
+
+            <!-- Demo: Permissoes Slider -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-permissoes-slider.html"></iframe>
+            </section>
+
+            <!-- Quote - YOLO Mode -->
+            <section class="quote-slide">
+                <div class="quote-box">
+                    <div class="quote-text">
+                        "Use <span class="highlight">version control religiously</span>. YOLO mode is 100x safer when git reset --hard can undo anything Claude does."
+                    </div>
+                    <div class="quote-author">-- Agentic Engineer</div>
+                    <div class="quote-translation">
+                        "Use controle de versao religiosamente. Modo YOLO e 100x mais seguro quando git reset --hard pode desfazer qualquer coisa que o Claude faca."
+                    </div>
+                </div>
+            </section>
+
+            <!-- Demo: Estrutura de Diretorios -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-estrutura-diretorios.html"></iframe>
+            </section>
+
+            <!-- Quote - CLAUDE.md -->
+            <section class="quote-slide">
+                <div class="quote-box">
+                    <div class="quote-text">
+                        "A <span class="highlight">CLAUDE.md</span> file is like a <span class="highlight">README for Claude</span>."
+                    </div>
+                    <div class="quote-author">-- Steve Kinney</div>
+                    <div class="quote-translation">
+                        "Um arquivo CLAUDE.md e como um README para o Claude."
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 ACT 7: MAO NA MASSA
+                 ============================================ -->
+            <section class="section-slide">
+                <div class="section-number">ACT 7</div>
+                <div class="section-title">Mao na Massa</div>
+                <div class="section-subtitle">Primeiros Usos Praticos</div>
+            </section>
+
+            <!-- Quote - Filesystem First -->
+            <section class="quote-slide">
+                <div class="quote-box">
+                    <div class="quote-text">
+                        "Claude Code truly uses your <span class="highlight">filesystem directly</span>. It's just cat, grep, sed, find, etc."
+                    </div>
+                    <div class="quote-author">-- Grant Slatton</div>
+                    <div class="quote-translation">
+                        "Claude Code verdadeiramente usa seu sistema de arquivos diretamente. E apenas cat, grep, sed, find, etc."
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 ACT 8: RETORNO COM O ELIXIR
+                 ============================================ -->
+            <section class="section-slide">
+                <div class="section-number">ACT 8</div>
+                <div class="section-title">Retorno com o Elixir</div>
+                <div class="section-subtitle">O Fantasma na Maquina</div>
+            </section>
+
+            <!-- Demo: O Fantasma na Maquina -->
+            <section class="demo-slide" data-background-color="#0a0a12">
+                <iframe src="demo-fantasma-maquina.html"></iframe>
+            </section>
+
+            <!-- Quote Final - Karpathy -->
+            <section class="quote-slide">
+                <div class="quote-box">
+                    <div class="quote-text">
+                        "The hottest new <span class="highlight">programming language</span> is <span class="highlight">English</span>."
+                    </div>
+                    <div class="quote-author">-- Andrej Karpathy</div>
+                    <div class="quote-translation">
+                        "A linguagem de programacao mais quente e o ingles." (Ou portugues!)
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quote Final - Decada dos Agentes -->
+            <section class="quote-slide">
+                <div class="quote-box">
+                    <div class="quote-text">
+                        "<span class="highlight">2025-2035</span> is the <span class="highlight">decade of agents</span>."
+                    </div>
+                    <div class="quote-author">-- Andrej Karpathy</div>
+                    <div class="quote-translation">
+                        "2025-2035 e a decada dos agentes."
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fechamento -->
+            <section class="section-slide">
+                <div class="section-number">AULA 02 CONCLUIDA</div>
+                <div class="section-title">O Fantasma na Maquina</div>
+                <div class="section-subtitle">Agora voces tem o manual. E o fantasma mora na maquina de voces.</div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            progress: true,
+            controls: true,
+            center: false,
+            transition: 'fade',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+
+            // Keyboard shortcuts
+            keyboard: {
+                // Customizacoes se necessario
+            },
+
+            // Navigation
+            navigationMode: 'linear',
+            embedded: false,
+
+            // PDF export
+            pdfSeparateFragments: false,
+            pdfMaxPagesPerSlide: 1
+        });
+
+        // Comunicacao com iframes para controle de demos
+        Reveal.on('slidechanged', event => {
+            const iframes = event.currentSlide.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                // Reset demo quando entra no slide
+                iframe.contentWindow.postMessage({ action: 'reset' }, '*');
+            });
+        });
+
+        // Forward keyboard events to iframes when on demo slides
+        document.addEventListener('keydown', (e) => {
+            const currentSlide = Reveal.getCurrentSlide();
+            const iframe = currentSlide.querySelector('iframe');
+
+            if (iframe && (e.key === 'ArrowRight' || e.key === ' ')) {
+                // Nao previne default - deixa o Reveal controlar
+                // A demo avancar internamente via clique
+            }
+        });
+    </script>
+</body>
+</html>

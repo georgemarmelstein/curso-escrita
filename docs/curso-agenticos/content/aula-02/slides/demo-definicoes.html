@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duas Definições - Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dim: rgba(190, 156, 109, 0.4);
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+            cursor: pointer;
+        }
+
+        /* Imagem de fundo - Caverna */
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../../../site/assets/20260125_1105_Image Generation_simple_compose_01kftqh504f8hv46ba4smtz2c6.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* Overlay escuro para legibilidade */
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 18, 0.75);
+            z-index: 2;
+        }
+
+        /* Container principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1100px;
+            padding: 40px;
+        }
+
+        /* Título */
+        .title {
+            text-align: center;
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 0.2s forwards;
+        }
+
+        .title h2 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(2.5em, 5vw, 4em);
+            font-weight: 600;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            color: var(--super-cream);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Cards container */
+        .definitions {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Card base */
+        .definition-card {
+            position: relative;
+            padding: 40px 50px;
+            border-radius: 2px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        /* Glassmorphism background */
+        .definition-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(190, 156, 109, 0.15);
+            border-radius: 2px;
+            z-index: -1;
+        }
+
+        /* Linha lateral dourada */
+        .definition-card::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            height: 60%;
+            width: 3px;
+            background: var(--super-gold);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+        }
+
+        /* Estado visível */
+        .definition-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .definition-card.visible::after {
+            transform: scaleY(1);
+        }
+
+        /* Estado spotlight (em foco) */
+        .definition-card.spotlight {
+            box-shadow:
+                0 0 60px rgba(190, 156, 109, 0.15),
+                0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .definition-card.spotlight::before {
+            border-color: rgba(190, 156, 109, 0.4);
+            background: linear-gradient(135deg,
+                rgba(190, 156, 109, 0.08) 0%,
+                rgba(255, 255, 255, 0.02) 100%);
+        }
+
+        .definition-card.spotlight::after {
+            box-shadow: 0 0 20px var(--super-gold);
+        }
+
+        /* Estado dimmed (fora de foco) */
+        .definition-card.dimmed {
+            opacity: 0.35;
+            transform: scale(0.97);
+            filter: grayscale(30%);
+        }
+
+        /* Quote text */
+        .quote-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(2.2em, 4vw, 3.5em);
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.4;
+            color: var(--super-cream);
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* Aspas decorativas */
+        .quote-text::before {
+            content: '"';
+            position: absolute;
+            left: -25px;
+            top: -15px;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 3em;
+            color: rgba(190, 156, 109, 0.2);
+            font-style: normal;
+        }
+
+        /* Author */
+        .author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-line {
+            width: 40px;
+            height: 1px;
+            background: var(--super-gold);
+            opacity: 0.6;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.1em, 2vw, 1.6em);
+            font-weight: 500;
+            color: var(--super-gold);
+            letter-spacing: 1px;
+        }
+
+        .author-title {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9em, 1.5vw, 1.2em);
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        /* Indicador de progresso */
+        .progress-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 20;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.2);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Instrução sutil */
+        .click-hint {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.25);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+            z-index: 20;
+        }
+
+        .click-hint.hidden {
+            opacity: 0;
+        }
+
+        /* Embed mode - AUMENTADO para projeção em sala */
+        body.embed-mode { height: 100vh; overflow: hidden; }
+        body.embed-mode .container { padding: 25px 40px; max-height: 100vh; }
+        body.embed-mode .title { margin-bottom: 35px; }
+        body.embed-mode .title h2 { font-size: clamp(2em, 4vw, 3.2em); }
+        body.embed-mode .definitions { gap: 20px; }
+        body.embed-mode .definition-card { padding: 28px 40px; }
+        body.embed-mode .quote-text { font-size: clamp(1.6em, 3vw, 2.5em); line-height: 1.4; margin-bottom: 18px; }
+        body.embed-mode .author { gap: 12px; }
+        body.embed-mode .author-line { width: 35px; }
+        body.embed-mode .author-name { font-size: clamp(1em, 1.6vw, 1.35em); }
+        body.embed-mode .author-title { font-size: clamp(0.85em, 1.3vw, 1.1em); }
+        body.embed-mode .progress-indicator { bottom: 20px; gap: 10px; }
+        body.embed-mode .click-hint { bottom: 50px; font-size: 0.65em; }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="container">
+        <div class="title">
+            <h2>Duas Definições</h2>
+        </div>
+
+        <div class="definitions">
+            <!-- Definição 1 - Anthropic -->
+            <div class="definition-card" id="card1">
+                <p class="quote-text">
+                    Claude Code é uma <span class="highlight">ferramenta agêntica de codificação</span> que vive no seu terminal.
+                </p>
+                <div class="author">
+                    <div class="author-line"></div>
+                    <div class="author-info">
+                        <span class="author-name">Anthropic</span>
+                        <span class="author-title">Definição oficial</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Definição 2 - George -->
+            <div class="definition-card" id="card2">
+                <p class="quote-text">
+                    Claude Code é um <span class="highlight">sistema agêntico para tarefas cognitivas</span> em larga escala.
+                </p>
+                <div class="author">
+                    <div class="author-line"></div>
+                    <div class="author-info">
+                        <span class="author-name">George Marmelstein</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="click-hint">Clique para avançar</div>
+
+    <div class="progress-indicator">
+        <div class="progress-dot" id="dot1"></div>
+        <div class="progress-dot" id="dot2"></div>
+    </div>
+
+    <script>
+        let state = 0; // 0: inicial, 1: card1 visível, 2: card2 spotlight
+        const card1 = document.getElementById('card1');
+        const card2 = document.getElementById('card2');
+        const dot1 = document.getElementById('dot1');
+        const dot2 = document.getElementById('dot2');
+        const hint = document.querySelector('.click-hint');
+
+        function advance() {
+            state++;
+
+            if (state === 1) {
+                // Mostra card1 com spotlight
+                card1.classList.add('visible', 'spotlight');
+                dot1.classList.add('active');
+            } else if (state === 2) {
+                // Card1 fica dimmed, card2 aparece com spotlight
+                card1.classList.remove('spotlight');
+                card1.classList.add('dimmed');
+                card2.classList.add('visible', 'spotlight');
+                dot2.classList.add('active');
+                hint.classList.add('hidden');
+            } else if (state >= 3) {
+                // Reset ou navegação - pode ser customizado
+                state = 2; // Mantém no estado final
+            }
+        }
+
+        document.body.addEventListener('click', advance);
+        document.body.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') {
+                advance();
+            }
+        });
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Se embebido no Reveal.js, escuta eventos de fragment
+        if (window.Reveal) {
+            Reveal.on('fragmentshown', advance);
+        }
+    </script>
+</body>
+</html>

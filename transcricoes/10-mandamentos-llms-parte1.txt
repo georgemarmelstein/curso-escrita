@@ -1,0 +1,896 @@
+﻿0:01	Olá, aqui George Marmostin e o vídeo de hoje é bem especial, vai ser um vídeo de utilidade pública, um vídeo que eu vou
+0:08	apresentar 10 lições ou 10 mandamentos para você dominar os LLMs, os modelos de
+0:14	linguagem de larga escala. O que que eu tenho notado? Eu tenho notado que cada vez mais as pessoas estão usando os LLMs
+0:20	de modo profissional, no direito, na medicina, na academia, em várias outras áreas. Isso aparentemente seria bom e em
+0:27	certo sentido eu me sinto um pouco responsável por isso porque eu tenho estimulado desde 2023 o uso profissional
+0:34	dessas ferramentas. Mas tem um aspecto que é justamente a razão de ser desse vídeo que me incomoda, né, bastante, que
+0:41	é o fato de que muitas pessoas estão dando saltos, né, indo direto para o uso, sem uma compreensão do dos
+0:48	fundamentos, de como os LLMs funcionam, do que que está acontecendo por trás da máquina. E esse vídeo, ele tem essa
+0:55	função de apresentar um conhecimento operacional para que você possa usar os
+1:00	modelos de linguagem de modo mais confiante, de modo mais seguro, eh
+1:05	entendendo, né, o que está acontecendo para que você possa dominar a ferramenta e não ser dominada por ela. Então essa é
+1:12	a lógica do vídeo de hoje em que eu vou apresentar os 10 mandamentos para usar esses essas ferramentas. Eh, eu queria
+1:20	começar, né, com algumas perguntas e eu vou ser bem sincero. Eu considero que eh
+1:25	entre usar de modo errado e não usar a ferramenta, para mim é preferível não
+1:33	usar a ferramenta. Usar de modo errado é muito arriscado. Eh, e e é é a receita
+1:40	do caos, é a receita do desastre. você tem que entender o que está por trás do modelo para poder usar corretamente,
+1:47	sobretudo profissionalmente. Eh, aqui tem que entender também que nós temos usos dos LLMs que são mais eh, digamos
+1:53	assim, de entretenimento, né, de fazer imagens, fazer poesias. Até aí, OK, você não precisa entender o que tá
+1:59	acontecendo por trás, mas se você passa para um uso profissional, aí sim você tem que dominar a ferramenta. E são
+2:06	cinco perguntas que eu acredito que você tem que entender para poder usar. Se você não sabe responder isso, não use
+2:12	profissionalmente. A primeira é o que se passa dentro do LLM, como é que ele produz textos, qual é a o mecanismo de
+2:19	funcionamento dele, né? O que é que é a previsão do próximo token, da onde é que ele tá tirando a informação, que é
+2:25	justamente eh as perguntas subsequentes. Outro conceito essencial que você
+2:30	precisa dominar, porque isso aqui é o poder e o limite do LLM, é janela de contexto. O que é a janela de contexto?
+2:37	Por que que esse conceito é tão importante para nós que vamos usar profissionalmente, para nós que vamos
+2:43	trabalhar com textos longos e, portanto, com contextos longos. De onde é que o Ll
+2:48	tira a informação? Essa talvez seja a pergunta mais essencial. Eh, quando você pergunta algo para ele, eh, e ele dá uma
+2:56	resposta, aquela resposta vem de onde? Eh, a gente vai ver que existem várias fontes possíveis, né, de resposta e que
+3:04	cada uma vai ter um risco e uma potencialidade diferente. E você tem que
+3:09	saber responder isso para poder usar corretamente a ferramenta. Outro conceito essencial, alucinação. Todos
+3:15	nós já, né, pelo menos aqueles que já utilizam a ferramenta, já se depararam, né, com eh com o fenômeno da da produção
+3:23	de informação que não tem correspondência com a verdade, factualmente equivocada. Então, o que
+3:29	que o que que é isso? As alucinações são eh respostas da máquina que são
+3:35	extremamente convincentes, plausíveis, mas são completamente falsas, erradas, não tem
+3:41	correspondência com a realidade. Por que que isso ocorre e como é que a gente pode mitigar? Quando é que a gente deve
+3:47	confiar e quando é que a gente não deve confiar na ferramenta? princípio báso. Se você não sabe responder isso, dê um
+3:52	passo para trás, eh, tente entender melhor os LLMs para poder usar corretamente. E finalmente, uma parte
+3:59	que nós não vamos explorar tanto aqui nesse vídeo, mas que é a parte de engenharia de de prompt, a parte de você
+4:07	se comunicar bem com a máquina, conversar com a máquina, conseguir dar comandos poderosos, como conseguir
+4:13	respostas confiáveis, precisas e poderosas, quais são as técnicas para conversar com as máquinas. É esse o
+4:19	quadro, né? que a gente vai pincelar aqui. Claro que não temos condições de aprofundar cada um desses tópicos, mas a
+4:26	gente vai fazer uma visão global de tudo isso. E o primeiro mandamento que eu quero trazer é um mandamento que talvez
+4:33	eh vai resolver metade das perguntas, que é a ideia de que a gente precisa
+4:39	tratar o nosso modelo de linguagem, o nosso LLM, o nosso chat EPT, o nosso Claud, o nosso Gemini, nosso Cilot, com
+4:47	uma calculadora, uma calculadora de textos. uma calculadora não determinística de textos. E é
+4:54	essencialmente importante que a gente compreenda esses modelos como modelos de
+5:00	cálculo, porque literalmente eles são calculadoras. dentro deles não tem
+5:06	textos, não tem eh base de dados, tem simplesmente mecanismos de prever o
+5:12	próximo token, de prever a próxima palavra em uma sequência iniciada pelo usuário. Então, eh, a base de toda a
+5:20	compreensão dos LLMs é essa. O Ll, né, um mecanismo de cálculo, é uma
+5:28	máquina de calcular que calcula textos com base em probabilidades. Vamos
+5:33	explorar um pouquinho isso, mas é importante que a gente aparta desse princípio. Toda a a fonte de informação
+5:41	intrínseca dentro do LLM é aquilo que a gente chama de parâmetro
+5:47	ou conhecimento paramétrico ou conhecimento parametrizado. O que é que é um parâmetro? Um parâmetro é como se
+5:54	fosse a essência do conhecimento que foi usado no treinamento. É como se fosse um uma
+6:01	cola, um um eh mecanismos de que de eh
+6:08	de sintetização, de compressão de informação. Então, dentro dos parâmetros é como se fossem inúmeros, tabelas eh em
+6:16	que a máquina vai conseguir a partir daí processar e gerar informação. Só para que fique mais claro, quando a gente
+6:22	fala em parâmetros, é como se fosse, só para dar uma uma metáfora. A gente vai mostrar isso daqui a pouco. É como se a
+6:29	gente tivesse peg uma biblioteca e feito o o fichamento, rascunho, né, a a
+6:36	anotação de cada livro eh que a gente teve. Então a gente transforma isso em
+6:42	um em um conjunto, né, de de fichamentos, resumos que comprimem toda
+6:48	aquela informação. Então, quando a gente vê um parâmetro, quando a gente vê um LLM funcionando, dentro dele não vai ter
+6:55	a biblioteca, dentro dele vai ter esse eh essa biblioteca comprimida, a
+7:00	compressão do conhecimento dentro de técnicas sofisticadas de padronização, de identificação de
+7:07	padrões. Então, é um programa de computador, inclusive, né? É possível, hoje em dia, nós temos modelos abertos
+7:14	que você consegue rodar dentro do seu computador sem acesso à internet. Eh, você pode baixar, por exemplo, o Olhama,
+7:21	que é uma interface que permite que você baixe vários modelos open source que chama, que são abertos. Tem eh algumas
+7:29	do chatpt, tem o Deepic, tem o Quen, tem o lama. Eh, e aí você pode baixar esse esses
+7:38	parâmetros, né, dentro do seu computador e conversar com a máquina eh no modo avião, ou seja, sem internet. Quando
+7:45	você entra dentro dos parâmetros, né, quando você enxerga o parâmetro, você não vai ver texto, né? Você vai ver um
+7:53	monte de fórmula matemática, um monte de eh de técnicas estatísticas para
+7:59	conseguir continuar uma sequência iniciada pelo usuário. E aí, portanto,
+8:04	né, esse esse é um conceito importante porque eh cada vez mais a gente precisa
+8:09	eh voltar à essência do que é o LLM. Na sua essência, o Llulta bases de textos,
+8:16	eles não têm lá eh PDF, Word dentro dele. Dentro dele tem parâmetros,
+8:22	números que vão funcionar como mecanismos para ajudar a calcular a próxima palavra.
+8:27	Isso significa dizer que quando você usa um LLM tradicionalmente, eu foco, né, na
+8:34	na essência nessa parte do do LLM em eh na sua origem, você não está fazendo com
+8:41	que ele consulte a internet ou fazendo com que ele eh busque uma base de dados para regugitar, para trazer aquela
+8:47	informação paraa sua frente. Na verdade, o que você faz quando você usa um LLM é
+8:53	simplesmente eh dar uma sequência como se fosse, pense
+8:59	numa máquina de calcular, máquina, uma calculadora. Você dá ali um 2 + 2 + 2, a
+9:05	máquina vai fazer cálculos para responder seis, né? A resposta da máquina vai ser seis. Eh, dentro dela,
+9:13	dessa máquina, ela não consultou tabuada, né? Ela não consultou uma tabuada que diz que se o usuário
+9:19	perguntar 6 + 6 + 6, a resposta é 2 + 2 + 2, a resposta é 6. Ela vai eh
+9:25	fazer computação, cálculos para conseguir acertar aquilo. E a diferença
+9:31	de uma máquina de calcular para o LLM é que a máquina de calcular ela é determinística. Toda vez que você coloca
+9:38	o input, né, 2 + 2 + 2, a resposta vai ser sempre idêntica, um seis.
+9:43	Com LLM, nós temos variações estocásticas, variações aleatórias, que
+9:49	embora a resposta vai ser sempre seis, né? Eh, nós teremos centenas ou até
+9:56	milhares de forma formas diferentes de responder a mesma coisa, de responder seis. Pode ser o número seis, pode ser a
+10:03	resposta é seis, pode ser algo eh simplesmente eh um um
+10:11	uma afirmação eh o que você está me perguntando, a resposta para isso é seis. Enfim, tem várias formas de
+10:17	responder seis eh eh em termos de conteúdo e ele nunca vai ser exatamente igual por conta do modo estocástico de
+10:24	funcionamento, né, que é o o que é um ponto também da característica dessa
+10:29	máquina de calcular textos, que são os LLMs. É, pensando ainda na metáfora, não
+10:35	na metáfora, né, mas na lógica da máquina de calcular. É, você pega uma máquina de calcular numérica, começa a
+10:42	usar 2 + 2 + 2 = 6, 3 + 3 + 3 = 9. Você vai trabalhando com ela a noite toda.
+10:49	Quando você aperta o botão reset, ou seja, quando você zera a máquina, ela não vai lembrar do que você conversou
+10:55	antes. Você vai inaugurar uma nova conversa e tudo aquilo que você conversou vai ser esquecido pela
+11:01	máquina. com LLM a mesma coisa. Toda vez que a gente aperta a a ferramenta eh
+11:07	nova conversa, né, que é pra gente entender exatamente isso, é esse botãozinho aqui, novo bate-papo, né, que
+11:15	tem no cloud, tem no chat PT, todos eles têm. A gente tá resetando a conversa e começando tudo de novo. Então, se eu
+11:22	pergunto aqui, olá, meu nome é George e eu tenho
+11:30	e eu na eh e meu aniversário é 1eo de julho.
+11:36	Qual o meu signo? Eh, uma vez que eu pergunto isso, eh,
+11:42	essa conversa a gente inaugura um contexto, é como se a gente tivesse perguntando 2 + 2 + 2, ela responde
+11:49	seis. A gente e a gente coloca mais do, ela coloca oito, né? dentro da mesma
+11:55	conversa, ela vai entendendo o que a gente conversou antes. Então, se eu perguntar aqui qual o dia do meu
+12:03	aniversário, eh, ela vai claramente responder, porque dentro dessa conversa, a gente explicou
+12:09	para ela que o meu aniversário é primeiro de julho. Eh, se eu abro o novo bate-papo, é como se eu tivesse
+12:15	conversando com outra pessoa, né, ou zerado a nossa máquina de calcular. A gente apertou o botão reset. Então,
+12:21	pergunto aqui, qual o dia do meu aniversário?
+12:27	A máquina claramente não vai lembrar porque resetou, né? Eu resetei a conversa, inaugurei uma nova janela de
+12:33	contexto. Então é importante que a gente tenha em mente essa ideia, porque ela não tá aprendendo com o uso. O modelo
+12:41	que a gente usa é sempre estático, é um conhecimento paramétrico, ou seja, os parâmetros eles são fórmulas estáticas
+12:49	que não vamos se aprimorando com o uso. Dois detalhes aqui importantes, porque as pessoas mais avançadas vão perceber
+12:55	que em alguns momentos os LLMs consultam, né, a internet e, portanto,
+13:01	eh, em alguns em alguns casos ela vai consultar base de textos, né, o que pode
+13:06	se chocar com essa informação que eu estou dando aqui. E eh em alguns momentos alguns modelos vão memorizar
+13:13	algumas conversas passadas, mas mesmo nessa nessas situações, eh o que nós
+13:19	estamos aqui eh quando acontece isso, é porque o o a empresa que desenvolveu o
+13:25	modelo criou ferramentas externas que permitem que a máquina consulte a
+13:30	internet, né? Que inclusive você pode dizer que não, não quero que consulte a internet e a partir daí se torna um
+13:36	modelo tradicional sem consulta à internet. né? E alguns modelos permitem
+13:41	que você consulte ou memorize informações de conversas passadas. Mais
+13:46	uma vez, não é da natureza do LLM. Isso aí é um recurso externo, uma ferramenta
+13:52	que é oferecida pela empresa. Se você desabilita isso, nós voltamos à configuração originária, né, essencial
+13:59	do que é o LLM. Então é importante que a gente diga isso porque muitas das coisas, muitos dos das da muitas coisas
+14:07	que eu vou afirmar aqui que se refere ao LLM tradicional eh eh não se aplica
+14:13	quando a gente pensa nos recursos externos. Então, quando eu digo o LLM ele não consulta uma base de textos
+14:20	originalmente, ele apenas consulta os seus parâmetros. Seus parâmetros não são
+14:25	textos, são números. Quando eu digo isso, é porque eu estou me referindo a
+14:30	ao modelo original, a ao modelo na sua essência, sem ferramentas externas. E quando eu digo também que ele não tem
+14:36	memória, ou seja, ele não tá aprendendo com o uso, eu estou me referindo ao fato
+14:41	de que eh quando a gente aperta o nova conversa, você inaugura, né, do zero,
+14:47	você zera a janela de contexto, a não ser que você tenha habilitado eh
+14:53	ferramentas de memória em que ele vai memorizar, ou seja, vai incluir automaticamente no contexto algumas
+14:59	informações que você pediu para ele memorizar. Então, eh eh mas é importante que a gente perceba que isso é um
+15:05	recurso adicional, não é da natureza do LLM. E aí o mais importante é que a
+15:12	gente tem dentro do contexto, né, dentro da nossa máquina de calcular a possibilidade de ensinar pra máquina
+15:19	através do contexto, né? a gente inaugura conversa colocando lá eh textos, uma sequência de palavras e a
+15:27	máquina vai calcular qual é a próxima palavra que ela vai continuar. Eh, e aí
+15:34	eh, dentro dessa sequência que a gente chama de janela de contexto, nós podemos
+15:40	inserir eh, eh, conhecimento para que a máquina aprenda ou instruções para que a
+15:45	máquina aprenda. é a chamada aprendizagem aprendizagem através do contexto. Então, o nosso poder de
+15:50	usuário está nesse bloco inicial, né, que chama-se prompt ou se chama contexto
+15:56	ou se chama query, solicitação, instruções, em que a gente vai selecionar um pedaço desse contexto,
+16:03	porque ele é limitado, ele não é infinito, para ensinar a máquina a cumprir uma determinada tarefa. Só para
+16:09	explicar um pouco mais claro, eh, o que a gente tem dentro da máquina é uma ferramenta que olhou vários textos da
+16:17	internet e conseguiu e conseguiu aprender padrões de linguagem eh que
+16:22	tornam ela extremamente habilidosas em prever qual é a próxima palavra. Isso
+16:28	não é difícil, né, se a gente pensar eh no que a máquina viu ao longo de tudo isso. Eh, eu coloquei aqui um exercício
+16:34	bem básico para que a gente veja como não é difícil você conseguir adivinhar as palavras que estão escondidas.
+16:41	Literalmente o treinamento da máquina é assim, você dá vários blocos de textos
+16:47	em que você vai esconder algumas palavras ou alguns tokens para ser mais precisos, mas a gente não precisa, por
+16:53	enquanto se preocupar com a ideia de token. Vamos pensar em palavras. E o papel da máquina é tentar ler, né, os
+17:00	padrões de linguagem do passado para conseguir adivinhar qual é a próxima
+17:05	palavra, qual é a palavra que se encaixa dentro desse, né, dessa, desse contexto que está eh escondido, né, que está
+17:13	desaparecido. Na medida em que a máquina vai se aprimorando, ela consegue fazer isso. Então, vamos lá. Eu vou ler esse
+17:18	texto porque é um texto muito didático também para explicar esse mecanismo. Os LLMs tiram vantagem do fato de que os
+17:24	dados da linguagem fluem em ordem sequencial. E aí eu peço perdão pelo tamanho, mas eh eh é o cópia de um
+17:31	livro, né? Eh, cada unidade de informação está de alguma forma relacionada a dados anteriores em uma
+17:36	série. Os modelos leem números tanã grandes de frases, aprendem uma
+17:42	representação abstrata das informações contidas nelas e então geram uma previsão sobre o que virá a aqui. Eu eh
+17:50	eu acredito que todo mundo consegue perceber que quando ela fala os modelos leem números grandes, provavelmente é
+17:58	bastante muitos, bem grandes, muito grandes, né? Então, a resposta eh aqui a
+18:03	palavra escondida que a gente consegue prever analisando o contexto é muito,
+18:09	né? A gente presta atenção no que foi dito e percebe números grandes. Então,
+18:14	provavelmente é um um uma um advérbio de intensidade, né? Muito grandes. Eh,
+18:20	então gera uma previsão sobre o que virar a seguir, né? Eu acho que a única palavra que cabe aqui é seguir, não a
+18:27	seguir. O desafio está em projetar um algoritmo que saiba onde olhar, em busca
+18:32	de sinais em determinada frase, né, que é o mecanismo de atenção, ou seja, eh
+18:37	ele não calcula exatamente tudo, ele consegue perceber dentro de um contexto quais são as partes relevantes para que
+18:44	ele consiga, eh, prever qual é aquela palavra que eh que está faltando, que é a palavra que vai continuar, né? Quais
+18:51	são as palavraschaves mais salientes? Eh, e como elas se relacionam umas com as outras. Naá. Essa noção é comumente
+18:58	chamada de atenção ou mecanismo de atenção, que é a base de tudo. É um
+19:03	texto do do Google chamado Attention is all you Need, em que ela descobriu que
+19:09	se você eh eh se você coloca um bloco para que a máquina adivinha qual é a
+19:15	próxima palavra, sem estabelecer mecanismo de atenção, você não vai conseguir poder computacionar o
+19:21	suficiente para que a máquina consiga processar tudo igualmente. Então, ao invés de você eh pedir paraa máquina
+19:29	processar todo o texto, você cria eh ensina a máquina a prestar atenção no
+19:35	que é relevante e calcular com base naquilo que é relevante, eh diminuindo o peso, a importância daquilo que não é
+19:41	tão relevante. Inclusive, é o que nós fazemos, por exemplo, quando nós analisamos um processo judicial, se a
+19:47	gente pega uma petição de e 50 páginas, nós vamos dar peso maior aos fatos,
+19:53	vamos olhar com mais atenção os fatos e o pedido. Então, a gente faz isso de
+19:58	modo até automático, é intuitivo. Muito provavelmente a máquina também aprendeu a fazer esse tipo de leitura quando
+20:05	começou a treinar usando essa técnica. Quando um grande modelo de linguagem ingere uma frase, ele constrói o que
+20:12	pode ser considerado um mapa da atenção. Primeiro, ele organiza os grupos de letras ou sinais de pontuação que
+20:17	ocorrem comumente em tokens. token para ser, a gente vai ver o que que é
+20:22	exatamente, mas são eh eh ao invés de a gente pensar em vocabulário, em letras,
+20:27	a ao invés de a gente pensar em sílabas, né, que é o ser humano pensa olhando a sílaba e transformando a sílaba no
+20:35	sentido até fonético, né, a e ou ded dodu, a máquina não pensa por esses
+20:41	blocos silábicos ou ou de vogais. eles ele ele consegue eh mapear padrões de
+20:48	linguagem, né? E ele ele ele transforma esses padrões em números que vão
+20:54	funcionar como espécie de identificador, um vocabulário de identidade de cada parte da palavra, né? E e aí, portanto,
+21:02	ao invés dele trabalhar com um vocabulário de 23 letras, ele trabalha
+21:07	com um vocabulário que mistura, né, que que analisa, por exemplo, eh, 15.000
+21:13	tokens. Então, a a base dele não é a letra, não é a sílaba, são tokens, né,
+21:19	que são representações numéricas dessas eh desses dessas letras, desses sílabas
+21:26	que eh se repetem com mais frequência na linguagem para formar palavras. Eh,
+21:32	então vamos lá. tokens, algo como sílabas, mas na verdade somente amontoados de letras que ocorrem
+21:37	frequentemente, que tornam mais fácil o processamento da informação. Vale, tanã
+21:42	que os humanos fazem isso com palavras, é claro, mas o modelo não usa nosso vocabulário. Ele cria um novo
+21:49	vocabulário de tokens comuns que o ajuda a localizar padrões em bilhões e bilhões de tananana. O vale ali é vale notar,
+21:58	vale ressaltar, né? Vale enfatizar. Então, pode ser várias palavras que cabem, né? E isso é importante que a
+22:04	gente diga, porque quando o modelo ele tá processando qual é a próxima palavra, ele nunca vai naquela mais óbvia
+22:11	necessariamente. Ele pode escolher uma entre várias opções. E é por isso que a gente tem a ideia de aleatoriedade do
+22:18	modelo não determinístico. Então, vale notar, acredito eu, né, pelo tamanho aqui, vale notar que os humanos fazem
+22:25	isso com palavras. E ele cria um novo vocabulário de tokens comuns que o ajuda a localizar padrões em bilhões e bilhões
+22:32	de, né? Já tá ali uma dica de um seitão, provavelmente é caracteres ou documentos
+22:37	ou textos, né? Bilhões e bilhões de documentos. Eu ia dizer caracteres, mas eh que caberia também. Eh, mas aqui a
+22:45	ideia de documentos. Então, no mapa da atenção, cada token tem algum relacionamento com todos os outros
+22:52	tokens antes dele. E para cada frase dada, a força desse relacionamento
+22:57	descreve algo como importância do token em cada frase, na frase, naquela frase,
+23:03	né? Não sei exatamente o que é que tá aqui naquela frase. Na prática, o Llm aprende em quais palavras prestar
+23:09	atenção. Então, é essa é a lógica do do modelo, né? Ele ele consegue ver um
+23:16	contexto, presta atenção em quais são as palavras relevantes e prevê, calcula
+23:22	qual é a próxima palavra que se encaixa naquela continuação de palavra. E aí,
+23:27	portanto, essa é a lógica dos LLMs eh que eh fazem com que esses modelos se
+23:33	tornem tão eh poderosos. Basicamente, eles simplesmente conseguiram eh
+23:38	desenvolver uma máquina de calcular que aprendeu padrões de linguagem eh e que
+23:44	calcula qual é a próxima palavra. E ele faz isso. Vamos aqui mostrar mais um eh,
+23:49	mais um slide, porque isso aqui, o próximo slide, ele vai ser muito ilustrativo eh de tudo isso em ação. Ele
+23:55	faz isso de modo eh autorreessivo, como a gente vai ver. Então, se a gente olhar um LLM, eh, se a gente olhar o modo
+24:02	básico do LLM, a gente tem um input, que é como se fosse dentro da nossa máquina
+24:08	de calcular o que a gente escreve lá naquela telinha, 2 + 2 + 2. A máquina
+24:13	vai fazer eh o LLM, né, ele vai fazer o cálculo computacional de qual é a próxima palavra que vai continuar aquela
+24:20	sequência e vai dar o seu output em formato de texto. Então, eh, isso mostra
+24:26	que os LLMs, literalmente, são máquinas de calcular não determinísticas que
+24:32	geram uma palavra ou um token de cada vez. Eh, e essa essa busca ela é baseada
+24:41	numa probabilidade semântica, numa probabilidade de continuar aquela frase
+24:47	de modo a fazer sentido semântico. O fazer sentido semântico não quer dizer
+24:53	que é factualmente verdadeiro, é apenas que se encaixa dentro de uma lógica semântica. Por exemplo, imagine a
+25:01	seguinte frase: eh, existem muitos elementos que podem eh demonstrar que a
+25:07	Terra não é redonda, porque nós, né, não caímos, não vimos angulação, não dá para
+25:12	ver. Portanto, a Terra é plana. Essa frase, "A Terra é plana", dentro de
+25:18	contexto que eu acabei de dizer, é, faz todo sentido, né? Eh, e eu criei um
+25:24	contexto, pedi pra máquina continuar e ela continuou com a frase: "Portanto, a Terra é plana".
+25:31	Essa essa frase ela é eh semanticamente correta, factualmente eh
+25:36	probabilisticamente do ponto de vista semântico faz sentido, mas não faz sentido do ponto de vista factual,
+25:42	porque a Terra de fato é redonda. Então a máquina ela consegue ter eh uma uma
+25:48	correção semântica que não corresponde necessariamente a uma correção factual.
+25:54	E essa e essa continuação ela é autorregressiva. A palavra que a máquina prevê vai entrar
+26:03	no cálculo da atenção para ela continuar a próxima palavra. Eh, então, se eu peço
+26:08	paraa máquina escreva um texto sobre liberdade de atenção, eh, sobre liberdade de expressão, a máquina vai
+26:14	dizer, a liberdade de expressão é um, ela tem várias possibilidades, é um princípio, é um valor, é um pilar, é um
+26:20	direito. É um direito. A partir daqui, ela tem uma multiplicidade de opções. Eh, fundamental, eh, essencial,
+26:28	importante, relevante, é um direito fundamental. A palavra que ela vai criando vai
+26:35	entrando no bloco da da janela de contexto, vai entrando nessa sequência e, portanto, vai funcionando
+26:40	autorregressivamente como um mecanismo de continuação eh semanticamente possível eh e
+26:47	plausível daquela daquele texto. É por isso que ela produz textos convincentes,
+26:53	mesmo dando informações falsas, porque a o convencimento tá muito relacionado à semântica, a coerência semântica. Por
+27:00	exemplo, se eu digo a frase, existem muitas provas contra Rodrigo.
+27:07	Eh, Rodrigo foi reconhecido, Rodrigo foi baleado, Rodrigo confessou.
+27:12	Portanto, Rodrigo, é a palavra que se encaixa aqui semanticamente é culpado.
+27:19	Dentro desse contexto, a palavra inocente não cabe. Eh, não há uma
+27:24	probabilidade semântica de de dentro desse contexto que eu narrei que Rodrigo seja inocente. Porque eu eu iniciei o
+27:33	contexto falando que tem provas contra Igor, né, e portanto contra Rodrigo e, portanto, e Rodrigo é culpado. Se eu e
+27:41	mudar a lógica e dizer, agora vamos falar de Igor. Em relação a Igor, existem algumas provas de culpa e
+27:46	algumas provas de inocência. provas de culpa. Ele foi baleado, ele foi reconhecido, né, mas estava em outro
+27:53	hospital, longe do local do crime. Prova de inocência é que ele tinha um vídeo
+27:58	demonstrando que ele estava em outro local no momento do crime. Portanto, Igor é
+28:05	nessa frase é é muito parecido do ponto de vista semântico encaixar a palavra
+28:11	culpado ou inocente. A máquina, ela vai ter uma escolha aleatória sobre qual vai ser a palavra que vai se encaixar. E se
+28:17	ela escolher a palavra culpado, as palavras que vão se completando subsequentemente, elas vão funcionar com
+28:25	base naquela palavra que a máquina escolheu, que no caso é culpado. Então, a máquina vai conseguir produzir um
+28:31	texto convincente dizendo que eh Iago é culpado porque ela escolheu essa palavra
+28:37	e, portanto, ela vai enquadrar o restante do texto dentro dessa lógica de que Igor é culpado e vai ser muito
+28:43	convincente, você vai acreditar no que a máquina tá dizendo. Já se a máquina por uma questão de escolha aleatória, já que
+28:50	semanticamente a palavra inocente também cabe. Se ela escolheu a palavra inocente, ela vai continuar a sequência
+28:58	enquadrando a sua resposta de modo a fazer sentido e a mostrar que Igor de fato é inocente. Então essa é a lógica
+29:05	da máquina, a a busca de um padrão semântico. As palavras escolhidas vão condicionar a as escolhas subsequentes,
+29:13	né, por meio de enquadramento que é feito. Eh, ainda dentro dessa primeira
+29:18	lição, né, de como os LLMs pensam e funcionam, é importante a gente retornar
+29:24	aquela ideia do da compressão, né, de que o parâmetro que tá dentro do modelo,
+29:31	ele não é o conhecimento original, ele não é o conhecimento do treino, ele é um
+29:36	conhecimento comprimido, ele é uma essência, uma síntese ou um esquema para
+29:42	conseguir detectar padrões de linguagem. Então, basicamente o que a máquina faz é
+29:47	o seguinte, né? Você tem uma máquina que não sabe nada, que não tem nenhum padrão. É uma máquina que tem fórmulas
+29:54	estatísticas, mas não tem nenhum dado, não tem nenhuma informação. Então, o que é que você vai colocar? Eh, você vai
+30:00	colocar um monte de textos dentro dela para ela detectar por meio daquele eh
+30:06	daquela descoberta de quais são as palavras que estão faltando, né? Qual é eh qual é quais são os padrões que
+30:13	funcionam como técnica para prever qual é a próxima palavra de uma sequência? Você coloca dentro dela bilhões de
+30:20	textos. Muitos, muito, quanto mais melhor, né? Não necessariamente quanto mais melhor, porque pode ter poluição,
+30:26	pode ter texto que não é relevante, pode ter eh eh quanto quanto mais textos de
+30:33	qualidade, melhor, né? Eu acho que seria melhor a frase essa. Eu imagino que você tem uma biblioteca com textos de
+30:38	altíssima qualidade, você coloca dentro da máquina. O que é que essa máquina vai fazer? Ela vai processar cada palavra
+30:46	dentro das suas eh relações com outras palavras, na posição que ela tá na
+30:51	frase, na sequência, dentro de um texto. E a máquina, ela vai começar a descobrir
+30:56	que, por exemplo, quando a palavra rei aparece junto com a palavra mulher, é
+31:02	porque nós estamos diante de uma rainha, né? A palavra rei mais mulher é igual a
+31:07	rainha. Ela começa a fazer essas conexões entre as palavras, né? E aí ela começa a perceber que eh era uma vez um
+31:15	rei que morava em um, ele vai eh a máquina começa a perceber que os padrões aqui que se encaixam é um é um
+31:22	substantivo eh masculino, não pode ser feminino, porque a palavra um está relacionado a algo masculino e vai ser
+31:30	alguma coisa relacionada a lugar, porque morar é um lugar que é é uma é um verbo
+31:36	que se refere a lugar. Portanto, ela vai tentar completar com alguma palavra que
+31:41	se encaixe nesses critérios. Pode ser, era uma vez um rei que morava em um
+31:46	reino, em um castelo, em um casebre, né? Várias palavras se
+31:53	encaixam, algumas com mais plausibilidade, né, de ser verdadeira, né, de serem verdadeiras, outras com
+31:59	menos plausibilidade. Ela vai escolher uma que não necessariamente é a verdadeira, mas que é possível que seja
+32:05	verdadeira, né? O nome do meu cachorro de estimação é, ele vai provavelmente
+32:11	dizer totó, Rex, vai colocar algum nome, né, do eh,
+32:17	algum nome desse tipo. Eh, eh, e dificilmente ele vai colocar geladeira, né? O nome do meu cachorro é geladeira.
+32:24	Ninguém coloca o nome de um cachorro de geladeira. Pode ser que seja verdade, pode ser que, por acaso, o meu cachorro se chame geladeira, mas eh eh termo de
+32:33	semântica é muito implausível que a palavra que continua essa sequência seja
+32:38	geladeira. Então, no que nós temos aqui no final é uma rede neural, rede neural,
+32:44	né? É como se fosse um arquivo zipado, né? que contém bilhões e bilhões de parâmetros numéricos de, né, de eh de
+32:52	fórmulas matemáticas para prever o próximo token, que conseguem gerar textos similares à aqueles que foram eh
+33:00	vistos durante o treinamento. É como se a gente tivesse, né, uma uma xéix, uma visão fragmentada, uma visão borrada do
+33:07	texto original e a gente consegue ter uma ideia do texto original, mas nunca uma cópia fiel, porque é uma compressão
+33:14	com perda. a gente comprimiu esse arquivo, esse arquivo obteve eh uma
+33:19	noção semântica daquilo que ele viu durante o treinamento, mas eh na hora
+33:24	que a gente tenta eh regurgitar ou ou voltar para para o tamanho original, a gente não consegue, vai ter perda. É
+33:31	igual o cérebro humano. Eu leio a Constituição 10 vezes.
+33:37	A minha memória paraa Constituição, ela não é uma memória fotográfica, ela é uma memória de de compreensão conceitual.
+33:45	Então, eu consigo explicar várias partes da Constituição, alguns alguns artigos
+33:52	que eu vi com mais frequência, eu consigo até talvez eh dizer de decorado,
+33:57	né, eh literalmente o texto, mas eu não vou conseguir reproduzir literalmente
+34:03	toda a Constituição. vou conseguir reproduzir a ideia central é o os alguns direitos fundamentais que eu vi lá no
+34:09	artigo 5º, os princípios que estão no início da Constituição, a parte da administração pública que a gente lê com
+34:15	mais frequência, os limites constitucionais ao poder eh de tributar, né, que lá pelo artigo 150. Então, a
+34:22	gente tem uma noção do que está na construção de alguns conceitos, porque a gente leu, né, no na faculdade de
+34:28	direito, eh, e, e até hoje a gente lê, mas eh a nossa memória ela não é
+34:33	fotográfica, ela é uma memória, é fragmentada. Só para que a gente entenda o que é um token, né? Eh, aqui também,
+34:40	mais uma vez não se preocupe com a letrinha, né? Ela é de propósito para não ser lido. Eh, nós vamos jogar dentro
+34:46	do do Se a gente quiser treinar um LLM, né? Por exemplo, eu quero criar do 017PT.
+34:52	Então, basicamente, eu vou selecionar os textos e o que nós, seres humanos, eh, enxergamos é isso daqui. São letras,
+35:00	sílabas, frases, parágrafos que vão se conectando em uma lógica que, né, que
+35:06	foi extraída de documentos, foi extraída de textos, de livros, de artigos, né, e
+35:11	o ser humano enxerga desse jeito e, eh, e codifica a informação desse jeito.
+35:17	Então nós conseguimos transformar isso daqui em fonemas que vão entrar na nossa cabeça e vão eh vão a gente vai ter uma
+35:25	imagem, né, do que tá no texto graças a essas essas sílabas, esses símbolos, que
+35:30	é o que o nosso cérebro consegue decodificar. Pra máquina ela não usa
+35:36	sílabas, ela usa tokens. Então ela transforma tudo aquilo ali em
+35:41	representações numéricas que são identidades dos de cada sílaba, de cada pedaço de palavra. Algumas delas se
+35:47	repetem, alguns padrões se repetem. Eh, por exemplo, a letra A vai se reproduzir bastante. Só que, eh, veja bem, eh, a
+35:54	máquina ela não pensa eh por sílabas, ela não pensa por letra, ela pensa por
+35:59	número e por blocos de palavras e letras. É por isso aqui, eu vou vou
+36:04	fazer aqui um uma brincadeira, né, que é bem conhecida. É por isso que se a gente colocar aqui no nosso LLM, eu vou tirar
+36:11	da internet, né? Colocar para não pesquisar na internet. Se eu colocar aqui qual o nome, vou vou
+36:20	dizer para diga bem rápido, bem rápido. Qual o nome do Beatle
+36:27	que não tem a letra A? Aqui ele pode acertar, né? Tem tem probabilidade. Mas
+36:33	eh por que que isso aqui é uma tarefa difícil pra máquina? Deixa eu ver se ela eh colocou Ringstar, né? E Ring Star tem
+36:42	a letra A no nome, né? que a resposta correta seria John Lennon, né, que não tem a letra A. Por que que acontece
+36:49	isso? Porque se eu vier aqui no no nosso eh leitor de tokens no sistema da
+36:57	máquina, a o Llá vendo letras, ele não tá vendo sílabas, ele tá vendo tokens. E
+37:04	dentro do da palavra ring star, não tem o token que corresponde à letra A, né?
+37:13	E, portanto, ele erra por isso. E eu vou já dizer como é que a gente faz com que ele acerte, né? Eu vou aqui no
+37:18	tokenizer, que é um é um uma ferramenta do do chatpt da
+37:24	UPNI, que nos ajuda a enxergar os tokens. Então, vou colocar aqui dentro dessa desse bloco a palavra ring star e
+37:32	aqui embaixo a letra A e aqui a letra A, né? Então, a palavra eh ringle
+37:38	se a gente olhar o o a palavra ringle, ela representa sete tokens, aliás, representa cinco tokens, né? Tem um
+37:45	token do R, tem o inga, e o star, né? Com R é outra, né? Eu acho que deve ter
+37:51	algum algum token aqui que quebra a palavra star. E a palavra A tem um determinado token, eh, letra minúscula,
+37:57	a letra A, né, tem um determinado token e o A maiúsculo tem outra. Se eu mostrar a identidade disso daqui, a gente vai
+38:04	ver que o A minúsculo é o 198 e o A maiúsculo é o 32, né?
+38:13	Eh, portanto, eh, e isso aqui é a palavra ring star,
+38:18	né? Eh, se a gente olhar a palavra ring star, não tem 198, que é a letra A
+38:25	minúscula, e não tem 32, que é a palavra letra A maiúscula. Então, paraa máquina,
+38:32	a palavra ringu não tem a letra A, ele não tá enxergando dentro da palavra a letra A. Mas se eu colocar aqui, né, eu
+38:40	vou pegar essa mesma a esse esse mesmo
+38:45	eh comando e pedir pense passo a passo, que aí já
+38:50	a gente já vê eh uma eh como a lógica da máquina é um pouco diferente.
+38:56	É aqui a a chance de ele acertar é bem maior porque ele consegue decompor e aí vai colocando aí é de modo muito mais
+39:05	eh no no primeiro nome, né? Eu quero saber, ele colocou no primeiro, né? John George Ringle, mas eu quero saber e ir
+39:12	no sobrenome, que é só o John Lennon, né? Que não tem a letra A no sobrenome, né? Mas aí agora
+39:19	ele consegue pensar, porque agora ele decompõe a resposta e consegue dar uma resposta melhor, mostrando que os LLMs
+39:26	pensam através de tokens. é outra outra ideia que a gente vai trabalhar bastante.
+39:32	Eh, então, eh, sintetizando esse primeiro mandamento, que talvez seja o mais importante para entender a lógica
+39:37	dos LLMs, nós estamos diante de máquinas de calcular que recebem inputs textuais
+39:44	do ser humano e, eh, trazem de volta respostas textuais, né? o ser humano,
+39:50	ele entrega texto e recebe texto. Só que dentro da máquina o que ela faz é
+39:56	transformar esses textos em identidades numéricas, tokens,
+40:02	calcular, né, a a a relação entre esses tokens dentro de eh fórmulas
+40:08	estatísticas ultra complexas e entregar na na resposta, no output tokens. Só que
+40:15	ela transforma depois esses tokens em textos. E aí o que nós enxergamos são
+40:20	textos, mas dentro da máquina o cálculo que ela faz é todo baseado nisso daqui,
+40:26	nessa informação, né? E é é isso que a máquina faz. Então vamos para o a nossa
+40:31	segunda lição, porque eh a gente vai entrar no conceito, talvez num dos mais
+40:37	importantes para usar os LLMs, que é o conceito de janela de contexto. A janela de contexto, ela é o superperton
+40:46	LLMs, ou seja, ela é o que garante o potencial da máquina e também o que
+40:52	garante os as falhas, os defeitos. a gente precisa dominar eh o a janela de
+40:58	contexto, tanto conceitualmente como na prática, porque ela vai funcionar quase como a nossa janela de eh com a nossa
+41:04	mesa de trabalho, né? É o que a gente consegue colocar dentro do LLM para trabalhar bem. Mais do que isso, a gente
+41:11	vai perder a possibilidade de trabalhar organizadamente e a máquina vai se perder também. E menos do que isso, a
+41:17	gente não vai conseguir ter informações suficientes pra máquina produzir informação. Então, o que é exatamente a janela de contexto? A janela de contexto
+41:25	é a quantidade de texto, né, de palavras que a máquina consegue prestar atenção
+41:31	ao mesmo tempo para prever qual é o próximo token. A gente falou que a gente tá lidando com a máquina de calcular.
+41:37	Essa máquina de calcular, ela tem um poder computacional limitado, como também as máquinas de calcular possuem.
+41:43	Se você pegar uma máquina de calcular caseira e começar a colocar números complexos, ela vai travar. Ela não vai
+41:49	conseguir calcular coisas muito avançadas. Tanto porque não vai caber no seu input, você não vai conseguir
+41:55	colocar tudo isso aí na telinha que aparece lá na frente, quanto no cálculo dela, ela vai ter um limite de
+42:02	quantidade de cálculos que ela consegue realizar. Se você quiser partir para cálculos mais complexos, você tem que
+42:07	pegar calculadoras mais avançadas ou computadores mais avançados que conseguem fazer cálculos mais poderosos.
+42:14	Com os LLMs é a mesma coisa. Cada um tem um poder diferente e esse poder é delimitado pela janela de contexto. Eh,
+42:22	duas metáforas pra gente entender o conceito de janela de contexto. Primeira metáfora, metáfora da caminhada.
+42:30	Eh, imagine que você está iniciando uma caminhada, você vê lá longe que tem
+42:36	muito material, mas você não enxerga direito, né? Tem muito, muita paisagem que parecem bonita, cachoeiras,
+42:42	florestas, montanhas. Você tá vendo ali apenas no horizonte. Aí você começa a caminhar, você vai se aproximando, seu
+42:49	contexto vai ficando mais rico, você vai conseguindo enxergar mais coisas, você vai encontrando coisas mais belas,
+42:56	o seu contexto melhora. Mas quando você começa a olhar para trás, você começa a sentir que aquelas paisagens que você
+43:02	estava vendo no começo, elas desaparecem. as pegadas que estavam no chão, elas vão desaparecendo, ou seja,
+43:09	você vai perdendo fragmentos da da informação que vão ficando, né, pelo
+43:15	caminho. Com a janela de contexto é a mesma coisa. a gente inicia uma nova conversa, é uma paisagem nova, não tem
+43:21	nada, não tem informação. A gente precisa ir caminhando, ou seja, precisa ir conversando com a máquina,
+43:27	construindo o contexto, gerando tokens e palavras para que a máquina consiga eh
+43:33	ver melhor, enxergar mais coisas. Mas ao mesmo tempo que essa conversa vai se alongando e vai ficando mais rica paraa
+43:38	frente, ela vai perdendo informações para trás. Ou seja, eh, se a gente trabalhar com contexto de pequeno, né,
+43:46	um contexto, uma máquina com com uma janela de contexto pequena, na medida em
+43:51	que a gente vai colocando informação nela, ela vai perdendo a a lembrança, a
+43:56	memória ou a visão, né, o poder de atenção daquilo que vai ficando no começo da conversa. Outra metáfora que a
+44:03	gente pode usar é a da mesa de trabalho que eu já mencionei,
+44:09	a ideia de que o LLM é uma máquina de calcular em que ela funciona como uma uma mesa de trabalho, né? Você coloca
+44:15	aqui uma mesa de trabalho e você começa a colocar papel e consegue prestar atenção nesse papel.
+44:22	Ela vai ter uma capacidade, por exemplo, de você colocar eh 100 folhas na sua frente, né? sem folhas de papel na sua
+44:28	frente com informações e você vai conseguir ler e enxergar tudo isso. Mas na medida em que você vai colocando mais
+44:33	folhas, aquelas eh outras que vão que que estavam na mesa vão ficando embaixo
+44:39	e aí você vai perder a capacidade de enxergar aquilo ali, né? Então os os
+44:44	LLMs ele tem essa limitação que é justamente a janela de contexto. A
+44:49	máquina ela enxerga uma janela limitada, ela não é não tem o poder de olhar tudo, ela olha só parte e vai esquecendo
+44:56	aquilo que fica para trás. A lógica é que o contexto é rei. O
+45:02	controle do contexto, você ter a curadoria do contexto, entender a lógica da janela de contexto, vai fazer toda a
+45:08	diferença na sua forma de usar os LLMs. Se você utiliza muito eh eh contexto,
+45:16	contexto longo, a gente vai ver que vai haver uma vai haver uma degradação, é um mecanismo de distração poluir. é com a
+45:23	sua mesa de trabalho vai ficar com muita informação e você vai perder aquilo que é relevante. Já se você trabalha com
+45:29	pouquíssima informação, ou seja, não dá o contexto suficiente, a máquina não vai ter eh o potencial de dar respostas e
+45:36	poderosas. As respostas serão genéricas, superficiais, com pouca profundidade. Você não vai encontrar o que você quer.
+45:42	O segredo aqui é nessa caminhada que você vai fazer junto com LLM, se coloque no contexto aquilo que é essencial. É
+45:49	como se fosse mais uma metáfora, metáfora do mochileiro. Se a gente for fazer uma caminhada no caminho de Santiago, por exemplo, vai passar vários
+45:56	dias caminhando, você não vai colocar na sua mochila um monte de livros, você não vai colocar na sua mochila eh eh
+46:02	computador, você não vai colocar na sua mochila coisas que não são relevantes para aquela caminhada, né? Porque se
+46:08	você fizer isso, eh, você não vai conseguir caminhar, não vai conseguir chegar até o final, você vai cansar, vai
+46:14	ter um desempenho fraco. Já se você não colocar tudo, não colocar água, não colocar dinheiro, não colocar eh roupas
+46:21	básicas, você vai sentir frio, vai sentir calor, você vai eh ter problema
+46:27	de fome, eh enfim, você não vai conseguir dormir bem, vai dormir no relento e tudo isso, portanto, vai
+46:32	prejudicar o seu desempenho. Então, o segredo é ter esse equilíbrio de colocar
+46:38	apenas informações relevantes. Nós vamos ver daqui a pouco, né, que a ampliação do contexto, ela costuma ser boa, mas
+46:44	tem um contrapartida. Quanto mais contexto você der, mais poder
+46:50	computacional a máquina tem que fazer, por isso mais lento fica eh a sua resposta. E em alguns momentos, quando
+46:58	ele começa a chegar no limite da janela de contexto, vai perdendo a precisão.
+47:03	Então, quando você coloca um texto de 200, 300 páginas, não é tão preciso em
+47:09	termos de extração de informação, de qualidade, de precisão, quanto você
+47:14	colocar 100 páginas, por exemplo, né? Ele ele consegue enxergar melhor 100 páginas do que 300 páginas. Só que isso
+47:21	varia. E aqui esse quadro ajuda a gente a entender um pouco qual é a evolução do
+47:28	poder computacional das máquinas através de uma de uma noção do que é uma janela de contexto. E aqui eu tô pensando nos
+47:35	LLMs simples, nos assistentes básicos. Nós vamos falar daqui a pouco, né, que
+47:41	para nós temos mecanismos para ampliar a possibilidade de anexos, de conhecimento,
+47:47	eh, mesmo dentro de contextos limitados, né, técnicas como rag, técnicas como,
+47:53	eh, agentes, né, que trabalham em paralelo, mas eu não quero falar disso agora. Imagine um modelo simples, uma máquina de calcular simples que você
+48:00	trabalha com ela e que ela tem um poder computacional limitado. Lá em 2023,
+48:05	quando a gente trabalhava com chatpt 3.5, chatpt 4, a nossa janela de contexto era mínima, era de poucas
+48:12	páginas, 5, 10 páginas. O que significava que se a gente colocasse uma petição inicial de cinco páginas e
+48:18	depois colocasse uma contestação de cinco páginas, ela já não lembrava mais do que estava na inicial, né? era era
+48:25	realmente bem limitado o uso da ferramenta para algumas tarefas de análise mais robustas. Isso vai mudar em
+48:32	2024. Em 2024 a gente consegue ampliar a nossa janela de contexto para um livro de 200 páginas, 150 páginas. Então a
+48:39	gente já consegue colocar lá um processo de 100 páginas e a máquina vai conseguir eh analisar com mais qualidade aquele
+48:47	conteúdo do que se a gente do que antes, né? Quando a gente tinha apenas uma janela bem curtinha. Um detalhe
+48:53	importante aqui desse dessa questão é que quando a gente fala em janela de contexto, a gente tem que pensar no
+48:58	input e no output. Então, se eu tenho um modelo, né, que tem uma janela de
+49:04	contexto de, eh, 128.000 tokens, eu vou colocar aqui 100 páginas, né? Colocar
+49:11	100 páginas, um pouco mais, mas eu vou colocar 100 páginas para arredondar. Então, imagine que eu tenho um um modelo
+49:16	que a gente consiga trabalhar com 100 páginas numa janela de contextos. Se eu coloco 10 eh 90 páginas e a
+49:25	máquina produz uma resposta de 10 páginas, eu já esgotei o contexto.
+49:30	Então, a partir do momento que eu continuar a conversa, a partir daqui, ela vai ter uma degradação das
+49:37	informações que estão no início. Por isso que quando a gente trabalha com janela de contexto, não adianta a gente
+49:42	trabalhar no limite da capacidade da máquina. a gente tem que trabalhar mais ou menos na metade da capacidade da
+49:48	janela de contexto para que ela consiga na continuação da conversa que a gente vai ter, né, ter mais poder de eh de
+49:56	computação dentro daquilo. A partir de 2025, eh o nosso contexto se amplia
+50:02	consideravelmente. A gente começa a trabalhar com modelos eh mais robustos, né, de 200.000 tokens, de 2 milhões de
+50:09	tokens, aumentando aí a capacidade para blocos de até 5 livros, 1000 páginas. Só
+50:15	que a gente vai ver daqui a pouco que isso é um pouco eh ilusório, né? Mesmo quando a gente trabalha com modelos mais
+50:22	robustos que conseguem ter uma janela de contexto maior, vai haver uma degradação do contexto, porque eh nas técnicas para
+50:29	conseguir analisar blocos muito grandes de textos, acaba tendo perda também de
+50:34	informação, como a gente vai ver logo mais. E 2026 a promessa que se tem, né, são
+50:42	janelas mais robustas ainda. Não vou dizer janelas infinitas porque é poder computacional e poder computacional
+50:48	sempre vai ter limite, mas a gente consegue ter máquinas com mais poder computacional, portanto LLM simples com
+50:55	mais janela de contexto e técnicas para destilar a informação e o conhecimento e
+51:02	transformar blocos longos de textos em textos menores. E não só isso, fazer com
+51:08	que modelos trabalhem em paralelo para olhar partes diferentes do documento. Então, hoje a gente consegue trabalhar
+51:14	com textos maiores graças em grande parte a essas técnicas, né? O Notebook LM, que é um uma ferramenta incrível do
+51:22	Google, ele trabalha mais ou menos assim: você consegue colocar 50 livros lá dentro e ao invés de ser um modelo só
+51:29	olhando tudo, ele trabalha em paralelo, né? Vários modelos vão olhar partes diferentes e extrair informações para
+51:36	dar a resposta. Mas cada um desses modelos, individualmente falando, tá
+51:42	limitado à janela de contexto do que é usado no modelo do notebook LM, se eu não me engano, é o Gemini, que até uma
+51:48	janela de contexto bem longa de 2 milhões de tokens, 1 milhão e meio de tokens. Eh, mas é importante que a gente
+51:54	diga que mesmo, né, eh, mesmo quando a gente trabalha com essas esses blocos grandes, nós vamos ter que ter em mente
+52:01	aquele equilíbrio que eu falei do mochileiro. Não adianta a gente querer colocar dentro dos LLMs
+52:08	todo o conhecimento do mundo, porque isso gera simplesmente poluição. Lembre-se, a gente trabalha com a
+52:14	máquina de calcular, que tem um poder computacional limitado e o nosso poder é ensinar a máquina através do contexto. A
+52:20	gente tem um bloco ali, eu coloco, né, de eh 10 a 15 páginas de instrução, né,
+52:27	talvez um pouco mais, né, vou colocar 20 páginas de instrução em que a gente vai ensinar a máquina a fazer alguma coisa,
+52:34	alguma tarefa, alguma metodologia de análise, alguma metodologia de escrita, né? E paralelamente a isso, nós temos
+52:41	uma parte da nossa, do nosso input, do nosso contexto para colocar conhecimento, que pode ser um
+52:46	conhecimento que a gente coloca todo no contexto, ou pode ser técnicas em que ela vai consultar apenas por
+52:52	necessidade. Eh, mas ainda assim a gente tem que ter a noção do mochileiro. Não não podemos
+52:58	colocar nem instruções exageradas que a máquina não vai conseguir cumprir, nem
+53:03	contextos excessivamente longos. Uma maior janela de contexto implica um
+53:08	maior poder computacional. Nós temos também maior potencial de usar a máquina, né, de modo inteligente,
+53:15	usando engenharia de prompt e também é engenharia de contexto. A engenharia de
+53:20	prompt é a eh é a habilidade de você dar instruções poderosas pra máquina. E a
+53:26	engenharia de contexto é a habilidade de você construir uma base de conhecimento essencial, relevante, destilada, para
+53:34	que a máquina consiga extrair conteúdo relevante e a partir daí criar respostas
+53:39	melhores. E nós temos também, é, como eu já falei, mecanismos de armazenamento e recuperação de informações mais
+53:46	inteligentes, base de dados que a gente oferece para que a máquina consulte sob demanda, e temos os modelos
+53:52	multiagentes, que eu falei, né, que trabalham em paralelo ou em sequência, eh, para, né, conseguir fazer tudo isso
+53:58	com mais qualidade. Isso não altera a natureza do LLM como limitado pelas
+54:05	janelas de contexto, mas consegue que a gente eh realize mais tarefas e tarefas
+54:10	melhores dentro, né, de de modelos que trabalham, por exemplo, em equipe. Eh, outro ponto que
+54:17	eu queria trazer aqui é o conceito da degradação de contexto, porque esse é um dos erros comuns. Outro erro comum vai
+54:23	ser a lógica dos anexos, que a gente vai trabalhar logo mais, que é o fato de que muita gente acredita
+54:30	que o contexto explícito do modelo, divulgado pelo modelo, corresponde a uma
+54:37	precisão de 100% de acerto. Ou seja, se eu uso um modelo que diz que tem 100
+54:43	páginas de janela de contexto e eu coloco um livro de 100 páginas, ele vai acertar, ele não vai errar, não vai
+54:48	alucinar. Não é bem assim. Todo modelo sofre aquilo que a gente chama de degradação do contexto. Quando
+54:56	ele se aproxima do limite de contexto, ele começa a cair performance. E um dos
+55:02	experimentos que se fazem, né, que se faz para medir isso, é o de procurar uma agulha no palheiro. Basicamente você
+55:08	coloca um texto gigante, né, um texto longo, né, um contexto longo. E dentro
+55:13	desse contexto você coloca uma informação ali bem específica. você coloca eh o CPF do João da Silva é 333
+55:22	456, né? Aí eh você faz uma pergunta pra máquina, qual é o CPF de João P da
+55:27	Silva? E dá esse contexto? Quanto mais contexto você dá, maior vai
+55:32	ser a dificuldade da máquina de encontrar aquela agulha no palheiro. E a gente vê aqui, né, de um modo geral, os
+55:39	modelos eles trabalham bem ali até 100 tokens, 100.000 tokens e depois tem uma
+55:45	degradação grande de contexto. Isso não se aplica aos modelos que trabalham em paralelo, né, nem se aplica ao RAG, né,
+55:53	a técnica de você colocar busca semântica. Só que o Rug vai ter outros problemas, como a gente vai colocar lá
+55:58	na frente, né? Eh, e, né, dentro da nossa eh da nossa aprendizado, né,
+56:05	escalonado, né, nosso modo de aprender escalonado, não se preocupe com isso agora, daqui a pouco a gente chega lá.
+56:11	Vamos lá, então. Vamos passar para o mandamento número três. A ideia de que os LLMs pensam através de
+56:18	tokens e que os inputs vão determinar a qualidade dos outputs.
+56:24	Inputs nobres geram outputs nobres, inputs pobres geram outputs pobres.
+56:32	Entender isso é a lógica para você usar bem a ferramenta, né? é a lógica de que
+56:37	você tem o poder dentro da engenharia de de prompt eh conseguir construir eh
+56:43	instruções poderosas de qualidade. Quando a gente diz que os LLMs pensam
+56:49	através de tokens, a gente tá dizendo que ele precisa
+56:54	produzir tokens para dar respostas melhores. Ele ele precisa cuspir contexto, cuspir informação,
+57:02	gerar informação, zerar, gerar contexto para melhorar o seu contexto, para melhorar a sua resposta. O token a gente
+57:08	já viu, é como se fosse um bizu. É um esquemazinho em que a máquina vai transformar um vocabulário,
+57:15	letras e e e em números, em identidades numéricas para facilitar o cálculo da
+57:21	máquina. Eh, eh, a o token transforma padrão eh o Ll, né, a máquina transforma
+57:27	padrões comuns em um vocabulário próprio, como se fosse uma técnica memônica para aprender padrões de
+57:32	linguagem, né? Então, ao invés de decorar letras ou decorar sílabas, ela consegue decorar primeiro, né, quais são
+57:40	as as a as os pares mais comuns, né, de
+57:46	sílabas e palavras que se se aproximam. E a partir daí vai construindo um vocabulário que pode ser de 10.000, de
+57:52	15.000 eh identificadores para cada uma dessas palavras. Então, a palavra eh a a
+57:58	o d, né? O dicar um um token, o dado pode significar um outro token, não
+58:04	necessariamente o dar, né? Então ele ela consegue identificar isso e transformar essas palavras em tokens. E ela precisa
+58:11	de bons tokens para pensar melhor. Tokens de qualidade elevam a resposta. E
+58:17	a gente fala token, né? Porque a máquina lê token, né? Mas para nós, seres humanos, é melhor a gente pensar na na
+58:23	analogia da das palavras, né? A gente trabalha por palavras e não por sílabas,
+58:29	não por letras, né? O nosso modo de organizar ideias, pensamentos, é por conceitos que são palavras, né? A gente
+58:36	não quebra as palavras em sílabas. A gente cria na nossa cabeça o conceito de liberdade, o conceito de eh igualdade,
+58:44	né? O conceito de casa, o conceito de carro. Então, a as palavras aqui é
+58:49	melhor para nós. Então, a lógica é que palavras de qualidade geram eh palavras
+58:56	de qualidade, respostas de qualidade. E aí por por isso que instituições poderosas costumam, né, fornecer
+59:03	respostas mais poderosas. A metáfora que eu vou trazer aqui pra gente entender essa lógica, que é uma metáfora muito eh
+59:09	eh visualmente clara, é a metáfora da caixinha de música e a do oceano. A
+59:15	metáfora da caixinha de música é a seguinte, ó. Eh, imagine que o Ll seja uma máquina de calcular que produz
+59:22	música. O usuário dá uma melodia, a máquina vai calcular como é que
+59:28	continua aquela melodia. Então, se eu entrego pra máquina algo como atirei o pau no gato, a máquina vai continuar
+59:36	algo como dona Chikaká admirou-se, né? Ela continua a música, né? A sequência
+59:43	com a mesma complexidade, o mesmo padrão, a mesma lógica, mesma melodia, o
+59:49	mesmo ritmo eh que o usuário inicia. Então, o início da sequência dada pelo
+59:55	usuário vai estabelecer qual vai ser a continuação da da sequência que a
+1:00:01	máquina vai produzir. Se o usuário inicia com a nona sinfonia de Bitoven, a máquina vai continuar a sequência com o
+1:00:08	mesmo nível de complexidade, profundidade, qualidade, ritmo, melodia
+1:00:14	da nona sinfonia de Beitoven. Então, por isso que tokens nobres, palavras nobres
+1:00:20	vão gerar outputs nobres, né? Essa é a lógica da de usar corretamente os LLMs.
+1:00:27	A outra metáfora é a do oceano. Eh, imagine que você colocou dentro da
+1:00:33	máquina um monte de livros, né, como a gente viu lá, blocos de livros, e você colocou para que ela aprendesse o
+1:00:39	padrões padrões desse livro, desses livros. Dentro desse dessa biblioteca,
+1:00:45	você vai ter as obras escritas pelas mentes mais geniais do planeta, obras
+1:00:51	clássicas da literatura, artigos científicos, teses de doutorado, pessoas que pensaram profundamente para escrever
+1:00:57	aquilo, pessoas que escreveram com qualidade, né, que escreveram textos incríveis, que escreveram eh material e
+1:01:06	que impressionam qualquer um, né, cognitivamente e estilisticamente. E também dentro desse dessa mesma
+1:01:12	biblioteca você colocou um monte de livro mais superficial, livros é bobinhos, eh conversas de comentários de
+1:01:21	blogs, de eh de fóruns de baixo calão, músicas pobres, eh letras sem sentido,
+1:01:29	né? Então a gente tem eh algo como as músicas do Chico Boarque concorrendo com
+1:01:35	músicas de de de baixa de baixa qualidade, né?
+1:01:40	A fórmula que você tem para conseguir pescar dentro desse oceano essa as os
+1:01:45	melhores textos, os melhores peixes, os peixes mais nutritivos, é direcionar a sua vara por meio do prompt para aquelas
+1:01:53	áreas da rede neural onde estão os textos de qualidade. E você faz isso eh
+1:01:58	por meio de palavras, ativando na rede neural as palavras em que você eh vai
+1:02:03	encontrar apenas eh nos textos mais de qualidade, de maior qualidade. palavras
+1:02:09	como holístico, como profundidade, como pensamento crítico, eh argumentação
+1:02:18	crítica, eh semiótica, eh hermenêutica, são palavras que vão estar que que que é
+1:02:26	mais provável de serem encontradas em textos de qualidade do que em textos de baixa qualidade. Então, no final das
+1:02:32	contas, a sofisticação do prompt vai gerar a sofisticação da resposta. a a
+1:02:38	máquina vai continuar aquilo que o usuário começou. Conceito número quatro, o mandamento
+1:02:44	número quatro, talvez eh os que provoquem mais medo, né? As pessoas têm medo de alucinação.
+1:02:54	E esse é um dos conceitos mais simples e mais básicos, porque é inerente aos
+1:02:59	LLMs. Os modelos de linguagem de larga escala alucinam por natureza.
+1:03:05	Eles não têm compromisso, como eu já falei, com factualidade, eles têm compromisso com validade semântica. O
+1:03:13	LLM ele é treinado para continuar uma sequência e acertar
+1:03:21	eh do ponto de vista semântico, qual é a palavra que se encaixa naquela
+1:03:26	sequência, imitando padrões de linguagem que ele viu no passado. Então ele ele é
+1:03:32	treinado para imitar padrões de linguagem e não para acertar e não para
+1:03:37	ter acerto factual. correção semântica, como a gente já viu, é diferente de
+1:03:43	correção factual. Eh, eu dei o exemplo da da Terra plana, mas eh também dei o
+1:03:49	exemplo do processo judicial em que semanticamente caberia que Igor era
+1:03:55	inocente ou era culpado, né? Dentro desse processo, em relação ao Rodrigo,
+1:04:01	por exemplo, tem provas, só provas de culpa. Então, semanticamente, nesse caso, você vai ter uma coincidência.
+1:04:08	pode haver uma coincidência entre a verdade factual e a verdade semântica.
+1:04:13	Dentro desse processo, dificilmente a máquina vai dizer que o Rodrigo é inocente, porque não se encaixa na
+1:04:19	semântica do processo, das provas que estão listadas, a ideia de inocência,
+1:04:24	né? Se tem tantas provas de culpa e nenhuma eh prova de inocência, né? A, o
+1:04:30	mais provável, tanto semântico quanto factual, é que Rodrigo seja culpado.
+1:04:35	Porém, dentro desse de uma mesma estrutura de processo em que você tenha
+1:04:41	provas de inocência e provas de culpa, a a verdade semântica se encaixa em
+1:04:46	qualquer um dos dois. A verdade semântica, a correção semântica, ela pode implicar que Igor é inocente ou que
+1:04:54	Igor é culpado. Factualmente, só tem uma verdade, né? E
+1:04:59	aí, mesmo que você diga eh factualmente eh semanticamente Igor pode ser culpado,
+1:05:05	se factualmente ele é inocente, nós não temos uma correspondência entre semântica e correção factual. Então, é
+1:05:12	importante que a gente tenha em mente isso, porque é aí que vai ocorrer a alucinação. A máquina vai continuar uma
+1:05:18	sequência que tem sentido semântico, mas não tem correção com a realidade. Pense,
+1:05:24	né, na máquina como uma máquina que tem uma memória fragmentada do que ela viu durante o treinamento. Ela não
+1:05:30	regurgita, ela não transcreve, ela não reproduz, ela cria e ela tem uma vaga
+1:05:35	noção do que é a verdade factual com base no que ela viu no conhecimento. Mas
+1:05:41	na hora que ela vai projetar um texto, esse texto ele vai ter semelhança com os padrões de linguagem que ela viu, mas
+1:05:48	não necessariamente vai ser a verdade, sobretudo porque eh você tá lidando com informações muitas vezes específicas.
+1:05:56	Duas metáforas pra gente entender aqui o que são as alucinações e porque elas ocorrem.
+1:06:02	Primeira delas é uma metáfora do concurseiro chutando uma questão de concurso. É curioso que eu usava essa
+1:06:09	metáfora para explicar o que são as alucinações desde as minhas primeiras aulas, desde 2023, né? E recentemente a
+1:06:18	Openei publicou um artigo sobre a alucinação em que ela começa, né,
+1:06:23	explicando e o que são alucinações usando um uma metáfora de uma pessoa fazendo um teste, uma prova, eh muito
+1:06:30	parecido com o meu modelo, porque ajuda a entender, eh, com com muita clareza o
+1:06:35	que é a alucinação. Eh, imagine que você tem uma uma prova de concurso em que não
+1:06:40	tem aquela questão de uma verdadeira anula falsa. Então, o que é que vai acontecer? o o concurseiro ele vai estar
+1:06:47	estimulado a chutar, né? Então, se ele pegou lá uma questão que ele não tem certeza, ele chuta, ele vai dizer e,
+1:06:53	portanto, vai marcar e vai errar algumas, vai acertar outras. Algumas ele vai acertar porque ele sabe, outras ele
+1:07:00	vai acertar porque chutou, algumas ele vai errar porque chutou errado. Eh, o
+1:07:05	concur o o os LLMs funcionam mais ou menos assim, é a mesma lógica. Eles são recompensados por dar respostas. Se você
+1:07:12	pegasse um LLM e toda vez que você perguntasse alguma coisa e dissesse: "Eu não sei", a máquina respondesse: "Eu não
+1:07:19	sei, não vou te ajudar, procure outra pessoa", você ia começar a dizer: "Poxa, isso aqui não serve para nada, eu vou
+1:07:24	procurar outro". Então eles foram treinad a serem úteis ao usuário, né? E a dar respostas, mesmo que eles não
+1:07:31	tenham certeza da resposta, porque eles não têm uma noção do que é verdadeiro, do que é falso. Eles têm uma noção do
+1:07:37	que é provável, né? do que há do que da probabilidade semântica, não é a probabilidade factual, do que é
+1:07:44	semanticamente provável. Então, a essa transposição do que é factualmente
+1:07:50	verdadeiro para o que é meramente plausível do ponto de vista semântico, é um salto que a máquina não consegue ter
+1:07:56	porque ela não tem mecanismos de verificação eh factual. Eh, ainda na metáfora do concurseiro, eu vou citar
+1:08:03	aqui uma experiência que eu também já sempre cito, que foi na minha prova de concurso de juiz, né? Nós estávamos na
+1:08:09	segunda fase, prova dissertativa, e caiu uma questão com dois itens. A pergunta
+1:08:15	era: "O preço de transferência é constitucional?" Primeira pergunta. A
+1:08:20	segunda pergunta era: "A presunção dele decorrente é absoluta ou relativa?", né?
+1:08:25	Segunda pergunta, valia dois pontos a questão e eu tinha uma vaga noção do que
+1:08:30	era preço de transparência. Ou seja, durante o meu treinamento, eu li essa
+1:08:36	informação, né? E o ser humano ele treina parecido com a máquina. nós lemos as informações e não armazenamos eh de
+1:08:44	modo eh eh exato aquilo que a gente viu. A gente lembra de fragmentos e eu
+1:08:50	lembrava de alguns fragmentos de que preço de transferência é o instituto do direito tributário e que tinha a ver com
+1:08:56	relação internacional. Fora isso, eu não tinha noção, mas eu tinha duas questões aqui. A primeira questão era saber se
+1:09:04	era constitucional ou não e a segunda era saber se era qual era a presunção. Ora, se ele tava perguntando sobre
+1:09:10	presunção, era pressupondo que é constitucional. Não tinha sentido você dizer que o preço de transferência é
+1:09:16	inconstitucional e a presunção dele é relativa. Semanticamente não bate, né?
+1:09:22	semanticamente não bate. Então, a probabilidade semântica é que a primeira resposta é que o preço de transferência
+1:09:27	era constitucional. Como eu não tinha uma noção clara do que era, eu usei uma abertura semântica, né, uma linguagem eh
+1:09:35	mais aberta, com textura mais aberta para conseguir dar uma resposta eh que
+1:09:40	não errasse feio. Então, o que eu disse foi basicamente algo bem tautológico. O
+1:09:46	preço de transferência enquanto instituto do direito tributário que regula relações internacionais
+1:09:52	é constitucional, porque não viola nenhum princípio constitucional tributário e nenhuma regra. eh
+1:09:58	constitucional que estabelecem as competências e limitações ao poder de tributar.
+1:10:05	Essa foi a minha a minha resposta da primeira pergunta. Eu coloquei em destaque lá o econstitucional, né?
+1:10:11	Grifei, eh, para deixar bem claro, né, que o na hora que o le o o o a pessoa
+1:10:17	que fosse corrigir já olhasse que eu acertei aquela ali, né? mesmo que a fundamentação fosse tautológica, mas a
+1:10:22	resposta de D. Agora vamos para a segunda questão. Segunda questão é sobre
+1:10:28	eh saber se a presunção é relativa absoluta, né? No direito e sobretudo no direito tributário, 90% das presunções
+1:10:36	são relativas. Então eu vou pro mais provável, para aquilo que é semanticamente mais provável. E nesse caso a minha resposta foi o preço de
+1:10:43	transferência para ser constitucional precisa ser considerado como instituto que gera presunções relativas, ou seja,
+1:10:50	né, admitem prova em contrário. E ainda você coloca lá o eh o juris de tanto, né, coloca as palavras em latim para
+1:10:57	dizer que você sabe o que é uma presunção relativa e continua. Logo, o contribuinte poderá se munir de
+1:11:03	elementos eh estranhos ou eh diferentes para desconstituir a presunção
+1:11:10	estabelecida originalmente pelo fisco, né, criando assim a presunção relativa
+1:11:15	de do preço de transferência. E essa minha resposta, ela é semanticamente
+1:11:21	perfeita. Ela e e eu gerei, eu ganhei dois, né? Eu acertei, eu fechei a questão sem saber a resposta, graças à
+1:11:28	minha capacidade de gerar textos semanticamente plausíveis, que é exatamente o que o LLM faz, o que o
+1:11:35	chatpt, o Cloud faz, é exatamente isso, gerar respostas plausíveis.
+1:11:42	Eh, se tivesse um terceiro item, diga qual é o precedente do Supremo Tribunal
+1:11:48	Federal sobre o assunto, eu seria evasivo. Eu diria: "O Supremo já decidiu isso em um recurso interposto por uma
+1:11:56	empresa e reconhecer o quê?" Então eu eu faria mais ou menos isso. O LLM, como
+1:12:01	ele é mais malandro, ele e também não tem uma noção clara do que é verdade, o que é falso, ele ao invés de
+1:12:08	simplesmente dar uma resposta genérica ou dizer: "Eu não tenho essa informação" que geraria perda de pontos na prova,
+1:12:14	ele ele pode estar propenso a chutar, a dizer eh o que que é mais provável que o
+1:12:21	recurso que chegou até o Supremo seja um recurso extraordinário. Dificilmente o Supremo vai analisar isso em abias
+1:12:27	corps, né? Não tem sentido. Então ele vai dizer: Supremo Tribunal Federal em
+1:12:33	2024, analisando o recurso extraordinário de uma empresa paulista,
+1:12:39	decidi o quê? E aí vai colocar uma um chute, né, que é completamente inventado
+1:12:45	ali por ele. E isso é a alucinação. Ele pode inclusive construir um bloco de
+1:12:50	resposta ou ementa com todo o formato da ementa de uma ementa verdadeira, mas que
+1:12:56	foi toda inventada para ele ganhar pontos. Naquela resposta é um chute completamente eh falso, errado do ponto
+1:13:04	de vista factual, mas semanticamente plausível. Então essa é a lógica. Outra
+1:13:10	metáfora que é importante que a gente veja é a do intercambista, eh, mitomaníaco. Eh, imagine que você tem um
+1:13:17	intercambista, uma pessoa que viajou o mundo todo, aprendeu várias línguas, visitou vários lugares e alguns lugares
+1:13:24	eh ela visitou com muita frequência. Ela foi 40 vezes no restaurante lá em Paris.
+1:13:30	Aí você pergunta uma informação para ela sobre esse restaurante em Paris, ela vai conseguir dar detalhes, preços, o que
+1:13:36	que tinha no cardápio, quais são as cores, a decoração, os quadros, ela vai conseguir descrever com precisão, porque
+1:13:42	de fato ela viu muito aquilo ali. Aí teve um restaurante que ela foi em Roma que ela só foi uma vez e passou muito
+1:13:49	rápido. Se você pedir informações do restaurante de Roma,
+1:13:54	ela vai conseguir dar algumas algumas respostas verdadeiras, porque ela foi para lá, sobretudo mais genéricas, mas
+1:14:00	na hora que você começar a apertar por especificidade, ela vai na aproximação,
+1:14:05	ela vai chutar, ela vai inventar o cardápio, ela vai inventar preço, vai inventar decoração, porque ela não tem
+1:14:12	memória forte para lembrar aquilo que não foi visto com tanta frequência.
+1:14:17	Os LLMs t a mesma lógica, né? Sobretudo o conhecimento paramétrico. Eles vão
+1:14:23	lembrar o que é mais frequente e comum num treinamento, que é basicamente o que
+1:14:29	eles extraíram, né, da base de dados da internet que eles, né, que eles usaram para treinar os modelos e vão lembrar
+1:14:36	muito parcamente, muito fracamente daquilo que eles viram com pouca frequência, né? E aí, portanto, a gente
+1:14:43	tem que ter noção disso, sobretudo quando a gente tiver usando o conhecimento da máquina para obter
+1:14:48	respostas, porque nem sempre e poucas vezes, na verdade, nós vamos confiar na
+1:14:54	resposta da máquina para extrair resposta. Por quê? Porque toda informação factual
+1:15:01	produzida pela máquina a partir do conhecimento paramétrico do que ela viu
+1:15:06	no treinamento e transformou em parâmetros deve ser tratado como informação falsa
+1:15:13	até prova em contrário, né? É aqui que a gente elimina qualquer risco de
+1:15:18	alucinação. Nós não vamos usar a máquina para extrair informações factuais, para obter
+1:15:25	informações de processos. para obter jurisprudência, obter eh legislação,
+1:15:31	a não ser que nós ativamos ferramentas externas de busca na internet ou
+1:15:38	anexação de processos, ocasião em que não será o conhecimento da máquina que
+1:15:44	está sendo utilizado para dar resposta, vai ser um conhecimento eh externo. E aí
+1:15:49	a gente vai falar sobre isso, como funciona essa lógica. Mas aí nesse caso, a chance de resposta é mais confiável.
+1:15:56	ainda que não absolutamente confiável, mas a o grande segredo é esse. Nós não
+1:16:01	vamos usar os LLMs, conhecimento da máquina para obter informação factual.
+1:16:07	Se a gente quiser obter informação factual usando o LLM, nós temos que alimentar o contexto de duas formas, ou
+1:16:13	anexando documentos ou buscando na internet, né? E cada qual vai ter a sua
+1:16:19	função e sua importância. Mas extrair da máquina, do conhecimento da máquina,
+1:16:24	informação factual, nunca, jamais. Toda vez que a máquina, sem consultar
+1:16:30	internet e sem anexo, produzir jurisprudência, produzir legislação,
+1:16:36	produzir doutrina, referência doutrinária, da informação factual,
+1:16:41	desconsidere, nem utilize isso. a única o único valor do conhecimento
+1:16:47	paramétrico, do conhecimento da máquina, desses padrões numéricos, que é o que são fichamentos que a máquina construiu,
+1:16:54	é eh fazer com que o modelo aprenda padrões de linguagem, aprenda semântica,
+1:17:00	aprenda interpretação, aprenda compreensão e produza textos mais
+1:17:06	genéricos, mais conceituais, mais explicativos, geração de ideias. Então
+1:17:11	não é que o conhecimento paramétrico não serve para nada, ele é a base de tudo, mas informação factual nós não vamos
+1:17:17	extrair dele. Nós vamos buscar de fontes externas, eh, seja nossas, né, que é quando a gente anexa, seja quando ele
+1:17:24	busca na internet. Eh, e aí vem um grande um, uma grande questão que pouca
+1:17:30	gente compreende, que quando a gente tá falando de alucinação, geralmente vem um um tom negativo, né? Os modelos não
+1:17:37	prestam porque alucinam. A grande questão é que esses modelos são incríveis porque alucinam. Alucinação é
+1:17:44	o que dá a ele o grande poder. Eles não são meramente uma ferramenta de reprodução do passado. Eles são uma
+1:17:50	ferramenta de transformação do presente e de criação do futuro.
+1:17:56	Você consegue usar os LLMs para resolver casos novos, resolver problemas novos,
+1:18:01	interpretar coisas novas que ele não viu no treinamento, ensinar a máquina a pensar, ensinar a máquina a trabalhar de
+1:18:08	um determinado modo. Portanto, as alucinações é o que permite a máquina, ir além do que ela viu, e além do
+1:18:15	padrão, é, e ela consegue criar algo novo, ela consegue pensar, ela e pensar
+1:18:20	soluções novas, eh, aprender metodologias novas graças às
+1:18:26	alucinações. esse poder que ela tem de eh abstrair
+1:18:31	o seu aprisionamento textual que foi visto durante o treinamento e conseguir
+1:18:38	eh extrapolar isso aí por meio de inferências, por meio de interpretação,
+1:18:43	de análises para além daquilo que ela viu. Então, vamos prosseguir. Eh,
+1:18:48	chegando aqui no nosso quinto mandamento, eu vou fazer o seguinte, eu vou fazer, eu vou dividir esse vídeo em duas partes. queria fazer ele eh uns 10
+1:18:56	mandamentos de uma vez, mas eu vou terminar o quinto mandamento para que a gente dê uma respirada, dê uma uma pausa
+1:19:03	e a gente conseguir eh eh depois, né, avançar para algo mais além, né? Eh, e
+1:19:10	já curtam aí o vídeo, sigam o canal, né, que é esse vídeo, ele ele tem um objetivo e e compartilhem, compartilhe.
+1:19:18	Eu acredito que esse vídeo ele tem uma uma função mesmo de utilidade pública,
+1:19:23	porque eh porque é muito arriscado, né, o que tá acontecendo, as pessoas usando LLMs,
+1:19:29	mesmo que seja aqueles que funcionam dentro de modelos eh fornecidos pela
+1:19:34	empresa, pelo órgão, mas tem que entender eh para usar corretamente. E o
+1:19:40	mandamento cinco é onde vai ter a maior chance de falha e de e de problemas,
+1:19:47	porque envolve contexto, envolve rag. Eh, o anexo é diferente de contexto.
+1:19:54	Entenda isso e use o contexto de modo inteligente. Anexo não é diferente de
+1:20:00	contexto. Não adianta você pensar que pelo fato de que você anexou a algo no seu modelo, automaticamente aquilo ali
+1:20:07	entrou no contexto. Não. E a gente vai ver que isso vai gerar, pode gerar
+1:20:13	problemas importantes, sobretudo porque cada modelo vai ter sua lógica diferente
+1:20:18	de processar os anexos. Cada modelo é eh
+1:20:24	tem um um mecanismo próprio de otimizar ou destilar o conhecimento do anexo.
+1:20:31	Toda vez que a gente anexa alguma coisa, a gente espera que aquele conhecimento vá ser usado pela máquina para dar
+1:20:36	resposta. Só que às vezes você coloca anexos muito longos, né? 200 páginas,
+1:20:42	500 páginas. E como a gente viu, anexos longos pra máquina implica maior poder
+1:20:48	computacional. E aí para conseguir processar essa esse
+1:20:54	anexo, cada máquina cria estratégias diferentes ou técnicas diferentes de
+1:20:59	compreensão do anexo ou de leitura do anexo. E aqui nós podemos ter eh duas metáforas mais uma vez para que a gente
+1:21:05	consiga entender isso. Uma metáfora é uma metáfora do baralho, né? Eu tenho um anexo, né? uma um de
+1:21:14	baralho e eu entrego paraa carta, eu eh para o modelo, eu eu paraa máquina, eu coloco lá o baralho paraa máquina. A
+1:21:21	máquina tem duas opções eh sobre o que fazer com esse baralho. Ela pode pegar esse baralho e abrir todo o baralho e
+1:21:27	ficar olhando, prestar atenção para todas as cartas. E quando faz isso, significa que ela inseriu esse
+1:21:34	conhecimento na janela de contexto. Ela está prestando atenção em todo o baralho, né? Eh, ela está vendo o
+1:21:41	baralho. Então, qualquer pergunta que eu fizer, ela vai olhar, ela tá olhando para o baralho, né, na frente dela e vai
+1:21:48	dar resposta com base no que ela está vendo. A outra opção é a a o modelo, a máquina
+1:21:57	manter o baralho guardado, manter o maço ali, né, fechado. E você faz uma
+1:22:02	pergunta, ela ativa uma ferramenta externa que vai procurar a resposta, vai
+1:22:08	encontrar pedaços do baralho que tenha essa resposta e vai jogar pedaços desse
+1:22:14	baralho dentro da janela de contexto, né? Então, o que vai pro contexto não é o baralho, é o pedaço de informação que
+1:22:21	é relevante para dar a resposta. Isso é importante porque
+1:22:27	eh alguns modelos abrem o baralho, outros modelos fecham o baralho e fazem
+1:22:35	busca semântica. Tem vantagens e desvantagens para cada um desses métodos. a gente vai ver daqui a pouco
+1:22:41	alguns alguns exemplos e ver como isso aí impacta para nós, sobretudo do direito. Eh, uma outra metáfora é mais
+1:22:48	uma vez a do a da a da mesa, né, a da a da a da mesa de trabalho, né? Alguns
+1:22:53	modelos, quando você coloca o anexo, vão abrir todas as as os documentos na sua
+1:22:59	mesa de trabalho, limitado ao tamanho do que cabe. Quando você começa a colocar mais documentos do que cabe, né, a mesa
+1:23:05	eh ele não processa, ele não continua ou a informação vai ficar caindo da mesa ou vai ficar cobrindo a outra e, portanto,
+1:23:11	vai ter perda de contexto. Outros modelos permitem que você coloque vários
+1:23:17	eh textos dentro do seu da sua mesa de trabalho, mas vão ficar em blocos fechados. Aí na hora que você faz a
+1:23:23	pergunta, um assessor vai procurar ali a informação, pegar os documentos relevantes para dar a resposta e vão,
+1:23:30	né, abrir na mesa apenas aquilo que é necessário para dar a resposta. dois
+1:23:36	métodos diferentes, com vantagens, com desvantagens, e a gente vai ver eh o
+1:23:42	como isso implica na prática daqui a pouco. Eh, alguns modelos, como a gente vai ver, em
+1:23:49	particular, o chatpt, ele usa o modelo de fechar o baralho, né, e ou guardar os
+1:23:55	documentos ali fechados. E aí você faz uma pergunta e ele vai abrindo parte por
+1:24:01	parte. Isso pode gerar um risco de, por exemplo, você fazer uma informação,
+1:24:06	quantos eh qual eh eh qual é a carta que se segue depois de o de copas. Aí ele
+1:24:12	vai começando a procurar, encontrou aqui o de copas. Depois do de copas, ele viu que é o rei de ouros. Aí ele responde: é
+1:24:19	o rei de ouros. Só que imagine que nesse baralho não tenha só um de copas. Ele tem esse primeiro a de copas e tem lá no
+1:24:26	meio, lá no final, um outro de copas que seja uma dama de paus, né? depois da do
+1:24:32	a de copas. Então você faz pergunta, qual é a carta que se segue ao de copas? Ele procura e deu a resposta. Acertou,
+1:24:39	mas acertou de forma parcial, fragmentada, porque tem um outro de copas com a mesma informação. Agora
+1:24:46	imagine isso em um processo judicial. Você tem um processo judicial em que você tem uma informação na petição
+1:24:53	inicial que diz que a cor do carro que avançou o sinal é preta.
+1:24:59	Aí lá na contestação tem outra, a cor do carro que avançou o sinal é branco,
+1:25:05	né? Na hora que você pergunta pra máquina, pro chat PT, qual é a cor do carro que avançou o sinal? Ele vai procurar no
+1:25:12	documento e vai contratar. Tá aqui, achei, é preto. Só que aquela informação da contestação, ela não vai ser
+1:25:19	consultada. E aí, portanto, quando a gente tá trabalhando com modelos que processam os
+1:25:25	anexos assim, a gente tem que trabalhar com engenharia de promp, na verdade, com instruções, né, com comandos, para não
+1:25:31	ficar muito complexo, que digam pra máquina olhar os documentos de modo
+1:25:36	integral e seja explícito quanto à possibilidade de ter mais de uma resposta e de ter informações
+1:25:41	conflitantes dentro do documento. Então, a gente precisa usar eh saber disso para
+1:25:46	poder direcionar o nosso pronto, porque se a gente pegar o chat EPT com esse processo do acidente em que tenha um
+1:25:53	carro preto e um carro branco e a gente informar isso, ó, eh, qual é a cor do carro que avançou o sinal? Saiba que
+1:26:01	podem ter informações conflitantes nesse processo. Por isso, analise na íntegra todas as peças. Nesse caso, o nosso
+1:26:08	assessor que vai fazer a busca eh antes de colocar no contexto, vai pegar os pedaços do processo, todos eles que tem
+1:26:15	a informação, jogar no contexto e dar a resposta. Então, a gente consegue direcionar isso. Se a gente pegar esse
+1:26:21	mesmo processo, entregar para outra ferramenta que usa uma técnica diferente, que é o cloud, o cloud ele já
+1:26:27	joga tudo, ele abre as cartas, já abre os documentos e já enxerga tudo. E aí,
+1:26:32	portanto, o Cloud, mesmo sem prompt, ele vai dizer: "Temos informações conflitantes. Estou vendo aqui, né, que
+1:26:39	o carro é preto para inicial e o carro é branco para contestação." Então, o Cloud ele dá essas informações.
+1:26:46	Só que tem um problema. Eh, o cloud ele não vai admitir que você anexe documentos para além do contexto. Hoje
+1:26:52	ele até tem ferramentas que permite fazer isso, mas uma vez que você anexa algo para além do contexto, aí você tá
+1:26:59	usando, né, automaticamente a técnica da busca semântica por pedaços do
+1:27:05	documento, né? É muito importante a gente ter, eu vou mostrar isso em ação para que a gente veja e fique mais
+1:27:10	visível. Finalmente lembrar, né, que a gente tá diante de um tradeoff.
+1:27:17	Por mais poderoso que seja o modelo, por mais que a gente tenha avançado com técnicas rug mais eficientes, por mais
+1:27:23	que a gente esteja trabalhando com modo agêntico, né, com modelos trabalhando em paralelo, que conseguem olhar várias
+1:27:28	partes do documento, nós sempre teremos uma limitação da janela de contexto do poder computacional. E por isso, quanto
+1:27:35	mais longo o documento, maior a chance de perder detalhes. Então, a gente tem que ter essa noção para não extrapolar,
+1:27:42	seja colocando conhecimento irrelevante, que só vai gerar distração e degradação do contexto, seja acreditando que a
+1:27:48	máquina vai conseguir ler, por exemplo, 5.000 páginas de um processo com a mesma
+1:27:55	qualidade que ela vai ler 50 páginas de um processo. Es páginas vai dar mais qualidade, vai dar mais precisão do que
+1:28:02	5.000 páginas sempre. Porque a máquina ela tem esse desafio, ela vai ter que fazer cálculos complexos e na hora que
+1:28:09	ela usar o mecanismo de atenção vai ter perdas de detalhes. Ela não consegue
+1:28:14	focar detalhadamente em tudo. Ela tem que ter uma visão ampla para conseguir olhar o todo e só depois partir para
+1:28:20	pedaços. Então a gente tem que ter essa consciência. Vamos trabalhar aqui alguns exemplos para que a gente veja isso, né?
+1:28:28	Eh, só para que a gente eh perceba. Eh, eu vou pegar aqui um um caso que é um
+1:28:34	caso que eu falei do acidente, né, que que ajuda a gente a ter uma uma noção
+1:28:40	eh do que é isso que eu falei, né? Então, vou pegar o caso acidente,
+1:28:48	acidente de trânsito. Vou pegar aqui para iniciar o contexto. Deixa eu
+1:28:53	desativar aqui uma ferramenta, porque essa ferramenta vai atrapalhar a análise
+1:28:58	de doc. Ops.
+1:29:05	Capacidades. Eu vou desabilitar essa ferramenta aqui de execução de código. Pronto. Vamos voltar para o nosso
+1:29:11	modelo. Coloquei a inicial. Eu pergunto, qual a
+1:29:16	cor do carro do autor? Aqui tem duas versões. A gente vai ver o
+1:29:23	cloud, o que é que ele faz quando a gente coloca um documento aqui dentro, né? desativando aquele botão que eu
+1:29:28	desativei, mas eu não quero eh entrar nessa complexidade. ele joga todos esses documentos na, ele abre todo, todos os
+1:29:36	documentos dentro da janela de contexto e aí ele consegue enxergar, nesse caso, um conflito que existe entre,
+1:29:47	por alguma razão, ele não tá indo.
+1:29:57	Vamos ver aqui se ele vai agora. tá com alguma lentidão. Ah, deixa eu abrir aqui uma nova janela
+1:30:05	porque ele não leu o documento. Qual a cor
+1:30:12	do carro do autor? Eh, e aí, portanto, a gente
+1:30:17	tem essa essa informação e a gente vai ver que
+1:30:23	ele vai dar duas informações, né? contestação é um Fusca branco e aqui é
+1:30:28	um Fusca preto, né? Tem essas informações. Se eu jogar esse mesmo processo no chat GPT, né? E aí vem o
+1:30:36	cuidado de saber que cada modelo tem um modo diferente de processar os anexos.
+1:30:43	Vou pegar o mesmo caso que é o caso acidente de trânsito. São são exemplos
+1:30:49	que a gente mostra no curso de escrita jurídica, também na nossa pós-graduação,
+1:30:54	em que a gente tenta eh
+1:31:00	usar o conhecimento operacional na prática, né? Não é só a ferramenta, é o
+1:31:05	conhecimento por trás da ferramenta pra gente dominar o modelo, entender os fundamentos, entender o propósito. Vou
+1:31:11	pegar exatamente o mesmo o mesmo comando. E aqui a chance é que ele
+1:31:18	responda que seja Fusca branco, né? Então ele vai, ó, no no documento,
+1:31:25	encontrou a informação, né, de que a cor do carro do autor é um fusca branco, deu a resposta e concluiu a cor do carro do
+1:31:33	autor é branca. Mas tem uma informação contraditória, né, que aí se eu colocasse isso bem aqui, analise
+1:31:41	todo o documento, pois podem
+1:31:46	ter informações contraditórias, ou seja, eu corrigindo esse comando por meio de um prompt, aí sim eh ele vai fazer a
+1:31:55	percepção de que tem duas versões, né? uma versão da da inicial e uma versão versão da contestação. Essa é a
+1:32:02	importância da gente entender o que está por trás desses modelos, entender como funcionam os anexos, entender o que é o
+1:32:08	o o que é que tá acontecendo aqui, né? Qual é a diferença? Eh, o Cloud, ele abriu o baralho e viu tudo. Na hora que
+1:32:15	eu perguntei, ele já disse: "Olha, tô tô vendo aqui um conflito, tem duas informações. O chatt, ele fecha o
+1:32:21	baralho, ele deixa o baralho fechado. Na hora que eu pergunto qual é a cor do carro, ele sai procurando a resposta.
+1:32:26	encontrou a resposta na inicial, ele já dá, já se deu satisfeito, portanto, deu a resposta e aí perdeu uma informação
+1:32:33	que tá posterior na contestação, dizendo que a cor é oposta. Eh, quando a gente
+1:32:38	corrige isso no prompt dizendo, olha, olhe tudo, pode ter informação contraditória, aí ele faz uma análise
+1:32:44	mais detalhada e consegue dar a informação mais precisa. Mas ainda assim ele tá indo no documento, pegando
+1:32:50	pedaços do documento, jogando no contexto e dando a resposta. é diferente do cloud que tá jogando tudo no
+1:32:56	contexto. No final das contas, o cloud tem mais eh eh tá usando muito mais
+1:33:02	poder computacional para uma tarefa simples do que o chatt, mas ao mesmo tempo tá dando uma resposta muito mais
+1:33:07	precisa e para nós essencialmente eh necessário, essencial que seja que tem
+1:33:13	esse nível de precisão. Eh, finalizamos por aqui nosso bloco de cinco mandamentos dos LLMs. temos uma segunda
+1:33:21	parte com mais cinco eh mandamentos que a gente vai utilizar, mas eu acredito que a partir de agora n você já deve tá
+1:33:29	eh pelo menos consciente da importância de entender o que está acontecendo, de
+1:33:34	simplesmente não dá para simplesmente começar a usar sem dar uma pausa. E quando eu falo, né, dar essa pausa, não
+1:33:41	é para fazer um curso, né, não é necessário pagar, né, recursos para fazer uma pós-graduação, eh, em
+1:33:49	inteligência artificial. ou mesmo um curso de escrita jurídica com IA, que é o que a gente tem, não precisa. Eh, o
+1:33:55	que o que o curso e a pós-graduação fazem é dá o conhecimento sistemático para você usar com mais eh qualidade a
+1:34:03	ferramenta. Mas esse conhecimento básico, você tem muito material na internet que você pode ler os meus
+1:34:09	próprios vídeos que estão aqui no YouTube, ajuda a ter essa compreensão. Eh, você vai perder mais tempo no final
+1:34:15	das contas. você vai precisar de de porque esse esse conhecimento tá difuso,
+1:34:21	tá fragmentado e às vezes até tá desatualizado, né? E aí, portanto, nesse
+1:34:26	campo, o a atualização é essencial. Você ter a informação mais recente, mais nova, é sempre essencial. é o que a
+1:34:32	gente tenta entregar tanto no curso de de a, né, no direito, escrita jurídica com a no direito, que não não é só
+1:34:38	escrita jurídica, vai muito além da escrita jurídica, quanto no nosso curso de pós-graduação. Era isso. Eh, em breve
+1:34:46	gravaremos a nossa parte dois com mais cinco mandamentos para dominar os LLMs e
+1:34:51	usar com segurança. Espero que tenha gostado. Até a próxima. M.

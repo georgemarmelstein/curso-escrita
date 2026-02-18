@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta B - Dentro e Fora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--super-bg-dark);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        /* Container principal - dividido em duas realidades */
+        .reality-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Realidade da Caverna (lado esquerdo / estado inicial) */
+        .cave-reality {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0f 0%, #15120d 50%, #0d0a08 100%);
+            transition: clip-path 1s ease-in-out, opacity 0.5s ease;
+            clip-path: circle(150% at 0% 50%);
+            z-index: 2;
+        }
+
+        .cave-reality.revealed {
+            clip-path: circle(0% at 0% 50%);
+        }
+
+        .cave-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .cave-terminal {
+            width: 400px;
+            margin: 0 auto 40px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #666;
+            font-size: 0.9em;
+            text-align: left;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .cave-terminal .line {
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        .cave-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .cave-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1em;
+            color: #444;
+            font-weight: 300;
+        }
+
+        .cave-chains {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            font-size: 3em;
+            opacity: 0.3;
+            animation: chainRattle 2s ease-in-out infinite;
+        }
+
+        .cave-chains.right {
+            left: auto;
+            right: 10%;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes chainRattle {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        /* Realidade Iluminada (revelada) */
+        .light-reality {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at center, rgba(190, 156, 109, 0.15) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0a12 0%, #12101a 50%, #0a0a12 100%);
+            z-index: 1;
+        }
+
+        .light-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 90%;
+            max-width: 900px;
+        }
+
+        .aula-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-gold);
+            opacity: 0.7;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+
+        .light-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--super-cream);
+            line-height: 1.2;
+            margin-bottom: 25px;
+            text-shadow: 0 4px 40px rgba(190, 156, 109, 0.3);
+        }
+
+        .light-title .gold {
+            color: var(--super-gold);
+            display: block;
+            font-style: italic;
+        }
+
+        /* Terminal iluminado */
+        .light-terminal {
+            width: 500px;
+            margin: 30px auto;
+            background: rgba(20, 20, 30, 0.9);
+            border: 2px solid rgba(190, 156, 109, 0.4);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 0 40px rgba(190, 156, 109, 0.2),
+                0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .light-terminal-header {
+            background: linear-gradient(180deg, rgba(190, 156, 109, 0.15) 0%, rgba(190, 156, 109, 0.05) 100%);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca40; }
+
+        .light-terminal-body {
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            text-align: left;
+        }
+
+        .terminal-line {
+            margin-bottom: 10px;
+            color: var(--super-cream);
+        }
+
+        .terminal-line .prompt {
+            color: var(--super-gold);
+        }
+
+        .terminal-line .output {
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .terminal-line .success {
+            color: #4ade80;
+        }
+
+        /* Estrelas / partículas de fundo */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Instrução de clique */
+        .click-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: var(--super-gold);
+            opacity: 0.6;
+            z-index: 100;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        .click-hint.hidden {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Transição suave das realidades */
+        .revelation-text {
+            position: fixed;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            max-width: 600px;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 1s ease 0.5s;
+        }
+
+        .revelation-text.visible {
+            opacity: 1;
+        }
+
+        .revelation-text p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.15em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.7;
+        }
+
+        .revelation-text em {
+            color: var(--super-gold);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        /* Embed mode */
+        body.embed-mode .cave-title { font-size: 1.8em; }
+        body.embed-mode .light-title { font-size: 2.5em; }
+        body.embed-mode .cave-terminal { width: 300px; padding: 15px; }
+        body.embed-mode .light-terminal { width: 380px; }
+        body.embed-mode .revelation-text p { font-size: 0.95em; }
+    </style>
+</head>
+<body>
+    <!-- Realidade Iluminada (fundo) -->
+    <div class="light-reality">
+        <div class="stars" id="stars"></div>
+
+        <div class="light-content">
+            <div class="aula-badge">AULA 02</div>
+            <h1 class="light-title">
+                Desvendando o
+                <span class="gold">Claude Code</span>
+            </h1>
+
+            <div class="light-terminal">
+                <div class="light-terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <div class="light-terminal-body">
+                    <div class="terminal-line">
+                        <span class="prompt">$</span> claude
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">Bem-vindo ao Claude Code!</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">O mundo é seu playground.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Realidade da Caverna (frente - será removida) -->
+    <div class="cave-reality" id="caveReality">
+        <div class="cave-chains">⛓️</div>
+        <div class="cave-chains right">⛓️</div>
+
+        <div class="cave-content">
+            <div class="cave-terminal">
+                <div class="line">C:\Users\voce> _</div>
+                <div class="line">Parece complicado...</div>
+                <div class="line">Isso é coisa de programador...</div>
+            </div>
+
+            <h2 class="cave-title">O Medo do Terminal</h2>
+            <p class="cave-subtitle">A tela preta. O cursor piscando. O desconhecido.</p>
+        </div>
+    </div>
+
+    <div class="revelation-text" id="revelationText">
+        <p>
+            Você estava olhando para as <em>sombras</em>.<br>
+            Agora está vendo a <em>realidade</em>.
+        </p>
+    </div>
+
+    <div class="click-hint" id="clickHint">[ clique para sair da caverna ]</div>
+
+    <script>
+        // Criar estrelas
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            star.style.width = (1 + Math.random() * 2) + 'px';
+            star.style.height = star.style.width;
+            starsContainer.appendChild(star);
+        }
+
+        // Interação: clique para revelar
+        const caveReality = document.getElementById('caveReality');
+        const revelationText = document.getElementById('revelationText');
+        const clickHint = document.getElementById('clickHint');
+        let isRevealed = false;
+
+        document.body.addEventListener('click', () => {
+            if (!isRevealed) {
+                caveReality.classList.add('revealed');
+                revelationText.classList.add('visible');
+                clickHint.classList.add('hidden');
+                isRevealed = true;
+            }
+        });
+
+        // Também funciona com tecla
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === ' ' || e.key === 'Enter') && !isRevealed) {
+                caveReality.classList.add('revealed');
+                revelationText.classList.add('visible');
+                clickHint.classList.add('hidden');
+                isRevealed = true;
+            }
+        });
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

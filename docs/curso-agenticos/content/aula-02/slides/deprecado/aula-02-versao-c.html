@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 02 - Desvendando o Claude Code</title>
+    <!-- Google Fonts - Tipografia Tripartite -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    <style>
+        /* ============================================
+           VARIAVEIS CSS - Paleta SUPER (Institucional)
+           Versao C: Minimalista Impactante
+           ============================================ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+
+            --r-main-font: 'Inter', -apple-system, sans-serif;
+            --r-heading-font: 'Playfair Display', Georgia, serif;
+            --r-main-color: var(--super-cream);
+            --r-heading-color: var(--super-gold);
+            --r-background-color: var(--super-bg-dark);
+        }
+
+        /* ============================================
+           TIPOGRAFIA TRIPARTITE
+           ============================================ */
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-family: 'Playfair Display', Georgia, serif;
+            text-transform: none;
+            font-weight: 600;
+            color: var(--super-gold);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.8);
+        }
+        .reveal p, .reveal li {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--super-cream);
+        }
+        .reveal code, .reveal pre {
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+        }
+
+        /* ============================================
+           LAYOUT MINIMALISTA
+           ============================================ */
+        .reveal section {
+            text-align: center;
+        }
+
+        /* ============================================
+           OVERLAYS - Vignette
+           ============================================ */
+        .reveal .slides section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(10, 10, 18, 0.3) 0%,
+                rgba(10, 10, 18, 0.5) 50%,
+                rgba(10, 10, 18, 0.7) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Conteudo acima do overlay */
+        .reveal .slides section h1,
+        .reveal .slides section h2,
+        .reveal .slides section h3,
+        .reveal .slides section h4,
+        .reveal .slides section > div,
+        .reveal .slides section > p {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ============================================
+           SLIDES DE TRANSICAO - Tipografia Grande
+           ============================================ */
+        .section-slide h2 {
+            font-size: 3.5em !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+        }
+        .section-slide .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            color: rgba(190, 156, 109, 0.4);
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .section-slide p {
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 25px;
+        }
+
+        /* ============================================
+           CONCEITO MINIMALISTA
+           ============================================ */
+        .concept-slide h2 {
+            font-size: 2.8em !important;
+            margin-bottom: 40px !important;
+        }
+        .concept-card {
+            display: inline-block;
+            padding: 30px 50px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+        }
+        .concept-card code {
+            font-size: 1.8em;
+            color: var(--super-gold);
+        }
+
+        /* ============================================
+           IFRAMES PARA DEMOS
+           ============================================ */
+        .demo-iframe-container {
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0 0 0 -50vw;
+            position: relative;
+            left: 50%;
+        }
+        .demo-iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+    <!-- ============================================
+         SLIDE 1 - CAPA (Demo Interativo)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-capa.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 2 - QUOTE: Ferramenta Alienigena
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-quote-alienigena.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 3 - CONCEITO: E so um chat
+         ============================================ -->
+    <section class="concept-slide" data-background-color="#0a0a12">
+        <h2>É só um <span style="font-style: italic;">chat</span>.</h2>
+        <p style="font-size: 1.5em; color: rgba(255, 244, 228, 0.6); margin-top: 30px;">
+            No terminal.
+        </p>
+        <div class="concept-card" style="margin-top: 50px;">
+            <code>$ claude</code>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 4 - DEMO: Loop Agentico (Minimal)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-loop-minimal.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 5 - TRANSICAO: O Medo do Terminal
+         ============================================ -->
+    <section class="section-slide" data-background-image="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?w=1920&h=1080&fit=crop" data-background-opacity="0.25">
+        <span class="section-number">01</span>
+        <h2>O Medo do<br>Terminal</h2>
+        <p>É legítimo. Mas desnecessário.</p>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 6 - QUOTE: 10X Mais Poderoso
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-quote-10x.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 7 - CONCEITO: Instalacao
+         ============================================ -->
+    <section class="concept-slide" data-background-color="#0a0a12">
+        <h2>Uma linha.<br>Só isso.</h2>
+        <div class="concept-card" style="margin-top: 50px;">
+            <code style="font-size: 1.4em;">curl -fsSL https://claude.ai/install.sh | bash</code>
+        </div>
+        <p style="font-size: 0.9em; color: rgba(255, 244, 228, 0.4); margin-top: 40px;">
+            Windows: <code style="font-size: 0.85em; color: var(--super-gold);">irm https://claude.ai/install.ps1 | iex</code>
+        </p>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 8 - DEMO: Slash Commands (Minimal)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-commands-minimal.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 9 - TRANSICAO: Permissoes
+         ============================================ -->
+    <section class="section-slide" data-background-image="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&h=1080&fit=crop" data-background-opacity="0.25">
+        <span class="section-number">02</span>
+        <h2>Quanto poder<br>você quer dar?</h2>
+        <p>O espectro de permissões.</p>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 10 - DEMO: Permissoes (Minimal)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-permissoes-minimal.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 11 - CONCEITO: CLAUDE.md
+         ============================================ -->
+    <section class="concept-slide" data-background-color="#0a0a12">
+        <h2>CLAUDE.md</h2>
+        <p style="font-size: 1.4em; color: rgba(255, 244, 228, 0.7); margin: 30px 0 40px;">
+            "Um README para o Claude."
+        </p>
+        <p style="font-size: 0.9em; color: rgba(255, 244, 228, 0.4);">
+            — Steve Kinney
+        </p>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 12 - DEMO: Estrutura (Minimal)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-estrutura-minimal.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 13 - TRANSICAO: Mao na Massa
+         ============================================ -->
+    <section class="section-slide" data-background-image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920&h=1080&fit=crop" data-background-opacity="0.25">
+        <span class="section-number">03</span>
+        <h2>Mão na<br>Massa</h2>
+        <p>Primeiros comandos reais.</p>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 14 - CONCEITO: Primeiros Usos
+         ============================================ -->
+    <section class="concept-slide" data-background-color="#0a0a12">
+        <h2>Converse.<br>Em português.</h2>
+        <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 50px; align-items: center;">
+            <div class="concept-card" style="padding: 20px 40px;">
+                <code style="font-size: 1.1em; color: var(--super-cream);">> Liste os arquivos nesta pasta</code>
+            </div>
+            <div class="concept-card" style="padding: 20px 40px;">
+                <code style="font-size: 1.1em; color: var(--super-cream);">> @contrato.pdf explique este documento</code>
+            </div>
+            <div class="concept-card" style="padding: 20px 40px;">
+                <code style="font-size: 1.1em; color: var(--super-cream);">> /init</code>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 15 - FECHAMENTO (Demo Interativo)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-fechamento.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'fade',
+            transitionSpeed: 'slow',
+            backgroundTransition: 'fade',
+            slideNumber: 'c/t',
+            controls: true,
+            progress: true,
+            center: true,
+            keyboard: true,
+            width: 1920,
+            height: 1080,
+            margin: 0.04
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agents Conceito - Proposta A: Diagrama Oficial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        /* Glow sutil */
+        .bg-glow {
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 60%;
+            background: radial-gradient(ellipse at center, rgba(190, 156, 109, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeDown 0.8s ease forwards;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--super-cream);
+            margin-bottom: 15px;
+        }
+
+        .header h1 .gold { color: var(--super-gold); }
+
+        .header .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 2px;
+        }
+
+        /* Main content - split layout */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        /* Lado esquerdo - Diagrama oficial */
+        .diagram-side {
+            opacity: 0;
+            animation: fadeIn 1s ease 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .diagram-frame {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(190, 156, 109, 0.05));
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .diagram-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--super-gold), transparent);
+        }
+
+        .diagram-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .diagram-label::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--super-green);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .diagram-img {
+            width: 100%;
+            border-radius: 8px;
+            filter: brightness(1.1) contrast(1.05);
+        }
+
+        .source-badge {
+            margin-top: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .source-badge a {
+            color: var(--super-gold);
+            text-decoration: none;
+        }
+
+        /* Lado direito - Explicação */
+        .explanation-side {
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        .key-insight {
+            background: rgba(190, 156, 109, 0.1);
+            border-left: 4px solid var(--super-gold);
+            padding: 25px 30px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 30px;
+        }
+
+        .key-insight p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5em;
+            line-height: 1.5;
+            color: var(--super-cream);
+        }
+
+        .key-insight strong {
+            color: var(--super-gold);
+        }
+
+        /* Breakdown visual */
+        .breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 22px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(190, 156, 109, 0.15);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .breakdown-item:hover {
+            background: rgba(190, 156, 109, 0.08);
+            border-color: rgba(190, 156, 109, 0.3);
+            transform: translateX(5px);
+        }
+
+        .breakdown-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.2), rgba(190, 156, 109, 0.05));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .breakdown-content h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: var(--super-gold);
+            margin-bottom: 4px;
+        }
+
+        .breakdown-content p {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.4;
+        }
+
+        /* Badge final */
+        .final-badge {
+            margin-top: 30px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 1s forwards;
+        }
+
+        .final-badge span {
+            display: inline-block;
+            padding: 12px 30px;
+            background: transparent;
+            border: 2px solid var(--super-green);
+            color: var(--super-green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border-radius: 6px;
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 30px; }
+        body.embed-mode .header h1 { font-size: 2.8em; }
+        body.embed-mode .split-layout { gap: 40px; }
+        body.embed-mode .key-insight p { font-size: 1.3em; }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1>O que são <span class="gold">Agents</span>?</h1>
+            <p class="subtitle">Documentação Oficial Anthropic</p>
+        </header>
+
+        <div class="split-layout">
+            <div class="diagram-side">
+                <div class="diagram-frame">
+                    <div class="diagram-label">Anatomia de um Agent</div>
+                    <img src="https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697a4bc12d27779c3e37795c_image.webp"
+                         alt="Anatomia de um SKILL.md - Diagrama Anthropic"
+                         class="diagram-img">
+                    <div class="source-badge">
+                        Fonte: <a href="https://claude.com/blog/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">Anthropic Engineering Blog</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="explanation-side">
+                <div class="key-insight">
+                    <p><strong>Agents</strong> são arquivos <strong>.md</strong> que definem especialistas do Claude para tarefas específicas.</p>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-item">
+                        <div class="breakdown-icon">📋</div>
+                        <div class="breakdown-content">
+                            <h3>YAML Frontmatter</h3>
+                            <p>Define os "poderes" — nome, ferramentas, modelo, cor</p>
+                        </div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-icon">📝</div>
+                        <div class="breakdown-content">
+                            <h3>Instruções em Texto</h3>
+                            <p>Comportamento em linguagem natural — o que fazer e como</p>
+                        </div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-icon">⚡</div>
+                        <div class="breakdown-content">
+                            <h3>Execução sob Demanda</h3>
+                            <p>Carregado dinamicamente quando necessário</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="final-badge">
+                    <span>Simplicidade é Poder</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() { try { if (window.self !== window.top) document.body.classList.add('embed-mode'); } catch (e) { document.body.classList.add('embed-mode'); } })();
+    </script>
+</body>
+</html>

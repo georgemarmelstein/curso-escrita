@@ -1,0 +1,180 @@
+/* ==========================================================================
+   SISTEMAS AGENTICOS - Design Tokens
+   Filosofia: Jurídica Futurista - Autoridade encontra Inovação
+   ========================================================================== */
+
+:root {
+  /* === CORES - Paleta Principal === */
+  --color-bg-primary: #0a0a0f;
+  --color-bg-secondary: #12121a;
+  --color-bg-tertiary: #1a1a24;
+  --color-bg-elevated: #22222e;
+  --color-bg-hover: #2a2a38;
+
+  /* Superfícies com profundidade */
+  --color-surface-1: rgba(255, 255, 255, 0.02);
+  --color-surface-2: rgba(255, 255, 255, 0.04);
+  --color-surface-3: rgba(255, 255, 255, 0.06);
+
+  /* === CORES - Acentos === */
+  --color-accent-gold: #d4a853;
+  --color-accent-gold-light: #e8c878;
+  --color-accent-gold-dark: #b08930;
+  --color-accent-gold-muted: rgba(212, 168, 83, 0.15);
+  --color-accent-gold-glow: rgba(212, 168, 83, 0.3);
+
+  /* Acentos secundários */
+  --color-accent-copper: #c87941;
+  --color-accent-bronze: #a67c52;
+  --color-accent-silver: #8a9199;
+
+  /* Estados */
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --color-info: #60a5fa;
+
+  /* === CORES - Texto === */
+  --color-text-primary: #f5f5f7;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+  --color-text-muted: #52525b;
+  --color-text-inverse: #0a0a0f;
+
+  /* === TIPOGRAFIA === */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  /* Tamanhos - Display */
+  --text-display-xl: clamp(3rem, 8vw, 5.5rem);
+  --text-display-lg: clamp(2.5rem, 6vw, 4rem);
+  --text-display-md: clamp(2rem, 5vw, 3rem);
+
+  /* Tamanhos - Heading */
+  --text-h1: clamp(1.875rem, 4vw, 2.5rem);
+  --text-h2: clamp(1.5rem, 3vw, 2rem);
+  --text-h3: clamp(1.25rem, 2.5vw, 1.5rem);
+  --text-h4: clamp(1.125rem, 2vw, 1.25rem);
+
+  /* Tamanhos - Body */
+  --text-lg: 1.125rem;
+  --text-base: 1rem;
+  --text-sm: 0.875rem;
+  --text-xs: 0.75rem;
+
+  /* Line heights */
+  --leading-tight: 1.2;
+  --leading-snug: 1.375;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  /* Letter spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.05em;
+  --tracking-wider: 0.1em;
+  --tracking-widest: 0.2em;
+
+  /* Font weights */
+  --weight-light: 300;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* === ESPAÇAMENTO === */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* === LAYOUT === */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1200px;
+  --container-2xl: 1400px;
+
+  --content-width: 72ch;
+  --sidebar-width: 280px;
+
+  /* === BORDAS === */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  --border-thin: 1px solid rgba(255, 255, 255, 0.08);
+  --border-accent: 1px solid var(--color-accent-gold);
+  --border-glow: 1px solid var(--color-accent-gold-glow);
+
+  /* === SOMBRAS === */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 40px rgba(212, 168, 83, 0.15);
+  --shadow-glow-strong: 0 0 60px rgba(212, 168, 83, 0.25);
+
+  /* === TRANSIÇÕES === */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 600ms;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* === Z-INDEX === */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-tooltip: 600;
+}
+
+/* === TEMA CLARO (alternativo) === */
+[data-theme="light"] {
+  --color-bg-primary: #fafaf9;
+  --color-bg-secondary: #f5f5f4;
+  --color-bg-tertiary: #e7e5e4;
+  --color-bg-elevated: #ffffff;
+  --color-bg-hover: #d6d3d1;
+
+  --color-surface-1: rgba(0, 0, 0, 0.02);
+  --color-surface-2: rgba(0, 0, 0, 0.04);
+  --color-surface-3: rgba(0, 0, 0, 0.06);
+
+  --color-accent-gold: #996b1d;
+  --color-accent-gold-light: #b8862e;
+  --color-accent-gold-dark: #7a5616;
+  --color-accent-gold-muted: rgba(153, 107, 29, 0.1);
+  --color-accent-gold-glow: rgba(153, 107, 29, 0.2);
+
+  --color-text-primary: #1c1917;
+  --color-text-secondary: #57534e;
+  --color-text-tertiary: #78716c;
+  --color-text-muted: #a8a29e;
+  --color-text-inverse: #fafaf9;
+
+  --border-thin: 1px solid rgba(0, 0, 0, 0.08);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+}

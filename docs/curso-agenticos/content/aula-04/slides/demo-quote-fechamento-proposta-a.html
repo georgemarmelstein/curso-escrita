@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encerramento - Proposta A</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 100%);
+            color: #FFF4E4;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            padding: 80px;
+            text-align: center;
+        }
+
+        .quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 180px;
+            color: #BE9C6D;
+            opacity: 0.15;
+            line-height: 0.5;
+            margin-bottom: 40px;
+            animation: fadeInMark 1.2s ease-out;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 64px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: #FFF4E4;
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 0.3s forwards;
+        }
+
+        .attribution {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 300;
+            color: #BE9C6D;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 0.8s forwards;
+        }
+
+        .divider {
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #BE9C6D, transparent);
+            margin: 50px auto;
+            opacity: 0;
+            animation: expandDivider 1s ease-out 1.3s forwards;
+        }
+
+        .context {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 300;
+            color: #FFF4E4;
+            opacity: 0.7;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 1.8s forwards;
+        }
+
+        .context strong {
+            color: #BE9C6D;
+            font-weight: 500;
+        }
+
+        .glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(190, 156, 109, 0.1) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes fadeInMark {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 0.15;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes expandDivider {
+            from {
+                opacity: 0;
+                width: 0;
+            }
+            to {
+                opacity: 1;
+                width: 120px;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+
+    <div class="container">
+        <div class="quote-mark">"</div>
+
+        <div class="quote-text">
+            What I cannot create,<br>I do not understand.
+        </div>
+
+        <div class="attribution">
+            — Richard Feynman
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="context">
+            <strong>Andrej Karpathy:</strong> "If I can't build it, I don't understand it. Build the code, arrange it, get it to work. It's the only way to go."
+        </div>
+    </div>
+</body>
+</html>

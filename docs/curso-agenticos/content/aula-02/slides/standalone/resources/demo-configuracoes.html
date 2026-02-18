@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurando seu Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #12121c;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-purple: #a78bfa;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-cyan: #22d3ee;
+
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(190, 156, 109, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            overflow: hidden;
+        }
+
+        /* Ambient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 30% 20%, rgba(190, 156, 109, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 70% 80%, rgba(74, 222, 128, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════ */
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+            text-shadow: 0 0 30px rgba(190, 156, 109, 0.25);
+        }
+
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 1px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN LAYOUT
+           ═══════════════════════════════════════════════════════════ */
+        .main-content {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 25px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SPECTRUM PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .spectrum-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .spectrum-title {
+            font-size: 0.7em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Spectrum track */
+        .spectrum-track {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px 0;
+        }
+
+        /* Gradient bar on left */
+        .spectrum-bar {
+            position: absolute;
+            left: 18px;
+            top: 30px;
+            bottom: 30px;
+            width: 4px;
+            background: linear-gradient(
+                to bottom,
+                var(--super-blue) 0%,
+                var(--super-green) 25%,
+                var(--super-amber) 50%,
+                var(--super-gold) 75%,
+                var(--super-red) 100%
+            );
+            border-radius: 2px;
+        }
+
+        /* Level items */
+        .level-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            margin: 4px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .level-item:hover {
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .level-item.active {
+            background: rgba(190, 156, 109, 0.15);
+        }
+
+        .level-item.dimmed {
+            opacity: 0.35;
+        }
+
+        /* Level indicator dot */
+        .level-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid;
+            background: var(--super-bg-dark);
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .level-item.active .level-dot {
+            transform: scale(1.3);
+        }
+
+        .level-item[data-level="1"] .level-dot { border-color: var(--super-blue); }
+        .level-item[data-level="2"] .level-dot { border-color: var(--super-cyan); }
+        .level-item[data-level="3"] .level-dot { border-color: var(--super-green); }
+        .level-item[data-level="4"] .level-dot { border-color: var(--super-amber); }
+        .level-item[data-level="5"] .level-dot { border-color: var(--super-red); }
+
+        .level-item.active[data-level="1"] .level-dot { background: var(--super-blue); }
+        .level-item.active[data-level="2"] .level-dot { background: var(--super-cyan); }
+        .level-item.active[data-level="3"] .level-dot { background: var(--super-green); }
+        .level-item.active[data-level="4"] .level-dot { background: var(--super-amber); }
+        .level-item.active[data-level="5"] .level-dot { background: var(--super-red); }
+
+        .level-info {
+            flex: 1;
+        }
+
+        .level-name {
+            font-size: 0.85em;
+            font-weight: 500;
+            color: var(--super-cream);
+            margin-bottom: 2px;
+        }
+
+        .level-brief {
+            font-size: 0.68em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Spectrum footer tip */
+        .spectrum-footer {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .spectrum-tip {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72em;
+            color: rgba(255, 244, 228, 0.6);
+            line-height: 1.5;
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           DETAILS PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .details-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-height: 0;
+        }
+
+        .details-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 22px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .panel-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .panel-icon.level-1 { background: rgba(96, 165, 250, 0.15); border: 1px solid rgba(96, 165, 250, 0.3); color: var(--super-blue); }
+        .panel-icon.level-2 { background: rgba(34, 211, 238, 0.15); border: 1px solid rgba(34, 211, 238, 0.3); color: var(--super-cyan); }
+        .panel-icon.level-3 { background: rgba(74, 222, 128, 0.15); border: 1px solid rgba(74, 222, 128, 0.3); color: var(--super-green); }
+        .panel-icon.level-4 { background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); color: var(--super-amber); }
+        .panel-icon.level-5 { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--super-red); }
+
+        .panel-meta { flex: 1; }
+
+        .panel-title {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 4px;
+        }
+
+        .panel-subtitle {
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .panel-subtitle.level-1 { color: var(--super-blue); }
+        .panel-subtitle.level-2 { color: var(--super-cyan); }
+        .panel-subtitle.level-3 { color: var(--super-green); }
+        .panel-subtitle.level-4 { color: var(--super-amber); }
+        .panel-subtitle.level-5 { color: var(--super-red); }
+
+        .panel-description {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88em;
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.65;
+            margin-bottom: 18px;
+        }
+
+        .panel-description strong {
+            color: var(--super-gold);
+        }
+
+        /* When to use */
+        .when-section {
+            margin-bottom: 16px;
+        }
+
+        .when-title {
+            font-size: 0.68em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .when-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .when-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.85);
+        }
+
+        .when-bullet {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Command example */
+        .command-section {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .command-title {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .command-code {
+            font-size: 0.9em;
+            color: var(--super-cream);
+        }
+
+        .command-code .prompt { color: var(--super-green); }
+        .command-code .flag { color: var(--super-amber); }
+        .command-code .comment { color: rgba(255, 244, 228, 0.4); }
+
+        /* ═══════════════════════════════════════════════════════════
+           DEFAULT PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .default-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            padding: 30px;
+        }
+
+        .default-icon {
+            font-size: 2.5em;
+            color: var(--super-gold);
+            opacity: 0.2;
+            margin-bottom: 12px;
+        }
+
+        .default-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 6px;
+        }
+
+        .default-hint {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE - AUMENTADO para projeção em sala
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode { height: 100vh; overflow: hidden; }
+        body.embed-mode .container { padding: 12px 20px; height: 100vh; }
+        body.embed-mode header { margin-bottom: 10px; }
+        body.embed-mode h1 { font-size: clamp(1.4em, 2.2vw, 1.8em); margin-bottom: 3px; }
+        body.embed-mode .subtitle { font-size: clamp(0.75em, 1vw, 0.9em); }
+        body.embed-mode .main-content { gap: 18px; grid-template-columns: 280px 1fr; }
+        body.embed-mode .spectrum-panel { padding: 15px; }
+        body.embed-mode .spectrum-title { font-size: clamp(0.75em, 1vw, 0.9em); margin-bottom: 10px; }
+        body.embed-mode .spectrum-bar { top: 25px; bottom: 25px; }
+        body.embed-mode .level-item { padding: 10px 12px; margin: 3px 0; }
+        body.embed-mode .level-dot { width: 12px; height: 12px; }
+        body.embed-mode .level-name { font-size: clamp(0.9em, 1.25vw, 1.05em); }
+        body.embed-mode .level-brief { font-size: clamp(0.7em, 0.95vw, 0.85em); }
+        body.embed-mode .spectrum-footer { margin-top: 10px; padding-top: 10px; }
+        body.embed-mode .spectrum-tip { font-size: clamp(0.75em, 1vw, 0.9em); }
+        body.embed-mode .details-panel { padding: 16px; }
+        body.embed-mode .panel-header { margin-bottom: 12px; padding-bottom: 10px; }
+        body.embed-mode .panel-icon { width: 45px; height: 45px; font-size: clamp(1.3em, 1.8vw, 1.5em); }
+        body.embed-mode .panel-title { font-size: clamp(1.1em, 1.6vw, 1.35em); }
+        body.embed-mode .panel-subtitle { font-size: clamp(0.75em, 1vw, 0.9em); }
+        body.embed-mode .panel-description { font-size: clamp(0.9em, 1.3vw, 1.1em); margin-bottom: 12px; line-height: 1.5; }
+        body.embed-mode .when-section { margin-bottom: 12px; }
+        body.embed-mode .when-title { font-size: clamp(0.65em, 0.9vw, 0.8em); margin-bottom: 6px; }
+        body.embed-mode .when-list { gap: 4px; }
+        body.embed-mode .when-item { padding: 6px 10px; font-size: clamp(0.8em, 1.1vw, 0.95em); }
+        body.embed-mode .command-section { padding: 10px 12px; }
+        body.embed-mode .command-title { font-size: clamp(0.6em, 0.85vw, 0.75em); margin-bottom: 6px; }
+        body.embed-mode .command-code { font-size: clamp(0.85em, 1.2vw, 1em); }
+        body.embed-mode .default-text { font-size: clamp(1em, 1.4vw, 1.2em); }
+        body.embed-mode .default-hint { font-size: clamp(0.8em, 1.1vw, 0.95em); }
+        body.embed-mode .details-column { gap: 12px; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(190, 156, 109, 0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(190, 156, 109, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Configurando seu Claude Code</h1>
+            <div class="subtitle">// O espectro de autonomia</div>
+        </header>
+
+        <main class="main-content">
+            <!-- Spectrum Panel -->
+            <div class="spectrum-panel">
+                <div class="spectrum-title">Permission Mode</div>
+
+                <div class="spectrum-track">
+                    <div class="spectrum-bar"></div>
+
+                    <div class="level-item" data-level="1">
+                        <div class="level-dot"></div>
+                        <div class="level-info">
+                            <div class="level-name">Plan Mode</div>
+                            <div class="level-brief">Apenas planeja</div>
+                        </div>
+                    </div>
+
+                    <div class="level-item" data-level="2">
+                        <div class="level-dot"></div>
+                        <div class="level-info">
+                            <div class="level-name">Default</div>
+                            <div class="level-brief">Pede confirmação</div>
+                        </div>
+                    </div>
+
+                    <div class="level-item" data-level="3">
+                        <div class="level-dot"></div>
+                        <div class="level-info">
+                            <div class="level-name">Accept Edits</div>
+                            <div class="level-brief">Auto-aceita edições</div>
+                        </div>
+                    </div>
+
+                    <div class="level-item" data-level="4">
+                        <div class="level-dot"></div>
+                        <div class="level-info">
+                            <div class="level-name">Don't Ask</div>
+                            <div class="level-brief">Não pergunta</div>
+                        </div>
+                    </div>
+
+                    <div class="level-item" data-level="5">
+                        <div class="level-dot"></div>
+                        <div class="level-info">
+                            <div class="level-name">YOLO Mode</div>
+                            <div class="level-brief">You Only Live Once</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="spectrum-footer">
+                    <div class="spectrum-tip">
+                        Comece conservador, relaxe conforme ganha confiança
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details Column -->
+            <div class="details-column">
+                <!-- Details Panel -->
+                <div class="details-panel" id="details-panel">
+                    <div class="default-panel" id="default-content">
+                        <div class="default-icon">//</div>
+                        <div class="default-text">Selecione um nível de autonomia</div>
+                        <div class="default-hint">Cada nível tem seu contexto ideal</div>
+                    </div>
+                    <div id="level-content" style="display: none;"></div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // Embed Mode Detection
+        // ═══════════════════════════════════════════════════════════
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // ═══════════════════════════════════════════════════════════
+        // Level Data - Permission Modes Oficiais
+        // ═══════════════════════════════════════════════════════════
+        const levels = {
+            1: {
+                icon: '?',
+                title: 'Plan Mode',
+                subtitle: 'Apenas Planeja',
+                level: 1,
+                desc: 'O Claude <strong>apenas planeja e explica</strong> o que faria, sem executar nenhuma ação. Ideal para entender a abordagem antes de dar autonomia. Você revisa o plano e decide se prossegue.',
+                when: [
+                    'Entender como Claude abordaria um problema',
+                    'Revisar estratégia antes de executar',
+                    'Aprender com as explicações do Claude',
+                    'Situações de alta criticidade'
+                ],
+                command: '<span class="prompt">$</span> claude <span class="flag">--plan</span>\n<span class="comment"># Entra em modo planejamento</span>\n<span class="comment"># Ou use /plan dentro da sessão</span>'
+            },
+            2: {
+                icon: '//',
+                title: 'Default',
+                subtitle: 'Pede Confirmação',
+                level: 2,
+                desc: 'O modo padrão. Claude <strong>pede permissão</strong> antes de executar ações como editar arquivos ou rodar comandos. Você vê o que ele quer fazer e aprova ou rejeita.',
+                when: [
+                    'Uso diário normal',
+                    'Primeiros contatos com Claude Code',
+                    'Projetos de produção',
+                    'Quando quer supervisão completa'
+                ],
+                command: '<span class="prompt">$</span> claude\n<span class="comment"># Modo padrão - pede confirmação</span>\n<span class="comment"># Você aprova cada ação com Y/n</span>'
+            },
+            3: {
+                icon: 'E',
+                title: 'Accept Edits',
+                subtitle: 'Auto-Aceita Edições',
+                level: 3,
+                desc: 'Claude pode <strong>editar arquivos automaticamente</strong> sem pedir confirmação, mas ainda pergunta antes de executar comandos bash. Bom equilíbrio para coding produtivo.',
+                when: [
+                    'Sessões de coding intensivo',
+                    'Refatoração de código',
+                    'Quando confia nas edições',
+                    'Mas quer controle sobre comandos'
+                ],
+                command: '<span class="prompt">$</span> claude <span class="flag">--accept-edits</span>\n<span class="comment"># Auto-aceita Read, Edit, Write</span>\n<span class="comment"># Ainda pede permissão para Bash</span>'
+            },
+            4: {
+                icon: '!',
+                title: "Don't Ask",
+                subtitle: 'Não Pergunta',
+                level: 4,
+                desc: 'Claude executa <strong>sem pedir permissão</strong> para a maioria das ações. Mais rápido, mas requer confiança no que você pediu. Ainda respeita regras de deny em settings.json.',
+                when: [
+                    'Tarefas bem definidas e repetitivas',
+                    'Quando você conhece bem o projeto',
+                    'Automação de workflows',
+                    'Sessões de alta produtividade'
+                ],
+                command: '<span class="prompt">$</span> claude <span class="flag">--dont-ask</span>\n<span class="comment"># Executa sem perguntar</span>\n<span class="comment"># Respeita deny rules em settings.json</span>'
+            },
+            5: {
+                icon: '!!',
+                title: 'YOLO Mode',
+                subtitle: 'You Only Live Once',
+                level: 5,
+                desc: '<strong>YOLO = You Only Live Once.</strong> Máxima autonomia, zero verificação. Claude executa TUDO sem pedir permissão, ignorando até regras de deny. Use APENAS em ambientes descartáveis.',
+                when: [
+                    'Prototipagem rápida descartável',
+                    'Ambientes de sandbox isolados',
+                    'Experimentos e R&D',
+                    'Quando git reset --hard é seu amigo'
+                ],
+                command: '<span class="prompt">$</span> claude <span class="flag">--dangerously-skip-permissions</span>\n<span class="comment"># IGNORA todas as verificações</span>\n<span class="comment"># CUIDADO: só em ambientes descartáveis!</span>'
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // DOM Elements
+        // ═══════════════════════════════════════════════════════════
+        const levelItems = document.querySelectorAll('.level-item');
+        const defaultContent = document.getElementById('default-content');
+        const levelContent = document.getElementById('level-content');
+
+        // ═══════════════════════════════════════════════════════════
+        // Panel Rendering
+        // ═══════════════════════════════════════════════════════════
+        function showDefault() {
+            defaultContent.style.display = 'flex';
+            levelContent.style.display = 'none';
+        }
+
+        function selectLevel(levelNum) {
+            const data = levels[levelNum];
+            if (!data) return;
+
+            defaultContent.style.display = 'none';
+            levelContent.style.display = 'block';
+
+            levelContent.innerHTML = `
+                <div class="panel-header">
+                    <div class="panel-icon level-${data.level}">${data.icon}</div>
+                    <div class="panel-meta">
+                        <div class="panel-title">${data.title}</div>
+                        <div class="panel-subtitle level-${data.level}">${data.subtitle}</div>
+                    </div>
+                </div>
+
+                <div class="panel-description">${data.desc}</div>
+
+                <div class="when-section">
+                    <div class="when-title">Quando usar</div>
+                    <div class="when-list">
+                        ${data.when.map(w => `
+                            <div class="when-item">
+                                <span class="when-bullet">&gt;</span>
+                                <span>${w}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="command-section">
+                    <div class="command-title">Exemplo</div>
+                    <pre class="command-code">${data.command}</pre>
+                </div>
+            `;
+
+            // Highlight level item
+            levelItems.forEach(item => {
+                const itemLevel = parseInt(item.dataset.level);
+                item.classList.remove('active', 'dimmed');
+                if (itemLevel === levelNum) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.add('dimmed');
+                }
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Event Listeners
+        // ═══════════════════════════════════════════════════════════
+        levelItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const level = parseInt(item.dataset.level);
+                selectLevel(level);
+            });
+        });
+
+        // Click outside to reset
+        document.body.addEventListener('click', (e) => {
+            if (!e.target.closest('.spectrum-panel') && !e.target.closest('.details-panel')) {
+                levelItems.forEach(item => item.classList.remove('active', 'dimmed'));
+                showDefault();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const activeItem = document.querySelector('.level-item.active');
+            const currentLevel = activeItem ? parseInt(activeItem.dataset.level) : 0;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextLevel = currentLevel < 5 ? currentLevel + 1 : 1;
+                selectLevel(nextLevel);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevLevel = currentLevel > 1 ? currentLevel - 1 : 5;
+                selectLevel(prevLevel);
+            } else if (e.key === 'Escape') {
+                levelItems.forEach(item => item.classList.remove('active', 'dimmed'));
+                showDefault();
+            }
+        });
+
+        // Communication with parent (Reveal.js)
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data.action === 'selectLevel' && data.level) {
+                selectLevel(data.level);
+            } else if (data.action === 'reset') {
+                levelItems.forEach(item => item.classList.remove('active', 'dimmed'));
+                showDefault();
+            }
+        });
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'configuracoes-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

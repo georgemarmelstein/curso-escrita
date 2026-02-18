@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício: Vibe Coding na Prática</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #12121a;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --explorer-bg: #1e1e1e;
+            --explorer-selected: #094771;
+            --explorer-hover: #2a2d2e;
+            --terminal-bg: #0c0c0c;
+            --win-title-bg: #000000;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ============================================
+           LAYOUT PRINCIPAL
+           ============================================ */
+        .main-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 340px;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+            gap: 0;
+        }
+
+        /* ============================================
+           HEADER
+           ============================================ */
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(180deg, rgba(190, 156, 109, 0.15) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .header-subtitle {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .exercise-badge {
+            background: rgba(190, 156, 109, 0.2);
+            border: 1px solid var(--super-gold);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            letter-spacing: 1px;
+        }
+
+        .reset-btn {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid var(--super-red);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-red);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reset-btn:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        /* ============================================
+           EXPLORER (COLUNA ESQUERDA) - ESTILO WINDOWS
+           ============================================ */
+        .explorer-panel {
+            background: var(--explorer-bg);
+            border-right: 1px solid #3c3c3c;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .explorer-header {
+            padding: 10px 16px;
+            background: #252526;
+            border-bottom: 1px solid #3c3c3c;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .explorer-header span {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #cccccc;
+            font-weight: 600;
+        }
+
+        .explorer-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .explorer-btn {
+            background: transparent;
+            border: none;
+            padding: 4px 8px;
+            font-size: 0.75em;
+            color: #cccccc;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Segoe UI', sans-serif;
+            border-radius: 3px;
+        }
+
+        .explorer-btn:hover {
+            background: #3c3c3c;
+        }
+
+        .explorer-tree {
+            flex: 1;
+            overflow-y: auto;
+            padding: 4px 0;
+        }
+
+        /* Tree Items - Windows Explorer Style */
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding: 3px 8px;
+            cursor: pointer;
+            transition: background 0.1s;
+            user-select: none;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .tree-item:hover {
+            background: var(--explorer-hover);
+        }
+
+        .tree-item.selected {
+            background: var(--explorer-selected);
+        }
+
+        .tree-item.new-item {
+            animation: newItemPulse 0.5s ease-out;
+        }
+
+        @keyframes newItemPulse {
+            0% { background: rgba(74, 222, 128, 0.3); }
+            100% { background: transparent; }
+        }
+
+        .tree-toggle {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cccccc;
+            font-size: 0.6em;
+            flex-shrink: 0;
+            transition: transform 0.15s;
+            margin-right: 2px;
+        }
+
+        .tree-toggle.expanded {
+            transform: rotate(90deg);
+        }
+
+        .tree-toggle.empty {
+            visibility: hidden;
+        }
+
+        .tree-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95em;
+        }
+
+        .tree-name {
+            font-size: 0.85em;
+            color: #cccccc;
+            white-space: nowrap;
+            padding: 2px 4px;
+        }
+
+        .tree-name-input {
+            background: #3c3c3c;
+            border: 1px solid var(--explorer-selected);
+            padding: 2px 4px;
+            font-size: 0.85em;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            outline: none;
+            width: 140px;
+            margin: -1px 0;
+        }
+
+        .tree-children {
+            display: none;
+        }
+
+        .tree-children.expanded {
+            display: block;
+        }
+
+        .tree-hint {
+            font-size: 0.7em;
+            color: #888;
+            padding: 8px 16px;
+            font-style: italic;
+        }
+
+        /* ============================================
+           TERMINAL WINDOWS (COLUNA CENTRAL)
+           ============================================ */
+        .terminal-panel {
+            background: var(--terminal-bg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        /* Windows Terminal Header */
+        .terminal-header {
+            background: var(--win-title-bg);
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #333;
+        }
+
+        .terminal-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .terminal-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .terminal-icon svg {
+            width: 14px;
+            height: 14px;
+            fill: #ccc;
+        }
+
+        .terminal-title {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.8em;
+            color: #ccc;
+        }
+
+        .terminal-header-right {
+            display: flex;
+            gap: 0;
+        }
+
+        .win-btn {
+            width: 46px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.9em;
+        }
+
+        .win-btn:hover {
+            background: #333;
+        }
+
+        .win-btn.close:hover {
+            background: #e81123;
+            color: white;
+        }
+
+        /* Terminal Body - Como CMD real */
+        .terminal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            background: var(--terminal-bg);
+            cursor: text;
+        }
+
+        .terminal-body:focus {
+            outline: none;
+        }
+
+        .terminal-line {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .terminal-output {
+            color: #cccccc;
+            white-space: pre-wrap;
+            margin-bottom: 0;
+        }
+
+        .terminal-output.success {
+            color: var(--super-green);
+        }
+
+        .terminal-output.error {
+            color: var(--super-red);
+        }
+
+        .terminal-output.info {
+            color: var(--super-cyan);
+        }
+
+        .terminal-output.claude {
+            color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.1);
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 3px solid var(--super-gold);
+            margin: 8px 0;
+            display: block;
+        }
+
+        /* Input Line - inline como CMD */
+        .terminal-input-wrapper {
+            display: flex;
+            align-items: center;
+            color: #cccccc;
+        }
+
+        .terminal-prompt {
+            color: #cccccc;
+            white-space: nowrap;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #cccccc;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            outline: none;
+            caret-color: #cccccc;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Command Buttons */
+        .command-buttons {
+            display: flex;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #111;
+            border-top: 1px solid #333;
+            flex-wrap: wrap;
+        }
+
+        .cmd-btn {
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 4px;
+            padding: 6px 12px;
+            color: var(--super-cream);
+            font-family: 'Consolas', monospace;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cmd-btn:hover {
+            background: rgba(190, 156, 109, 0.2);
+            border-color: var(--super-gold);
+        }
+
+        .cmd-btn .key {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: var(--super-gold);
+        }
+
+        /* ============================================
+           EXERCÍCIOS (COLUNA DIREITA)
+           ============================================ */
+        .exercises-panel {
+            background: linear-gradient(180deg, #1a1a24 0%, var(--super-bg-dark) 100%);
+            border-left: 1px solid rgba(190, 156, 109, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .exercises-header {
+            padding: 14px 16px;
+            background: rgba(190, 156, 109, 0.08);
+            border-bottom: 1px solid rgba(190, 156, 109, 0.1);
+        }
+
+        .exercises-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05em;
+            color: var(--super-gold);
+            margin-bottom: 4px;
+        }
+
+        .exercises-progress {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(190, 156, 109, 0.2);
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--super-gold), var(--super-green));
+            border-radius: 2px;
+            transition: width 0.5s ease-out;
+            width: 0%;
+        }
+
+        .exercises-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .exercise-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(190, 156, 109, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+
+        .exercise-item.active {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .exercise-item.completed {
+            border-color: var(--super-green);
+            opacity: 0.7;
+        }
+
+        .exercise-item.locked {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .exercise-status {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75em;
+            flex-shrink: 0;
+        }
+
+        .exercise-status.pending {
+            border: 2px solid rgba(190, 156, 109, 0.4);
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .exercise-status.active {
+            border: 2px solid var(--super-gold);
+            color: var(--super-gold);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(190, 156, 109, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(190, 156, 109, 0); }
+        }
+
+        .exercise-status.completed {
+            background: var(--super-green);
+            color: var(--super-bg-dark);
+        }
+
+        .exercise-title {
+            font-size: 0.85em;
+            font-weight: 500;
+            color: var(--super-cream);
+        }
+
+        .exercise-desc {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.6);
+            line-height: 1.4;
+            margin-left: 32px;
+        }
+
+        .exercise-hint {
+            margin-top: 8px;
+            margin-left: 32px;
+            padding: 6px 10px;
+            background: rgba(34, 211, 238, 0.1);
+            border-left: 2px solid var(--super-cyan);
+            border-radius: 0 4px 4px 0;
+            font-size: 0.7em;
+            color: var(--super-cyan);
+            font-family: 'Consolas', monospace;
+        }
+
+        /* ============================================
+           CONCEPT BOX
+           ============================================ */
+        .concept-box {
+            margin: 10px;
+            padding: 14px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.15) 0%, rgba(190, 156, 109, 0.05) 100%);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 8px;
+        }
+
+        .concept-box h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9em;
+            color: var(--super-gold);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .concept-box p {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.4;
+        }
+
+        .concept-box .highlight {
+            color: var(--super-gold);
+            font-weight: 500;
+        }
+
+        /* ============================================
+           NEW FOLDER MODAL
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #2d2d30;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            padding: 20px;
+            min-width: 300px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal h3 {
+            font-family: 'Segoe UI', sans-serif;
+            color: #cccccc;
+            margin-bottom: 14px;
+            font-size: 1em;
+            font-weight: 400;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: #3c3c3c;
+            border: 1px solid #007acc;
+            border-radius: 2px;
+            padding: 8px 10px;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.9em;
+            outline: none;
+            margin-bottom: 14px;
+        }
+
+        .modal-input:focus {
+            border-color: #007acc;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 6px 14px;
+            border-radius: 2px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .modal-btn.cancel {
+            background: #3c3c3c;
+            border: 1px solid #3c3c3c;
+            color: #cccccc;
+        }
+
+        .modal-btn.cancel:hover {
+            background: #4c4c4c;
+        }
+
+        .modal-btn.confirm {
+            background: #007acc;
+            border: 1px solid #007acc;
+            color: #ffffff;
+        }
+
+        .modal-btn.confirm:hover {
+            background: #005a9e;
+        }
+
+        /* ============================================
+           SUCCESS CELEBRATION
+           ============================================ */
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--super-bg-dark) 0%, #1a1a24 100%);
+            border: 2px solid var(--super-green);
+            border-radius: 12px;
+            padding: 30px 50px;
+            text-align: center;
+            z-index: 1001;
+            display: none;
+            box-shadow: 0 0 80px rgba(74, 222, 128, 0.3);
+        }
+
+        .celebration.active {
+            display: block;
+            animation: celebrationPop 0.5s ease-out;
+        }
+
+        @keyframes celebrationPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .celebration h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--super-green);
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .celebration p {
+            color: rgba(255, 244, 228, 0.8);
+            font-size: 0.95em;
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 240px 1fr 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-title">
+                <h1>Exercício: Vibe Coding na Prática</h1>
+                <span class="header-subtitle">Download, conversão e extração com linguagem natural</span>
+            </div>
+            <div class="header-actions">
+                <button class="reset-btn" onclick="resetAll()" title="Reiniciar exercício">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                    </svg>
+                    Reiniciar
+                </button>
+                <span class="exercise-badge">PRÁTICA GUIADA</span>
+            </div>
+        </header>
+
+        <!-- EXPLORER PANEL -->
+        <aside class="explorer-panel">
+            <div class="explorer-header">
+                <span>Explorer</span>
+                <div class="explorer-actions">
+                    <button class="explorer-btn" onclick="showNewFolderModal()" title="Nova Pasta">+ Nova Pasta</button>
+                </div>
+            </div>
+            <div class="explorer-tree" id="explorerTree">
+                <!-- Tree will be rendered by JS -->
+            </div>
+            <div class="tree-hint">Clique para selecionar. Clique novamente para renomear. F2 também funciona.</div>
+        </aside>
+
+        <!-- TERMINAL PANEL (WINDOWS STYLE) -->
+        <main class="terminal-panel">
+            <div class="terminal-header">
+                <div class="terminal-header-left">
+                    <div class="terminal-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H4V5h16v14zM6 7l4 4-4 4 1.41 1.41L12 11.83V7H6zm6 10h6v-2h-6v2z"/>
+                        </svg>
+                    </div>
+                    <span class="terminal-title" id="terminalTitle">Prompt de Comando</span>
+                </div>
+                <div class="terminal-header-right">
+                    <button class="win-btn">─</button>
+                    <button class="win-btn">□</button>
+                    <button class="win-btn close">✕</button>
+                </div>
+            </div>
+            <div class="terminal-body" id="terminalBody" onclick="focusInput()">
+                <!-- Terminal content rendered by JS -->
+            </div>
+            <div class="command-buttons">
+                <button class="cmd-btn" onclick="executeCommand('md')">
+                    <span class="key">md</span> Criar Pasta
+                </button>
+                <button class="cmd-btn" onclick="executeCommand('cd')">
+                    <span class="key">cd</span> Entrar
+                </button>
+                <button class="cmd-btn" onclick="executeCommand('cd ..')">
+                    <span class="key">cd ..</span> Voltar
+                </button>
+                <button class="cmd-btn" onclick="executeCommand('dir')">
+                    <span class="key">dir</span> Listar
+                </button>
+                <button class="cmd-btn" onclick="executeCommand('cls')">
+                    <span class="key">cls</span> Limpar
+                </button>
+                <button class="cmd-btn" onclick="executeCommand('claude')" style="border-color: var(--super-gold);">
+                    <span class="key" style="background: var(--super-gold); color: #000;">claude</span> Claude Code
+                </button>
+            </div>
+        </main>
+
+        <!-- EXERCISES PANEL -->
+        <aside class="exercises-panel">
+            <div class="exercises-header">
+                <h2>Missões</h2>
+                <div class="exercises-progress">
+                    <span id="progressText">0 de 9 completas</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h3>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 16v-4M12 8h.01"/>
+                    </svg>
+                    Vibe Coding
+                </h3>
+                <p>
+                    Descreva o que quer em <span class="highlight">linguagem natural</span>.
+                    Claude Code executa: <span class="highlight">download, conversão, extração</span>.
+                    Você dirige, ele opera.
+                </p>
+            </div>
+
+            <div class="exercises-list" id="exercisesList">
+                <!-- Exercises rendered by JS -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- NEW FOLDER MODAL -->
+    <div class="modal-overlay" id="newFolderModal">
+        <div class="modal">
+            <h3 id="modalTitle">Nova Pasta</h3>
+            <input type="text" class="modal-input" id="newFolderName"
+                   placeholder="Nome da pasta..."
+                   onkeypress="handleModalKeyPress(event)">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="hideNewFolderModal()">Cancelar</button>
+                <button class="modal-btn confirm" onclick="confirmModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CELEBRATION -->
+    <div class="celebration" id="celebration">
+        <h2>Parabéns!</h2>
+        <p id="celebrationText">Você completou a missão!</p>
+    </div>
+
+    <script>
+        // ============================================
+        // FILE SYSTEM STATE
+        // ============================================
+        let fileSystem = {
+            'C:': {
+                type: 'drive',
+                expanded: true,
+                children: {
+                    'Users': {
+                        type: 'folder',
+                        expanded: true,
+                        children: {}
+                    }
+                }
+            }
+        };
+
+        let currentPath = ['C:', 'Users'];
+        let selectedItem = null;
+        let editingItem = null;
+        let lastClickTime = 0;
+        let lastClickPath = null;
+
+        // ============================================
+        // EXERCISES STATE
+        // ============================================
+        const exercises = [
+            {
+                id: 1,
+                title: 'Criar pasta curso-claude',
+                desc: 'Seu espaço de experimentação começa aqui.',
+                hint: 'md curso-claude',
+                check: () => getFolderAtPath(['C:', 'Users', 'curso-claude']),
+                completed: false
+            },
+            {
+                id: 2,
+                title: 'Entrar na pasta',
+                desc: 'Navegue para dentro da sua nova pasta.',
+                hint: 'cd curso-claude',
+                check: () => currentPath.join('/') === 'C:/Users/curso-claude',
+                completed: false
+            },
+            {
+                id: 3,
+                title: 'Criar pasta projetos',
+                desc: 'Organize seus experimentos aqui.',
+                hint: 'md projetos',
+                check: () => getFolderAtPath(['C:', 'Users', 'curso-claude', 'projetos']),
+                completed: false
+            },
+            {
+                id: 4,
+                title: 'Criar pasta referencias',
+                desc: 'Materiais de estudo e pesquisas.',
+                hint: 'md referencias',
+                check: () => getFolderAtPath(['C:', 'Users', 'curso-claude', 'referencias']),
+                completed: false
+            },
+            {
+                id: 5,
+                title: 'Criar pasta docs',
+                desc: 'Documentação e glossários.',
+                hint: 'md docs',
+                check: () => getFolderAtPath(['C:', 'Users', 'curso-claude', 'docs']),
+                completed: false
+            },
+            {
+                id: 6,
+                title: 'Iniciar Claude Code',
+                desc: 'Entre no ambiente interativo do Claude Code.',
+                hint: 'claude',
+                check: () => window.claudeStarted,
+                completed: false
+            },
+            {
+                id: 7,
+                title: 'Baixar PDF do Google Drive',
+                desc: 'Peça ao Claude para baixar o material de estudo.',
+                hint: 'Baixe o PDF do link do Google Drive...',
+                check: () => window.pdfDownloaded,
+                completed: false
+            },
+            {
+                id: 8,
+                title: 'Converter PDF para TXT',
+                desc: 'Transforme o PDF em texto editável.',
+                hint: 'Converta o PDF para formato texto...',
+                check: () => window.pdfConverted,
+                completed: false
+            },
+            {
+                id: 9,
+                title: 'Extrair seções do texto',
+                desc: 'Liste os principais tópicos do documento.',
+                hint: 'Liste os títulos e seções do documento...',
+                check: () => window.sectionsExtracted,
+                completed: false
+            }
+        ];
+
+        window.claudeStarted = false;
+        window.claudeInvoked = false;
+        window.claudeMode = false;
+        window.pdfDownloaded = false;
+        window.pdfConverted = false;
+        window.sectionsExtracted = false;
+        window.currentClaudeStep = 0; // Rastreia qual passo do Claude estamos
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        function getFolderAtPath(pathArray) {
+            let current = fileSystem;
+            for (const segment of pathArray) {
+                if (current[segment]) {
+                    current = current[segment];
+                } else if (current.children && current.children[segment]) {
+                    current = current.children[segment];
+                } else {
+                    return null;
+                }
+            }
+            return current;
+        }
+
+        function getCurrentFolder() {
+            return getFolderAtPath(currentPath);
+        }
+
+        function getPathString() {
+            return currentPath.join('\\');
+        }
+
+        // ============================================
+        // RENDER EXPLORER TREE
+        // ============================================
+        function renderTree() {
+            const container = document.getElementById('explorerTree');
+            container.innerHTML = renderTreeNode(fileSystem['C:'], 'C:', 0, ['C:']);
+        }
+
+        function renderTreeNode(node, name, level, path) {
+            const indent = level * 16;
+            const isFolder = node.type === 'folder' || node.type === 'drive';
+            const isExpanded = node.expanded;
+            const hasChildren = node.children && Object.keys(node.children).length > 0;
+            const pathStr = path.join('/');
+            const isSelected = selectedItem === pathStr;
+            const isEditing = editingItem === pathStr;
+            const canEdit = level > 1; // Can't edit C: or Users
+
+            let html = `
+                <div class="tree-item ${isSelected ? 'selected' : ''}"
+                     style="padding-left: ${indent + 8}px"
+                     data-path="${pathStr}"
+                     data-name="${name}"
+                     data-can-edit="${canEdit}"
+                     onclick="handleTreeClick(event, '${pathStr}', ${isFolder}, '${name}', ${canEdit})"
+                     ondblclick="handleTreeDblClick('${pathStr}', ${isFolder})">
+            `;
+
+            // Toggle arrow
+            if (isFolder) {
+                if (hasChildren) {
+                    html += `<span class="tree-toggle ${isExpanded ? 'expanded' : ''}"
+                                  onclick="event.stopPropagation(); toggleFolder('${pathStr}')">▶</span>`;
+                } else {
+                    html += `<span class="tree-toggle empty">▶</span>`;
+                }
+            } else {
+                html += `<span class="tree-toggle empty"></span>`;
+            }
+
+            // Icon
+            const icon = isFolder ? (isExpanded && hasChildren ? '📂' : '📁') : '📄';
+            html += `<span class="tree-icon">${icon}</span>`;
+
+            // Name (editable or not)
+            if (isEditing) {
+                html += `<input type="text" class="tree-name-input" id="renameInput"
+                               value="${name}"
+                               onclick="event.stopPropagation()"
+                               onblur="finishRename('${pathStr}', '${name}')"
+                               onkeydown="handleRenameKeyDown(event, '${pathStr}', '${name}')">`;
+            } else {
+                html += `<span class="tree-name">${name}</span>`;
+            }
+            html += `</div>`;
+
+            // Children
+            if (isFolder && hasChildren) {
+                html += `<div class="tree-children ${isExpanded ? 'expanded' : ''}">`;
+                for (const [childName, childNode] of Object.entries(node.children)) {
+                    html += renderTreeNode(childNode, childName, level + 1, [...path, childName]);
+                }
+                html += `</div>`;
+            }
+
+            return html;
+        }
+
+        function toggleFolder(pathStr) {
+            const pathArray = pathStr.split('/');
+            const folder = getFolderAtPath(pathArray);
+            if (folder) {
+                folder.expanded = !folder.expanded;
+                renderTree();
+            }
+        }
+
+        // Windows Explorer style: click to select, click again (slow) to rename
+        function handleTreeClick(event, pathStr, isFolder, name, canEdit) {
+            event.stopPropagation();
+
+            const now = Date.now();
+            const timeSinceLastClick = now - lastClickTime;
+            const sameItem = lastClickPath === pathStr;
+
+            // If clicking on already selected item after a short delay (300-1500ms), start rename
+            if (sameItem && selectedItem === pathStr && canEdit && timeSinceLastClick > 300 && timeSinceLastClick < 1500) {
+                startRename(pathStr);
+            } else {
+                // Just select
+                selectedItem = pathStr;
+                editingItem = null;
+                renderTree();
+            }
+
+            lastClickTime = now;
+            lastClickPath = pathStr;
+        }
+
+        function handleTreeDblClick(pathStr, isFolder) {
+            if (isFolder) {
+                // Navigate into folder
+                currentPath = pathStr.split('/');
+                const folder = getFolderAtPath(currentPath);
+                if (folder) folder.expanded = true;
+                updateTerminal();
+                renderTree();
+                checkExercises();
+            }
+        }
+
+        function startRename(pathStr) {
+            editingItem = pathStr;
+            renderTree();
+            setTimeout(() => {
+                const input = document.getElementById('renameInput');
+                if (input) {
+                    input.focus();
+                    input.select();
+                }
+            }, 10);
+        }
+
+        function handleRenameKeyDown(event, pathStr, oldName) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                finishRename(pathStr, oldName);
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                editingItem = null;
+                renderTree();
+            }
+        }
+
+        function finishRename(pathStr, oldName) {
+            const input = document.getElementById('renameInput');
+            if (!input) return;
+
+            const newName = input.value.trim();
+            editingItem = null;
+
+            if (newName && newName !== oldName && !newName.includes('/') && !newName.includes('\\')) {
+                const pathArray = pathStr.split('/');
+                const parentPath = pathArray.slice(0, -1);
+                const parent = getFolderAtPath(parentPath);
+
+                if (parent && parent.children && parent.children[oldName]) {
+                    if (!parent.children[newName]) {
+                        // Rename
+                        parent.children[newName] = parent.children[oldName];
+                        delete parent.children[oldName];
+
+                        // Update selection
+                        selectedItem = [...parentPath, newName].join('/');
+
+                        addOutput(`\n${getPathString()}> ren ${oldName} ${newName}`);
+                        addOutput(`Pasta renomeada para '${newName}'.`, 'success');
+                        renderInputLine();
+                    } else {
+                        addOutput(`Já existe uma pasta com o nome '${newName}'.`, 'error');
+                        renderInputLine();
+                    }
+                }
+            }
+
+            renderTree();
+            scrollToBottom();
+        }
+
+        // F2 to rename
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F2' && selectedItem && !editingItem) {
+                const pathArray = selectedItem.split('/');
+                if (pathArray.length > 2) { // Can't rename C: or Users
+                    startRename(selectedItem);
+                }
+            }
+        });
+
+        // ============================================
+        // TERMINAL FUNCTIONS
+        // ============================================
+        function initTerminal() {
+            const body = document.getElementById('terminalBody');
+            body.innerHTML = `<div class="terminal-output">Microsoft Windows [Version 10.0.22631]
+(c) Microsoft Corporation. Todos os direitos reservados.
+</div>
+<div class="terminal-output info">
+Comandos: md, cd, cd .., dir, ren, cls, claude
+</div>
+`;
+            renderInputLine();
+        }
+
+        function renderInputLine() {
+            const body = document.getElementById('terminalBody');
+
+            // Remove existing input wrapper if any
+            const existingInput = body.querySelector('.terminal-input-wrapper');
+            if (existingInput) {
+                existingInput.remove();
+            }
+
+            // Add new input line
+            const wrapper = document.createElement('div');
+            wrapper.className = 'terminal-input-wrapper';
+
+            // Prompt diferente no modo Claude
+            const promptText = window.claudeMode ? '> ' : `${getPathString()}>`;
+            const promptStyle = window.claudeMode ? 'color: var(--super-gold);' : '';
+
+            wrapper.innerHTML = `<span class="terminal-prompt" style="${promptStyle}">${promptText}</span><input type="text" class="terminal-input" id="terminalInput" onkeydown="handleInputKeyDown(event)" ${window.claudeMode ? 'placeholder="Digite sua solicitação..."' : ''}>`;
+            body.appendChild(wrapper);
+
+            scrollToBottom();
+        }
+
+        function updateTerminal() {
+            // Just update the prompt path, input line will be re-rendered
+        }
+
+        function addOutput(text, className = '') {
+            const body = document.getElementById('terminalBody');
+            const inputWrapper = body.querySelector('.terminal-input-wrapper');
+
+            const output = document.createElement('div');
+            output.className = `terminal-output ${className}`;
+            output.textContent = text;
+
+            if (inputWrapper) {
+                body.insertBefore(output, inputWrapper);
+            } else {
+                body.appendChild(output);
+            }
+        }
+
+        function addOutputHTML(html, className = '') {
+            const body = document.getElementById('terminalBody');
+            const inputWrapper = body.querySelector('.terminal-input-wrapper');
+
+            const output = document.createElement('div');
+            output.className = `terminal-output ${className}`;
+            output.innerHTML = html;
+
+            if (inputWrapper) {
+                body.insertBefore(output, inputWrapper);
+            } else {
+                body.appendChild(output);
+            }
+        }
+
+        function scrollToBottom() {
+            const body = document.getElementById('terminalBody');
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function focusInput() {
+            const input = document.getElementById('terminalInput');
+            if (input) input.focus();
+        }
+
+        function handleInputKeyDown(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('terminalInput');
+                const command = input.value.trim();
+
+                if (command) {
+                    // Show the command that was typed
+                    const body = document.getElementById('terminalBody');
+                    const inputWrapper = body.querySelector('.terminal-input-wrapper');
+
+                    // Convert input line to static text
+                    const staticLine = document.createElement('div');
+                    staticLine.className = 'terminal-line';
+
+                    // Prompt diferente no modo Claude
+                    if (window.claudeMode) {
+                        staticLine.innerHTML = `<span style="color: var(--super-gold);">> </span>${command}`;
+                    } else {
+                        staticLine.textContent = `${getPathString()}>${command}`;
+                    }
+
+                    body.insertBefore(staticLine, inputWrapper);
+
+                    // Remove input wrapper temporarily
+                    inputWrapper.remove();
+
+                    // Process command
+                    processCommand(command);
+
+                    // Re-render input line
+                    renderInputLine();
+                    focusInput();
+                }
+            }
+        }
+
+        function executeCommand(cmd) {
+            if (cmd === 'md' || cmd === 'cd') {
+                showNewFolderModal(cmd);
+                return;
+            }
+
+            if (cmd === 'claude') {
+                if (window.claudeMode) {
+                    // Já está no modo Claude: abre modal para digitar prompt
+                    showClaudeModal();
+                } else {
+                    // Não está no modo Claude: executa o comando para entrar
+                    const body = document.getElementById('terminalBody');
+                    const inputWrapper = body.querySelector('.terminal-input-wrapper');
+
+                    const staticLine = document.createElement('div');
+                    staticLine.className = 'terminal-line';
+                    staticLine.textContent = `${getPathString()}>claude`;
+                    if (inputWrapper) {
+                        body.insertBefore(staticLine, inputWrapper);
+                        inputWrapper.remove();
+                    }
+
+                    processCommand('claude');
+                    renderInputLine();
+                    focusInput();
+                }
+                return;
+            }
+
+            // Show command
+            const body = document.getElementById('terminalBody');
+            const inputWrapper = body.querySelector('.terminal-input-wrapper');
+
+            const staticLine = document.createElement('div');
+            staticLine.className = 'terminal-line';
+            staticLine.textContent = `${getPathString()}>${cmd}`;
+            if (inputWrapper) {
+                body.insertBefore(staticLine, inputWrapper);
+                inputWrapper.remove();
+            }
+
+            processCommand(cmd);
+            renderInputLine();
+            focusInput();
+        }
+
+        function processCommand(fullCommand) {
+            // Se está no modo Claude, trata como prompt para o Claude
+            if (window.claudeMode) {
+                showClaudeResponse(fullCommand);
+                return;
+            }
+
+            const parts = fullCommand.trim().split(/\s+/);
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+            switch (cmd) {
+                case 'md':
+                case 'mkdir':
+                    if (args.length === 0) {
+                        addOutput('A sintaxe do comando está incorreta.', 'error');
+                    } else {
+                        createFolder(args[0]);
+                    }
+                    break;
+
+                case 'cd':
+                    if (args.length === 0) {
+                        addOutput(getPathString());
+                    } else if (args[0] === '..') {
+                        if (currentPath.length > 1) {
+                            currentPath.pop();
+                            addOutput('');
+                        }
+                    } else {
+                        const folder = getCurrentFolder();
+                        if (folder.children && folder.children[args[0]]) {
+                            currentPath.push(args[0]);
+                            folder.children[args[0]].expanded = true;
+                            addOutput('');
+                            renderTree();
+                        } else {
+                            addOutput('O sistema não pode encontrar o caminho especificado.', 'error');
+                        }
+                    }
+                    break;
+
+                case 'dir':
+                    const current = getCurrentFolder();
+                    let output = `\n Volume em unidade C não tem nome.\n`;
+                    output += ` Número de Série do Volume: 1234-5678\n\n`;
+                    output += ` Pasta de ${getPathString()}\n\n`;
+                    if (current.children) {
+                        const folders = Object.keys(current.children);
+                        if (folders.length === 0) {
+                            output += `Arquivo não encontrado`;
+                        } else {
+                            folders.forEach(name => {
+                                output += `               <DIR>          ${name}\n`;
+                            });
+                            output += `\n               ${folders.length} pasta(s)`;
+                        }
+                    }
+                    addOutput(output);
+                    break;
+
+                case 'ren':
+                case 'rename':
+                    if (args.length < 2) {
+                        addOutput('A sintaxe do comando está incorreta.', 'error');
+                    } else {
+                        renameFolder(args[0], args[1]);
+                    }
+                    break;
+
+                case 'cls':
+                case 'clear':
+                    document.getElementById('terminalBody').innerHTML = '';
+                    break;
+
+                case 'claude':
+                    if (args.length === 0) {
+                        // Sem argumentos: mostrar tela de boas-vindas e entrar no modo Claude
+                        showClaudeWelcome();
+                    } else {
+                        // Com argumentos: comportamento legado
+                        showClaudeResponse(args.join(' '));
+                    }
+                    break;
+
+                default:
+                    addOutput(`'${cmd}' não é reconhecido como um comando interno\nou externo, um programa operável ou um arquivo em lotes.`, 'error');
+            }
+
+            checkExercises();
+            scrollToBottom();
+        }
+
+        function createFolder(name) {
+            const current = getCurrentFolder();
+            if (!current.children) {
+                current.children = {};
+            }
+
+            if (current.children[name]) {
+                addOutput(`Já existe um subdiretório ou arquivo ${name}.`, 'error');
+                return;
+            }
+
+            current.children[name] = {
+                type: 'folder',
+                expanded: false,
+                children: {}
+            };
+
+            addOutput('');
+            current.expanded = true;
+            renderTree();
+
+            setTimeout(() => {
+                const items = document.querySelectorAll('.tree-item');
+                items.forEach(item => {
+                    if (item.dataset.name === name) {
+                        item.classList.add('new-item');
+                    }
+                });
+            }, 50);
+
+            checkExercises();
+        }
+
+        function renameFolder(oldName, newName) {
+            const current = getCurrentFolder();
+
+            if (!current.children || !current.children[oldName]) {
+                addOutput('O sistema não pode encontrar o arquivo especificado.', 'error');
+                return;
+            }
+
+            if (current.children[newName]) {
+                addOutput(`Já existe um subdiretório ou arquivo ${newName}.`, 'error');
+                return;
+            }
+
+            current.children[newName] = current.children[oldName];
+            delete current.children[oldName];
+
+            addOutput('');
+            renderTree();
+        }
+
+        function showClaudeWelcome() {
+            window.claudeStarted = true;
+            window.claudeMode = true;
+
+            const welcome = `
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║       ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗        ║
+║      ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝        ║
+║      ██║     ██║     ███████║██║   ██║██║  ██║█████╗          ║
+║      ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝          ║
+║      ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗        ║
+║       ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝        ║
+║                                                                ║
+║                        C O D E                                 ║
+║                                                                ║
+╠════════════════════════════════════════════════════════════════╣
+║  Versão: 1.0.0  |  Modelo: claude-sonnet-4-20250514            ║
+║  Pasta: C:\\Users\\curso-claude                                 ║
+╠════════════════════════════════════════════════════════════════╣
+║                                                                ║
+║  Bem-vindo ao Claude Code!                                     ║
+║  Seu assistente de programação com IA.                         ║
+║                                                                ║
+║  Digite sua solicitação ou /help para comandos.                ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝`;
+
+            addOutput(welcome, 'claude');
+            checkExercises();
+        }
+
+        function showClaudeResponse(query) {
+            window.claudeInvoked = true;
+            const queryLower = query.toLowerCase();
+
+            let response = '';
+
+            // Detecta tipo de solicitação e responde apropriadamente
+            if ((queryLower.includes('baixe') || queryLower.includes('download') || queryLower.includes('drive')) && !window.pdfDownloaded) {
+                response = `
+┌─────────────────────────────────────────────────────────────────┐
+│  ⬇ Baixando arquivo do Google Drive...                         │
+└─────────────────────────────────────────────────────────────────┘
+
+Analisando link do Google Drive...
+Detectado: Arquivo PDF (2.3 MB)
+
+┌─────────────────────────────────────────────────────────────────┐
+│  EXECUÇÃO                                                       │
+├─────────────────────────────────────────────────────────────────┤
+│  $ gdown --fuzzy "https://drive.google.com/file/d/1ABC123"     │
+│                                                                 │
+│  Downloading...                                                 │
+│  ████████████████████████████████████████ 100%                 │
+│                                                                 │
+│  material-estudo.pdf ............................ 2.3 MB ✓     │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  $ mv material-estudo.pdf referencias/                         │
+└─────────────────────────────────────────────────────────────────┘
+
+✓ Arquivo salvo em: curso-claude/referencias/material-estudo.pdf
+
+📄 Conteúdo detectado:
+   • Tipo: PDF (Portable Document Format)
+   • Páginas: 47
+   • Tamanho: 2.3 MB
+   • Idioma: Português`;
+
+                window.pdfDownloaded = true;
+
+                // Simula criação do arquivo no explorer
+                const refFolder = getFolderAtPath(['C:', 'Users', 'curso-claude', 'referencias']);
+                if (refFolder) {
+                    if (!refFolder.children) refFolder.children = {};
+                    refFolder.children['material-estudo.pdf'] = { type: 'file' };
+                    renderTree();
+                }
+
+            } else if ((queryLower.includes('convert') || queryLower.includes('texto') || queryLower.includes('txt') || queryLower.includes('pdf')) && window.pdfDownloaded && !window.pdfConverted) {
+                response = `
+┌─────────────────────────────────────────────────────────────────┐
+│  📄 Convertendo PDF para texto...                               │
+└─────────────────────────────────────────────────────────────────┘
+
+Processando: referencias/material-estudo.pdf
+
+┌─────────────────────────────────────────────────────────────────┐
+│  EXECUÇÃO                                                       │
+├─────────────────────────────────────────────────────────────────┤
+│  $ pdftotext -layout referencias/material-estudo.pdf \\        │
+│              docs/material.txt                                  │
+│                                                                 │
+│  Extraindo texto...                                             │
+│  Página 1/47 ✓                                                  │
+│  Página 2/47 ✓                                                  │
+│  ...                                                            │
+│  Página 47/47 ✓                                                 │
+│                                                                 │
+│  Conversão completa!                                            │
+└─────────────────────────────────────────────────────────────────┘
+
+✓ Arquivo convertido: curso-claude/docs/material.txt
+
+📊 Estatísticas da conversão:
+   • Caracteres: 89.432
+   • Palavras: 14.205
+   • Linhas: 1.847
+   • Parágrafos: 312
+   • Tabelas detectadas: 8
+   • Imagens ignoradas: 23`;
+
+                window.pdfConverted = true;
+
+                // Simula criação do arquivo no explorer
+                const docsFolder = getFolderAtPath(['C:', 'Users', 'curso-claude', 'docs']);
+                if (docsFolder) {
+                    if (!docsFolder.children) docsFolder.children = {};
+                    docsFolder.children['material.txt'] = { type: 'file' };
+                    renderTree();
+                }
+
+            } else if ((queryLower.includes('liste') || queryLower.includes('seç') || queryLower.includes('títul') || queryLower.includes('tópic')) && window.pdfConverted && !window.sectionsExtracted) {
+                response = `
+┌─────────────────────────────────────────────────────────────────┐
+│  📋 Analisando estrutura do documento...                        │
+└─────────────────────────────────────────────────────────────────┘
+
+Lendo: docs/material.txt
+
+┌─────────────────────────────────────────────────────────────────┐
+│  ESTRUTURA DO DOCUMENTO                                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. INTRODUÇÃO                                                  │
+│     1.1 Contexto e Motivação ...................... pg. 3      │
+│     1.2 Objetivos ................................. pg. 5      │
+│                                                                 │
+│  2. FUNDAMENTOS TEÓRICOS                                        │
+│     2.1 Conceitos Básicos ......................... pg. 8      │
+│     2.2 Histórico e Evolução ...................... pg. 12     │
+│     2.3 Estado da Arte ............................ pg. 18     │
+│                                                                 │
+│  3. METODOLOGIA                                                 │
+│     3.1 Abordagem Proposta ........................ pg. 24     │
+│     3.2 Ferramentas Utilizadas .................... pg. 28     │
+│     3.3 Critérios de Avaliação .................... pg. 31     │
+│                                                                 │
+│  4. RESULTADOS                                                  │
+│     4.1 Análise Quantitativa ...................... pg. 35     │
+│     4.2 Análise Qualitativa ....................... pg. 39     │
+│                                                                 │
+│  5. CONCLUSÃO                                                   │
+│     5.1 Considerações Finais ...................... pg. 44     │
+│     5.2 Trabalhos Futuros ......................... pg. 46     │
+│                                                                 │
+│  REFERÊNCIAS ...................................... pg. 47     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+✓ Índice extraído com sucesso!
+
+💡 Dica: Você pode pedir para eu resumir qualquer seção específica
+   ou criar um fichamento do documento completo.`;
+
+                window.sectionsExtracted = true;
+
+            } else {
+                // Resposta genérica para outras solicitações
+                response = `
+┌─────────────────────────────────────────────────────────────────┐
+│  🤖 Processando solicitação...                                  │
+└─────────────────────────────────────────────────────────────────┘
+
+Entendi sua solicitação: "${query.substring(0, 50)}${query.length > 50 ? '...' : ''}"
+
+${!window.pdfDownloaded ? '💡 Dica: Tente primeiro baixar um PDF do Google Drive!' : ''}
+${window.pdfDownloaded && !window.pdfConverted ? '💡 Dica: Agora você pode converter o PDF para texto!' : ''}
+${window.pdfConverted && !window.sectionsExtracted ? '💡 Dica: Liste as seções do documento convertido!' : ''}
+
+Como posso ajudar com essa tarefa?`;
+            }
+
+            addOutput(response, 'claude');
+            window.claudeMode = false;
+            checkExercises();
+        }
+
+        // ============================================
+        // MODAL FUNCTIONS
+        // ============================================
+        let pendingCommand = null;
+
+        function showNewFolderModal(cmd = 'md') {
+            pendingCommand = cmd;
+            document.getElementById('newFolderModal').classList.add('active');
+            const input = document.getElementById('newFolderName');
+            const title = document.getElementById('modalTitle');
+
+            title.textContent = cmd === 'cd' ? 'Entrar na Pasta' : 'Nova Pasta';
+            input.placeholder = cmd === 'cd' ? 'Nome da pasta...' : 'Nome da nova pasta...';
+            input.value = '';
+            setTimeout(() => input.focus(), 50);
+        }
+
+        function showClaudeModal() {
+            pendingCommand = 'claudeprompt';
+            document.getElementById('newFolderModal').classList.add('active');
+            const input = document.getElementById('newFolderName');
+            const title = document.getElementById('modalTitle');
+
+            title.textContent = 'Claude Code - Solicitação';
+            input.placeholder = 'Digite sua solicitação...';
+
+            // Sugestão de prompt baseada no passo atual
+            if (!window.pdfDownloaded) {
+                input.value = 'Baixe o PDF do Google Drive: https://drive.google.com/file/d/1ABC123/view e salve em referencias/';
+            } else if (!window.pdfConverted) {
+                input.value = 'Converta o arquivo referencias/material-estudo.pdf para texto e salve como docs/material.txt';
+            } else if (!window.sectionsExtracted) {
+                input.value = 'Liste os títulos e seções principais do arquivo docs/material.txt';
+            } else {
+                input.value = 'Como posso continuar explorando este material?';
+            }
+
+            setTimeout(() => {
+                input.focus();
+                input.select();
+            }, 50);
+        }
+
+        function hideNewFolderModal() {
+            document.getElementById('newFolderModal').classList.remove('active');
+            pendingCommand = null;
+        }
+
+        function confirmModal() {
+            const input = document.getElementById('newFolderName');
+            const value = input.value.trim();
+
+            if (value) {
+                hideNewFolderModal();
+
+                // Show command in terminal
+                const body = document.getElementById('terminalBody');
+                const inputWrapper = body.querySelector('.terminal-input-wrapper');
+
+                let cmd;
+                let promptText;
+
+                if (pendingCommand === 'claudeprompt') {
+                    // Prompt direto para o Claude (já está no modo Claude)
+                    cmd = value;
+                    promptText = '> ';
+                } else {
+                    cmd = `${pendingCommand} ${value}`;
+                    promptText = `${getPathString()}>`;
+                }
+
+                const staticLine = document.createElement('div');
+                staticLine.className = 'terminal-line';
+                staticLine.innerHTML = `<span style="${pendingCommand === 'claudeprompt' ? 'color: var(--super-gold);' : ''}">${promptText}</span>${cmd}`;
+                if (inputWrapper) {
+                    body.insertBefore(staticLine, inputWrapper);
+                    inputWrapper.remove();
+                }
+
+                processCommand(cmd);
+                renderInputLine();
+                focusInput();
+            }
+        }
+
+        function handleModalKeyPress(event) {
+            if (event.key === 'Enter') {
+                confirmModal();
+            } else if (event.key === 'Escape') {
+                hideNewFolderModal();
+            }
+        }
+
+        // ============================================
+        // EXERCISES FUNCTIONS
+        // ============================================
+        function renderExercises() {
+            const container = document.getElementById('exercisesList');
+            let html = '';
+
+            exercises.forEach((ex, index) => {
+                const isActive = !ex.completed && (index === 0 || exercises[index - 1].completed);
+                const isLocked = !ex.completed && index > 0 && !exercises[index - 1].completed;
+
+                let statusClass = 'pending';
+                let statusIcon = index + 1;
+
+                if (ex.completed) {
+                    statusClass = 'completed';
+                    statusIcon = '✓';
+                } else if (isActive) {
+                    statusClass = 'active';
+                }
+
+                html += `
+                    <div class="exercise-item ${ex.completed ? 'completed' : ''} ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}">
+                        <div class="exercise-header">
+                            <div class="exercise-status ${statusClass}">${statusIcon}</div>
+                            <div class="exercise-title">${ex.title}</div>
+                        </div>
+                        <div class="exercise-desc">${ex.desc}</div>
+                        ${isActive ? `<div class="exercise-hint">💡 ${ex.hint}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            updateProgress();
+        }
+
+        function checkExercises() {
+            let justCompleted = null;
+
+            exercises.forEach((ex, index) => {
+                if (!ex.completed && ex.check()) {
+                    ex.completed = true;
+                    justCompleted = ex;
+                }
+            });
+
+            renderExercises();
+
+            if (justCompleted) {
+                showCelebration(`Missão "${justCompleted.title}" completa!`);
+            }
+        }
+
+        function updateProgress() {
+            const completed = exercises.filter(e => e.completed).length;
+            const total = exercises.length;
+            const percent = (completed / total) * 100;
+
+            document.getElementById('progressText').textContent = `${completed} de ${total} completas`;
+            document.getElementById('progressFill').style.width = `${percent}%`;
+        }
+
+        function showCelebration(text) {
+            const celebration = document.getElementById('celebration');
+            document.getElementById('celebrationText').textContent = text;
+            celebration.classList.add('active');
+
+            setTimeout(() => {
+                celebration.classList.remove('active');
+            }, 2000);
+        }
+
+        // ============================================
+        // RESET FUNCTION
+        // ============================================
+        function resetAll() {
+            // Reset file system
+            fileSystem = {
+                'C:': {
+                    type: 'drive',
+                    expanded: true,
+                    children: {
+                        'Users': {
+                            type: 'folder',
+                            expanded: true,
+                            children: {}
+                        }
+                    }
+                }
+            };
+
+            // Reset path and state
+            currentPath = ['C:', 'Users'];
+            selectedItem = null;
+            editingItem = null;
+            lastClickTime = 0;
+            lastClickPath = null;
+            window.claudeStarted = false;
+            window.claudeInvoked = false;
+            window.claudeMode = false;
+            window.pdfDownloaded = false;
+            window.pdfConverted = false;
+            window.sectionsExtracted = false;
+            window.currentClaudeStep = 0;
+
+            // Reset exercises
+            exercises.forEach(ex => ex.completed = false);
+
+            // Reset terminal
+            initTerminal();
+
+            // Re-render
+            renderTree();
+            renderExercises();
+            focusInput();
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        function init() {
+            renderTree();
+            renderExercises();
+            initTerminal();
+            setTimeout(focusInput, 100);
+        }
+
+        // PostMessage handler for Reveal.js integration
+        window.addEventListener('message', (event) => {
+            if (event.data.action === 'reset') {
+                resetAll();
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>

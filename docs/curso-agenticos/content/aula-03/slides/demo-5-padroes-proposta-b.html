@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Padrões - Proposta B: Centro de Decisão</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --pink: #f472b6;
+            --amber: #fbbf24;
+            --blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 100% 100% at 50% 50%, rgba(20, 20, 35, 1) 0%, var(--dark) 70%),
+                var(--dark);
+            z-index: 0;
+        }
+
+        /* Grid pattern */
+        .grid-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(190, 156, 109, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(190, 156, 109, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 2.5vh 3vw;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2vh;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--cream);
+            margin-top: 0.5vh;
+        }
+
+        /* Main Layout */
+        .main-content {
+            display: flex;
+            flex: 1;
+            gap: 2vw;
+        }
+
+        /* Cards Container */
+        .cards-container {
+            flex: 0 0 55%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1.2vw;
+        }
+
+        /* Pattern Card */
+        .pattern-card {
+            background: rgba(20, 20, 30, 0.7);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 16px;
+            padding: 1.8vh 1.2vw;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .pattern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--card-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .pattern-card:hover {
+            border-color: var(--card-color);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .pattern-card:hover::before,
+        .pattern-card.active::before {
+            opacity: 1;
+        }
+
+        .pattern-card.active {
+            border-color: var(--card-color);
+            background: rgba(30, 30, 45, 0.9);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+            margin-bottom: 1vh;
+        }
+
+        .card-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1.8rem, 2.5vw, 2.2rem);
+            font-weight: 700;
+            color: var(--card-color);
+            line-height: 1;
+        }
+
+        .card-titles {
+            flex: 1;
+        }
+
+        .card-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1rem, 1.3vw, 1.2rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .card-technical {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.75vw, 0.7rem);
+            color: var(--card-color);
+            opacity: 0.8;
+        }
+
+        .card-simple {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.8rem, 1vw, 0.95rem);
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .card-complexity {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+            margin-top: auto;
+        }
+
+        .complexity-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .complexity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 244, 228, 0.15);
+        }
+
+        .complexity-dot.filled {
+            background: var(--card-color);
+        }
+
+        .complexity-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.75vw, 0.7rem);
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            flex: 1;
+            background: rgba(15, 15, 25, 0.8);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 2.5vh 2vw;
+            backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.3s ease;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5vw;
+            margin-bottom: 2vh;
+        }
+
+        .detail-badge {
+            background: var(--gold);
+            color: var(--dark);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 700;
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .detail-titles {
+            flex: 1;
+        }
+
+        .detail-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 0.3vh;
+        }
+
+        .detail-technical {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            color: var(--gold);
+        }
+
+        /* Analogy */
+        .analogy-section {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.12), rgba(190, 156, 109, 0.04));
+            border: 1px solid rgba(190, 156, 109, 0.25);
+            border-radius: 14px;
+            padding: 1.8vh 1.5vw;
+            margin-bottom: 2vh;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.75vw, 0.7rem);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.6vh;
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 12px;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        .analogy-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.3vw, 1.2rem);
+            color: var(--cream);
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        /* Diagram */
+        .diagram-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2vh;
+        }
+
+        .diagram-container {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+
+        .diagram-container svg {
+            width: 100%;
+            max-width: 450px;
+            height: 110px;
+        }
+
+        /* Example */
+        .example-section {
+            background: rgba(74, 222, 128, 0.08);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+            border-radius: 14px;
+            padding: 1.5vh 1.5vw;
+        }
+
+        .example-section .section-label {
+            color: var(--green);
+        }
+
+        .example-section .section-label::before {
+            background: var(--green);
+        }
+
+        .example-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.1vw, 1rem);
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.5;
+        }
+
+        /* Tip at bottom of cards */
+        .tip-card {
+            grid-column: span 2;
+            background: rgba(190, 156, 109, 0.08);
+            border: 1px dashed rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            padding: 1.5vh 1.5vw;
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+
+        .tip-icon {
+            font-size: 1.5rem;
+        }
+
+        .tip-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.85rem, 1vw, 0.95rem);
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .tip-text strong {
+            color: var(--gold);
+        }
+
+        /* Animations */
+        .pattern-card {
+            opacity: 0;
+            animation: cardFadeIn 0.4s ease forwards;
+        }
+        .pattern-card:nth-child(1) { animation-delay: 0.05s; }
+        .pattern-card:nth-child(2) { animation-delay: 0.1s; }
+        .pattern-card:nth-child(3) { animation-delay: 0.15s; }
+        .pattern-card:nth-child(4) { animation-delay: 0.2s; }
+        .pattern-card:nth-child(5) { animation-delay: 0.25s; }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 2vh 2.5vw; }
+        body.embed-mode .header-title { font-size: clamp(1.3rem, 2.5vw, 2rem); }
+        body.embed-mode .cards-container { gap: 1vw; }
+        body.embed-mode .pattern-card { padding: 1.5vh 1vw; }
+        body.embed-mode .detail-panel { padding: 2vh 1.5vw; }
+        body.embed-mode .detail-badge { width: 55px; height: 55px; font-size: clamp(1.5rem, 2.5vw, 2rem); }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="grid-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Building Effective Agents</div>
+            <h1 class="header-title">5 Padrões de Workflow Agêntico</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="cards-container" id="cardsContainer">
+                <!-- Cards generated by JS -->
+            </div>
+
+            <div class="detail-panel" id="detailPanel">
+                <div class="detail-header">
+                    <div class="detail-badge" id="detailBadge">1</div>
+                    <div class="detail-titles">
+                        <div class="detail-name" id="detailName">Encadeamento</div>
+                        <div class="detail-technical" id="detailTechnical">Prompt Chaining</div>
+                    </div>
+                </div>
+
+                <div class="analogy-section">
+                    <div class="section-label">Pense assim</div>
+                    <div class="analogy-text" id="analogyText">"Como uma linha de montagem: cada estação faz uma parte e passa para a próxima."</div>
+                </div>
+
+                <div class="diagram-section">
+                    <div class="section-label">Como funciona</div>
+                    <div class="diagram-container">
+                        <svg id="diagram" viewBox="0 0 450 110"></svg>
+                    </div>
+                </div>
+
+                <div class="example-section">
+                    <div class="section-label">Exemplo na prática</div>
+                    <div class="example-text" id="exampleText">Pipeline de sentença: Relatório → Fundamentação → Dispositivo. Cada etapa usa o resultado da anterior.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const patterns = [
+            {
+                number: 1,
+                name: "Encadeamento",
+                technical: "Prompt Chaining",
+                simple: "Tarefas em sequência, uma após a outra",
+                color: "#fbbf24",
+                complexity: 1,
+                analogy: '"Como uma linha de montagem: cada estação faz sua parte e passa para a próxima."',
+                example: "Pipeline de sentença: Relatório → Fundamentação → Dispositivo. Cada etapa usa o resultado da anterior para construir o documento completo.",
+                diagram: `
+                    <defs>
+                        <marker id="arr1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 Z" fill="#fbbf24"/>
+                        </marker>
+                    </defs>
+                    <g transform="translate(15, 30)">
+                        <rect x="0" y="0" width="90" height="45" rx="8" fill="#fbbf24" opacity="0.85"/>
+                        <text x="45" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="600">Relatório</text>
+
+                        <path d="M 100 22 L 125 22" stroke="#fbbf24" stroke-width="3" marker-end="url(#arr1)"/>
+
+                        <rect x="135" y="0" width="90" height="45" rx="8" fill="#fbbf24" opacity="0.85"/>
+                        <text x="180" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="600">Fundament.</text>
+
+                        <path d="M 235 22 L 260 22" stroke="#fbbf24" stroke-width="3" marker-end="url(#arr1)"/>
+
+                        <rect x="270" y="0" width="90" height="45" rx="8" fill="#fbbf24" opacity="0.85"/>
+                        <text x="315" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="600">Dispositivo</text>
+
+                        <path d="M 370 22 L 395 22" stroke="#4ade80" stroke-width="3" marker-end="url(#arr1g)"/>
+                    </g>
+                    <defs>
+                        <marker id="arr1g" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 Z" fill="#4ade80"/>
+                        </marker>
+                    </defs>
+                `
+            },
+            {
+                number: 2,
+                name: "Roteamento",
+                technical: "Routing",
+                simple: "Classificar e enviar para o caminho certo",
+                color: "#60a5fa",
+                complexity: 1,
+                analogy: '"Como uma triagem de hospital: cada paciente vai para o especialista certo."',
+                example: "Classificador de processos: identifica se é BPC, Aposentadoria ou Auxílio-Doença e direciona para o fluxo especializado.",
+                diagram: `
+                    <defs>
+                        <marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 Z" fill="#60a5fa"/>
+                        </marker>
+                    </defs>
+                    <g transform="translate(20, 5)">
+                        <rect x="0" y="35" width="70" height="35" rx="8" fill="#60a5fa" opacity="0.85"/>
+                        <text x="35" y="57" text-anchor="middle" fill="white" font-size="10" font-weight="600">Processo</text>
+
+                        <polygon points="100,52 135,20 135,85" fill="#60a5fa" opacity="0.85"/>
+                        <text x="120" y="57" text-anchor="middle" fill="white" font-size="12">?</text>
+
+                        <path d="M 75 52 L 100 52" stroke="#60a5fa" stroke-width="2"/>
+                        <path d="M 140 28 L 185 12" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr2)"/>
+                        <path d="M 140 52 L 185 52" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr2)"/>
+                        <path d="M 140 77 L 185 92" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr2)"/>
+
+                        <rect x="195" y="0" width="95" height="25" rx="5" fill="#60a5fa" opacity="0.6"/>
+                        <text x="242" y="17" text-anchor="middle" fill="white" font-size="10">BPC</text>
+
+                        <rect x="195" y="40" width="95" height="25" rx="5" fill="#60a5fa" opacity="0.85"/>
+                        <text x="242" y="57" text-anchor="middle" fill="white" font-size="10">Aposentadoria</text>
+
+                        <rect x="195" y="80" width="95" height="25" rx="5" fill="#60a5fa" opacity="0.6"/>
+                        <text x="242" y="97" text-anchor="middle" fill="white" font-size="10">Auxílio-Doença</text>
+                    </g>
+                `
+            },
+            {
+                number: 3,
+                name: "Paralelização",
+                technical: "Parallelization",
+                simple: "Várias tarefas ao mesmo tempo",
+                color: "#a78bfa",
+                complexity: 2,
+                analogy: '"Como uma banca de correção: 3 professores corrigem a mesma prova ao mesmo tempo."',
+                example: "Revisão tripla: revisores ortográfico, jurídico e estilístico analisam em paralelo. Resultados consolidados ao final.",
+                diagram: `
+                    <defs>
+                        <marker id="arr3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <path d="M0,0 L6,3 L0,6 Z" fill="#a78bfa"/>
+                        </marker>
+                    </defs>
+                    <g transform="translate(10, 5)">
+                        <rect x="0" y="35" width="60" height="35" rx="6" fill="#a78bfa" opacity="0.85"/>
+                        <text x="30" y="57" text-anchor="middle" fill="white" font-size="9" font-weight="600">Sentença</text>
+
+                        <path d="M 65 52 L 95 18" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 65 52 L 95 52" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 65 52 L 95 87" stroke="#a78bfa" stroke-width="2"/>
+
+                        <rect x="100" y="3" width="100" height="28" rx="5" fill="#a78bfa" opacity="0.7"/>
+                        <text x="150" y="21" text-anchor="middle" fill="white" font-size="9">Ortográfico</text>
+
+                        <rect x="100" y="38" width="100" height="28" rx="5" fill="#a78bfa" opacity="0.7"/>
+                        <text x="150" y="56" text-anchor="middle" fill="white" font-size="9">Jurídico</text>
+
+                        <rect x="100" y="73" width="100" height="28" rx="5" fill="#a78bfa" opacity="0.7"/>
+                        <text x="150" y="91" text-anchor="middle" fill="white" font-size="9">Estilístico</text>
+
+                        <path d="M 205 17 L 235 52" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 205 52 L 235 52" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 205 87 L 235 52" stroke="#a78bfa" stroke-width="2"/>
+
+                        <rect x="240" y="35" width="70" height="35" rx="6" fill="#4ade80" opacity="0.85"/>
+                        <text x="275" y="57" text-anchor="middle" fill="white" font-size="9" font-weight="600">Consolidado</text>
+                    </g>
+                `
+            },
+            {
+                number: 4,
+                name: "Orquestrador",
+                technical: "Orchestrator-Workers",
+                simple: "Um chefe que delega para especialistas",
+                color: "#22d3ee",
+                complexity: 3,
+                analogy: '"Como um maestro: decide quem toca o quê, quando, e combina tudo no final."',
+                example: "Pesquisa jurídica: orquestrador decide quais bases pesquisar (STF, STJ, TRFs) baseado no tema. Delega e sintetiza.",
+                diagram: `
+                    <defs>
+                        <marker id="arr4" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <path d="M0,0 L6,3 L0,6 Z" fill="#22d3ee"/>
+                        </marker>
+                    </defs>
+                    <g transform="translate(70, 0)">
+                        <circle cx="130" cy="22" r="20" fill="#22d3ee" opacity="0.85"/>
+                        <text x="130" y="18" text-anchor="middle" fill="white" font-size="7" font-weight="600">Orques-</text>
+                        <text x="130" y="27" text-anchor="middle" fill="white" font-size="7" font-weight="600">trador</text>
+
+                        <path d="M 115 40 L 55 65" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4" marker-end="url(#arr4)"/>
+                        <path d="M 130 42 L 130 65" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4" marker-end="url(#arr4)"/>
+                        <path d="M 145 40 L 205 65" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4" marker-end="url(#arr4)"/>
+
+                        <rect x="10" y="70" width="70" height="30" rx="5" fill="#22d3ee" opacity="0.65"/>
+                        <text x="45" y="89" text-anchor="middle" fill="white" font-size="10">STF</text>
+
+                        <rect x="95" y="70" width="70" height="30" rx="5" fill="#22d3ee" opacity="0.65"/>
+                        <text x="130" y="89" text-anchor="middle" fill="white" font-size="10">STJ</text>
+
+                        <rect x="180" y="70" width="70" height="30" rx="5" fill="#22d3ee" opacity="0.65"/>
+                        <text x="215" y="89" text-anchor="middle" fill="white" font-size="10">TRFs</text>
+
+                        <text x="130" y="58" text-anchor="middle" fill="#22d3ee" font-size="7" opacity="0.8">delega dinamicamente</text>
+                    </g>
+                `
+            },
+            {
+                number: 5,
+                name: "Avaliador",
+                technical: "Evaluator-Optimizer",
+                simple: "Gera, avalia, melhora até ficar bom",
+                color: "#f472b6",
+                complexity: 3,
+                analogy: '"Como um editor de texto: escreve, revisa, reescreve até ficar perfeito."',
+                example: "Maker-Checker: gerador cria minuta, avaliador verifica conformidade. Loop continua até aprovação ou limite de iterações.",
+                diagram: `
+                    <defs>
+                        <marker id="arr5" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <path d="M0,0 L6,3 L0,6 Z" fill="#f472b6"/>
+                        </marker>
+                        <marker id="arr5g" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <path d="M0,0 L6,3 L0,6 Z" fill="#4ade80"/>
+                        </marker>
+                    </defs>
+                    <g transform="translate(20, 15)">
+                        <rect x="0" y="15" width="85" height="40" rx="6" fill="#f472b6" opacity="0.85"/>
+                        <text x="42" y="32" text-anchor="middle" fill="white" font-size="9" font-weight="600">Gerador</text>
+                        <text x="42" y="43" text-anchor="middle" fill="white" font-size="7" opacity="0.9">cria minuta</text>
+
+                        <path d="M 95 35 L 125 35" stroke="#f472b6" stroke-width="2" marker-end="url(#arr5)"/>
+
+                        <rect x="135" y="15" width="85" height="40" rx="6" fill="#f472b6" opacity="0.85"/>
+                        <text x="177" y="32" text-anchor="middle" fill="white" font-size="9" font-weight="600">Avaliador</text>
+                        <text x="177" y="43" text-anchor="middle" fill="white" font-size="7" opacity="0.9">verifica</text>
+
+                        <path d="M 177 60 Q 177 80 110 80 Q 42 80 42 60" stroke="#f472b6" stroke-width="2" fill="none" stroke-dasharray="4" marker-end="url(#arr5)"/>
+                        <text x="110" y="75" text-anchor="middle" fill="#f472b6" font-size="7">feedback</text>
+
+                        <path d="M 230 35 L 260 35" stroke="#4ade80" stroke-width="2" marker-end="url(#arr5g)"/>
+                        <text x="245" y="28" text-anchor="middle" fill="#4ade80" font-size="7">OK?</text>
+
+                        <rect x="270" y="15" width="70" height="40" rx="6" fill="#4ade80" opacity="0.85"/>
+                        <text x="305" y="40" text-anchor="middle" fill="white" font-size="10" font-weight="600">Output</text>
+                    </g>
+                `
+            }
+        ];
+
+        let currentPattern = 0;
+
+        function generateCards() {
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+
+            patterns.forEach((p, i) => {
+                const card = document.createElement('div');
+                card.className = `pattern-card ${i === currentPattern ? 'active' : ''}`;
+                card.style.setProperty('--card-color', p.color);
+                card.dataset.index = i;
+
+                const dots = Array(3).fill(0).map((_, di) =>
+                    `<div class="complexity-dot ${di < p.complexity ? 'filled' : ''}"></div>`
+                ).join('');
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-number">${p.number}</div>
+                        <div class="card-titles">
+                            <div class="card-name">${p.name}</div>
+                            <div class="card-technical">${p.technical}</div>
+                        </div>
+                    </div>
+                    <div class="card-simple">${p.simple}</div>
+                    <div class="card-complexity">
+                        <div class="complexity-dots">${dots}</div>
+                        <span class="complexity-label">${p.complexity === 1 ? 'Baixa' : p.complexity === 2 ? 'Média' : 'Alta'}</span>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => selectPattern(i));
+                container.appendChild(card);
+            });
+
+            // Add tip card
+            const tipCard = document.createElement('div');
+            tipCard.className = 'tip-card';
+            tipCard.innerHTML = `
+                <span class="tip-icon">💡</span>
+                <span class="tip-text"><strong>Regra de ouro:</strong> comece pelo padrão mais simples que resolve seu problema.</span>
+            `;
+            container.appendChild(tipCard);
+        }
+
+        function selectPattern(index) {
+            currentPattern = index;
+            const p = patterns[index];
+
+            // Update cards
+            document.querySelectorAll('.pattern-card').forEach((card, i) => {
+                card.classList.toggle('active', i === index);
+            });
+
+            // Update detail panel
+            const badge = document.getElementById('detailBadge');
+            badge.textContent = p.number;
+            badge.style.background = p.color;
+
+            document.getElementById('detailName').textContent = p.name;
+            document.getElementById('detailTechnical').textContent = p.technical;
+            document.getElementById('analogyText').textContent = p.analogy;
+            document.getElementById('exampleText').textContent = p.example;
+            document.getElementById('diagram').innerHTML = p.diagram;
+            document.getElementById('detailPanel').style.borderColor = p.color;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                selectPattern((currentPattern + 1) % patterns.length);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                selectPattern((currentPattern - 1 + patterns.length) % patterns.length);
+            } else if (e.key >= '1' && e.key <= '5') {
+                selectPattern(parseInt(e.key) - 1);
+            }
+        });
+
+        // Initialize
+        generateCards();
+        selectPattern(0);
+
+        // Embed mode
+        try {
+            if (window.self !== window.top) {
+                document.body.classList.add('embed-mode');
+            }
+        } catch (e) {
+            document.body.classList.add('embed-mode');
+        }
+    </script>
+</body>
+</html>

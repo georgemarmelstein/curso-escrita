@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Curso de Sistemas Agênticos para Juristas. Domine o Claude Code e construa sistemas de IA que potencializam a prática jurídica.">
+  <meta name="author" content="Georg">
+
+  <title>Sistemas Agênticos | Curso para Juristas</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖</text></svg>">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">SA</div>
+          <div class="logo-text">
+            Sistemas Agênticos
+            <span>Curso para Juristas</span>
+          </div>
+        </a>
+
+        <nav class="nav-main">
+          <a href="index.html" class="nav-link active">Início</a>
+
+          <div class="nav-dropdown">
+            <button class="nav-link nav-dropdown-trigger">
+              Aulas
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="nav-dropdown-menu">
+              <a href="pages/aula-0.html" class="dropdown-item">
+                <span class="dropdown-item-number">0</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Apresentação ao Mundo Agêntico</div>
+                  <div class="dropdown-item-desc">Sensibilização e mudança de paradigma</div>
+                </div>
+              </a>
+              <a href="pages/aula-1.html" class="dropdown-item">
+                <span class="dropdown-item-number">1</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">O Sistema Agêntico na Prática</div>
+                  <div class="dropdown-item-desc">Claude Web, Desktop e limitações</div>
+                </div>
+              </a>
+              <a href="pages/aula-2a.html" class="dropdown-item">
+                <span class="dropdown-item-number">2A</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Anatomia de um Sistema Agêntico</div>
+                  <div class="dropdown-item-desc">Conceitos fundamentais</div>
+                </div>
+              </a>
+              <a href="pages/aula-2b.html" class="dropdown-item">
+                <span class="dropdown-item-number">2B</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Claude Code na Prática</div>
+                  <div class="dropdown-item-desc">Instalação e primeiros passos</div>
+                </div>
+              </a>
+              <a href="pages/aula-3.html" class="dropdown-item">
+                <span class="dropdown-item-number">3</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Arquitetura de Agentes</div>
+                  <div class="dropdown-item-desc">Padrões e design de sistemas</div>
+                </div>
+              </a>
+              <a href="pages/aula-4.html" class="dropdown-item">
+                <span class="dropdown-item-number">4</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Construindo os Primeiros Agentes</div>
+                  <div class="dropdown-item-desc">Skills, Commands e prática</div>
+                </div>
+              </a>
+              <a href="pages/aula-5.html" class="dropdown-item">
+                <span class="dropdown-item-number">5</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Sistema Jurídico Agêntico</div>
+                  <div class="dropdown-item-desc">CLERK e aplicação prática</div>
+                </div>
+              </a>
+
+              <div class="dropdown-divider">
+                <span>Módulo 2: Prompts Agênticos</span>
+              </div>
+
+              <a href="pages/aula-6.html" class="dropdown-item">
+                <span class="dropdown-item-number">6</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Engenharia de Prompt</div>
+                  <div class="dropdown-item-desc">SEMPRE/NUNCA/PREFERIR e Learning Loop</div>
+                </div>
+              </a>
+              <a href="pages/aula-6b.html" class="dropdown-item">
+                <span class="dropdown-item-number">6B</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Prompts em Sistemas Agenticos</div>
+                  <div class="dropdown-item-desc">CLAUDE.md, contratos e orquestradores</div>
+                </div>
+              </a>
+              <a href="pages/aula-7.html" class="dropdown-item">
+                <span class="dropdown-item-number">7</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Engenharia de Contexto</div>
+                  <div class="dropdown-item-desc">Progressive Disclosure e CLAUDE.md</div>
+                </div>
+              </a>
+              <a href="pages/aula-8.html" class="dropdown-item">
+                <span class="dropdown-item-number">8</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Engenharia de Capacidades</div>
+                  <div class="dropdown-item-desc">Commands, Skills e organização</div>
+                </div>
+              </a>
+              <a href="pages/aula-9.html" class="dropdown-item">
+                <span class="dropdown-item-number">9</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Engenharia de Workflows</div>
+                  <div class="dropdown-item-desc">Pipelines, checkpoints e error handling</div>
+                </div>
+              </a>
+              <a href="pages/aula-10.html" class="dropdown-item">
+                <span class="dropdown-item-number">10</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Engenharia de Conexoes</div>
+                  <div class="dropdown-item-desc">MCP, Web Search e APIs REST</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <a href="pages/glossario.html" class="nav-link">Glossário</a>
+          <a href="pages/recursos.html" class="nav-link">Recursos</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="theme-toggle" aria-label="Alternar tema">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </button>
+
+          <button class="mobile-menu-toggle" aria-label="Menu" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="site-main">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span>Novo Paradigma</span>
+          </div>
+
+          <h1 class="hero-title">
+            Do Assistente ao<br>
+            <span class="highlight">Regente Cognitivo</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Domine o Claude Code e construa sistemas agênticos que transformam
+            a prática jurídica. Você dirige, a IA executa.
+          </p>
+
+          <div class="hero-cta">
+            <a href="pages/aula-0.html" class="btn btn-primary btn-lg">
+              Começar o Curso
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+            <a href="pages/glossario.html" class="btn btn-secondary btn-lg">
+              Ver Glossário
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-value">10</div>
+              <div class="hero-stat-label">Aulas completas</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">24h</div>
+              <div class="hero-stat-label">De conteúdo</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">100+</div>
+              <div class="hero-stat-label">Insights práticos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Intro Section -->
+    <section class="intro-section">
+      <div class="container">
+        <div class="intro-grid">
+          <div class="intro-content">
+            <h2>A Inversão do Paradigma</h2>
+            <p>
+              No mundo dos assistentes, o jurista vira <em>middleware</em> entre ferramentas
+              desconectadas: baixa PDF, cola no chat, copia resposta, formata documento.
+              80% do tempo em operação, 20% em análise.
+            </p>
+            <p>
+              No mundo dos agentes, você define o objetivo e o sistema executa.
+              A inversão é completa: 20% supervisão, 80% análise e decisão de alto valor.
+            </p>
+          </div>
+
+          <div class="intro-visual">
+            <div class="paradigm-comparison">
+              <div class="paradigm-box old">
+                <h4>Antes</h4>
+                <p>Humano opera ferramentas</p>
+              </div>
+              <div class="paradigm-arrow">→</div>
+              <div class="paradigm-box new">
+                <h4>Depois</h4>
+                <p>Humano dirige sistemas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section class="philosophy-section">
+      <div class="container">
+        <div class="philosophy-header">
+          <p class="caption">Filosofia do Curso</p>
+          <h2>Regência Cognitiva</h2>
+        </div>
+
+        <blockquote class="philosophy-quote">
+          A IA não pode substituir o pensamento. Ela só pode amplificar
+          o pensamento que você já fez.
+          <cite>— Dex Horthy, 12 Factor Agents</cite>
+        </blockquote>
+
+        <div class="grid grid-3 stagger">
+          <div class="card feature-card">
+            <div class="feature-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+            <h3>Aumentação</h3>
+            <p>IA potencializa o humano, não substitui. A decisão permanece sua.</p>
+          </div>
+
+          <div class="card feature-card">
+            <div class="feature-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+              </svg>
+            </div>
+            <h3>Direção</h3>
+            <p>Você define objetivos, o sistema executa etapas operacionais.</p>
+          </div>
+
+          <div class="card feature-card">
+            <div class="feature-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <h3>Supervisão</h3>
+            <p>Checkpoints estratégicos garantem controle sem microgerenciamento.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lessons Section -->
+    <section class="lessons-section">
+      <div class="container">
+        <div class="section-header">
+          <p class="caption">Jornada de Aprendizado</p>
+          <h2>Estrutura do Curso</h2>
+          <p>Dois módulos completos: dos conceitos fundamentais à engenharia avançada de prompts para sistemas agênticos.</p>
+        </div>
+
+        <h3 class="module-title">Módulo 1: Fundamentos</h3>
+
+        <div class="lessons-grid stagger">
+          <!-- Aula 0 -->
+          <a href="pages/aula-0.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">0</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Apresentação ao Mundo Agêntico</h3>
+              <p class="lesson-card-subtitle">Sensibilização</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Do mundo dos assistentes ao mundo dos agentes. Por que a interface limita
+                e como o terminal liberta todo o potencial da IA.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  45-60 min
+                </span>
+                <span>7 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 1 -->
+          <a href="pages/aula-1.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">1</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">O Sistema Agêntico na Prática</h3>
+              <p class="lesson-card-subtitle">Demonstração</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Claude Web, Desktop e suas capacidades agênticas. Conectores, MCPs
+                e por que o terminal ainda é necessário.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~2h
+                </span>
+                <span>6 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 2A -->
+          <a href="pages/aula-2a.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">2A</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Anatomia de um Sistema Agêntico</h3>
+              <p class="lesson-card-subtitle">Conceitos</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Modelo fundamental ENTRADA → PROCESSAMENTO → SAÍDA. Níveis de autonomia
+                L1-L5, zonas de processamento e o padrão RPI.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~50 min
+                </span>
+                <span>5 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 2B -->
+          <a href="pages/aula-2b.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">2B</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Claude Code na Prática</h3>
+              <p class="lesson-card-subtitle">Hands-on</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Instalação, CLAUDE.md, Commands, Skills, Task Tool, MCPs,
+                permissões, modo YOLO e Hooks. Tudo mapeado.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~2h30
+                </span>
+                <span>8 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 3 -->
+          <a href="pages/aula-3.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">3</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Arquitetura de Agentes</h3>
+              <p class="lesson-card-subtitle">Design</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Workflow vs Agent, padrões de orquestração, pipelines,
+                paralelização fan-out, gerenciamento de contexto e gates.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~3h
+                </span>
+                <span>7 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 4 -->
+          <a href="pages/aula-4.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">4</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Construindo os Primeiros Agentes</h3>
+              <p class="lesson-card-subtitle">Implementação</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Spec-Driven Development, anatomia de Skills, criação de Commands,
+                padrão RPI, Prompt Learning Loop e debugging.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~4h
+                </span>
+                <span>7 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 5 -->
+          <a href="pages/aula-5.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">5</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Sistema Jurídico Agêntico</h3>
+              <p class="lesson-card-subtitle">Aplicação</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                O CLERK completo: filosofia de aumentação, MCPs jurídicos,
+                pipeline de 6 fases, governança e projeto final.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~4h
+                </span>
+                <span>7 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+        </div>
+
+        <h3 class="module-title">Módulo 2: Prompts Agênticos</h3>
+
+        <div class="lessons-grid stagger">
+          <!-- Aula 6 -->
+          <a href="pages/aula-6.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">6</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Engenharia de Prompt</h3>
+              <p class="lesson-card-subtitle">Documentação</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Anatomia do prompt eficaz, padrão SEMPRE/NUNCA/PREFERIR,
+                Prompt Learning Loop e os 10 erros mais comuns.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~2h30
+                </span>
+                <span>5 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 7 -->
+          <a href="pages/aula-7.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">7</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Engenharia de Contexto</h3>
+              <p class="lesson-card-subtitle">CLAUDE.md</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Progressive Disclosure, hierarquia de contextos,
+                gerenciamento da Context Window e otimização de tokens.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~2h
+                </span>
+                <span>5 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 8 -->
+          <a href="pages/aula-8.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">8</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Engenharia de Capacidades</h3>
+              <p class="lesson-card-subtitle">Commands & Skills</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Anatomia de Commands e Skills, templates,
+                organização de arquivos e quando usar cada um.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~2h
+                </span>
+                <span>5 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 9 -->
+          <a href="pages/aula-9.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">9</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Engenharia de Workflows</h3>
+              <p class="lesson-card-subtitle">Pipelines</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                Pipelines determinísticos, padrão RPI, checkpoints e gates,
+                error handling e framework de custo do erro.
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~2h30
+                </span>
+                <span>5 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- Aula 10 -->
+          <a href="pages/aula-10.html" class="card lesson-card">
+            <div class="lesson-card-header">
+              <span class="lesson-card-number">10</span>
+              <div class="lesson-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+              </div>
+              <h3 class="lesson-card-title">Engenharia de Conexoes</h3>
+              <p class="lesson-card-subtitle">Integracoes</p>
+            </div>
+            <div class="lesson-card-body">
+              <p class="lesson-card-description">
+                As 5 portas de saida: MCP, Web Search, APIs REST,
+                Selenium/Playwright e Claude in Chrome (Computer Use).
+              </p>
+            </div>
+            <div class="lesson-card-footer">
+              <div class="lesson-card-meta">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ~1h30
+                </span>
+                <span>7 blocos</span>
+              </div>
+              <span class="lesson-card-arrow">→</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLERK Preview Section -->
+    <section class="clerk-section">
+      <div class="container">
+        <div class="clerk-grid">
+          <div class="clerk-content">
+            <span class="badge badge-gold">Estudo de Caso</span>
+            <h2>CLERK: Assessor(IA) Agêntico</h2>
+            <p class="lead">
+              <strong>C</strong>ollaborative <strong>L</strong>egal <strong>E</strong>xpert for
+              <strong>R</strong>esearch and <strong>K</strong>nowledge — um sistema completo
+              para aumentar a capacidade analítica do jurista.
+            </p>
+
+            <ul class="clerk-features">
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Download automático do PJE e conversão PDF → Texto</span>
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Relatórios estruturados com metodologia de Refinamento Iterativo</span>
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Pesquisa em 3 bases: BNP, CJF e JULIA (TRF5)</span>
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Classificação automática: TRIVIAL vs HARD CASE</span>
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Revisão paralela com 3 subagentes especializados</span>
+              </li>
+            </ul>
+
+            <a href="pages/aula-5.html" class="btn btn-primary">
+              Ver na Aula 5
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+          </div>
+
+          <div class="clerk-visual">
+            <div class="clerk-diagram">
+              <pre><code>┌─────────────────────────────────────────────────┐
+│              PIPELINE CLERK                      │
+├─────────────────────────────────────────────────┤
+│                                                  │
+│  FASE 1        FASE 2        FASE 3             │
+│  Preparação    Extração      Orquestrador       │
+│  ┌────────┐   ┌────────┐    ┌────────┐          │
+│  │PDF→TXT │──▶│Relatório│──▶│Pesquisa │         │
+│  └────────┘   └────────┘    │+Classif.│         │
+│                             └────┬───┘          │
+│                                  │              │
+│                     ┌────────────┴────────────┐ │
+│                     ▼                         │ │
+│              ╔═══════════════╗                │ │
+│              ║  CHECKPOINT   ║ ◀── Juiz       │ │
+│              ║  DECISÓRIO    ║     decide     │ │
+│              ╚═══════╤═══════╝                │ │
+│                      │                        │ │
+│  FASE 4        FASE 5        FASE 6           │ │
+│  Elaboração    Merge         Revisão          │ │
+│  ┌────────┐   ┌────────┐    ┌────────┐        │ │
+│  │ Minuta │──▶│Sentença│──▶│3 Agentes│        │ │
+│  │Fund+Dis│   │Completa│    │Paralelo │       │ │
+│  └────────┘   └────────┘    └────────┘        │ │
+│                                               │ │
+└───────────────────────────────────────────────┘</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+      <div class="container">
+        <div class="section-header">
+          <p class="caption">O Que Você Vai Aprender</p>
+          <h2>Competências Desenvolvidas</h2>
+        </div>
+
+        <div class="features-grid stagger">
+          <div class="card feature-card">
+            <div class="feature-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+              </svg>
+            </div>
+            <h3>Claude Code</h3>
+            <p>Domínio completo da ferramenta: instalação, configuração, CLAUDE.md, permissões e modo YOLO.</p>
+          </div>
+
+          <div class="card feature-card">
+            <div class="feature-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+            </div>
+            <h3>Skills & Commands</h3>
+            <p>Criar expertise reutilizável e atalhos inteligentes para tarefas recorrentes.</p>
+          </div>
+
+          <div class="card feature-card">
+            <div class="feature-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+              </svg>
+            </div>
+            <h3>Arquitetura</h3>
+            <p>Padrões de orquestração, pipelines, paralelização e gerenciamento de contexto.</p>
+          </div>
+
+          <div class="card feature-card">
+            <div class="feature-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+              </svg>
+            </div>
+            <h3>MCPs</h3>
+            <p>Conectar agentes a sistemas externos: bases jurídicas, PJE e ferramentas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2>Pronto para Começar?</h2>
+          <p>
+            Transforme sua prática jurídica com sistemas agênticos.
+            O futuro da advocacia é dirigir, não operar.
+          </p>
+          <div class="cta-buttons">
+            <a href="pages/aula-0.html" class="btn btn-primary btn-lg">
+              Iniciar Aula 0
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+            <a href="pages/glossario.html" class="btn btn-secondary btn-lg">
+              Explorar Glossário
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">SA</div>
+            <div class="logo-text">
+              Sistemas Agênticos
+              <span>Curso para Juristas</span>
+            </div>
+          </a>
+          <p>
+            Curso completo sobre Claude Code e sistemas agênticos
+            para profissionais do Direito. Filosofia: Regência Cognitiva.
+          </p>
+        </div>
+
+        <div class="footer-section">
+          <h4>Aulas</h4>
+          <ul class="footer-links">
+            <li><a href="pages/aula-0.html">Aula 0: Introdução</a></li>
+            <li><a href="pages/aula-1.html">Aula 1: Na Prática</a></li>
+            <li><a href="pages/aula-2a.html">Aula 2A: Anatomia</a></li>
+            <li><a href="pages/aula-2b.html">Aula 2B: Claude Code</a></li>
+            <li><a href="pages/aula-3.html">Aula 3: Arquitetura</a></li>
+            <li><a href="pages/aula-4.html">Aula 4: Construção</a></li>
+            <li><a href="pages/aula-5.html">Aula 5: CLERK</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4>Recursos</h4>
+          <ul class="footer-links">
+            <li><a href="pages/glossario.html">Glossário</a></li>
+            <li><a href="pages/recursos.html">Downloads</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4>Referências</h4>
+          <ul class="footer-links">
+            <li><a href="https://claude.ai/code" target="_blank" rel="noopener">Claude Code</a></li>
+            <li><a href="https://docs.anthropic.com" target="_blank" rel="noopener">Documentação Anthropic</a></li>
+            <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP Protocol</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Sistemas Agênticos. Curso educacional.</p>
+        <p>Feito com Claude Code</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+</body>
+</html>

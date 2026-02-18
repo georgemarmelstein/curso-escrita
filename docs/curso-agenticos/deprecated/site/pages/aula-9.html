@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 9: Engenharia de Workflows | Sistemas Agenticos</title>
+    <meta name="description" content="Pipelines deterministicos, padrao RPI, checkpoints e gates, error handling e framework de custo do erro">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">S</span>
+                <span class="logo-text">Sistemas Agenticos</span>
+            </a>
+            <nav class="nav-main">
+                <ul>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Aulas</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="aula-0.html">Aula 0: Abertura</a></li>
+                            <li><a href="aula-1.html">Aula 1: Fundamentos</a></li>
+                            <li><a href="aula-2a.html">Aula 2A: Anatomia</a></li>
+                            <li><a href="aula-2b.html">Aula 2B: Claude Code</a></li>
+                            <li><a href="aula-3.html">Aula 3: Arquitetura</a></li>
+                            <li><a href="aula-4.html">Aula 4: Construindo</a></li>
+                            <li><a href="aula-5.html">Aula 5: Sistema CLERK</a></li>
+                            <li class="divider"></li>
+                            <li><a href="aula-6.html">Aula 6: Engenharia de Prompt</a></li>
+                            <li><a href="aula-6b.html">Aula 6B: Prompts Agenticos</a></li>
+                            <li><a href="aula-7.html">Aula 7: Engenharia de Contexto</a></li>
+                            <li><a href="aula-8.html">Aula 8: Engenharia de Capacidades</a></li>
+                            <li><a href="aula-9.html" class="active">Aula 9: Engenharia de Workflows</a></li>
+                            <li><a href="aula-10.html">Aula 10: Engenharia de Conexoes</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="glossario.html">Glossario</a></li>
+                    <li><a href="recursos.html">Recursos</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" aria-label="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+        <div class="container">
+            <span class="badge badge-module">Modulo 2</span>
+            <h1>Engenharia de Workflows</h1>
+            <p class="lesson-subtitle">Como orquestrar capacidades em pipelines deterministicos com checkpoints, gates e tratamento de erros</p>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    2h30
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    5 blocos
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                    </svg>
+                    Pipelines
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lesson Content -->
+    <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+            <nav class="lesson-nav">
+                <h4>Nesta Aula</h4>
+                <ul>
+                    <li><a href="#bloco0" class="lesson-nav-link">0. Usuario como Arquiteto</a></li>
+                    <li><a href="#bloco1" class="lesson-nav-link">1. Pipelines vs Agencia Livre</a></li>
+                    <li><a href="#bloco2" class="lesson-nav-link">2. Padrao RPI</a></li>
+                    <li><a href="#bloco3" class="lesson-nav-link">3. Checkpoints e Gates</a></li>
+                    <li><a href="#bloco4" class="lesson-nav-link">4. Error Handling</a></li>
+                    <li><a href="#bloco5" class="lesson-nav-link">5. Framework Custo do Erro</a></li>
+                    <li><a href="#bloco6" class="lesson-nav-link">6. Meta-Workflow</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lesson-content">
+            <!-- Mobile TOC -->
+            <div class="mobile-toc">
+                <button class="mobile-toc-trigger">
+                    <span>Navegacao</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <nav class="mobile-toc-content">
+                    <ul>
+                        <li><a href="#bloco0">0. Usuario como Arquiteto</a></li>
+                        <li><a href="#bloco1">1. Pipelines vs Agencia Livre</a></li>
+                        <li><a href="#bloco2">2. Padrao RPI</a></li>
+                        <li><a href="#bloco3">3. Checkpoints e Gates</a></li>
+                        <li><a href="#bloco4">4. Error Handling</a></li>
+                        <li><a href="#bloco5">5. Framework Custo do Erro</a></li>
+                        <li><a href="#bloco6">6. Meta-Workflow</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Introducao -->
+            <section class="lesson-block" id="intro">
+                <h2>Da Capacidade ao Workflow</h2>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Objetivo</div>
+                    <p>Aprender a <strong>orquestrar</strong> capacidades (Commands e Skills) em workflows completos com previsibilidade, auditabilidade e controle.</p>
+                </div>
+
+                <blockquote>
+                    <p>"Os melhores agentes de producao nao eram tao agenticos assim. Eram principalmente software, mas havia esses nucleos de IA fazendo coisas especificas."</p>
+                    <cite>AI Engineer Summit 2024</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                  DA CAPACIDADE AO WORKFLOW                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   CAPACIDADES ISOLADAS:                                         │
+│   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
+│   │ Command  │  │  Skill   │  │ Command  │  │  Skill   │        │
+│   │ /relatar │  │ analise  │  │ /minutar │  │ revisao  │        │
+│   └──────────┘  └──────────┘  └──────────┘  └──────────┘        │
+│                                                                 │
+│   WORKFLOW ORQUESTRADO:                                         │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
+│   │ /relatar │ →  │ analise  │ →  │ /minutar │ →  │ revisao  │  │
+│   └────┬─────┘    └────┬─────┘    └────┬─────┘    └────┬─────┘  │
+│        │               │               │               │        │
+│        ▼               ▼               ▼               ▼        │
+│   relatorio.md    analise.md      minuta.md      sentenca.md    │
+│                                                                 │
+│   BENEFICIOS:                                                   │
+│   • Previsibilidade: mesma sequencia toda vez                   │
+│   • Auditabilidade: cada etapa produz artefato                  │
+│   • Controle: checkpoints em pontos criticos                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>Trade-off Central</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Abordagem</th>
+                            <th>Vantagem</th>
+                            <th>Desvantagem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Agencia Livre</strong></td>
+                            <td>Flexibilidade, adaptacao</td>
+                            <td>Imprevisivel, dificil auditar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pipeline Rigido</strong></td>
+                            <td>Previsivel, auditavel</td>
+                            <td>Inflexivel</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hibrido</strong></td>
+                            <td>Melhor dos dois mundos</td>
+                            <td>Mais complexo de projetar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 0: Usuario como Arquiteto -->
+            <section id="bloco0" class="lesson-block">
+                <h2>Bloco 0: O Usuario como Arquiteto do Workflow</h2>
+                <span class="badge badge-time">20 min</span>
+
+                <h3>0.1 O Principio Fundamental</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">Principio Central</div>
+                    <p>"Toda etapa, toda tarefa, todo sistema pressupoe um mecanismo de <strong>ENTRADA</strong>, <strong>PROCESSAMENTO</strong> e <strong>SAIDA</strong>."</p>
+                </div>
+
+                <p>Este e o DNA de qualquer workflow. Se voce nao consegue articular claramente esses tres componentes para cada etapa do seu sistema, voce nao tem um workflow - voce tem esperanca.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│            O ATOMO DE QUALQUER SISTEMA AGENTICO                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│                 ┌─────────────────────────────┐                 │
+│                 │                             │                 │
+│  ENTRADA ─────► │       PROCESSAMENTO         │ ─────► SAIDA    │
+│                 │                             │                 │
+│                 └─────────────────────────────┘                 │
+│                                                                 │
+│  O que entra?     O que acontece?              O que sai?       │
+│  • Formato        • Quais transformacoes?      • Formato        │
+│  • Conteudo       • Quais decisoes?            • Conteudo       │
+│  • Origem         • Quais validacoes?          • Destino        │
+│                                                                 │
+│  EXEMPLO - Etapa "Gerar Relatorio":                             │
+│  ──────────────────────────────────                             │
+│  ENTRADA:          PROCESSAMENTO:           SAIDA:              │
+│  processo.txt      • Extrair fatos         relatorio.md         │
+│  (peticao +        • Identificar pedidos   • Estruturado        │
+│   contestacao)     • Mapear provas         • Pedidos listados   │
+│                    • Estruturar secoes     • Cronologia clara   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>0.2 A Clareza de Pensamento Necessaria</h3>
+
+                <p>O usuario e o <strong>arquiteto do sistema</strong>. A maquina e a <strong>construtora</strong>. Mas se o arquiteto entrega uma planta confusa, a construtora vai construir algo confuso.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                   CLAREZA DO ARQUITETO                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   O ARQUITETO (usuario) PRECISA SABER:                          │
+│                                                                 │
+│   1. QUAL E O RESULTADO FINAL?                                  │
+│      "Quero uma sentenca completa" ← Especifico                 │
+│      "Quero algo sobre o processo" ← Vago demais                │
+│                                                                 │
+│   2. QUAIS SAO AS ETAPAS INTERMEDIARIAS?                        │
+│      "Primeiro relatorio, depois analise, depois minuta" ← OK   │
+│      "Processa ai" ← Sem direcao                                │
+│                                                                 │
+│   3. O QUE CADA ETAPA RECEBE E ENTREGA?                         │
+│      "Relatorio recebe TXT, entrega MD estruturado" ← Contrato  │
+│      "Faz um relatorio" ← Sem contrato                          │
+│                                                                 │
+│   4. ONDE PRECISO INTERVIR?                                     │
+│      "Antes de minutar, quero aprovar a analise" ← Checkpoint   │
+│      "Me avisa quando terminar" ← Sem controle                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>0.3 O Contrato de Cada Etapa</h3>
+
+                <p>Cada etapa do seu workflow deve ter um <strong>contrato explicito</strong>:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Componente</th>
+                            <th>Pergunta</th>
+                            <th>Exemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ENTRADA</strong></td>
+                            <td>O que essa etapa recebe?</td>
+                            <td>Arquivo TXT com peticao inicial</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PROCESSO</strong></td>
+                            <td>O que ela faz com isso?</td>
+                            <td>Extrai fatos, identifica pedidos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SAIDA</strong></td>
+                            <td>O que ela produz?</td>
+                            <td>Arquivo MD com relatorio estruturado</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VALIDACAO</strong></td>
+                            <td>Como sei que funcionou?</td>
+                            <td>Tem todas as secoes obrigatorias</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ERRO</strong></td>
+                            <td>O que acontece se falhar?</td>
+                            <td>Escala para humano apos 3 tentativas</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>0.4 Da Visao ao Workflow</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    DA VISAO AO WORKFLOW                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   NIVEL 1: VISAO (o que voce quer)                              │
+│   ────────────────────────────────                              │
+│   "Quero automatizar a elaboracao de sentencas de BPC"          │
+│                           │                                     │
+│                           ▼                                     │
+│   NIVEL 2: ETAPAS (como voce vai conseguir)                     │
+│   ─────────────────────────────────────────                     │
+│   1. Preparar processo (PDF → TXT)                              │
+│   2. Gerar relatorio estruturado                                │
+│   3. Pesquisar precedentes aplicaveis                           │
+│   4. Classificar caso (trivial vs hard case)                    │
+│   5. Elaborar fundamentacao                                     │
+│   6. Redigir dispositivo                                        │
+│   7. Revisar sentenca                                           │
+│                           │                                     │
+│                           ▼                                     │
+│   NIVEL 3: CONTRATOS (o que cada etapa faz)                     │
+│   ─────────────────────────────────────────                     │
+│   Para CADA etapa acima:                                        │
+│   • Entrada: [especificar]                                      │
+│   • Processamento: [especificar]                                │
+│   • Saida: [especificar]                                        │
+│   • Validacao: [especificar]                                    │
+│                           │                                     │
+│                           ▼                                     │
+│   NIVEL 4: WORKFLOW (orquestracao)                              │
+│   ────────────────────────────────                              │
+│   • Ordem de execucao                                           │
+│   • Gates entre etapas                                          │
+│   • Tratamento de erros                                         │
+│   • Pontos de checkpoint                                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <div class="callout callout-tip">
+                    <div class="callout-title">Regra de Ouro</div>
+                    <p>Se voce nao consegue preencher Entrada/Processamento/Saida para cada etapa, voce ainda nao esta pronto para construir o workflow. Volte a prancheta.</p>
+                </div>
+            </section>
+
+            <!-- Bloco 1: Pipelines vs Agencia Livre -->
+            <section id="bloco1" class="lesson-block">
+                <h2>Bloco 1: Pipelines vs Agencia Livre</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>1.1 O Espectro de Controle</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                   ESPECTRO DE CONTROLE                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   CONTROLE TOTAL ◄────────────────────────────► AGENCIA TOTAL   │
+│                                                                 │
+│   ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌──────────┐  │
+│   │  PIPELINE  │  │ PIPELINE   │  │ WORKFLOW   │  │ AGENCIA  │  │
+│   │  RIGIDO    │  │ COM GATES  │  │ HIBRIDO    │  │  LIVRE   │  │
+│   └────────────┘  └────────────┘  └────────────┘  └──────────┘  │
+│                                                                 │
+│   • Sequencia     • Sequencia     • Sequencia     • Sem seq.   │
+│     fixa            fixa            com bolsoes     definida   │
+│   • Sem decisoes  • Gates entre   • IA decide     • IA decide  │
+│     da IA           etapas          em bolsoes      tudo       │
+│   • Previsivel    • Controlado    • Parcialmente  • Adaptavel  │
+│   • Inflexivel    • Auditavel       flexivel      • Imprevis.  │
+│                                                                 │
+│   Uso tipico:                                                   │
+│   • Formularios   • Analise com   • Casos         • Exploracao │
+│                     revisao         judiciais       problemas  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>1.2 Workflows com Bolsoes Agenticos</h3>
+
+                <blockquote>
+                    <p>"Workflows com bolsoes agenticos - estrutura rigida no geral, inteligencia criativa onde necessario."</p>
+                    <cite>Dex Horthy, 12 Factor Agents (AI Engineer Summit 2024)</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│               WORKFLOW COM BOLSOES AGENTICOS                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ENTRADA ───► [ETAPA 1] ───► [ETAPA 2] ───► SAIDA              │
+│                 (rigida)      (agentica)     (rigida)           │
+│                                                                 │
+│                    │              │              │               │
+│                    ▼              ▼              ▼               │
+│              ┌──────────┐  ┌──────────┐  ┌──────────┐           │
+│              │ Extracao │  │ Analise  │  │ Validacao│           │
+│              │ de dados │  │ criativa │  │ de saida │           │
+│              │ (script) │  │  (IA)    │  │ (regras) │           │
+│              └──────────┘  └──────────┘  └──────────┘           │
+│                                                                 │
+│              Deterministico   Bolsao      Deterministico        │
+│              (previsivel)     Agentico    (previsivel)          │
+│                               (criativo)                        │
+│                                                                 │
+│   ONDE USAR CADA:                                               │
+│   • Deterministico: extracao, validacao, formatacao             │
+│   • Agentico: analise, sintese, decisao, criacao                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+            </section>
+
+            <!-- Bloco 2: Padrao RPI -->
+            <section id="bloco2" class="lesson-block">
+                <h2>Bloco 2: Padrao RPI - Research, Plan, Implement</h2>
+                <span class="badge badge-time">30 min</span>
+
+                <h3>2.1 As 3 Fases</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                     PADRAO RPI                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌─────────────┐       ┌─────────────┐       ┌─────────────┐   │
+│   │  RESEARCH   │ ───► │    PLAN     │ ───► │  IMPLEMENT   │   │
+│   │  (Pesquisa) │       │  (Plano)    │       │  (Execucao)  │   │
+│   └─────────────┘       └─────────────┘       └─────────────┘   │
+│         │                     │                     │           │
+│         ▼                     ▼                     ▼           │
+│   ┌─────────────┐       ┌─────────────┐       ┌─────────────┐   │
+│   │ • Ler autos │       │ • Listar    │       │ • Executar  │   │
+│   │ • Pesquisar │       │   tarefas   │       │   tarefas   │   │
+│   │   precedent.│       │ • Definir   │       │ • Validar   │   │
+│   │ • Entender  │       │   ordem     │       │   outputs   │   │
+│   │   contexto  │       │ • Aprovar   │       │ • Entregar  │   │
+│   └─────────────┘       └─────────────┘       └─────────────┘   │
+│                                                                 │
+│   GATES ENTRE FASES:                                            │
+│   ────────────────────                                          │
+│   R→P: "Tenho informacao suficiente para planejar?"             │
+│   P→I: "O plano foi aprovado pelo usuario?"                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>2.2 Outputs de Cada Fase</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fase</th>
+                            <th>Output</th>
+                            <th>Criterio de Saida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Research</strong></td>
+                            <td>Relatorio de pesquisa</td>
+                            <td>Contexto completo entendido</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Plan</strong></td>
+                            <td>Lista de tarefas</td>
+                            <td>Plano aprovado pelo usuario</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Implement</strong></td>
+                            <td>Artefatos finais</td>
+                            <td>Tarefas concluidas e validadas</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-tip">
+                    <div class="callout-title">Regra de Ouro RPI</div>
+                    <p>NUNCA pule a fase de Research. Entender antes de planejar. Planejar antes de executar.</p>
+                </div>
+            </section>
+
+            <!-- Bloco 3: Checkpoints e Gates -->
+            <section id="bloco3" class="lesson-block">
+                <h2>Bloco 3: Checkpoints e Gates</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>3.1 Matriz de Risco</h3>
+
+                <blockquote>
+                    <p>"O nivel de supervisao depende de duas variaveis: custo do erro e dificuldade de descoberta."</p>
+                    <cite>Barry Zhang, Anthropic (AI Engineer Summit 2024)</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                  MATRIZ DE RISCO                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│                       CUSTO DO ERRO                             │
+│                  BAIXO            ALTO                          │
+│              ┌───────────────┬───────────────┐                  │
+│              │               │               │                  │
+│     FACIL    │    HOOTL      │    HOTL       │                  │
+│              │  Automatico   │  Amostragem   │                  │
+│  DESCOBERTA  │               │               │                  │
+│              ├───────────────┼───────────────┤                  │
+│              │               │               │                  │
+│     DIFICIL  │    HOTL       │    HITL       │                  │
+│              │  Amostragem   │  Cada item    │                  │
+│              │               │               │                  │
+│              └───────────────┴───────────────┘                  │
+│                                                                 │
+│   LEGENDA:                                                      │
+│   HITL = Human-In-The-Loop (humano em cada decisao)             │
+│   HOTL = Human-On-The-Loop (humano amostra periodicamente)      │
+│   HOOTL = Human-Out-of-The-Loop (humano so se problema)         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>3.2 Tipos de Checkpoint</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Supervisao</th>
+                            <th>Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>HITL</strong></td>
+                            <td>100% das decisoes</td>
+                            <td>Sentencas, decisoes criticas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HOTL</strong></td>
+                            <td>Amostragem (ex: 10%)</td>
+                            <td>Relatorios, analises</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HOOTL</strong></td>
+                            <td>So se erro detectado</td>
+                            <td>Formatacao, extracao</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>3.3 Onde Inserir Checkpoints</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│               ONDE INSERIR CHECKPOINTS                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ANTES de decisoes irreversiveis                               │
+│   ├── Enviar email/notificacao                                  │
+│   ├── Publicar documento                                        │
+│   ├── Modificar dados em producao                               │
+│   └── Aprovar transacao financeira                              │
+│                                                                 │
+│   ENTRE fases do pipeline                                       │
+│   ├── Research → Plan (informacao suficiente?)                  │
+│   ├── Plan → Implement (plano aprovado?)                        │
+│   └── Implement → Deploy (testes passaram?)                     │
+│                                                                 │
+│   QUANDO custo do erro e alto                                   │
+│   ├── Sentencas judiciais                                       │
+│   ├── Pareceres tecnicos                                        │
+│   └── Recomendacoes com impacto financeiro                      │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+            </section>
+
+            <!-- Bloco 4: Error Handling -->
+            <section id="bloco4" class="lesson-block">
+                <h2>Bloco 4: Error Handling Estruturado</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>4.1 O Padrao Capturar-Filtrar-Resumir-Tentar</h3>
+
+                <blockquote>
+                    <p>"Nao coloque o stack trace inteiro no prompt. Filtre, resuma, foque no erro."</p>
+                    <cite>Dex Horthy, 12 Factor Agents (AI Engineer Summit 2024)</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│            PADRAO CAPTURAR-FILTRAR-RESUMIR-TENTAR               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   1. CAPTURAR                                                   │
+│      └── Pegar o erro completo (log, stack trace)               │
+│                                                                 │
+│   2. FILTRAR                                                    │
+│      └── Remover ruido (linhas irrelevantes)                    │
+│      └── Manter: mensagem, local, contexto                      │
+│                                                                 │
+│   3. RESUMIR                                                    │
+│      └── "Erro X na linha Y do arquivo Z"                       │
+│      └── Contexto minimo necessario                             │
+│                                                                 │
+│   4. TENTAR                                                     │
+│      └── Maximo 3 tentativas automaticas                        │
+│      └── Se falhar 3x → escalar para humano                     │
+│                                                                 │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
+│   │ CAPTURAR │ →  │ FILTRAR  │ →  │ RESUMIR  │ →  │  TENTAR  │  │
+│   └──────────┘    └──────────┘    └──────────┘    └────┬─────┘  │
+│                                                        │        │
+│                                   ┌────────────────────┼───┐    │
+│                                   │                    │   │    │
+│                                   ▼                    ▼   │    │
+│                             [Sucesso]            [Falha 3x]│    │
+│                                                        │   │    │
+│                                                        ▼   │    │
+│                                                   [ESCALAR]│    │
+│                                                   [humano] │    │
+│                                                            │    │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.2 Regra das 3 Tentativas</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">Regra de 3 Tentativas</div>
+                    <p>Se o agente falhar <strong>3 vezes seguidas</strong> na mesma tarefa, ESCALAR para humano. Nao insistir indefinidamente.</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tentativa</th>
+                            <th>Acao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1a</td>
+                            <td>Tentar normalmente</td>
+                        </tr>
+                        <tr>
+                            <td>2a</td>
+                            <td>Tentar com ajuste menor</td>
+                        </tr>
+                        <tr>
+                            <td>3a</td>
+                            <td>Tentar abordagem alternativa</td>
+                        </tr>
+                        <tr>
+                            <td>4a+</td>
+                            <td>ESCALAR para humano</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 5: Framework de Custo do Erro -->
+            <section id="bloco5" class="lesson-block">
+                <h2>Bloco 5: Framework de Custo do Erro</h2>
+                <span class="badge badge-time">25 min</span>
+
+                <h3>5.1 As 3 Perguntas</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│             FRAMEWORK DE CUSTO DO ERRO                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Antes de projetar qualquer workflow, responda:                │
+│                                                                 │
+│   PERGUNTA 1: Qual o CUSTO do erro?                             │
+│   ────────────────────────────────────                          │
+│   • Baixo: Erro de formatacao, typo                             │
+│   • Medio: Informacao incompleta                                │
+│   • Alto: Decisao judicial errada, dano financeiro              │
+│                                                                 │
+│   PERGUNTA 2: Quao DIFICIL e descobrir o erro?                  │
+│   ────────────────────────────────────────────                  │
+│   • Facil: Validacao automatica detecta                         │
+│   • Medio: Revisao humana rapida detecta                        │
+│   • Dificil: So descoberto depois de consequencias              │
+│                                                                 │
+│   PERGUNTA 3: O erro e REVERSIVEL?                              │
+│   ─────────────────────────────────                             │
+│   • Sim: Pode corrigir depois (ex: rascunho)                    │
+│   • Nao: Irreversivel (ex: sentenca publicada)                  │
+│                                                                 │
+│   MATRIZ DE DECISAO:                                            │
+│   ──────────────────                                            │
+│   Custo ALTO + Descoberta DIFICIL + Irreversivel = HITL         │
+│   Custo BAIXO + Descoberta FACIL + Reversivel = HOOTL           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>5.2 Aplicando ao Contexto Juridico</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tarefa</th>
+                            <th>Custo</th>
+                            <th>Descoberta</th>
+                            <th>Supervisao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Formatar documento</td>
+                            <td>Baixo</td>
+                            <td>Facil</td>
+                            <td>HOOTL</td>
+                        </tr>
+                        <tr>
+                            <td>Gerar relatorio</td>
+                            <td>Medio</td>
+                            <td>Medio</td>
+                            <td>HOTL</td>
+                        </tr>
+                        <tr>
+                            <td>Minutar sentenca</td>
+                            <td>Alto</td>
+                            <td>Dificil</td>
+                            <td>HITL</td>
+                        </tr>
+                        <tr>
+                            <td>Publicar decisao</td>
+                            <td>Muito Alto</td>
+                            <td>Muito Dificil</td>
+                            <td>HITL + Revisao</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 6: Meta-Workflow -->
+            <section id="bloco6" class="lesson-block">
+                <h2>Bloco 6: Meta-Workflow - Ferramentas para Construir Workflows</h2>
+                <span class="badge badge-time">30 min</span>
+
+                <h3>6.1 O Paradoxo: Usar Workflows para Construir Workflows</h3>
+
+                <p>Aqui esta a meta-narrativa que fecha o circulo: <strong>voce usa workflows para construir workflows</strong>.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              META-WORKFLOW: CONSTRUINDO SISTEMAS                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   O QUE VOCE QUER CONSTRUIR:                                    │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │ "Um sistema para elaborar sentencas automaticamente"    │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│   COMO VOCE VAI CONSTRUIR (usando ferramentas agenticas):       │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                                                         │   │
+│   │   BRAINSTORMING → PLANNING → IMPLEMENTING → REVIEWING   │   │
+│   │       skill         skill        skill         skill    │   │
+│   │                                                         │   │
+│   │   "Que abordagens  "Quais sao   "Executar   "Revisar    │   │
+│   │    sao possiveis?"  as tarefas?"  o plano"   o codigo"  │   │
+│   │                                                         │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│   VOCE USA WORKFLOWS PARA CONSTRUIR WORKFLOWS!                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>6.2 O Ecossistema Superpowers</h3>
+
+                <p>O <strong>Superpowers</strong> e um conjunto de skills que implementa boas praticas de desenvolvimento:</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    ECOSSISTEMA SUPERPOWERS                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   SKILLS DE DESENVOLVIMENTO:                                    │
+│                                                                 │
+│   ┌───────────────┐                                             │
+│   │ BRAINSTORMING │  Refinar ideias em designs estruturados     │
+│   │     skill     │  • Perguntas uma por uma                    │
+│   │               │  • Explorar 2-3 abordagens                  │
+│   └───────┬───────┘  • Validacao incremental                    │
+│           │                                                     │
+│           ▼                                                     │
+│   ┌───────────────┐                                             │
+│   │ WRITING-PLANS │  Criar planos em bite-sized tasks           │
+│   │     skill     │  • Cada task: 2-5 minutos                   │
+│   │               │  • Codigo completo incluido                 │
+│   └───────┬───────┘  • Verificacao apos cada step               │
+│           │                                                     │
+│           ▼                                                     │
+│   ┌───────────────┐                                             │
+│   │EXECUTING-PLANS│  Executar planos em batches                 │
+│   │     skill     │  • Batches de 3 tasks                       │
+│   │               │  • Report entre batches                     │
+│   └───────┬───────┘  • Feedback humano incorporado              │
+│           │                                                     │
+│           ▼                                                     │
+│   ┌───────────────┐                                             │
+│   │ CODE-REVIEWER │  Revisar codigo para bugs e conformidade    │
+│   │   subagent    │  • Checa contra CLAUDE.md                   │
+│   │               │  • Filtra: so issues com ≥80% confianca     │
+│   └───────────────┘                                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>6.3 Feature Dev: O Plugin Completo</h3>
+
+                <p>O <strong>Feature Dev</strong> e um plugin que orquestra o ciclo de desenvolvimento em 7 fases:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fase</th>
+                            <th>Nome</th>
+                            <th>Descricao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Discovery</td>
+                            <td>Entender requisitos, clarificar escopo</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Codebase Exploration</td>
+                            <td>2-3 agentes code-explorer em paralelo</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Clarifying Questions</td>
+                            <td>Resolver ambiguidades ANTES do design</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Architecture Design</td>
+                            <td>2-3 agentes code-architect em paralelo</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Implementation</td>
+                            <td>AGUARDA aprovacao, depois implementa</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Quality Review</td>
+                            <td>3 agentes code-reviewer em paralelo</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Summary</td>
+                            <td>Documenta decisoes e resultados</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>6.4 O Fluxo Colaborativo Completo</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              FLUXO COLABORATIVO: HUMANO + MAQUINA               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│                    VOCE                      CLAUDE             │
+│                     │                           │               │
+│  "Tenho uma ideia   │──────────────────────────►│               │
+│   de projeto"       │                           │               │
+│                     │        /brainstorm        │               │
+│                     │◄──────────────────────────│               │
+│                     │   "Pergunta 1 de 5..."    │               │
+│                     │                           │               │
+│  "Resposta A"       │──────────────────────────►│               │
+│                     │                           │               │
+│       ...           │           ...             │               │
+│                     │                           │               │
+│                     │   "3 abordagens..."       │               │
+│                     │◄──────────────────────────│               │
+│                     │                           │               │
+│  "Prefiro B"        │──────────────────────────►│               │
+│                     │                           │               │
+│                     │   design.md salvo         │               │
+│                     │◄──────────────────────────│               │
+│                     │                           │               │
+│  "Crie o plano"     │──────────────────────────►│               │
+│                     │                           │               │
+│                     │   plano com 7 tasks       │               │
+│                     │◄──────────────────────────│               │
+│                     │                           │               │
+│  "Executar"         │──────────────────────────►│               │
+│                     │                           │               │
+│                     │   "Tasks 1-3 completas"   │               │
+│                     │◄──────────────────────────│               │
+│                     │   "Feedback?"             │               │
+│                     │                           │               │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>6.5 Por Que Isso Funciona</h3>
+
+                <div class="two-column">
+                    <div class="column">
+                        <h4>Principio 1: Validacao Incremental</h4>
+                        <p>Checkpoints em cada etapa permitem corrigir cedo, antes de desperdicar trabalho.</p>
+                        <pre class="diagram"><code>Ideia → Design → Plano → Tasks → Resultado
+     ✓        ✓       ✓       ✓
+  (checkpoint em cada transicao)</code></pre>
+                    </div>
+                    <div class="column">
+                        <h4>Principio 2: Separacao de Responsabilidades</h4>
+                        <table>
+                            <tr>
+                                <td><strong>HUMANO</strong></td>
+                                <td><strong>MAQUINA</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Define objetivos</td>
+                                <td>Estrutura perguntas</td>
+                            </tr>
+                            <tr>
+                                <td>Escolhe abordagens</td>
+                                <td>Propoe alternativas</td>
+                            </tr>
+                            <tr>
+                                <td>Valida checkpoints</td>
+                                <td>Executa tarefas</td>
+                            </tr>
+                            <tr>
+                                <td><strong>DECISAO</strong></td>
+                                <td><strong>EXECUCAO</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <h3>6.6 Meu Fluxo Preferido</h3>
+
+                <div class="callout callout-tip">
+                    <div class="callout-title">Fluxo Recomendado pelo Instrutor</div>
+                    <ol>
+                        <li><strong>/brainstorm</strong> - Deixe o Claude fazer MUITAS perguntas, responda com calma</li>
+                        <li><strong>Revisar design</strong> - So prossiga quando estiver satisfeito</li>
+                        <li><strong>/write-plan</strong> - Verifique se cada task e pequena (2-5 min)</li>
+                        <li><strong>/execute-plan</strong> - Revise entre batches, de feedback</li>
+                    </ol>
+                    <p><strong>Regra de Ouro:</strong> "Primeiro fazer muitas ideias, depois consolidar em plano, depois implementar. NUNCA pular etapas."</p>
+                </div>
+            </section>
+
+            <!-- Resumo -->
+            <section class="lesson-block" id="resumo">
+                <h2>Resumo da Aula</h2>
+
+                <div class="key-points">
+                    <h4>Conceitos-Chave</h4>
+                    <ul>
+                        <li><strong>Usuario como Arquiteto:</strong> Toda etapa tem Entrada → Processo → Saida</li>
+                        <li><strong>Bolsoes Agenticos:</strong> Estrutura rigida + criatividade localizada</li>
+                        <li><strong>Padrao RPI:</strong> Research → Plan → Implement</li>
+                        <li><strong>HITL/HOTL/HOOTL:</strong> Niveis de supervisao humana</li>
+                        <li><strong>Regra de 3:</strong> Maximo 3 tentativas antes de escalar</li>
+                        <li><strong>Custo do Erro:</strong> Custo × Descoberta × Reversibilidade</li>
+                        <li><strong>Meta-Workflow:</strong> Brainstorming → Writing Plans → Executing Plans</li>
+                    </ul>
+                </div>
+
+                <div class="expert-quotes">
+                    <h4>Especialistas Citados</h4>
+                    <ul>
+                        <li><strong>Dex Horthy</strong> (12 Factor Agents): Bolsoes agenticos, Error handling</li>
+                        <li><strong>Barry Zhang</strong> (Anthropic): Framework de custo do erro</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Navegacao -->
+            <div class="lesson-navigation">
+                <a href="aula-8.html" class="nav-prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Aula 8: Engenharia de Capacidades</span>
+                </a>
+                <a href="aula-10.html" class="nav-next">
+                    <span>Aula 10: Engenharia de Conexoes</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sistemas Agenticos</h4>
+                    <p>Curso pratico de IA Agentica para profissionais do Direito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navegacao</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="glossario.html">Glossario</a></li>
+                        <li><a href="recursos.html">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Para duvidas sobre o curso, entre em contato com o instrutor.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Curso de Sistemas Agenticos - Material Educacional</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

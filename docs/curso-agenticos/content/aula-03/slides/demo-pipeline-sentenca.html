@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Pipeline Sentença Completo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Background */
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(190, 156, 109, 0.06) 0%, transparent 50%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 30px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6em;
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           PIPELINE DIAGRAM
+           ═══════════════════════════════════════════════════════════ */
+        .pipeline-diagram {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+        }
+
+        /* Stage row */
+        .stage-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            animation: stageAppear 0.5s ease forwards;
+        }
+
+        .stage-row:nth-child(1) { animation-delay: 0.1s; }
+        .stage-row:nth-child(2) { animation-delay: 0.3s; }
+        .stage-row:nth-child(3) { animation-delay: 0.5s; }
+        .stage-row:nth-child(4) { animation-delay: 0.7s; }
+
+        @keyframes stageAppear {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Stage number */
+        .stage-number {
+            width: 36px;
+            height: 36px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            font-weight: 700;
+            color: var(--super-bg-dark);
+            flex-shrink: 0;
+        }
+
+        /* Stage content */
+        .stage-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Stage box */
+        .stage-box {
+            background: rgba(20, 20, 30, 0.8);
+            border: 2px solid;
+            border-radius: 10px;
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .stage-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stage-box.active {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px currentColor;
+        }
+
+        .stage-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 4px;
+        }
+
+        .stage-pattern {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            opacity: 0.7;
+        }
+
+        /* Stage colors */
+        .stage-chaining { border-color: var(--super-amber); }
+        .stage-chaining .stage-pattern { color: var(--super-amber); }
+
+        .stage-routing { border-color: var(--super-blue); }
+        .stage-routing .stage-pattern { color: var(--super-blue); }
+
+        .stage-parallel { border-color: var(--super-purple); }
+        .stage-parallel .stage-pattern { color: var(--super-purple); }
+
+        .stage-evaluator { border-color: var(--super-pink); }
+        .stage-evaluator .stage-pattern { color: var(--super-pink); }
+
+        .stage-output { border-color: var(--super-green); }
+        .stage-output .stage-pattern { color: var(--super-green); }
+
+        /* Arrow between boxes */
+        .arrow {
+            color: rgba(190, 156, 109, 0.5);
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        /* Sub-boxes (for parallel/routing) */
+        .sub-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sub-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.7);
+            border-left: 3px solid currentColor;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sub-box:hover {
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--super-cream);
+        }
+
+        /* Branch indicator */
+        .branch-lines {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 30px;
+        }
+
+        .branch-line {
+            width: 2px;
+            height: 20px;
+            background: currentColor;
+            opacity: 0.4;
+        }
+
+        .branch-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.6;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           DETAIL PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .detail-panel {
+            background: rgba(20, 20, 30, 0.9);
+            border: 1px solid var(--super-gold);
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 10px;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .detail-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        .detail-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+        }
+
+        .detail-body {
+            display: flex;
+            gap: 20px;
+        }
+
+        .detail-section {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .detail-text {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.8);
+            line-height: 1.5;
+        }
+
+        .detail-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--super-cyan);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px;
+            margin-top: auto;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .legend-chaining { background: var(--super-amber); }
+        .legend-routing { background: var(--super-blue); }
+        .legend-parallel { background: var(--super-purple); }
+        .legend-evaluator { background: var(--super-pink); }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .container { padding: 15px 20px; }
+        body.embed-mode .header-title { font-size: 1.2em; }
+        body.embed-mode .stage-box { padding: 10px 14px; }
+        body.embed-mode .stage-name { font-size: 0.75em; }
+        body.embed-mode .sub-box { padding: 6px 10px; font-size: 0.65em; }
+        body.embed-mode .detail-panel { padding: 14px; }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Arquitetura Completa</div>
+            <h1 class="header-title">Pipeline de Elaboração de Sentença</h1>
+        </div>
+
+        <div class="pipeline-diagram">
+            <!-- Stage 1: Extração (Chaining) -->
+            <div class="stage-row">
+                <div class="stage-number">1</div>
+                <div class="stage-content">
+                    <div class="stage-box stage-chaining" data-stage="extraction">
+                        <div class="stage-name">Extração de Dados</div>
+                        <div class="stage-pattern">Prompt Chaining</div>
+                    </div>
+                    <span class="arrow">&#8594;</span>
+                    <div class="stage-box stage-chaining" data-stage="structuring">
+                        <div class="stage-name">Estruturação</div>
+                        <div class="stage-pattern">Prompt Chaining</div>
+                    </div>
+                    <span class="arrow">&#8594;</span>
+                    <div class="stage-box stage-chaining" data-stage="validation">
+                        <div class="stage-name">Validação Inicial</div>
+                        <div class="stage-pattern">Prompt Chaining</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 2: Pesquisa (Routing + Parallel) -->
+            <div class="stage-row">
+                <div class="stage-number">2</div>
+                <div class="stage-content">
+                    <div class="stage-box stage-routing" data-stage="classifier">
+                        <div class="stage-name">Classificador</div>
+                        <div class="stage-pattern">Routing</div>
+                    </div>
+                    <span class="arrow">&#8594;</span>
+
+                    <div class="sub-boxes" style="color: var(--super-purple);">
+                        <div class="sub-box" data-stage="stf">STF Worker</div>
+                        <div class="sub-box" data-stage="stj">STJ Worker</div>
+                        <div class="sub-box" data-stage="trf">TRF Worker</div>
+                    </div>
+
+                    <span class="arrow">&#8594;</span>
+
+                    <div class="stage-box stage-parallel" data-stage="synthesis">
+                        <div class="stage-name">Síntese</div>
+                        <div class="stage-pattern">Parallelization</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 3: Fundamentação (Evaluator-Optimizer) -->
+            <div class="stage-row">
+                <div class="stage-number">3</div>
+                <div class="stage-content">
+                    <div class="stage-box stage-evaluator" data-stage="generator">
+                        <div class="stage-name">Generator</div>
+                        <div class="stage-pattern">Evaluator-Optimizer</div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--super-pink);">
+                        <span class="arrow">&#8594;</span>
+                        <span style="font-size: 0.6em; opacity: 0.6;">feedback</span>
+                        <span class="arrow">&#8592;</span>
+                    </div>
+
+                    <div class="stage-box stage-evaluator" data-stage="evaluator">
+                        <div class="stage-name">Evaluator</div>
+                        <div class="stage-pattern">Evaluator-Optimizer</div>
+                    </div>
+
+                    <span class="arrow">&#8594;</span>
+
+                    <div class="stage-box stage-output" data-stage="draft">
+                        <div class="stage-name">Minuta v1</div>
+                        <div class="stage-pattern">Output</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 4: Revisão (Parallel + Chaining) -->
+            <div class="stage-row">
+                <div class="stage-number">4</div>
+                <div class="stage-content">
+                    <div class="sub-boxes" style="color: var(--super-purple);">
+                        <div class="sub-box" data-stage="rev-ortho">Revisor Ortográfico</div>
+                        <div class="sub-box" data-stage="rev-legal">Revisor Jurídico</div>
+                        <div class="sub-box" data-stage="rev-style">Revisor Estilístico</div>
+                    </div>
+
+                    <span class="arrow">&#8594;</span>
+
+                    <div class="stage-box stage-chaining" data-stage="consolidation">
+                        <div class="stage-name">Consolidação</div>
+                        <div class="stage-pattern">Prompt Chaining</div>
+                    </div>
+
+                    <span class="arrow">&#8594;</span>
+
+                    <div class="stage-box stage-output" data-stage="final">
+                        <div class="stage-name">Sentença Final</div>
+                        <div class="stage-pattern">&#9989; Output</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Panel -->
+        <div class="detail-panel" id="detailPanel">
+            <div class="detail-header">
+                <div class="detail-icon" id="detailIcon" style="background: rgba(190, 156, 109, 0.2);">&#128203;</div>
+                <div>
+                    <div class="detail-title" id="detailTitle">Selecione um componente</div>
+                    <div class="detail-subtitle" id="detailSubtitle">Clique em qualquer box para ver detalhes</div>
+                </div>
+            </div>
+            <div class="detail-body">
+                <div class="detail-section">
+                    <div class="detail-label">Função</div>
+                    <div class="detail-text" id="detailFunction">Este pipeline orquestra múltiplos padrões para produzir sentenças de alta qualidade com validação em cada etapa.</div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-label">Padrão</div>
+                    <div class="detail-text" id="detailPattern">Combina: Chaining, Routing, Parallelization e Evaluator-Optimizer</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot legend-chaining"></div>
+                <span>Chaining</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot legend-routing"></div>
+                <span>Routing</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot legend-parallel"></div>
+                <span>Parallelization</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot legend-evaluator"></div>
+                <span>Evaluator-Optimizer</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Stage details
+        const stageDetails = {
+            extraction: {
+                icon: '&#128195;',
+                color: 'var(--super-amber)',
+                title: 'Extração de Dados',
+                subtitle: 'Prompt Chaining - Etapa 1',
+                function: 'Extrai informações relevantes dos autos do processo: partes, pedidos, provas, argumentos.',
+                pattern: 'Chaining sequencial: cada prompt refina o resultado do anterior até extração completa.'
+            },
+            structuring: {
+                icon: '&#128193;',
+                color: 'var(--super-amber)',
+                title: 'Estruturação',
+                subtitle: 'Prompt Chaining - Etapa 1',
+                function: 'Organiza dados extraídos em formato estruturado para alimentar próximas etapas.',
+                pattern: '<code>{ fatos: [...], pedidos: [...], provas: [...] }</code>'
+            },
+            validation: {
+                icon: '&#9989;',
+                color: 'var(--super-amber)',
+                title: 'Validação Inicial',
+                subtitle: 'Prompt Chaining - Etapa 1',
+                function: 'Verifica completude dos dados antes de prosseguir. Gate que bloqueia se faltar informação crítica.',
+                pattern: 'Validação: dados mínimos presentes? Se não, volta para extração.'
+            },
+            classifier: {
+                icon: '&#128269;',
+                color: 'var(--super-blue)',
+                title: 'Classificador de Matéria',
+                subtitle: 'Routing - Etapa 2',
+                function: 'Identifica o tipo de ação e direciona para workers especializados por tribunal.',
+                pattern: 'BPC → STF/STJ | Aposentadoria → TRF | Trabalhista → TST'
+            },
+            stf: {
+                icon: '&#9878;',
+                color: 'var(--super-purple)',
+                title: 'STF Worker',
+                subtitle: 'Parallelization - Etapa 2',
+                function: 'Pesquisa jurisprudência do Supremo Tribunal Federal sobre a matéria.',
+                pattern: 'Executa em paralelo com outros workers. Usa API de busca especializada.'
+            },
+            stj: {
+                icon: '&#9878;',
+                color: 'var(--super-purple)',
+                title: 'STJ Worker',
+                subtitle: 'Parallelization - Etapa 2',
+                function: 'Pesquisa jurisprudência do Superior Tribunal de Justiça.',
+                pattern: 'Foco em súmulas e recursos repetitivos relevantes.'
+            },
+            trf: {
+                icon: '&#9878;',
+                color: 'var(--super-purple)',
+                title: 'TRF Worker',
+                subtitle: 'Parallelization - Etapa 2',
+                function: 'Pesquisa jurisprudência do Tribunal Regional Federal da região.',
+                pattern: 'Precedentes locais e decisões colegiadas recentes.'
+            },
+            synthesis: {
+                icon: '&#128220;',
+                color: 'var(--super-purple)',
+                title: 'Síntese de Pesquisa',
+                subtitle: 'Parallelization - Etapa 2',
+                function: 'Consolida resultados dos workers em um único documento de referência.',
+                pattern: 'Aguarda todos workers. Ordena por relevância. Remove duplicatas.'
+            },
+            generator: {
+                icon: '&#128221;',
+                color: 'var(--super-pink)',
+                title: 'Generator',
+                subtitle: 'Evaluator-Optimizer - Etapa 3',
+                function: 'Gera minuta da fundamentação usando dados estruturados e pesquisa consolidada.',
+                pattern: 'Produz texto argumentativo. Cita precedentes. Estrutura lógica.'
+            },
+            evaluator: {
+                icon: '&#128270;',
+                color: 'var(--super-pink)',
+                title: 'Evaluator',
+                subtitle: 'Evaluator-Optimizer - Etapa 3',
+                function: 'Avalia qualidade da minuta. Verifica: coerência, completude, conformidade.',
+                pattern: 'Se nota < 8: feedback detalhado → Generator. Loop até aprovação ou 3 iterações.'
+            },
+            draft: {
+                icon: '&#128196;',
+                color: 'var(--super-green)',
+                title: 'Minuta v1',
+                subtitle: 'Output Intermediário',
+                function: 'Primeira versão aprovada da fundamentação. Pronta para revisão humana ou automática.',
+                pattern: 'Contém: relatório, fundamentação com citações, dispositivo rascunho.'
+            },
+            'rev-ortho': {
+                icon: '&#128221;',
+                color: 'var(--super-purple)',
+                title: 'Revisor Ortográfico',
+                subtitle: 'Parallelization - Etapa 4',
+                function: 'Verifica erros ortográficos, gramaticais e de pontuação.',
+                pattern: 'Usa modelo especializado em português jurídico.'
+            },
+            'rev-legal': {
+                icon: '&#9878;',
+                color: 'var(--super-purple)',
+                title: 'Revisor Jurídico',
+                subtitle: 'Parallelization - Etapa 4',
+                function: 'Verifica conformidade com normas processuais e fundamentação adequada.',
+                pattern: 'Checa citações, verifica validade de precedentes, confere dispositivo legal.'
+            },
+            'rev-style': {
+                icon: '&#128214;',
+                color: 'var(--super-purple)',
+                title: 'Revisor Estilístico',
+                subtitle: 'Parallelization - Etapa 4',
+                function: 'Verifica clareza, concisão e adequação ao estilo judicial.',
+                pattern: 'Remove prolixidade, sugere reformulações, padroniza linguagem.'
+            },
+            consolidation: {
+                icon: '&#128203;',
+                color: 'var(--super-amber)',
+                title: 'Consolidação',
+                subtitle: 'Prompt Chaining - Etapa 4',
+                function: 'Integra sugestões dos três revisores em versão única otimizada.',
+                pattern: 'Resolve conflitos, prioriza correções críticas, mantém coerência.'
+            },
+            final: {
+                icon: '&#127942;',
+                color: 'var(--super-green)',
+                title: 'Sentença Final',
+                subtitle: 'Output Final',
+                function: 'Documento completo pronto para revisão humana final e assinatura.',
+                pattern: '&#9989; Todos os padrões aplicados. Qualidade validada. Pronto para uso.'
+            }
+        };
+
+        // Click handlers
+        document.querySelectorAll('[data-stage]').forEach(el => {
+            el.addEventListener('click', () => {
+                const stage = el.dataset.stage;
+                const details = stageDetails[stage];
+
+                if (details) {
+                    document.getElementById('detailIcon').innerHTML = details.icon;
+                    document.getElementById('detailIcon').style.background = `${details.color}33`;
+                    document.getElementById('detailTitle').textContent = details.title;
+                    document.getElementById('detailSubtitle').textContent = details.subtitle;
+                    document.getElementById('detailFunction').textContent = details.function;
+                    document.getElementById('detailPattern').innerHTML = details.pattern;
+
+                    // Highlight active
+                    document.querySelectorAll('[data-stage]').forEach(e => e.classList.remove('active'));
+                    el.classList.add('active');
+                }
+            });
+        });
+
+        // Keyboard navigation (1-4 for stages)
+        document.addEventListener('keydown', (e) => {
+            const stageKeys = {
+                '1': 'extraction',
+                '2': 'classifier',
+                '3': 'generator',
+                '4': 'consolidation'
+            };
+
+            if (stageKeys[e.key]) {
+                const el = document.querySelector(`[data-stage="${stageKeys[e.key]}"]`);
+                if (el) el.click();
+            }
+        });
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - 5 Padrões Anthropic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Background */
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 30% 30%, rgba(167, 139, 250, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 50% at 70% 70%, rgba(190, 156, 109, 0.06) 0%, transparent 50%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            padding: 25px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.2vw, 1.1rem);
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 1vh;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           PATTERNS GRID
+           ═══════════════════════════════════════════════════════════ */
+        .patterns-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 1100px;
+            flex: 1;
+        }
+
+        /* Pattern Card */
+        .pattern-card {
+            background: rgba(20, 20, 30, 0.6);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: cardAppear 0.5s ease forwards;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pattern-card:nth-child(1) { animation-delay: 0.1s; }
+        .pattern-card:nth-child(2) { animation-delay: 0.2s; }
+        .pattern-card:nth-child(3) { animation-delay: 0.3s; }
+        .pattern-card:nth-child(4) { animation-delay: 0.4s; }
+        .pattern-card:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pattern-card:hover {
+            border-color: var(--accent-color, var(--super-gold));
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .pattern-card.active {
+            border-color: var(--accent-color, var(--super-gold));
+            background: rgba(30, 30, 40, 0.8);
+        }
+
+        /* Card Header */
+        .card-complexity {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 1vw, 0.95rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 1vh;
+        }
+
+        .card-number {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 700;
+            color: var(--accent-color, var(--super-gold));
+            margin-bottom: 0.5vh;
+            line-height: 1;
+        }
+
+        .card-name {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 1.5vh;
+        }
+
+        /* Mini Diagram */
+        .mini-diagram {
+            flex: 1;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .mini-diagram svg {
+            width: 100%;
+            height: 80px;
+        }
+
+        /* Card Footer */
+        .card-when {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+            border-top: 1px solid rgba(255, 244, 228, 0.15);
+            padding-top: 1.5vh;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EXPANDED VIEW (Modal)
+           ═══════════════════════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 10, 18, 0.95);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 30, 0.95);
+            border: 1px solid var(--accent-color, var(--super-gold));
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 244, 228, 0.1);
+        }
+
+        .modal-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--accent-color, var(--super-gold));
+        }
+
+        .modal-title-group {
+            flex: 1;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+            color: var(--super-cream);
+        }
+
+        .modal-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.2vw, 1.1rem);
+            color: var(--accent-color, var(--super-gold));
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 244, 228, 0.3);
+            background: transparent;
+            border-radius: 50%;
+            color: var(--super-cream);
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 244, 228, 0.1);
+            border-color: var(--super-cream);
+        }
+
+        /* Diagram section */
+        .diagram-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .diagram-svg {
+            width: 100%;
+            height: 150px;
+        }
+
+        /* Info sections */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .info-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 1vw, 0.95rem);
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1vh;
+        }
+
+        .info-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.3vw, 1.2rem);
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.6;
+        }
+
+        /* Example box */
+        .example-box {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .example-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 1vw, 0.95rem);
+            color: var(--super-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1vh;
+        }
+
+        .example-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.3vw, 1.2rem);
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.6;
+        }
+
+        /* Navigation hint */
+        .nav-hint {
+            position: fixed;
+            bottom: 2.5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.8rem, 1vw, 0.95rem);
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .container { padding: 2vh 2vw; }
+        body.embed-mode .header-title { font-size: clamp(1.6rem, 3vw, 2.5rem); }
+        body.embed-mode .patterns-grid { gap: 1.5vw; }
+        body.embed-mode .pattern-card { padding: 1.5vh 1.2vw; }
+        body.embed-mode .card-number { font-size: clamp(2rem, 3vw, 2.8rem); }
+        body.embed-mode .card-name { font-size: clamp(1rem, 1.3vw, 1.2rem); }
+        body.embed-mode .mini-diagram { min-height: 60px; }
+        body.embed-mode .mini-diagram svg { height: 60px; }
+        body.embed-mode .card-when { font-size: clamp(0.8rem, 1.1vw, 1rem); }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Building Effective Agents</div>
+            <h1 class="header-title">5 Padrões de Workflow Agêntico</h1>
+        </div>
+
+        <div class="patterns-grid" id="patternsGrid">
+            <!-- Cards generated by JS -->
+        </div>
+
+        <div class="nav-hint">Click em um padrão para ver detalhes</div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-number" id="modalNumber">1</span>
+                <div class="modal-title-group">
+                    <h2 class="modal-title" id="modalTitle">Prompt Chaining</h2>
+                    <span class="modal-subtitle" id="modalSubtitle">Encadeamento</span>
+                </div>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+
+            <div class="diagram-container">
+                <svg class="diagram-svg" id="modalDiagram"></svg>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-label">Quando Usar</div>
+                    <div class="info-text" id="modalWhen"></div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Complexidade</div>
+                    <div class="info-text" id="modalComplexity"></div>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Exemplo Jurídico</div>
+                <div class="example-text" id="modalExample"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Patterns data
+        const patterns = [
+            {
+                number: 1,
+                name: 'Prompt Chaining',
+                subtitle: 'Encadeamento',
+                color: '#fbbf24', // amber
+                complexity: 'Baixa',
+                when: 'Tarefas com etapas sequenciais claras. Output de uma etapa alimenta a próxima.',
+                example: 'Pipeline de sentença: Relatório → Fundamentação → Dispositivo. Cada etapa usa o resultado da anterior para construir o documento final.',
+                miniDiagram: `
+                    <g transform="translate(20, 35)">
+                        <rect x="0" y="0" width="35" height="25" rx="4" fill="#fbbf24" opacity="0.8"/>
+                        <text x="17" y="16" text-anchor="middle" fill="white" font-size="8">A</text>
+                        <path d="M 40 12 L 55 12" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow)"/>
+                        <rect x="60" y="0" width="35" height="25" rx="4" fill="#fbbf24" opacity="0.8"/>
+                        <text x="77" y="16" text-anchor="middle" fill="white" font-size="8">B</text>
+                        <path d="M 100 12 L 115 12" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow)"/>
+                        <rect x="120" y="0" width="35" height="25" rx="4" fill="#fbbf24" opacity="0.8"/>
+                        <text x="137" y="16" text-anchor="middle" fill="white" font-size="8">C</text>
+                    </g>
+                `,
+                fullDiagram: `
+                    <g transform="translate(50, 50)">
+                        <rect x="0" y="0" width="80" height="45" rx="6" fill="#fbbf24" opacity="0.8"/>
+                        <text x="40" y="22" text-anchor="middle" fill="white" font-size="11" font-weight="600">Relatório</text>
+                        <text x="40" y="36" text-anchor="middle" fill="white" font-size="8" opacity="0.8">extração</text>
+
+                        <path d="M 90 22 L 130 22" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrowFull)"/>
+
+                        <rect x="140" y="0" width="80" height="45" rx="6" fill="#fbbf24" opacity="0.8"/>
+                        <text x="180" y="22" text-anchor="middle" fill="white" font-size="11" font-weight="600">Fundament.</text>
+                        <text x="180" y="36" text-anchor="middle" fill="white" font-size="8" opacity="0.8">análise</text>
+
+                        <path d="M 230 22 L 270 22" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrowFull)"/>
+
+                        <rect x="280" y="0" width="80" height="45" rx="6" fill="#fbbf24" opacity="0.8"/>
+                        <text x="320" y="22" text-anchor="middle" fill="white" font-size="11" font-weight="600">Dispositivo</text>
+                        <text x="320" y="36" text-anchor="middle" fill="white" font-size="8" opacity="0.8">decisão</text>
+
+                        <path d="M 370 22 L 410 22" stroke="#4ade80" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+                        <rect x="420" y="0" width="80" height="45" rx="6" fill="#4ade80" opacity="0.8"/>
+                        <text x="460" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="600">Sentença</text>
+                    </g>
+                `
+            },
+            {
+                number: 2,
+                name: 'Routing',
+                subtitle: 'Roteamento',
+                color: '#60a5fa', // blue
+                complexity: 'Baixa',
+                when: 'Inputs com tipos distintos que precisam de tratamento especializado.',
+                example: 'Classificador de processos: BPC, Aposentadoria, ou Auxílio-Doença. Cada tipo é roteado para um fluxo específico com prompts especializados.',
+                miniDiagram: `
+                    <g transform="translate(30, 20)">
+                        <rect x="0" y="20" width="30" height="20" rx="4" fill="#60a5fa" opacity="0.8"/>
+                        <text x="15" y="33" text-anchor="middle" fill="white" font-size="7">IN</text>
+
+                        <polygon points="45,30 65,15 65,45" fill="#60a5fa" opacity="0.8"/>
+
+                        <path d="M 35 30 L 45 30" stroke="#60a5fa" stroke-width="1.5"/>
+                        <path d="M 65 18 L 85 8" stroke="#60a5fa" stroke-width="1.5"/>
+                        <path d="M 65 30 L 85 30" stroke="#60a5fa" stroke-width="1.5"/>
+                        <path d="M 65 42 L 85 52" stroke="#60a5fa" stroke-width="1.5"/>
+
+                        <rect x="85" y="0" width="25" height="16" rx="3" fill="#60a5fa" opacity="0.6"/>
+                        <rect x="85" y="22" width="25" height="16" rx="3" fill="#60a5fa" opacity="0.8"/>
+                        <rect x="85" y="44" width="25" height="16" rx="3" fill="#60a5fa" opacity="0.6"/>
+                    </g>
+                `,
+                fullDiagram: `
+                    <g transform="translate(40, 25)">
+                        <rect x="0" y="40" width="80" height="40" rx="6" fill="#60a5fa" opacity="0.8"/>
+                        <text x="40" y="65" text-anchor="middle" fill="white" font-size="11" font-weight="600">Processo</text>
+
+                        <polygon points="120,60 160,20 160,100" fill="#60a5fa" opacity="0.8"/>
+                        <text x="145" y="65" text-anchor="middle" fill="white" font-size="10">?</text>
+
+                        <path d="M 85 60 L 120 60" stroke="#60a5fa" stroke-width="2"/>
+
+                        <path d="M 160 30 L 220 10" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                        <path d="M 160 60 L 220 60" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                        <path d="M 160 90 L 220 110" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+                        <rect x="230" y="0" width="100" height="30" rx="5" fill="#60a5fa" opacity="0.6"/>
+                        <text x="280" y="20" text-anchor="middle" fill="white" font-size="10">BPC</text>
+
+                        <rect x="230" y="45" width="100" height="30" rx="5" fill="#60a5fa" opacity="0.8"/>
+                        <text x="280" y="65" text-anchor="middle" fill="white" font-size="10">Aposentadoria</text>
+
+                        <rect x="230" y="95" width="100" height="30" rx="5" fill="#60a5fa" opacity="0.6"/>
+                        <text x="280" y="115" text-anchor="middle" fill="white" font-size="10">Auxílio-Doença</text>
+                    </g>
+                `
+            },
+            {
+                number: 3,
+                name: 'Parallelization',
+                subtitle: 'Paralelização',
+                color: '#a78bfa', // purple
+                complexity: 'Média',
+                when: 'Subtarefas independentes que podem rodar ao mesmo tempo.',
+                example: 'Revisão tripla de sentença: 3 revisores (ortográfico, jurídico, estilístico) analisam em paralelo. Resultados consolidados ao final.',
+                miniDiagram: `
+                    <g transform="translate(30, 15)">
+                        <rect x="0" y="25" width="25" height="20" rx="4" fill="#a78bfa" opacity="0.8"/>
+
+                        <path d="M 30 35 L 45 15" stroke="#a78bfa" stroke-width="1.5"/>
+                        <path d="M 30 35 L 45 35" stroke="#a78bfa" stroke-width="1.5"/>
+                        <path d="M 30 35 L 45 55" stroke="#a78bfa" stroke-width="1.5"/>
+
+                        <rect x="50" y="5" width="30" height="18" rx="3" fill="#a78bfa" opacity="0.7"/>
+                        <rect x="50" y="26" width="30" height="18" rx="3" fill="#a78bfa" opacity="0.7"/>
+                        <rect x="50" y="47" width="30" height="18" rx="3" fill="#a78bfa" opacity="0.7"/>
+
+                        <path d="M 85 14 L 100 35" stroke="#a78bfa" stroke-width="1.5"/>
+                        <path d="M 85 35 L 100 35" stroke="#a78bfa" stroke-width="1.5"/>
+                        <path d="M 85 56 L 100 35" stroke="#a78bfa" stroke-width="1.5"/>
+
+                        <rect x="105" y="25" width="25" height="20" rx="4" fill="#4ade80" opacity="0.8"/>
+                    </g>
+                `,
+                fullDiagram: `
+                    <g transform="translate(30, 15)">
+                        <rect x="0" y="50" width="80" height="40" rx="6" fill="#a78bfa" opacity="0.8"/>
+                        <text x="40" y="75" text-anchor="middle" fill="white" font-size="11" font-weight="600">Sentença</text>
+
+                        <path d="M 90 70 L 140 25" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 90 70 L 140 70" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 90 70 L 140 115" stroke="#a78bfa" stroke-width="2"/>
+
+                        <rect x="150" y="5" width="120" height="40" rx="5" fill="#a78bfa" opacity="0.7"/>
+                        <text x="210" y="30" text-anchor="middle" fill="white" font-size="10">Revisor Ortográfico</text>
+
+                        <rect x="150" y="50" width="120" height="40" rx="5" fill="#a78bfa" opacity="0.7"/>
+                        <text x="210" y="75" text-anchor="middle" fill="white" font-size="10">Revisor Jurídico</text>
+
+                        <rect x="150" y="95" width="120" height="40" rx="5" fill="#a78bfa" opacity="0.7"/>
+                        <text x="210" y="120" text-anchor="middle" fill="white" font-size="10">Revisor Estilístico</text>
+
+                        <path d="M 280 25 L 330 70" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 280 70 L 330 70" stroke="#a78bfa" stroke-width="2"/>
+                        <path d="M 280 115 L 330 70" stroke="#a78bfa" stroke-width="2"/>
+
+                        <rect x="340" y="50" width="100" height="40" rx="6" fill="#4ade80" opacity="0.8"/>
+                        <text x="390" y="75" text-anchor="middle" fill="white" font-size="11" font-weight="600">Consolidado</text>
+                    </g>
+                `
+            },
+            {
+                number: 4,
+                name: 'Orchestrator-Workers',
+                subtitle: 'Orquestrador',
+                color: '#22d3ee', // cyan
+                complexity: 'Alta',
+                when: 'Subtarefas dinâmicas definidas em runtime pelo orquestrador.',
+                example: 'Pesquisa jurídica adaptativa: Orquestrador decide quais bases pesquisar (STF, STJ, TRFs) baseado no tema. Delega e sintetiza.',
+                miniDiagram: `
+                    <g transform="translate(35, 15)">
+                        <circle cx="55" cy="15" r="15" fill="#22d3ee" opacity="0.8"/>
+                        <text x="55" y="19" text-anchor="middle" fill="white" font-size="8">O</text>
+
+                        <path d="M 45 28 L 25 45" stroke="#22d3ee" stroke-width="1.5"/>
+                        <path d="M 55 30 L 55 45" stroke="#22d3ee" stroke-width="1.5"/>
+                        <path d="M 65 28 L 85 45" stroke="#22d3ee" stroke-width="1.5"/>
+
+                        <rect x="10" y="48" width="30" height="18" rx="3" fill="#22d3ee" opacity="0.6"/>
+                        <text x="25" y="60" text-anchor="middle" fill="white" font-size="7">W1</text>
+                        <rect x="40" y="48" width="30" height="18" rx="3" fill="#22d3ee" opacity="0.6"/>
+                        <text x="55" y="60" text-anchor="middle" fill="white" font-size="7">W2</text>
+                        <rect x="70" y="48" width="30" height="18" rx="3" fill="#22d3ee" opacity="0.6"/>
+                        <text x="85" y="60" text-anchor="middle" fill="white" font-size="7">W3</text>
+                    </g>
+                `,
+                fullDiagram: `
+                    <g transform="translate(100, 15)">
+                        <circle cx="150" cy="25" r="30" fill="#22d3ee" opacity="0.8"/>
+                        <text x="150" y="30" text-anchor="middle" fill="white" font-size="12" font-weight="600">Orquestrador</text>
+
+                        <path d="M 125 50 L 60 85" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4"/>
+                        <path d="M 150 55 L 150 85" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4"/>
+                        <path d="M 175 50 L 240 85" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4"/>
+
+                        <rect x="20" y="90" width="80" height="40" rx="5" fill="#22d3ee" opacity="0.6"/>
+                        <text x="60" y="115" text-anchor="middle" fill="white" font-size="10">STF Worker</text>
+
+                        <rect x="110" y="90" width="80" height="40" rx="5" fill="#22d3ee" opacity="0.6"/>
+                        <text x="150" y="115" text-anchor="middle" fill="white" font-size="10">STJ Worker</text>
+
+                        <rect x="200" y="90" width="80" height="40" rx="5" fill="#22d3ee" opacity="0.6"/>
+                        <text x="240" y="115" text-anchor="middle" fill="white" font-size="10">TRF Worker</text>
+
+                        <text x="150" y="75" text-anchor="middle" fill="#22d3ee" font-size="9" opacity="0.7">delega dinamicamente</text>
+                    </g>
+                `
+            },
+            {
+                number: 5,
+                name: 'Evaluator-Optimizer',
+                subtitle: 'Avaliador',
+                color: '#f472b6', // pink
+                complexity: 'Alta',
+                when: 'Output precisa de refinamento iterativo até atingir qualidade.',
+                example: 'Maker-Checker jurídico: Gerador cria minuta, Avaliador verifica conformidade. Loop até aprovação ou limite de iterações.',
+                miniDiagram: `
+                    <g transform="translate(25, 20)">
+                        <rect x="0" y="15" width="35" height="25" rx="4" fill="#f472b6" opacity="0.8"/>
+                        <text x="17" y="31" text-anchor="middle" fill="white" font-size="7">GEN</text>
+
+                        <path d="M 40 27 L 60 27" stroke="#f472b6" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+                        <rect x="65" y="15" width="35" height="25" rx="4" fill="#f472b6" opacity="0.8"/>
+                        <text x="82" y="31" text-anchor="middle" fill="white" font-size="7">EVAL</text>
+
+                        <path d="M 82 45 Q 82 55 50 55 Q 17 55 17 45" stroke="#f472b6" stroke-width="1.5" fill="none" stroke-dasharray="3" marker-end="url(#arrow)"/>
+                    </g>
+                `,
+                fullDiagram: `
+                    <g transform="translate(80, 25)">
+                        <rect x="0" y="35" width="100" height="50" rx="6" fill="#f472b6" opacity="0.8"/>
+                        <text x="50" y="55" text-anchor="middle" fill="white" font-size="11" font-weight="600">Generator</text>
+                        <text x="50" y="70" text-anchor="middle" fill="white" font-size="8" opacity="0.8">cria minuta</text>
+
+                        <path d="M 110 60 L 180 60" stroke="#f472b6" stroke-width="2" marker-end="url(#arrowPink)"/>
+
+                        <rect x="190" y="35" width="100" height="50" rx="6" fill="#f472b6" opacity="0.8"/>
+                        <text x="240" y="55" text-anchor="middle" fill="white" font-size="11" font-weight="600">Evaluator</text>
+                        <text x="240" y="70" text-anchor="middle" fill="white" font-size="8" opacity="0.8">verifica</text>
+
+                        <path d="M 240 95 Q 240 120 145 120 Q 50 120 50 95" stroke="#f472b6" stroke-width="2" fill="none" stroke-dasharray="5" marker-end="url(#arrowPink)"/>
+                        <text x="145" y="115" text-anchor="middle" fill="#f472b6" font-size="9">feedback loop</text>
+
+                        <path d="M 300 60 L 370 60" stroke="#4ade80" stroke-width="2" marker-end="url(#arrowGreen)"/>
+                        <text x="335" y="50" text-anchor="middle" fill="#4ade80" font-size="8">OK?</text>
+
+                        <rect x="380" y="35" width="80" height="50" rx="6" fill="#4ade80" opacity="0.8"/>
+                        <text x="420" y="65" text-anchor="middle" fill="white" font-size="11" font-weight="600">Output</text>
+                    </g>
+                `
+            }
+        ];
+
+        // Generate cards
+        function generateCards() {
+            const grid = document.getElementById('patternsGrid');
+
+            patterns.forEach((pattern, index) => {
+                const card = document.createElement('div');
+                card.className = 'pattern-card';
+                card.style.setProperty('--accent-color', pattern.color);
+                card.dataset.index = index;
+
+                card.innerHTML = `
+                    <div class="card-complexity">${pattern.complexity}</div>
+                    <div class="card-number">${pattern.number}</div>
+                    <div class="card-name">${pattern.name}</div>
+                    <div class="mini-diagram">
+                        <svg viewBox="0 0 160 70">
+                            <defs>
+                                <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                                    <path d="M0,0 L6,3 L0,6 Z" fill="${pattern.color}"/>
+                                </marker>
+                            </defs>
+                            ${pattern.miniDiagram}
+                        </svg>
+                    </div>
+                    <div class="card-when">${pattern.when}</div>
+                `;
+
+                card.addEventListener('click', () => openModal(index));
+                grid.appendChild(card);
+            });
+        }
+
+        // Modal functions
+        function openModal(index) {
+            const pattern = patterns[index];
+            const modal = document.getElementById('modal');
+
+            // Update modal content
+            document.getElementById('modalNumber').textContent = pattern.number;
+            document.getElementById('modalNumber').style.color = pattern.color;
+            document.getElementById('modalTitle').textContent = pattern.name;
+            document.getElementById('modalSubtitle').textContent = pattern.subtitle;
+            document.getElementById('modalSubtitle').style.color = pattern.color;
+            document.getElementById('modalWhen').textContent = pattern.when;
+            document.getElementById('modalComplexity').textContent = pattern.complexity + ' - ' +
+                (pattern.complexity === 'Baixa' ? 'Ideal para começar' :
+                 pattern.complexity === 'Média' ? 'Requer planejamento' : 'Para casos complexos');
+            document.getElementById('modalExample').textContent = pattern.example;
+
+            // Update diagram
+            const diagram = document.getElementById('modalDiagram');
+            diagram.innerHTML = `
+                <defs>
+                    <marker id="arrowFull" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                        <path d="M0,0 L8,4 L0,8 Z" fill="${pattern.color}"/>
+                    </marker>
+                    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                        <path d="M0,0 L8,4 L0,8 Z" fill="#60a5fa"/>
+                    </marker>
+                    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                        <path d="M0,0 L8,4 L0,8 Z" fill="#4ade80"/>
+                    </marker>
+                    <marker id="arrowPink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                        <path d="M0,0 L8,4 L0,8 Z" fill="#f472b6"/>
+                    </marker>
+                </defs>
+                ${pattern.fullDiagram}
+            `;
+
+            // Update modal styling
+            document.querySelector('.modal-content').style.borderColor = pattern.color;
+
+            // Mark card as active
+            document.querySelectorAll('.pattern-card').forEach((card, i) => {
+                card.classList.toggle('active', i === index);
+            });
+
+            // Show modal
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.querySelectorAll('.pattern-card').forEach(card => {
+                card.classList.remove('active');
+            });
+        }
+
+        // Event listeners
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) {
+                closeModal();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+            if (e.key >= '1' && e.key <= '5') {
+                openModal(parseInt(e.key) - 1);
+            }
+        });
+
+        // Initialize
+        generateCards();
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

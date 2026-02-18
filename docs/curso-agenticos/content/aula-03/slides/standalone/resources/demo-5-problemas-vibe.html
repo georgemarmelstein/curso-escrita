@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Os 5 Problemas do Vibe Coding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 50% 50%, rgba(239, 68, 68, 0.08) 0%, transparent 50%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 30%,
+                rgba(10, 10, 18, 0.7) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            padding: 3vh 3vw;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3vh;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.8rem, 1.2vw, 1.1rem);
+            color: var(--super-red);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 1vh;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2vw;
+            width: 100%;
+            flex: 1;
+        }
+
+        .problem-card {
+            background: rgba(20, 20, 30, 0.8);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 2.5vh 1.5vw;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: cardAppear 0.5s ease forwards;
+        }
+
+        .problem-card:nth-child(1) { animation-delay: 0.1s; }
+        .problem-card:nth-child(2) { animation-delay: 0.2s; }
+        .problem-card:nth-child(3) { animation-delay: 0.3s; }
+        .problem-card:nth-child(4) { animation-delay: 0.4s; }
+        .problem-card:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .problem-card:hover {
+            border-color: var(--super-amber);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .problem-card.expanded {
+            border-color: var(--super-amber);
+            background: rgba(30, 30, 40, 0.95);
+        }
+
+        .problem-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 700;
+            color: var(--super-red);
+            opacity: 0.4;
+            margin-bottom: 1.5vh;
+        }
+
+        .problem-icon {
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            margin-bottom: 2vh;
+        }
+
+        .problem-title {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 1.5vh;
+            line-height: 1.3;
+        }
+
+        .problem-brief {
+            font-size: clamp(0.95rem, 1.3vw, 1.2rem);
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .problem-detail {
+            display: none;
+            margin-top: 2vh;
+            padding-top: 2vh;
+            border-top: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .problem-card.expanded .problem-detail {
+            display: block;
+            animation: detailReveal 0.3s ease;
+        }
+
+        @keyframes detailReveal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 1vh;
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        .detail-icon {
+            color: var(--super-amber);
+            flex-shrink: 0;
+        }
+
+        .severity-bar {
+            margin-top: auto;
+            padding-top: 2vh;
+        }
+
+        .severity-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1vh;
+        }
+
+        .severity-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .severity-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .severity-low { width: 40%; background: var(--super-amber); }
+        .severity-medium { width: 60%; background: orange; }
+        .severity-high { width: 80%; background: var(--super-red); }
+        .severity-critical { width: 100%; background: linear-gradient(90deg, var(--super-red), #ff0000); }
+
+        .nav-hint {
+            margin-top: 2vh;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.8rem, 1vw, 0.95rem);
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        body.embed-mode .header-title { font-size: clamp(1.6rem, 3vw, 2.5rem); }
+        body.embed-mode .problems-grid { gap: 1.5vw; }
+        body.embed-mode .problem-card { padding: 2vh 1.2vw; }
+        body.embed-mode .problem-icon { font-size: clamp(2rem, 3vw, 3rem); }
+        body.embed-mode .problem-title { font-size: clamp(1rem, 1.4vw, 1.3rem); }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Anti-Patterns</div>
+            <h1 class="header-title">Os 5 Problemas do Vibe Coding</h1>
+        </div>
+
+        <div class="problems-grid">
+            <div class="problem-card" data-problem="1">
+                <div class="problem-number">01</div>
+                <div class="problem-icon">🎯</div>
+                <div class="problem-title">Desvio do Objetivo</div>
+                <div class="problem-brief">Objetivo original se perde a cada iteração de correção.</div>
+                <div class="problem-detail">
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Começa com "sistema de gestão"</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Termina com Frankenstein de features</span>
+                    </div>
+                </div>
+                <div class="severity-bar">
+                    <div class="severity-label">Severidade</div>
+                    <div class="severity-track">
+                        <div class="severity-fill severity-high"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-card" data-problem="2">
+                <div class="problem-number">02</div>
+                <div class="problem-icon">🧠</div>
+                <div class="problem-title">Contexto Perdido</div>
+                <div class="problem-brief">LLM esquece decisões anteriores, repete erros.</div>
+                <div class="problem-detail">
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Janela de contexto esgota</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Decisões contraditórias acumulam</span>
+                    </div>
+                </div>
+                <div class="severity-bar">
+                    <div class="severity-label">Severidade</div>
+                    <div class="severity-track">
+                        <div class="severity-fill severity-critical"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-card" data-problem="3">
+                <div class="problem-number">03</div>
+                <div class="problem-icon">🍝</div>
+                <div class="problem-title">Código Espaguete</div>
+                <div class="problem-brief">Gambiarras acumuladas criam emaranhado impossível.</div>
+                <div class="problem-detail">
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Cada "conserto" adiciona complexidade</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Ninguém entende o código final</span>
+                    </div>
+                </div>
+                <div class="severity-bar">
+                    <div class="severity-label">Severidade</div>
+                    <div class="severity-track">
+                        <div class="severity-fill severity-critical"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-card" data-problem="4">
+                <div class="problem-number">04</div>
+                <div class="problem-icon">💳</div>
+                <div class="problem-title">Débito Técnico Invisível</div>
+                <div class="problem-brief">Problemas estruturais escondidos que explodem depois.</div>
+                <div class="problem-detail">
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Funciona hoje, quebra amanhã</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Custo de manutenção exponencial</span>
+                    </div>
+                </div>
+                <div class="severity-bar">
+                    <div class="severity-label">Severidade</div>
+                    <div class="severity-track">
+                        <div class="severity-fill severity-high"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-card" data-problem="5">
+                <div class="problem-number">05</div>
+                <div class="problem-icon">📈</div>
+                <div class="problem-title">Custo Exponencial</div>
+                <div class="problem-brief">Tokens, tempo e frustração crescem sem controle.</div>
+                <div class="problem-detail">
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Iteração 1: 1000 tokens</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">→</span>
+                        <span>Iteração 20: 50.000 tokens</span>
+                    </div>
+                </div>
+                <div class="severity-bar">
+                    <div class="severity-label">Severidade</div>
+                    <div class="severity-track">
+                        <div class="severity-fill severity-medium"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-hint">Clique nos cards para expandir detalhes</div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.problem-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.problem-card').forEach(c => {
+                    if (c !== card) c.classList.remove('expanded');
+                });
+                card.classList.toggle('expanded');
+            });
+        });
+
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

@@ -1,0 +1,3445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Builder - 5 Padrões</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER + TABS
+           ═══════════════════════════════════════════════════════════ */
+        .header {
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+            padding: 10px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-gold);
+            white-space: nowrap;
+            padding-top: 4px;
+        }
+
+        .tabs-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .tabs-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            overflow-x: auto;
+        }
+
+        .tabs-label {
+            font-size: 0.65em;
+            color: rgba(190, 156, 109, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            min-width: 60px;
+            flex-shrink: 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            flex: 1;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 244, 228, 0.6);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--super-cream);
+        }
+
+        .tab.active {
+            background: rgba(var(--tab-color-rgb, 190, 156, 109), 0.2);
+            border-color: var(--tab-color, var(--super-gold));
+            color: var(--tab-color, var(--super-gold));
+        }
+
+        .tab-number {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--tab-color, var(--super-gold));
+            color: var(--super-bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .tab[data-pattern="chaining"] { --tab-color: #fbbf24; --tab-color-rgb: 251, 191, 36; }
+        .tab[data-pattern="routing"] { --tab-color: #60a5fa; --tab-color-rgb: 96, 165, 250; }
+        .tab[data-pattern="parallel"] { --tab-color: #a78bfa; --tab-color-rgb: 167, 139, 250; }
+        .tab[data-pattern="orchestrator"] { --tab-color: #22d3ee; --tab-color-rgb: 34, 211, 238; }
+        .tab[data-pattern="evaluator"] { --tab-color: #f472b6; --tab-color-rgb: 244, 114, 182; }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN LAYOUT
+           ═══════════════════════════════════════════════════════════ */
+        .main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           LEFT PANEL - COMPONENTES
+           ═══════════════════════════════════════════════════════════ */
+        .components-panel {
+            width: 180px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .panel-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .draggable {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            font-size: 0.8em;
+            border: 2px solid;
+            background: var(--item-bg, rgba(255, 255, 255, 0.05));
+            border-color: var(--item-border, rgba(255, 255, 255, 0.15));
+            color: var(--item-color, var(--super-cream));
+        }
+
+        .draggable:hover {
+            transform: translateX(4px);
+            border-color: var(--item-color, var(--super-gold));
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .draggable:active { cursor: grabbing; }
+        .draggable.dragging { opacity: 0.4; }
+        .draggable .icon { font-size: 1.1em; }
+
+        .draggable.node-llm { --item-bg: rgba(190, 156, 109, 0.15); --item-border: rgba(190, 156, 109, 0.4); --item-color: var(--super-gold-light); }
+        .draggable.node-gate { --item-bg: rgba(251, 191, 36, 0.1); --item-border: rgba(251, 191, 36, 0.3); --item-color: var(--super-amber); }
+        .draggable.node-router { --item-bg: rgba(96, 165, 250, 0.1); --item-border: rgba(96, 165, 250, 0.3); --item-color: var(--super-blue); }
+        .draggable.node-worker { --item-bg: rgba(34, 211, 238, 0.1); --item-border: rgba(34, 211, 238, 0.3); --item-color: var(--super-cyan); }
+        .draggable.node-aggregator { --item-bg: rgba(167, 139, 250, 0.1); --item-border: rgba(167, 139, 250, 0.3); --item-color: var(--super-purple); }
+        .draggable.node-evaluator, .draggable.node-generator { --item-bg: rgba(244, 114, 182, 0.1); --item-border: rgba(244, 114, 182, 0.3); --item-color: var(--super-pink); }
+        .draggable.node-input, .draggable.node-output { --item-bg: rgba(74, 222, 128, 0.1); --item-border: rgba(74, 222, 128, 0.3); --item-color: var(--super-green); }
+        .draggable.node-orchestrator { --item-bg: rgba(34, 211, 238, 0.15); --item-border: rgba(34, 211, 238, 0.4); --item-color: var(--super-cyan); }
+
+        /* ═══════════════════════════════════════════════════════════
+           CANVAS CENTRAL - POSICIONAMENTO ABSOLUTO
+           ═══════════════════════════════════════════════════════════ */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas-grid {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .drop-zone {
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 80px;
+            border: 2px dashed rgba(190, 156, 109, 0.25);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.05);
+        }
+
+        .drop-zone.empty::after {
+            content: attr(data-hint);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 244, 228, 0.3);
+            font-size: 0.9em;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        /* SVG Connections Layer */
+        .connections-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .connections-layer path {
+            pointer-events: auto;
+        }
+
+        /* Dropped nodes - ABSOLUTE POSITIONING */
+        .dropped-node {
+            position: absolute;
+            padding: 12px 18px;
+            border-radius: 10px;
+            min-width: 100px;
+            text-align: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+            cursor: default;
+        }
+
+        .dropped-node.spotlight {
+            transform: scale(1.08);
+            box-shadow: 0 0 35px var(--node-glow, rgba(190, 156, 109, 0.6));
+            z-index: 20;
+        }
+
+        .dropped-node.dimmed {
+            opacity: 0.35;
+            filter: grayscale(40%);
+        }
+
+        .dropped-node .node-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+
+        .dropped-node .node-sublabel {
+            font-size: 0.65em;
+            opacity: 0.7;
+            margin-top: 3px;
+        }
+
+        .dropped-node .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 18px;
+            height: 18px;
+            background: var(--super-red);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.7em;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dropped-node:hover .remove-btn { display: flex; }
+
+        /* Node type styles */
+        .dropped-node[data-type="llm"] {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.3), rgba(190, 156, 109, 0.15));
+            border: 2px solid var(--super-gold);
+            --node-glow: rgba(190, 156, 109, 0.6);
+        }
+        .dropped-node[data-type="llm"] .node-label { color: var(--super-gold-light); }
+
+        .dropped-node[data-type="gate"] {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(251, 191, 36, 0.1));
+            border: 2px solid var(--super-amber);
+            --node-glow: rgba(251, 191, 36, 0.6);
+        }
+        .dropped-node[data-type="gate"] .node-label { color: var(--super-amber); }
+
+        .dropped-node[data-type="router"] {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.1));
+            border: 2px solid var(--super-blue);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            padding: 20px 30px;
+            --node-glow: rgba(96, 165, 250, 0.6);
+        }
+        .dropped-node[data-type="router"] .node-label { color: var(--super-blue); }
+
+        /* ═══════════════════════════════════════════════════════════
+           ROUTE SELECTOR (para padrão Routing)
+           ═══════════════════════════════════════════════════════════ */
+        .route-selector {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            z-index: 30;
+        }
+
+        .route-option {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .route-option:hover {
+            border-color: var(--super-blue);
+            transform: scale(1.2);
+        }
+
+        .route-option.active {
+            background: var(--super-blue);
+            border-color: var(--super-blue);
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.6);
+        }
+
+        .route-option::after {
+            content: attr(data-label);
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.55em;
+            color: rgba(255, 255, 255, 0.6);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .route-option:hover::after,
+        .route-option.active::after {
+            opacity: 1;
+        }
+
+        /* Nodes de rota ativa/inativa */
+        .dropped-node.route-inactive {
+            opacity: 0.25 !important;
+            filter: grayscale(60%);
+        }
+
+        .dropped-node.route-active {
+            box-shadow: 0 0 25px var(--super-blue) !important;
+            z-index: 15;
+        }
+
+        /* Conexões de rota */
+        .connection-path.route-inactive {
+            opacity: 0.12 !important;
+            stroke-dasharray: 4,4 !important;
+        }
+
+        .connection-path.route-active {
+            opacity: 1 !important;
+            stroke-width: 3px !important;
+            stroke: var(--super-blue) !important;
+        }
+
+        .dropped-node[data-type="worker"] {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.25), rgba(34, 211, 238, 0.1));
+            border: 2px solid var(--super-cyan);
+            --node-glow: rgba(34, 211, 238, 0.6);
+        }
+        .dropped-node[data-type="worker"] .node-label { color: var(--super-cyan); }
+
+        .dropped-node[data-type="orchestrator"] {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.35), rgba(34, 211, 238, 0.15));
+            border: 3px solid var(--super-cyan);
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            --node-glow: rgba(34, 211, 238, 0.6);
+        }
+        .dropped-node[data-type="orchestrator"] .node-label { color: var(--super-cyan); font-size: 0.7em; }
+
+        .dropped-node[data-type="aggregator"] {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.25), rgba(167, 139, 250, 0.1));
+            border: 2px solid var(--super-purple);
+            --node-glow: rgba(167, 139, 250, 0.6);
+        }
+        .dropped-node[data-type="aggregator"] .node-label { color: var(--super-purple); }
+
+        .dropped-node[data-type="generator"], .dropped-node[data-type="evaluator"] {
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.25), rgba(244, 114, 182, 0.1));
+            border: 2px solid var(--super-pink);
+            --node-glow: rgba(244, 114, 182, 0.6);
+        }
+        .dropped-node[data-type="generator"] .node-label,
+        .dropped-node[data-type="evaluator"] .node-label { color: var(--super-pink); }
+
+        .dropped-node[data-type="input"], .dropped-node[data-type="output"] {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.25), rgba(74, 222, 128, 0.1));
+            border: 2px solid var(--super-green);
+            --node-glow: rgba(74, 222, 128, 0.6);
+        }
+        .dropped-node[data-type="input"] .node-label,
+        .dropped-node[data-type="output"] .node-label { color: var(--super-green); }
+
+        /* ═══════════════════════════════════════════════════════════
+           PLAYBACK CONTROLS
+           ═══════════════════════════════════════════════════════════ */
+        .playback-bar {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--super-green);
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--super-green);
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-btn:hover { background: rgba(74, 222, 128, 0.3); transform: scale(1.1); }
+        .play-btn.playing { border-color: var(--super-amber); background: rgba(251, 191, 36, 0.15); color: var(--super-amber); }
+
+        .reset-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--super-cream);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .reset-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .speed-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .speed-slider {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(190, 156, 109, 0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .speed-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            min-width: 30px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           ZOOM & PAN CONTROLS
+           ═══════════════════════════════════════════════════════════ */
+        .zoom-controls {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .zoom-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(190, 156, 109, 0.4);
+            background: rgba(190, 156, 109, 0.1);
+            color: var(--super-gold);
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(190, 156, 109, 0.25);
+            border-color: var(--super-gold);
+        }
+
+        .zoom-btn:active {
+            transform: scale(0.95);
+        }
+
+        .zoom-level {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-cream);
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .zoom-reset {
+            font-size: 0.65em;
+            padding: 4px 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            background: transparent;
+            color: rgba(255, 244, 228, 0.6);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-reset:hover {
+            background: rgba(190, 156, 109, 0.15);
+            color: var(--super-gold);
+        }
+
+        /* Canvas wrapper for zoom/pan */
+        .canvas-wrapper {
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 80px;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .canvas-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-origin: center center;
+            transition: transform 0.1s ease-out;
+        }
+
+        .canvas-inner.panning {
+            cursor: grabbing;
+            transition: none;
+        }
+
+        .canvas-inner.can-pan {
+            cursor: grab;
+        }
+
+        /* Adjust drop-zone when inside wrapper */
+        .canvas-wrapper .drop-zone {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 2px dashed rgba(190, 156, 109, 0.25);
+            border-radius: 12px;
+        }
+
+        /* Minimap */
+        .minimap {
+            position: absolute;
+            bottom: 90px;
+            right: 30px;
+            width: 120px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 6px;
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .minimap-viewport {
+            position: absolute;
+            border: 1px solid var(--super-gold);
+            background: rgba(190, 156, 109, 0.1);
+            pointer-events: none;
+        }
+
+        .minimap-nodes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .minimap-node {
+            position: absolute;
+            width: 6px;
+            height: 4px;
+            background: var(--super-gold);
+            border-radius: 1px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           INFO PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .info-panel {
+            width: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .info-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1em;
+            color: var(--super-gold);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .info-description {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .info-stats {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-row:last-child { border-bottom: none; }
+
+        .stat-label { font-size: 0.7em; color: rgba(255, 244, 228, 0.5); }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 0.75em; color: var(--super-gold); }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* ═══════════════════════════════════════════════════════════
+           PARTICLES
+           ═══════════════════════════════════════════════════════════ */
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--super-cyan);
+            box-shadow: 0 0 15px var(--super-cyan);
+            z-index: 25;
+            pointer-events: none;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EDIT MODAL
+           ═══════════════════════════════════════════════════════════ */
+        .edit-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-modal-overlay.visible { display: flex; }
+
+        .edit-modal {
+            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a12 100%);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            width: 360px;
+            max-width: 90vw;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.25s ease;
+        }
+
+        .edit-modal-overlay.visible .edit-modal {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .edit-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .edit-modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            color: var(--super-gold);
+        }
+
+        .edit-modal-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--super-cream);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            transition: all 0.2s ease;
+        }
+
+        .edit-modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--super-red);
+            color: var(--super-red);
+        }
+
+        .edit-field {
+            margin-bottom: 18px;
+        }
+
+        .edit-field-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .edit-field-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: var(--super-cream);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .edit-field-input:focus {
+            border-color: var(--super-gold);
+            box-shadow: 0 0 0 3px rgba(190, 156, 109, 0.15);
+        }
+
+        .edit-field-input::placeholder {
+            color: rgba(255, 244, 228, 0.3);
+        }
+
+        /* Color picker */
+        .color-picker {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: white;
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        .color-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .color-option[data-color="gold"] { background: var(--super-gold); }
+        .color-option[data-color="green"] { background: var(--super-green); }
+        .color-option[data-color="cyan"] { background: var(--super-cyan); }
+        .color-option[data-color="purple"] { background: var(--super-purple); }
+        .color-option[data-color="pink"] { background: var(--super-pink); }
+        .color-option[data-color="amber"] { background: var(--super-amber); }
+        .color-option[data-color="blue"] { background: var(--super-blue); }
+        .color-option[data-color="red"] { background: var(--super-red); }
+
+        /* Icon picker */
+        .icon-picker {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .icon-option {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+        }
+
+        .icon-option:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .icon-option.selected {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.2);
+        }
+
+        /* Modal actions */
+        .edit-modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .edit-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn-cancel {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--super-cream);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .edit-btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .edit-btn-save {
+            background: linear-gradient(135deg, var(--super-gold) 0%, #9a7d52 100%);
+            color: var(--super-bg-dark);
+        }
+
+        .edit-btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(190, 156, 109, 0.4);
+        }
+
+        /* Editable node indicator */
+        .dropped-node {
+            cursor: pointer;
+        }
+
+        .dropped-node::before {
+            content: '✏️';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            font-size: 0.7em;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .dropped-node:hover::before {
+            opacity: 0.7;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           I/O MINI-TAGS
+           ═══════════════════════════════════════════════════════════ */
+        .io-tags-container {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            pointer-events: none;
+        }
+
+        .io-tags-container.input-side {
+            right: 100%;
+            margin-right: 8px;
+            align-items: flex-end;
+        }
+
+        .io-tags-container.output-side {
+            left: 100%;
+            margin-left: 8px;
+            align-items: flex-start;
+        }
+
+        .io-tag {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6em;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .dropped-node:hover .io-tag,
+        .dropped-node.spotlight .io-tag {
+            opacity: 1;
+        }
+
+        .io-tag.input-tag {
+            background: rgba(74, 222, 128, 0.15);
+            border: 1px solid rgba(74, 222, 128, 0.4);
+            color: var(--super-green);
+        }
+
+        .io-tag.output-tag {
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            color: var(--super-amber);
+        }
+
+        .io-tag .io-icon {
+            font-size: 0.9em;
+        }
+
+        /* Always visible tags option */
+        .dropped-node.show-io .io-tag {
+            opacity: 0.8;
+        }
+
+        /* Orchestrator special positioning (circular) */
+        .dropped-node[data-type="orchestrator"] .io-tags-container.input-side {
+            margin-right: 12px;
+        }
+        .dropped-node[data-type="orchestrator"] .io-tags-container.output-side {
+            margin-left: 12px;
+        }
+
+        /* Router special positioning (diamond) */
+        .dropped-node[data-type="router"] .io-tags-container.input-side {
+            margin-right: 20px;
+        }
+        .dropped-node[data-type="router"] .io-tags-container.output-side {
+            margin-left: 20px;
+        }
+
+        /* Toggle button for showing all I/O */
+        .io-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .io-toggle:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .io-toggle input {
+            accent-color: var(--super-gold);
+        }
+
+        .io-toggle label {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.6);
+            cursor: pointer;
+        }
+
+        /* Inline editing for I/O tags */
+        .io-tag {
+            cursor: pointer;
+        }
+
+        .io-tag:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .io-tag.editing {
+            padding: 0;
+            background: transparent;
+            border-color: transparent;
+        }
+
+        .io-inline-input {
+            width: 80px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            border: 1px solid;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            outline: none;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .io-inline-input.input-type {
+            border-color: var(--super-green);
+            color: var(--super-green);
+        }
+
+        .io-inline-input.output-type {
+            border-color: var(--super-amber);
+            color: var(--super-amber);
+        }
+
+        .io-inline-input:focus {
+            box-shadow: 0 0 0 2px rgba(190, 156, 109, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           FREE CANVAS - BUTTONS & MODES
+           ═══════════════════════════════════════════════════════════ */
+        .load-template-btn {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.1));
+            border: 2px solid var(--super-green);
+            color: var(--super-green);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .load-template-btn:hover {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(74, 222, 128, 0.15));
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+        }
+
+        .connection-mode-btn {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(190, 156, 109, 0.4);
+            background: rgba(190, 156, 109, 0.1);
+            color: var(--super-gold);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .connection-mode-btn:hover {
+            background: rgba(190, 156, 109, 0.2);
+            border-color: var(--super-gold);
+        }
+
+        .connection-mode-btn {
+            border-color: rgba(34, 211, 238, 0.4);
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--super-cyan);
+        }
+
+        .connection-mode-btn:hover {
+            background: rgba(34, 211, 238, 0.2);
+            border-color: var(--super-cyan);
+        }
+
+        .connection-mode-btn.active {
+            background: rgba(34, 211, 238, 0.3);
+            border-color: var(--super-cyan);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+        }
+
+        .connection-hint {
+            font-size: 0.6em;
+            color: rgba(255, 244, 228, 0.4);
+            text-align: center;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* Draggable nodes on canvas */
+        .dropped-node.dragging-node {
+            cursor: grabbing;
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .dropped-node.can-connect {
+            cursor: crosshair;
+        }
+
+        .dropped-node.connection-source {
+            box-shadow: 0 0 20px var(--super-cyan), 0 0 40px rgba(34, 211, 238, 0.3);
+            border-color: var(--super-cyan) !important;
+        }
+
+        .dropped-node.connection-target:hover {
+            box-shadow: 0 0 20px var(--super-green), 0 0 40px rgba(74, 222, 128, 0.3);
+        }
+
+        /* Connection being drawn */
+        .temp-connection {
+            stroke: var(--super-cyan);
+            stroke-width: 2;
+            stroke-dasharray: 8, 4;
+            fill: none;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Delete connection on hover */
+        .connection-path {
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .connection-path:hover {
+            opacity: 1 !important;
+            stroke-width: 4;
+        }
+
+        /* Connection mode indicator */
+        body.connection-mode .drop-zone {
+            border-color: var(--super-cyan);
+            background: rgba(34, 211, 238, 0.02);
+        }
+
+        body.connection-mode .dropped-node {
+            cursor: crosshair;
+        }
+
+        /* Node grab handle indicator */
+        .dropped-node .drag-handle {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 16px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6em;
+            opacity: 0;
+            cursor: grab;
+            transition: opacity 0.2s ease;
+        }
+
+        .dropped-node:hover .drag-handle {
+            opacity: 0.6;
+        }
+
+        .dropped-node .drag-handle:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .header { padding: 8px 15px; }
+        body.embed-mode .title { font-size: 0.95em; }
+        body.embed-mode .tab { padding: 6px 10px; font-size: 0.65em; }
+        body.embed-mode .tab-number { width: 16px; height: 16px; font-size: 0.8em; }
+        body.embed-mode .components-panel { width: 140px; padding: 10px; }
+        body.embed-mode .draggable { padding: 6px 8px; font-size: 0.7em; }
+        body.embed-mode .info-panel { width: 160px; padding: 10px; }
+        body.embed-mode .playback-bar { padding: 6px 12px; gap: 10px; }
+        body.embed-mode .play-btn { width: 32px; height: 32px; font-size: 0.9em; }
+        body.embed-mode .dropped-node { padding: 8px 12px; min-width: 80px; }
+        body.embed-mode .dropped-node .node-label { font-size: 0.7em; }
+        body.embed-mode .edit-modal { width: 300px; padding: 18px; }
+        body.embed-mode .edit-field-input { padding: 10px 12px; font-size: 0.85em; }
+        body.embed-mode .color-option { width: 28px; height: 28px; }
+        body.embed-mode .icon-option { width: 32px; height: 32px; font-size: 1em; }
+        body.embed-mode .io-tag { font-size: 0.5em; padding: 2px 5px; }
+        body.embed-mode .io-tags-container.input-side { margin-right: 5px; }
+        body.embed-mode .io-tags-container.output-side { margin-left: 5px; }
+
+        /* Tip text */
+        .tip-text {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            text-align: center;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Workflow Builder</div>
+        <div class="tabs-container">
+            <div class="tabs-row">
+                <span class="tabs-label">Padrões:</span>
+                <div class="tab active" data-pattern="chaining"><span>Chaining</span></div>
+                <div class="tab" data-pattern="routing"><span>Routing</span></div>
+                <div class="tab" data-pattern="parallel"><span>Parallel</span></div>
+                <div class="tab" data-pattern="orchestrator"><span>Orchestrator</span></div>
+                <div class="tab" data-pattern="evaluator"><span>Evaluator</span></div>
+            </div>
+            <div class="tabs-row">
+                <span class="tabs-label">Jurídico:</span>
+                <div class="tab" data-pattern="sentenca"><span>Sentença</span></div>
+                <div class="tab" data-pattern="probatica"><span>Probática</span></div>
+                <div class="tab" data-pattern="pesquisa"><span>Pesquisa</span></div>
+                <div class="tab" data-pattern="triagem"><span>Triagem</span></div>
+                <div class="tab" data-pattern="revisao"><span>Revisão</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="components-panel" id="componentsPanel"></div>
+
+        <div class="canvas-container">
+            <div class="canvas-grid"></div>
+
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+                <span class="zoom-level" id="zoomLevel">100%</span>
+                <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">+</button>
+                <button class="zoom-reset" onclick="resetZoom()" title="Reset">Reset</button>
+            </div>
+
+            <!-- Canvas Wrapper for Zoom/Pan -->
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <div class="canvas-inner" id="canvasInner">
+                    <svg class="connections-layer" id="connectionsLayer"></svg>
+                    <div class="drop-zone empty" id="dropZone" data-hint="Arraste componentes ou use scroll para zoom"></div>
+                </div>
+            </div>
+
+            <div class="playback-bar">
+                <button class="play-btn" id="playBtn" onclick="togglePlayback()">▶</button>
+                <button class="reset-btn" onclick="resetCanvas()">↺</button>
+                <div class="speed-control">
+                    <span class="speed-label">Vel:</span>
+                    <input type="range" class="speed-slider" id="speedSlider" min="1" max="5" value="3" onchange="updateSpeed()">
+                    <span class="speed-value" id="speedValue">1x</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-title" id="infoTitle">Prompt Chaining</div>
+            <div class="info-description" id="infoDescription">Etapas sequenciais onde output alimenta a próxima etapa.</div>
+            <div class="info-stats">
+                <div class="stat-row"><span class="stat-label">Complexidade</span><span class="stat-value" id="statComplexity">Baixa</span></div>
+                <div class="stat-row"><span class="stat-label">Nós</span><span class="stat-value" id="statNodes">0</span></div>
+                <div class="stat-row"><span class="stat-label">Conexões</span><span class="stat-value" id="statConnections">0</span></div>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background: var(--super-gold);"></div><span>LLM</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background: var(--super-green);"></div><span>In/Out</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background: var(--super-blue);"></div><span>Router</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background: var(--super-purple);"></div><span>Aggregator</span></div>
+            </div>
+            <div class="io-toggle">
+                <input type="checkbox" id="showIOToggle" onchange="toggleShowIO()">
+                <label for="showIOToggle">Mostrar I/O</label>
+            </div>
+            <div class="tip-text">Clique em um nó para editar</div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="edit-modal-overlay" id="editModal">
+        <div class="edit-modal">
+            <div class="edit-modal-header">
+                <span class="edit-modal-title">Editar Componente</span>
+                <button class="edit-modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+
+            <div class="edit-field">
+                <label class="edit-field-label">Nome</label>
+                <input type="text" class="edit-field-input" id="editLabel" placeholder="Ex: Analisador de Sentimento">
+            </div>
+
+            <div class="edit-field">
+                <label class="edit-field-label">Descrição</label>
+                <input type="text" class="edit-field-input" id="editSublabel" placeholder="Ex: Classifica tom do texto">
+            </div>
+
+            <div class="edit-field">
+                <label class="edit-field-label">Ícone</label>
+                <div class="icon-picker" id="iconPicker">
+                    <div class="icon-option" data-icon="🤖">🤖</div>
+                    <div class="icon-option" data-icon="📥">📥</div>
+                    <div class="icon-option" data-icon="📤">📤</div>
+                    <div class="icon-option" data-icon="🔀">🔀</div>
+                    <div class="icon-option" data-icon="🔗">🔗</div>
+                    <div class="icon-option" data-icon="⚙️">⚙️</div>
+                    <div class="icon-option" data-icon="🎯">🎯</div>
+                    <div class="icon-option" data-icon="✍️">✍️</div>
+                    <div class="icon-option" data-icon="🔍">🔍</div>
+                    <div class="icon-option" data-icon="🚦">🚦</div>
+                    <div class="icon-option" data-icon="📁">📁</div>
+                    <div class="icon-option" data-icon="📋">📋</div>
+                    <div class="icon-option" data-icon="⚖️">⚖️</div>
+                    <div class="icon-option" data-icon="📜">📜</div>
+                    <div class="icon-option" data-icon="🏛️">🏛️</div>
+                    <div class="icon-option" data-icon="📄">📄</div>
+                    <div class="icon-option" data-icon="🗣️">🗣️</div>
+                    <div class="icon-option" data-icon="🔬">🔬</div>
+                    <div class="icon-option" data-icon="📎">📎</div>
+                    <div class="icon-option" data-icon="📑">📑</div>
+                    <div class="icon-option" data-icon="✅">✅</div>
+                    <div class="icon-option" data-icon="❓">❓</div>
+                    <div class="icon-option" data-icon="📝">📝</div>
+                    <div class="icon-option" data-icon="⚡">⚡</div>
+                </div>
+            </div>
+
+            <div class="edit-field">
+                <label class="edit-field-label">Cor</label>
+                <div class="color-picker" id="colorPicker">
+                    <div class="color-option" data-color="gold" title="Dourado"></div>
+                    <div class="color-option" data-color="green" title="Verde"></div>
+                    <div class="color-option" data-color="cyan" title="Ciano"></div>
+                    <div class="color-option" data-color="purple" title="Roxo"></div>
+                    <div class="color-option" data-color="pink" title="Rosa"></div>
+                    <div class="color-option" data-color="amber" title="Âmbar"></div>
+                    <div class="color-option" data-color="blue" title="Azul"></div>
+                    <div class="color-option" data-color="red" title="Vermelho"></div>
+                </div>
+            </div>
+
+            <div class="edit-field" id="ioFieldsContainer">
+                <label class="edit-field-label">Fluxo de Dados</label>
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 0.65em; color: var(--super-green); margin-bottom: 4px;">↓ Input</div>
+                        <input type="text" class="edit-field-input" id="editInputLabel" placeholder="Ex: texto_bruto" style="font-size: 0.8em; padding: 8px 10px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 0.65em; color: var(--super-amber); margin-bottom: 4px;">↑ Output</div>
+                        <input type="text" class="edit-field-input" id="editOutputLabel" placeholder="Ex: texto_processado" style="font-size: 0.8em; padding: 8px 10px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="edit-modal-actions">
+                <button class="edit-btn edit-btn-cancel" onclick="closeEditModal()">Cancelar</button>
+                <button class="edit-btn edit-btn-save" onclick="saveNodeEdit()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // PATTERN DEFINITIONS WITH LAYOUTS
+        // ═══════════════════════════════════════════════════════════
+        const patterns = {
+            // ═══════════════════════════════════════════════════════════
+            // PADRÕES ANTHROPIC (Building Effective Agents)
+            // ═══════════════════════════════════════════════════════════
+            chaining: {
+                name: 'Prompt Chaining',
+                description: 'Etapas sequenciais onde o output alimenta a próxima etapa.',
+                complexity: 'Baixa',
+                hint: 'Monte: Input → A → B → C → Output',
+                components: [
+                    { type: 'input', label: 'Input', icon: '📥', sublabel: 'entrada', role: 'start' },
+                    { type: 'llm', label: 'LLM A', icon: '🤖', sublabel: 'etapa 1', role: 'process' },
+                    { type: 'llm', label: 'LLM B', icon: '🤖', sublabel: 'etapa 2', role: 'process' },
+                    { type: 'llm', label: 'LLM C', icon: '🤖', sublabel: 'etapa 3', role: 'process' },
+                    { type: 'output', label: 'Output', icon: '📤', sublabel: 'saída', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'llm-0': [22, 45],
+                    'llm-1': [44, 45],
+                    'llm-2': [66, 45],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'llm-0'],
+                    ['llm-0', 'llm-1'],
+                    ['llm-1', 'llm-2'],
+                    ['llm-2', 'output']
+                ]
+            },
+            routing: {
+                name: 'Routing',
+                description: 'Um router classifica e direciona para handlers especializados.',
+                complexity: 'Baixa',
+                hint: 'Monte: Input → Router → Handlers → Output',
+                components: [
+                    { type: 'input', label: 'Input', icon: '📥', sublabel: 'entrada', role: 'start' },
+                    { type: 'router', label: 'Router', icon: '🔀', sublabel: 'classifica', role: 'hub' },
+                    { type: 'llm', label: 'Handler A', icon: '🤖', sublabel: 'tipo A', role: 'branch' },
+                    { type: 'llm', label: 'Handler B', icon: '🤖', sublabel: 'tipo B', role: 'branch' },
+                    { type: 'llm', label: 'Handler C', icon: '🤖', sublabel: 'tipo C', role: 'branch' },
+                    { type: 'output', label: 'Output', icon: '📤', sublabel: 'saída', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'router': [25, 45],
+                    'llm-0': [55, 15],
+                    'llm-1': [55, 45],
+                    'llm-2': [55, 75],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'router'],
+                    ['router', 'llm-0'],
+                    ['router', 'llm-1'],
+                    ['router', 'llm-2'],
+                    ['llm-0', 'output'],
+                    ['llm-1', 'output'],
+                    ['llm-2', 'output']
+                ]
+            },
+            parallel: {
+                name: 'Parallelization',
+                description: 'Subtarefas independentes rodam em paralelo e são agregadas.',
+                complexity: 'Média',
+                hint: 'Monte: Input → Workers paralelos → Aggregator → Output',
+                components: [
+                    { type: 'input', label: 'Input', icon: '📥', sublabel: 'entrada', role: 'start' },
+                    { type: 'llm', label: 'Worker 1', icon: '🤖', sublabel: 'paralelo', role: 'branch' },
+                    { type: 'llm', label: 'Worker 2', icon: '🤖', sublabel: 'paralelo', role: 'branch' },
+                    { type: 'llm', label: 'Worker 3', icon: '🤖', sublabel: 'paralelo', role: 'branch' },
+                    { type: 'aggregator', label: 'Aggregator', icon: '🔗', sublabel: 'merge', role: 'merge' },
+                    { type: 'output', label: 'Output', icon: '📤', sublabel: 'saída', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'llm-0': [30, 15],
+                    'llm-1': [30, 45],
+                    'llm-2': [30, 75],
+                    'aggregator': [60, 45],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'llm-0'],
+                    ['input', 'llm-1'],
+                    ['input', 'llm-2'],
+                    ['llm-0', 'aggregator'],
+                    ['llm-1', 'aggregator'],
+                    ['llm-2', 'aggregator'],
+                    ['aggregator', 'output']
+                ]
+            },
+            orchestrator: {
+                name: 'Orchestrator-Workers',
+                description: 'Orquestrador central delega dinamicamente para workers.',
+                complexity: 'Alta',
+                hint: 'Monte: Input → Orchestrator → Workers → Output',
+                components: [
+                    { type: 'input', label: 'Input', icon: '📥', sublabel: 'entrada', role: 'start' },
+                    { type: 'orchestrator', label: 'Orch', icon: '🎯', sublabel: 'planeja', role: 'hub' },
+                    { type: 'worker', label: 'Worker 1', icon: '⚙️', sublabel: 'dinâmico', role: 'branch' },
+                    { type: 'worker', label: 'Worker 2', icon: '⚙️', sublabel: 'dinâmico', role: 'branch' },
+                    { type: 'worker', label: 'Worker 3', icon: '⚙️', sublabel: 'dinâmico', role: 'branch' },
+                    { type: 'output', label: 'Output', icon: '📤', sublabel: 'saída', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'orchestrator': [30, 45],
+                    'worker-0': [60, 15],
+                    'worker-1': [60, 45],
+                    'worker-2': [60, 75],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'orchestrator'],
+                    ['orchestrator', 'worker-0', 'dashed'],
+                    ['orchestrator', 'worker-1', 'dashed'],
+                    ['orchestrator', 'worker-2', 'dashed'],
+                    ['worker-0', 'output'],
+                    ['worker-1', 'output'],
+                    ['worker-2', 'output']
+                ]
+            },
+            evaluator: {
+                name: 'Evaluator-Optimizer',
+                description: 'Loop iterativo: Generator cria, Evaluator avalia até aprovação.',
+                complexity: 'Alta',
+                hint: 'Monte: Input → Generator ⟷ Evaluator → Output',
+                components: [
+                    { type: 'input', label: 'Input', icon: '📥', sublabel: 'entrada', role: 'start' },
+                    { type: 'generator', label: 'Generator', icon: '✍️', sublabel: 'cria', role: 'loop' },
+                    { type: 'evaluator', label: 'Evaluator', icon: '🔍', sublabel: 'avalia', role: 'loop' },
+                    { type: 'output', label: 'Output', icon: '📤', sublabel: 'saída', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'generator': [30, 45],
+                    'evaluator': [60, 45],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'generator'],
+                    ['generator', 'evaluator'],
+                    ['evaluator', 'generator', 'loop'],
+                    ['evaluator', 'output']
+                ]
+            },
+
+            // ═══════════════════════════════════════════════════════════
+            // PADRÕES JURÍDICOS (Aplicações Práticas)
+            // ═══════════════════════════════════════════════════════════
+            sentenca: {
+                name: 'Pipeline Sentença',
+                description: 'Elaboração sequencial de sentença: relatório → fundamentação → dispositivo.',
+                complexity: 'Baixa',
+                hint: 'Processo → Relatório → Fundamentação → Dispositivo → Sentença',
+                components: [
+                    { type: 'input', label: 'Processo', icon: '📁', sublabel: 'autos', role: 'start' },
+                    { type: 'llm', label: 'Relatório', icon: '📋', sublabel: 'síntese fatos', role: 'process' },
+                    { type: 'llm', label: 'Fundamentação', icon: '⚖️', sublabel: 'análise jurídica', role: 'process' },
+                    { type: 'llm', label: 'Dispositivo', icon: '🎯', sublabel: 'decisão', role: 'process' },
+                    { type: 'output', label: 'Sentença', icon: '📜', sublabel: 'documento final', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'llm-0': [22, 45],
+                    'llm-1': [44, 45],
+                    'llm-2': [66, 45],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'llm-0'],
+                    ['llm-0', 'llm-1'],
+                    ['llm-1', 'llm-2'],
+                    ['llm-2', 'output']
+                ]
+            },
+            probatica: {
+                name: 'Probática',
+                description: 'Análise probatória: classifica tipo de prova e direciona para avaliador especializado.',
+                complexity: 'Média',
+                hint: 'Provas → Classificador → Analisadores → Valoração',
+                components: [
+                    { type: 'input', label: 'Provas', icon: '📎', sublabel: 'conjunto probatório', role: 'start' },
+                    { type: 'router', label: 'Classificador', icon: '🔀', sublabel: 'tipo de prova', role: 'hub' },
+                    { type: 'llm', label: 'Documental', icon: '📄', sublabel: 'docs/contratos', role: 'branch' },
+                    { type: 'llm', label: 'Testemunhal', icon: '🗣️', sublabel: 'depoimentos', role: 'branch' },
+                    { type: 'llm', label: 'Pericial', icon: '🔬', sublabel: 'laudos técnicos', role: 'branch' },
+                    { type: 'output', label: 'Valoração', icon: '⚖️', sublabel: 'peso probatório', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'router': [25, 45],
+                    'llm-0': [55, 15],
+                    'llm-1': [55, 45],
+                    'llm-2': [55, 75],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'router'],
+                    ['router', 'llm-0'],
+                    ['router', 'llm-1'],
+                    ['router', 'llm-2'],
+                    ['llm-0', 'output'],
+                    ['llm-1', 'output'],
+                    ['llm-2', 'output']
+                ]
+            },
+            pesquisa: {
+                name: 'Pesquisa Jurídica',
+                description: 'Busca paralela em múltiplas fontes jurisprudenciais e consolidação.',
+                complexity: 'Média',
+                hint: 'Tema → Buscadores paralelos → Consolidador → Parecer',
+                components: [
+                    { type: 'input', label: 'Tema', icon: '❓', sublabel: 'questão jurídica', role: 'start' },
+                    { type: 'llm', label: 'STF', icon: '🏛️', sublabel: 'constitucional', role: 'branch' },
+                    { type: 'llm', label: 'STJ', icon: '🏛️', sublabel: 'infraconstitucional', role: 'branch' },
+                    { type: 'llm', label: 'TRFs', icon: '🏛️', sublabel: 'regional', role: 'branch' },
+                    { type: 'aggregator', label: 'Consolidador', icon: '🔗', sublabel: 'síntese', role: 'merge' },
+                    { type: 'output', label: 'Parecer', icon: '📑', sublabel: 'posição consolidada', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'llm-0': [30, 15],
+                    'llm-1': [30, 45],
+                    'llm-2': [30, 75],
+                    'aggregator': [60, 45],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'llm-0'],
+                    ['input', 'llm-1'],
+                    ['input', 'llm-2'],
+                    ['llm-0', 'aggregator'],
+                    ['llm-1', 'aggregator'],
+                    ['llm-2', 'aggregator'],
+                    ['aggregator', 'output']
+                ]
+            },
+            triagem: {
+                name: 'Triagem Processual',
+                description: 'Orquestrador analisa processo e delega para especialistas conforme necessidade.',
+                complexity: 'Alta',
+                hint: 'Processo → Triagem → Especialistas → Encaminhamento',
+                components: [
+                    { type: 'input', label: 'Processo', icon: '📁', sublabel: 'petição inicial', role: 'start' },
+                    { type: 'orchestrator', label: 'Triagem', icon: '🎯', sublabel: 'análise inicial', role: 'hub' },
+                    { type: 'worker', label: 'Competência', icon: '🔍', sublabel: 'jurisdição', role: 'branch' },
+                    { type: 'worker', label: 'Requisitos', icon: '✅', sublabel: 'admissibilidade', role: 'branch' },
+                    { type: 'worker', label: 'Urgência', icon: '⚡', sublabel: 'tutela/prioridade', role: 'branch' },
+                    { type: 'output', label: 'Despacho', icon: '📋', sublabel: 'encaminhamento', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'orchestrator': [30, 45],
+                    'worker-0': [60, 15],
+                    'worker-1': [60, 45],
+                    'worker-2': [60, 75],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'orchestrator'],
+                    ['orchestrator', 'worker-0', 'dashed'],
+                    ['orchestrator', 'worker-1', 'dashed'],
+                    ['orchestrator', 'worker-2', 'dashed'],
+                    ['worker-0', 'output'],
+                    ['worker-1', 'output'],
+                    ['worker-2', 'output']
+                ]
+            },
+            revisao: {
+                name: 'Revisão de Sentença',
+                description: 'Loop iterativo: Redator elabora, Revisor avalia e sugere ajustes até aprovação.',
+                complexity: 'Alta',
+                hint: 'Minuta → Redator ⟷ Revisor → Sentença Final',
+                components: [
+                    { type: 'input', label: 'Minuta', icon: '📝', sublabel: 'rascunho inicial', role: 'start' },
+                    { type: 'generator', label: 'Redator', icon: '✍️', sublabel: 'elabora texto', role: 'loop' },
+                    { type: 'evaluator', label: 'Revisor', icon: '🔍', sublabel: 'verifica qualidade', role: 'loop' },
+                    { type: 'output', label: 'Sentença Final', icon: '📜', sublabel: 'aprovada', role: 'end' }
+                ],
+                layout: {
+                    'input': [5, 45],
+                    'generator': [30, 45],
+                    'evaluator': [60, 45],
+                    'output': [85, 45]
+                },
+                connections: [
+                    ['input', 'generator'],
+                    ['generator', 'evaluator'],
+                    ['evaluator', 'generator', 'loop'],
+                    ['evaluator', 'output']
+                ]
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // STATE
+        // ═══════════════════════════════════════════════════════════
+        let currentPattern = 'chaining';
+        let droppedNodes = {};  // nodeKey -> { element, type, label, sublabel, icon, color, x, y, ... }
+        let connections = [];   // Array of { from: nodeKey, to: nodeKey, style: 'solid'|'dashed'|'loop' }
+        let isPlaying = false;
+        let activeRoute = 0;    // Para routing: 0, 1, ou 2 (qual handler está ativo)
+        let playbackSpeed = 1000;
+        let playbackTimeout = null;
+        let currentEditingNodeKey = null;
+        let nodeCounter = 0;    // For generating unique node IDs
+        let connectionMode = null; // { from: nodeKey } when creating a connection
+        let isDraggingNode = false;
+        let dragOffset = { x: 0, y: 0 };
+
+        // Zoom and Pan state
+        let zoomLevel = 1;
+        let panX = 0;
+        let panY = 0;
+        let isPanning = false;
+        let panStartX = 0;
+        let panStartY = 0;
+        const MIN_ZOOM = 0.25;
+        const MAX_ZOOM = 3;
+        const ZOOM_STEP = 0.25;
+
+        // Color mapping for custom node colors
+        const colorMap = {
+            gold: { bg: 'rgba(190, 156, 109, 0.3)', border: '#BE9C6D', text: '#d4b896', glow: 'rgba(190, 156, 109, 0.6)' },
+            green: { bg: 'rgba(74, 222, 128, 0.25)', border: '#4ade80', text: '#4ade80', glow: 'rgba(74, 222, 128, 0.6)' },
+            cyan: { bg: 'rgba(34, 211, 238, 0.25)', border: '#22d3ee', text: '#22d3ee', glow: 'rgba(34, 211, 238, 0.6)' },
+            purple: { bg: 'rgba(167, 139, 250, 0.25)', border: '#a78bfa', text: '#a78bfa', glow: 'rgba(167, 139, 250, 0.6)' },
+            pink: { bg: 'rgba(244, 114, 182, 0.25)', border: '#f472b6', text: '#f472b6', glow: 'rgba(244, 114, 182, 0.6)' },
+            amber: { bg: 'rgba(251, 191, 36, 0.25)', border: '#fbbf24', text: '#fbbf24', glow: 'rgba(251, 191, 36, 0.6)' },
+            blue: { bg: 'rgba(96, 165, 250, 0.25)', border: '#60a5fa', text: '#60a5fa', glow: 'rgba(96, 165, 250, 0.6)' },
+            red: { bg: 'rgba(239, 68, 68, 0.25)', border: '#ef4444', text: '#ef4444', glow: 'rgba(239, 68, 68, 0.6)' }
+        };
+
+        // Default colors by node type
+        const defaultColorByType = {
+            input: 'green', output: 'green',
+            llm: 'gold', gate: 'amber',
+            router: 'blue', worker: 'cyan',
+            orchestrator: 'cyan', aggregator: 'purple',
+            generator: 'pink', evaluator: 'pink'
+        };
+
+        // Default I/O labels by node type
+        const defaultIOByType = {
+            input: { input: null, output: 'data' },
+            output: { input: 'result', output: null },
+            llm: { input: 'prompt', output: 'response' },
+            gate: { input: 'input', output: 'validated' },
+            router: { input: 'request', output: 'route' },
+            worker: { input: 'task', output: 'result' },
+            orchestrator: { input: 'goal', output: 'plan' },
+            aggregator: { input: 'parts', output: 'merged' },
+            generator: { input: 'spec', output: 'draft' },
+            evaluator: { input: 'draft', output: 'score' }
+        };
+
+        // Generic components available for free-form canvas
+        const genericComponents = [
+            { type: 'input', label: 'Input', icon: '📥', sublabel: 'entrada' },
+            { type: 'output', label: 'Output', icon: '📤', sublabel: 'saída' },
+            { type: 'llm', label: 'LLM', icon: '🤖', sublabel: 'processa' },
+            { type: 'router', label: 'Router', icon: '🔀', sublabel: 'direciona' },
+            { type: 'gate', label: 'Gate', icon: '🚦', sublabel: 'valida' },
+            { type: 'worker', label: 'Worker', icon: '⚙️', sublabel: 'executa' },
+            { type: 'aggregator', label: 'Aggregator', icon: '🔗', sublabel: 'combina' },
+            { type: 'orchestrator', label: 'Orchestrator', icon: '🎯', sublabel: 'coordena' },
+            { type: 'generator', label: 'Generator', icon: '✍️', sublabel: 'cria' },
+            { type: 'evaluator', label: 'Evaluator', icon: '🔍', sublabel: 'avalia' }
+        ];
+
+        // ═══════════════════════════════════════════════════════════
+        // INIT
+        // ═══════════════════════════════════════════════════════════
+        function init() {
+            detectEmbedMode();
+            setupTabs();
+            loadPattern(currentPattern);
+            setupDropZone();
+            setupEditModal();
+            setupZoomPan();
+            updateSpeed();
+        }
+
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) document.body.classList.add('embed-mode');
+            } catch (e) { document.body.classList.add('embed-mode'); }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // TABS
+        // ═══════════════════════════════════════════════════════════
+        function setupTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const pattern = tab.dataset.pattern;
+                    if (pattern !== currentPattern) {
+                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        currentPattern = pattern;
+                        activeRoute = 0; // Resetar rota ao trocar de padrão
+                        loadPattern(pattern);
+                        resetCanvas();
+                    }
+                });
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // PATTERN LOADING
+        // ═══════════════════════════════════════════════════════════
+        function loadPattern(patternKey) {
+            const pattern = patterns[patternKey];
+            const panel = document.getElementById('componentsPanel');
+            const dropZone = document.getElementById('dropZone');
+
+            document.getElementById('infoTitle').textContent = pattern.name;
+            document.getElementById('infoDescription').textContent = pattern.description;
+            document.getElementById('statComplexity').textContent = pattern.complexity;
+            dropZone.dataset.hint = 'Arraste componentes ou clique "Carregar Template"';
+
+            // Show generic components + load template button
+            panel.innerHTML = `
+                <div class="panel-section">
+                    <div class="section-title">Template</div>
+                    <button class="load-template-btn" onclick="loadTemplate('${patternKey}')">
+                        ▶ Ver Fluxo: ${pattern.name}
+                    </button>
+                </div>
+                <div class="panel-section">
+                    <div class="section-title">Componentes</div>
+                    ${genericComponents.map((comp) => `
+                        <div class="draggable node-${comp.type}" draggable="true"
+                             data-type="${comp.type}"
+                             data-label="${comp.label}"
+                             data-sublabel="${comp.sublabel}"
+                             data-icon="${comp.icon}">
+                            <span class="icon">${comp.icon}</span>
+                            <span>${comp.label}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="panel-section">
+                    <div class="section-title">Conexões</div>
+                    <button class="connection-mode-btn" id="connectionModeBtn" onclick="toggleConnectionMode()">
+                        🔗 Modo Conectar
+                    </button>
+                    <div class="connection-hint">Clique em dois nós para conectar</div>
+                </div>
+            `;
+
+            panel.querySelectorAll('.draggable').forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+        }
+
+        function loadTemplate(patternKey) {
+            // Clear canvas first
+            resetCanvas();
+
+            const pattern = patterns[patternKey];
+            const dropZone = document.getElementById('dropZone');
+            const dropRect = dropZone.getBoundingClientRect();
+
+            // Create nodes from template
+            pattern.components.forEach((comp, i) => {
+                const nodeKey = getTemplateNodeKey(comp.type, i, pattern.components);
+                const pos = pattern.layout[nodeKey];
+
+                if (pos) {
+                    const data = {
+                        type: comp.type,
+                        label: comp.label,
+                        sublabel: comp.sublabel,
+                        icon: comp.icon,
+                        x: pos[0],
+                        y: pos[1]
+                    };
+                    addNodeAtPosition(data, pos[0], pos[1], nodeKey);
+                }
+            });
+
+            // Create connections from template
+            pattern.connections.forEach(conn => {
+                const fromKey = conn[0];
+                const toKey = conn[1];
+                const style = conn[2] || 'solid';
+
+                if (droppedNodes[fromKey] && droppedNodes[toKey]) {
+                    connections.push({ from: fromKey, to: toKey, style: style });
+                }
+            });
+
+            // Se for routing, adicionar seletor de rotas ao router
+            if (patternKey === 'routing' && droppedNodes['router']) {
+                addRouteSelector();
+                applyRouteStyles();
+            }
+
+            updateConnections();
+            updateStats();
+
+            // Auto-play: iniciar animação após carregar o template
+            setTimeout(() => {
+                if (!isPlaying && Object.keys(droppedNodes).length > 0) {
+                    togglePlayback();
+                }
+            }, 500);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // ROUTE SELECTOR (para padrão Routing)
+        // ═══════════════════════════════════════════════════════════
+        function addRouteSelector() {
+            const routerNode = droppedNodes['router'];
+            if (!routerNode) return;
+
+            // Remove seletor existente se houver
+            const existingSelector = routerNode.element.querySelector('.route-selector');
+            if (existingSelector) existingSelector.remove();
+
+            // Pegar labels dos handlers dinamicamente
+            const routeTargets = ['llm-0', 'llm-1', 'llm-2'];
+            const routeLabels = routeTargets.map(key => {
+                const node = droppedNodes[key];
+                return node ? node.label.replace(/^[^\s]+\s*/, '') : key; // Remove emoji se houver
+            });
+
+            const selector = document.createElement('div');
+            selector.className = 'route-selector';
+            selector.innerHTML = routeTargets.map((key, i) => `
+                <div class="route-option ${i === activeRoute ? 'active' : ''}"
+                     data-route="${i}"
+                     data-label="${routeLabels[i]}"
+                     onclick="event.stopPropagation(); selectRoute(${i})">
+                </div>
+            `).join('');
+
+            routerNode.element.appendChild(selector);
+        }
+
+        function selectRoute(routeIndex) {
+            activeRoute = routeIndex;
+
+            // Atualizar visual do seletor
+            document.querySelectorAll('.route-option').forEach((opt, i) => {
+                opt.classList.toggle('active', i === activeRoute);
+            });
+
+            // Aplicar estilos de rota
+            applyRouteStyles();
+            updateConnections();
+
+            // Se estiver em playback, reiniciar com nova rota
+            if (isPlaying) {
+                pausePlayback();
+                setTimeout(() => {
+                    togglePlayback();
+                }, 100);
+            }
+        }
+
+        function applyRouteStyles() {
+            if (currentPattern !== 'routing') return;
+
+            const routeTargets = ['llm-0', 'llm-1', 'llm-2'];
+            const activeTarget = routeTargets[activeRoute];
+
+            // Aplicar estilos aos nodes
+            routeTargets.forEach((nodeKey, i) => {
+                const node = droppedNodes[nodeKey];
+                if (node) {
+                    node.element.classList.remove('route-active', 'route-inactive');
+                    if (i === activeRoute) {
+                        node.element.classList.add('route-active');
+                    } else {
+                        node.element.classList.add('route-inactive');
+                    }
+                }
+            });
+        }
+
+        function getTemplateNodeKey(type, index, components) {
+            // Replicate the old logic for template compatibility
+            let typeCount = 0;
+            for (let i = 0; i < index; i++) {
+                if (components[i].type === type) typeCount++;
+            }
+            if (['input', 'output', 'router', 'aggregator', 'orchestrator', 'generator', 'evaluator'].includes(type)) {
+                return type;
+            }
+            return `${type}-${typeCount}`;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // DRAG & DROP - FREE CANVAS
+        // ═══════════════════════════════════════════════════════════
+        function handleDragStart(e) {
+            this.classList.add('dragging');
+            e.dataTransfer.setData('application/json', JSON.stringify({
+                type: this.dataset.type,
+                label: this.dataset.label,
+                sublabel: this.dataset.sublabel,
+                icon: this.dataset.icon
+            }));
+        }
+
+        function handleDragEnd() { this.classList.remove('dragging'); }
+
+        function setupDropZone() {
+            const dropZone = document.getElementById('dropZone');
+
+            dropZone.addEventListener('dragover', e => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+
+            dropZone.addEventListener('drop', e => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+
+                try {
+                    const data = JSON.parse(e.dataTransfer.getData('application/json'));
+                    const dropRect = dropZone.getBoundingClientRect();
+
+                    // Calculate position as percentage
+                    const x = ((e.clientX - dropRect.left) / dropRect.width) * 100;
+                    const y = ((e.clientY - dropRect.top) / dropRect.height) * 100;
+
+                    // Clamp to 5-95% to keep nodes visible
+                    const clampedX = Math.max(5, Math.min(95, x));
+                    const clampedY = Math.max(5, Math.min(95, y));
+
+                    // Generate unique key
+                    nodeCounter++;
+                    const nodeKey = `${data.type}-${nodeCounter}`;
+
+                    addNodeAtPosition(data, clampedX, clampedY, nodeKey);
+                } catch (err) {
+                    console.error('Drop error:', err);
+                }
+            });
+
+            // Click on empty space cancels connection mode
+            dropZone.addEventListener('click', (e) => {
+                if (e.target === dropZone && connectionMode) {
+                    cancelConnectionMode();
+                }
+            });
+        }
+
+        function addNodeAtPosition(data, xPercent, yPercent, nodeKey) {
+            const dropZone = document.getElementById('dropZone');
+
+            dropZone.classList.remove('empty');
+
+            // Determine default color based on type
+            const defaultColor = defaultColorByType[data.type] || 'gold';
+
+            // Get default I/O labels
+            const defaultIO = defaultIOByType[data.type] || { input: 'in', output: 'out' };
+            const inputLabel = defaultIO.input;
+            const outputLabel = defaultIO.output;
+
+            const node = document.createElement('div');
+            node.className = 'dropped-node';
+            node.id = `node-${nodeKey}`;
+            node.dataset.type = data.type;
+            node.dataset.key = nodeKey;
+
+            // Build I/O tags HTML
+            let inputTagsHtml = '';
+            let outputTagsHtml = '';
+
+            if (inputLabel) {
+                inputTagsHtml = `
+                    <div class="io-tags-container input-side">
+                        <div class="io-tag input-tag">
+                            <span class="io-icon">↓</span>
+                            <span class="io-label">${inputLabel}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (outputLabel) {
+                outputTagsHtml = `
+                    <div class="io-tags-container output-side">
+                        <div class="io-tag output-tag">
+                            <span class="io-label">${outputLabel}</span>
+                            <span class="io-icon">↑</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            node.innerHTML = `
+                <button class="remove-btn" onclick="event.stopPropagation(); removeNode('${nodeKey}')">&times;</button>
+                <div class="drag-handle" onmousedown="startNodeDrag(event, '${nodeKey}')">⋮⋮</div>
+                ${inputTagsHtml}
+                <div class="node-label">${data.icon} ${data.label}</div>
+                <div class="node-sublabel">${data.sublabel}</div>
+                ${outputTagsHtml}
+            `;
+
+            // Position absolutely
+            node.style.left = `${xPercent}%`;
+            node.style.top = `${yPercent}%`;
+            node.style.transform = 'translate(-50%, -50%)';
+            node.style.opacity = '0';
+
+            // Apply custom color
+            applyNodeColor(node, defaultColor, data.type);
+
+            dropZone.appendChild(node);
+
+            // Add click handler - either for connection mode or edit modal
+            node.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-btn') || e.target.classList.contains('drag-handle')) {
+                    return;
+                }
+
+                if (connectionMode) {
+                    handleConnectionClick(nodeKey);
+                } else if (!e.target.closest('.io-tag')) {
+                    openEditModal(nodeKey);
+                }
+            });
+
+            requestAnimationFrame(() => {
+                node.style.transition = 'opacity 0.3s ease';
+                node.style.opacity = '1';
+            });
+
+            // Store all editable properties including position
+            droppedNodes[nodeKey] = {
+                element: node,
+                type: data.type,
+                key: nodeKey,
+                label: data.label,
+                sublabel: data.sublabel,
+                icon: data.icon,
+                color: defaultColor,
+                inputLabel: inputLabel,
+                outputLabel: outputLabel,
+                x: xPercent,
+                y: yPercent
+            };
+
+            // Apply show-io class if toggle is checked
+            if (document.getElementById('showIOToggle')?.checked) {
+                node.classList.add('show-io');
+            }
+
+            // Attach click handlers for inline I/O editing
+            attachIOClickHandlers(node, nodeKey);
+
+            updateStats();
+            return nodeKey;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // NODE DRAGGING ON CANVAS
+        // ═══════════════════════════════════════════════════════════
+        let draggedNodeKey = null;
+
+        function startNodeDrag(e, nodeKey) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (connectionMode) return;
+
+            const nodeData = droppedNodes[nodeKey];
+            if (!nodeData) return;
+
+            draggedNodeKey = nodeKey;
+            isDraggingNode = true;
+
+            const node = nodeData.element;
+            node.classList.add('dragging-node');
+
+            const dropZone = document.getElementById('dropZone');
+            const dropRect = dropZone.getBoundingClientRect();
+
+            // Calculate offset from node center
+            const nodeRect = node.getBoundingClientRect();
+            dragOffset.x = e.clientX - (nodeRect.left + nodeRect.width / 2);
+            dragOffset.y = e.clientY - (nodeRect.top + nodeRect.height / 2);
+
+            document.addEventListener('mousemove', onNodeDrag);
+            document.addEventListener('mouseup', endNodeDrag);
+        }
+
+        function onNodeDrag(e) {
+            if (!isDraggingNode || !draggedNodeKey) return;
+
+            const nodeData = droppedNodes[draggedNodeKey];
+            if (!nodeData) return;
+
+            const dropZone = document.getElementById('dropZone');
+            const dropRect = dropZone.getBoundingClientRect();
+
+            // Calculate new position as percentage
+            let x = ((e.clientX - dragOffset.x - dropRect.left) / dropRect.width) * 100;
+            let y = ((e.clientY - dragOffset.y - dropRect.top) / dropRect.height) * 100;
+
+            // Clamp
+            x = Math.max(5, Math.min(95, x));
+            y = Math.max(5, Math.min(95, y));
+
+            // Update position
+            nodeData.element.style.left = `${x}%`;
+            nodeData.element.style.top = `${y}%`;
+            nodeData.x = x;
+            nodeData.y = y;
+
+            // Update connections in real-time
+            updateConnections();
+        }
+
+        function endNodeDrag() {
+            if (draggedNodeKey) {
+                const nodeData = droppedNodes[draggedNodeKey];
+                if (nodeData) {
+                    nodeData.element.classList.remove('dragging-node');
+                }
+            }
+
+            isDraggingNode = false;
+            draggedNodeKey = null;
+            document.removeEventListener('mousemove', onNodeDrag);
+            document.removeEventListener('mouseup', endNodeDrag);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // CONNECTION MODE
+        // ═══════════════════════════════════════════════════════════
+        function toggleConnectionMode() {
+            const btn = document.getElementById('connectionModeBtn');
+
+            if (connectionMode) {
+                cancelConnectionMode();
+            } else {
+                connectionMode = { from: null };
+                document.body.classList.add('connection-mode');
+                btn.classList.add('active');
+                btn.innerHTML = '❌ Cancelar Conexão';
+
+                // Add target class to all nodes
+                Object.values(droppedNodes).forEach(n => {
+                    n.element.classList.add('can-connect');
+                });
+            }
+        }
+
+        function cancelConnectionMode() {
+            connectionMode = null;
+            document.body.classList.remove('connection-mode');
+
+            const btn = document.getElementById('connectionModeBtn');
+            if (btn) {
+                btn.classList.remove('active');
+                btn.innerHTML = '🔗 Modo Conectar';
+            }
+
+            // Remove connection classes
+            Object.values(droppedNodes).forEach(n => {
+                n.element.classList.remove('can-connect', 'connection-source', 'connection-target');
+            });
+
+            // Remove temp connection line
+            const tempLine = document.querySelector('.temp-connection');
+            if (tempLine) tempLine.remove();
+        }
+
+        function handleConnectionClick(nodeKey) {
+            if (!connectionMode) return;
+
+            if (!connectionMode.from) {
+                // First click - select source
+                connectionMode.from = nodeKey;
+                droppedNodes[nodeKey].element.classList.add('connection-source');
+
+                // Mark others as targets
+                Object.entries(droppedNodes).forEach(([key, data]) => {
+                    if (key !== nodeKey) {
+                        data.element.classList.add('connection-target');
+                    }
+                });
+            } else if (connectionMode.from !== nodeKey) {
+                // Second click - create connection
+                const fromKey = connectionMode.from;
+                const toKey = nodeKey;
+
+                // Check if connection already exists
+                const exists = connections.some(c =>
+                    (c.from === fromKey && c.to === toKey) ||
+                    (c.from === toKey && c.to === fromKey)
+                );
+
+                if (!exists) {
+                    connections.push({ from: fromKey, to: toKey, style: 'solid' });
+                    updateConnections();
+                    updateStats();
+                }
+
+                // Reset for next connection (stay in connection mode)
+                connectionMode.from = null;
+                Object.values(droppedNodes).forEach(n => {
+                    n.element.classList.remove('connection-source', 'connection-target');
+                });
+            }
+        }
+
+        function deleteConnection(index) {
+            connections.splice(index, 1);
+            updateConnections();
+            updateStats();
+        }
+
+        function applyNodeColor(node, colorName, nodeType) {
+            const color = colorMap[colorName];
+            if (!color) return;
+
+            // Special handling for orchestrator (circle shape)
+            if (nodeType === 'orchestrator') {
+                node.style.background = `linear-gradient(135deg, ${color.bg}, ${color.bg.replace('0.25', '0.15').replace('0.3', '0.15')})`;
+                node.style.borderColor = color.border;
+                node.style.borderWidth = '3px';
+            } else if (nodeType === 'router') {
+                // Router has diamond shape
+                node.style.background = `linear-gradient(135deg, ${color.bg}, ${color.bg.replace('0.25', '0.1')})`;
+                node.style.borderColor = color.border;
+            } else {
+                node.style.background = `linear-gradient(135deg, ${color.bg}, ${color.bg.replace('0.25', '0.1').replace('0.3', '0.15')})`;
+                node.style.borderColor = color.border;
+            }
+            node.style.setProperty('--node-glow', color.glow);
+
+            // Update label color
+            const label = node.querySelector('.node-label');
+            if (label) {
+                label.style.color = color.text;
+            }
+        }
+
+        function removeNode(nodeKey) {
+            const nodeData = droppedNodes[nodeKey];
+            if (!nodeData) return;
+
+            const node = nodeData.element;
+            node.style.opacity = '0';
+            setTimeout(() => {
+                node.remove();
+                delete droppedNodes[nodeKey];
+
+                // Remove all connections involving this node
+                connections = connections.filter(c => c.from !== nodeKey && c.to !== nodeKey);
+
+                updateStats();
+                updateConnections();
+                if (Object.keys(droppedNodes).length === 0) {
+                    document.getElementById('dropZone').classList.add('empty');
+                }
+            }, 200);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // CONNECTIONS - SVG WITH EDGE-TO-EDGE ARROWS
+        // ═══════════════════════════════════════════════════════════
+        function updateConnections() {
+            const svg = document.getElementById('connectionsLayer');
+            const dropZone = document.getElementById('dropZone');
+            const dropRect = dropZone.getBoundingClientRect();
+
+            // Compensate for zoom when calculating SVG coordinates
+            const zoom = zoomLevel || 1;
+
+            svg.innerHTML = '';
+
+            // Create defs
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            defs.innerHTML = `
+                <marker id="arrow-gold" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#BE9C6D"/>
+                </marker>
+                <marker id="arrow-cyan" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#22d3ee"/>
+                </marker>
+                <marker id="arrow-pink" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#f472b6"/>
+                </marker>
+                <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#60a5fa"/>
+                </marker>
+            `;
+            svg.appendChild(defs);
+
+            // Para routing: determinar rota ativa
+            const routeTargets = ['llm-0', 'llm-1', 'llm-2'];
+            const activeTarget = currentPattern === 'routing' ? routeTargets[activeRoute] : null;
+
+            // Draw connections from the connections array
+            connections.forEach((conn, index) => {
+                const fromKey = conn.from;
+                const toKey = conn.to;
+                const style = conn.style || 'solid';
+
+                const fromNode = droppedNodes[fromKey];
+                const toNode = droppedNodes[toKey];
+
+                if (!fromNode || !toNode) return;
+
+                const fromEl = fromNode.element;
+                const toEl = toNode.element;
+
+                const fromRect = fromEl.getBoundingClientRect();
+                const toRect = toEl.getBoundingClientRect();
+
+                // Calculate center points (compensate for zoom since SVG is also scaled)
+                const fromCenterX = (fromRect.left + fromRect.width / 2 - dropRect.left) / zoom;
+                const fromCenterY = (fromRect.top + fromRect.height / 2 - dropRect.top) / zoom;
+                const toCenterX = (toRect.left + toRect.width / 2 - dropRect.left) / zoom;
+                const toCenterY = (toRect.top + toRect.height / 2 - dropRect.top) / zoom;
+
+                // Calculate edge points (start from edge, not center)
+                let x1, y1, x2, y2;
+
+                if (style === 'loop') {
+                    // Feedback loop - exits from bottom of 'from', enters bottom of 'to'
+                    // Arrow points from 'from' (Evaluator) to 'to' (Generator)
+                    x1 = fromCenterX;
+                    y1 = (fromRect.bottom - dropRect.top) / zoom;
+                    x2 = toCenterX;
+                    y2 = (toRect.bottom - dropRect.top) / zoom;
+                } else {
+                    // Normal connection: determine direction
+                    const dx = toCenterX - fromCenterX;
+                    const dy = toCenterY - fromCenterY;
+
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        // Primarily horizontal
+                        if (dx > 0) {
+                            // Target is to the right
+                            x1 = (fromRect.right - dropRect.left) / zoom;
+                            y1 = fromCenterY;
+                            x2 = (toRect.left - dropRect.left) / zoom;
+                            y2 = toCenterY;
+                        } else {
+                            // Target is to the left
+                            x1 = (fromRect.left - dropRect.left) / zoom;
+                            y1 = fromCenterY;
+                            x2 = (toRect.right - dropRect.left) / zoom;
+                            y2 = toCenterY;
+                        }
+                    } else {
+                        // Primarily vertical
+                        if (dy > 0) {
+                            // Target is below
+                            x1 = fromCenterX;
+                            y1 = (fromRect.bottom - dropRect.top) / zoom;
+                            x2 = toCenterX;
+                            y2 = (toRect.top - dropRect.top) / zoom;
+                        } else {
+                            // Target is above
+                            x1 = fromCenterX;
+                            y1 = (fromRect.top - dropRect.top) / zoom;
+                            x2 = toCenterX;
+                            y2 = (toRect.bottom - dropRect.top) / zoom;
+                        }
+                    }
+                }
+
+                // Create clickable area (wider invisible path for easier clicking)
+                const hitArea = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+                let pathD;
+                if (style === 'loop') {
+                    // Feedback loop - curved path going below
+                    const loopY = Math.max(y1, y2) + 40;
+                    pathD = `M ${x1} ${y1} C ${x1} ${loopY}, ${x2} ${loopY}, ${x2} ${y2}`;
+                    path.setAttribute('stroke', '#f472b6');
+                    path.setAttribute('marker-end', 'url(#arrow-pink)');
+                } else {
+                    // Normal or dashed connection with bezier curve
+                    const ctrl1X = x1 + (x2 - x1) * 0.4;
+                    const ctrl2X = x1 + (x2 - x1) * 0.6;
+                    pathD = `M ${x1} ${y1} C ${ctrl1X} ${y1}, ${ctrl2X} ${y2}, ${x2} ${y2}`;
+
+                    if (style === 'dashed') {
+                        path.setAttribute('stroke', '#22d3ee');
+                        path.setAttribute('stroke-dasharray', '6,4');
+                        path.setAttribute('marker-end', 'url(#arrow-cyan)');
+                    } else {
+                        path.setAttribute('stroke', '#BE9C6D');
+                        path.setAttribute('marker-end', 'url(#arrow-gold)');
+                    }
+                }
+
+                // Hit area for clicking
+                hitArea.setAttribute('d', pathD);
+                hitArea.setAttribute('stroke', 'transparent');
+                hitArea.setAttribute('stroke-width', '15');
+                hitArea.setAttribute('fill', 'none');
+                hitArea.style.cursor = 'pointer';
+                hitArea.dataset.index = index;
+                hitArea.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm('Remover esta conexão?')) {
+                        deleteConnection(index);
+                    }
+                });
+                hitArea.addEventListener('mouseenter', () => {
+                    path.setAttribute('stroke-width', '4');
+                    path.setAttribute('opacity', '1');
+                });
+                hitArea.addEventListener('mouseleave', () => {
+                    path.setAttribute('stroke-width', '2');
+                    path.setAttribute('opacity', '0.7');
+                });
+
+                // Visible path
+                path.setAttribute('d', pathD);
+                path.setAttribute('stroke-width', '2');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('opacity', '0.7');
+                path.classList.add('connection-path');
+                path.dataset.from = fromKey;
+                path.dataset.to = toKey;
+                path.style.pointerEvents = 'none';
+
+                // Aplicar estilos de rota (para padrão Routing)
+                if (currentPattern === 'routing' && activeTarget) {
+                    // Conexões do router para handlers
+                    if (fromKey === 'router' && routeTargets.includes(toKey)) {
+                        if (toKey === activeTarget) {
+                            path.classList.add('route-active');
+                            path.setAttribute('stroke', '#60a5fa');
+                            path.setAttribute('marker-end', 'url(#arrow-blue)');
+                        } else {
+                            path.classList.add('route-inactive');
+                        }
+                    }
+                    // Conexões dos handlers para output
+                    if (routeTargets.includes(fromKey) && toKey === 'output') {
+                        if (fromKey === activeTarget) {
+                            path.classList.add('route-active');
+                            path.setAttribute('stroke', '#60a5fa');
+                            path.setAttribute('marker-end', 'url(#arrow-blue)');
+                        } else {
+                            path.classList.add('route-inactive');
+                        }
+                    }
+                }
+
+                svg.appendChild(path);
+                svg.appendChild(hitArea);
+            });
+
+            document.getElementById('statConnections').textContent = connections.length;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // PLAYBACK WITH PARALLEL SUPPORT
+        // ═══════════════════════════════════════════════════════════
+        function togglePlayback() {
+            const btn = document.getElementById('playBtn');
+            if (isPlaying) {
+                pausePlayback();
+                btn.textContent = '▶';
+                btn.classList.remove('playing');
+            } else {
+                startPlayback();
+                btn.textContent = '⏸';
+                btn.classList.add('playing');
+            }
+        }
+
+        function startPlayback() {
+            if (Object.keys(droppedNodes).length === 0) return;
+
+            isPlaying = true;
+
+            // Dim all
+            Object.values(droppedNodes).forEach(n => {
+                n.element.classList.add('dimmed');
+                n.element.classList.remove('spotlight');
+            });
+
+            // Build execution order based on connections
+            const execOrder = buildExecutionOrder();
+            playStep(execOrder, 0);
+        }
+
+        function buildExecutionOrder() {
+            // Caso especial: Evaluator-Optimizer com loop de refinamento
+            if (currentPattern === 'evaluator' && droppedNodes['generator'] && droppedNodes['evaluator']) {
+                // Fluxo: Input → Generator → Evaluator → Generator (loop) → Evaluator → Output
+                const loopOrder = [];
+                if (droppedNodes['input']) loopOrder.push(['input']);
+                loopOrder.push(['generator']);
+                loopOrder.push(['evaluator']);
+                loopOrder.push(['generator']);  // Loop de volta
+                loopOrder.push(['evaluator']);  // Segunda avaliação
+                if (droppedNodes['output']) loopOrder.push(['output']);
+                return loopOrder;
+            }
+
+            // BFS from nodes with no incoming edges
+            const incoming = {};
+            const outgoing = {};
+
+            // Para routing: filtrar conexões para seguir apenas a rota ativa
+            const routeTargets = ['llm-0', 'llm-1', 'llm-2'];
+            const activeTarget = currentPattern === 'routing' ? routeTargets[activeRoute] : null;
+
+            // Build adjacency from the connections array
+            connections.forEach(conn => {
+                const from = conn.from, to = conn.to;
+
+                // Se for routing, ignorar conexões de rotas inativas
+                if (currentPattern === 'routing' && activeTarget) {
+                    // Ignorar conexões router → handler inativo
+                    if (from === 'router' && routeTargets.includes(to) && to !== activeTarget) {
+                        return;
+                    }
+                    // Ignorar conexões handler inativo → output
+                    if (routeTargets.includes(from) && to === 'output' && from !== activeTarget) {
+                        return;
+                    }
+                }
+
+                if (!outgoing[from]) outgoing[from] = [];
+                if (!incoming[to]) incoming[to] = [];
+                outgoing[from].push(to);
+                incoming[to].push(from);
+            });
+
+            // Find start nodes (no incoming connections)
+            const allNodes = Object.keys(droppedNodes);
+            const order = [];
+            const visited = new Set();
+
+            // Start with nodes that have no incoming connections
+            let current = allNodes.filter(n => !incoming[n] || incoming[n].length === 0);
+
+            // If no start nodes found, start with first node
+            if (current.length === 0 && allNodes.length > 0) {
+                current = [allNodes[0]];
+            }
+
+            while (current.length > 0 && order.length < 20) {
+                // Add current layer (can be parallel)
+                const layer = current.filter(n => !visited.has(n) && droppedNodes[n]);
+                if (layer.length > 0) {
+                    order.push(layer);
+                    layer.forEach(n => visited.add(n));
+                }
+
+                // Find next layer
+                const next = new Set();
+                current.forEach(n => {
+                    (outgoing[n] || []).forEach(to => {
+                        if (!visited.has(to)) next.add(to);
+                    });
+                });
+                current = Array.from(next);
+            }
+
+            // Add any remaining unvisited nodes
+            const remaining = allNodes.filter(n => !visited.has(n));
+            if (remaining.length > 0) {
+                order.push(remaining);
+            }
+
+            return order;
+        }
+
+        function playStep(execOrder, stepIndex) {
+            if (!isPlaying) return;
+
+            // Loop: quando terminar, reinicia
+            if (stepIndex >= execOrder.length) {
+                setTimeout(() => {
+                    // Reset visual
+                    Object.values(droppedNodes).forEach(n => {
+                        n.element.classList.remove('dimmed', 'spotlight');
+                    });
+                    // Pequena pausa antes de reiniciar
+                    setTimeout(() => {
+                        if (isPlaying) {
+                            // Reinicia o loop
+                            Object.values(droppedNodes).forEach(n => {
+                                n.element.classList.add('dimmed');
+                            });
+                            const newExecOrder = buildExecutionOrder();
+                            playStep(newExecOrder, 0);
+                        }
+                    }, 800);
+                }, 500);
+                return;
+            }
+
+            const layer = execOrder[stepIndex];
+
+            // Spotlight current layer (can be multiple nodes in parallel)
+            Object.values(droppedNodes).forEach(n => {
+                if (layer.includes(n.key)) {
+                    n.element.classList.remove('dimmed');
+                    n.element.classList.add('spotlight');
+                } else if (n.element.classList.contains('spotlight')) {
+                    n.element.classList.remove('spotlight');
+                    n.element.classList.add('dimmed');
+                }
+            });
+
+            // Animate particles from previous layer
+            if (stepIndex > 0) {
+                const prevLayer = execOrder[stepIndex - 1];
+
+                // Para routing: só animar rota ativa
+                const routeTargets = ['llm-0', 'llm-1', 'llm-2'];
+                const activeTarget = currentPattern === 'routing' ? routeTargets[activeRoute] : null;
+
+                prevLayer.forEach(fromKey => {
+                    layer.forEach(toKey => {
+                        // Check if connection exists in the connections array
+                        let connExists = connections.some(c => c.from === fromKey && c.to === toKey);
+
+                        // Caso especial: Evaluator loop (evaluator → generator)
+                        if (currentPattern === 'evaluator' && fromKey === 'evaluator' && toKey === 'generator') {
+                            connExists = true; // Conexão de loop existe
+                        }
+
+                        // Se for routing, verificar se é conexão ativa
+                        if (currentPattern === 'routing' && activeTarget) {
+                            // Ignorar conexões de rotas inativas
+                            if (fromKey === 'router' && routeTargets.includes(toKey) && toKey !== activeTarget) {
+                                return;
+                            }
+                            if (routeTargets.includes(fromKey) && toKey === 'output' && fromKey !== activeTarget) {
+                                return;
+                            }
+                        }
+
+                        if (connExists && droppedNodes[fromKey] && droppedNodes[toKey]) {
+                            animateParticle(fromKey, toKey);
+                        }
+                    });
+                });
+            }
+
+            playbackTimeout = setTimeout(() => playStep(execOrder, stepIndex + 1), playbackSpeed);
+        }
+
+        function pausePlayback() {
+            isPlaying = false;
+            if (playbackTimeout) {
+                clearTimeout(playbackTimeout);
+                playbackTimeout = null;
+            }
+        }
+
+        function animateParticle(fromKey, toKey) {
+            const fromNode = droppedNodes[fromKey];
+            const toNode = droppedNodes[toKey];
+            if (!fromNode || !toNode) return;
+
+            const dropZone = document.getElementById('dropZone');
+            const dropRect = dropZone.getBoundingClientRect();
+            const zoom = zoomLevel || 1;
+
+            const fromRect = fromNode.element.getBoundingClientRect();
+            const toRect = toNode.element.getBoundingClientRect();
+
+            // Calculate center points (compensate for zoom)
+            const fromCenterX = (fromRect.left + fromRect.width / 2 - dropRect.left) / zoom;
+            const fromCenterY = (fromRect.top + fromRect.height / 2 - dropRect.top) / zoom;
+            const toCenterX = (toRect.left + toRect.width / 2 - dropRect.left) / zoom;
+            const toCenterY = (toRect.top + toRect.height / 2 - dropRect.top) / zoom;
+
+            // Verificar se é loop do evaluator (evaluator → generator)
+            const isLoopConnection = (fromKey === 'evaluator' && toKey === 'generator');
+
+            let startX, startY, endX, endY;
+
+            if (isLoopConnection) {
+                // Loop: sai de baixo do evaluator, entra por baixo do generator
+                startX = fromCenterX;
+                startY = (fromRect.bottom - dropRect.top) / zoom;
+                endX = toCenterX;
+                endY = (toRect.bottom - dropRect.top) / zoom;
+            } else {
+                // Calculate edge-based start/end points
+                const dx = toCenterX - fromCenterX;
+                const dy = toCenterY - fromCenterY;
+
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    // Primarily horizontal
+                    if (dx > 0) {
+                        startX = (fromRect.right - dropRect.left) / zoom;
+                        startY = fromCenterY;
+                        endX = (toRect.left - dropRect.left) / zoom;
+                        endY = toCenterY;
+                    } else {
+                        startX = (fromRect.left - dropRect.left) / zoom;
+                        startY = fromCenterY;
+                        endX = (toRect.right - dropRect.left) / zoom;
+                        endY = toCenterY;
+                    }
+                } else {
+                    // Primarily vertical
+                    if (dy > 0) {
+                        startX = fromCenterX;
+                        startY = (fromRect.bottom - dropRect.top) / zoom;
+                        endX = toCenterX;
+                        endY = (toRect.top - dropRect.top) / zoom;
+                    } else {
+                        startX = fromCenterX;
+                        startY = (fromRect.top - dropRect.top) / zoom;
+                        endX = toCenterX;
+                        endY = (toRect.bottom - dropRect.top) / zoom;
+                    }
+                }
+            }
+
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+
+            // Cor diferente para loop (rosa)
+            if (isLoopConnection) {
+                particle.style.background = 'var(--super-pink)';
+                particle.style.boxShadow = '0 0 10px var(--super-pink)';
+            }
+
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            dropZone.appendChild(particle);
+
+            if (isLoopConnection) {
+                // Animação curva para o loop (passa por baixo)
+                const loopY = Math.max(startY, endY) + 50;
+                particle.animate([
+                    { left: startX + 'px', top: startY + 'px', opacity: 1 },
+                    { left: ((startX + endX) / 2) + 'px', top: loopY + 'px', opacity: 1 },
+                    { left: endX + 'px', top: endY + 'px', opacity: 1 }
+                ], {
+                    duration: playbackSpeed * 0.7,
+                    easing: 'ease-in-out'
+                }).onfinish = () => particle.remove();
+            } else {
+                // Animação linear normal
+                particle.animate([
+                    { left: startX + 'px', top: startY + 'px', opacity: 1 },
+                    { left: endX + 'px', top: endY + 'px', opacity: 1 }
+                ], {
+                    duration: playbackSpeed * 0.5,
+                    easing: 'ease-in-out'
+                }).onfinish = () => particle.remove();
+            }
+        }
+
+        function resetCanvas() {
+            pausePlayback();
+            cancelConnectionMode();
+            document.getElementById('playBtn').textContent = '▶';
+            document.getElementById('playBtn').classList.remove('playing');
+
+            const dropZone = document.getElementById('dropZone');
+            dropZone.querySelectorAll('.dropped-node, .particle').forEach(el => el.remove());
+            dropZone.classList.add('empty');
+
+            droppedNodes = {};
+            connections = [];
+            nodeCounter = 0;
+
+            // Reset zoom and pan
+            zoomLevel = 1;
+            panX = 0;
+            panY = 0;
+            applyZoomPan();
+
+            updateStats();
+            updateConnections();
+        }
+
+        function updateSpeed() {
+            const slider = document.getElementById('speedSlider');
+            const value = parseInt(slider.value);
+            const speeds = { 1: { ms: 2000, label: '0.5x' }, 2: { ms: 1500, label: '0.75x' }, 3: { ms: 1000, label: '1x' }, 4: { ms: 600, label: '1.5x' }, 5: { ms: 300, label: '2x' } };
+            playbackSpeed = speeds[value].ms;
+            document.getElementById('speedValue').textContent = speeds[value].label;
+        }
+
+        function updateStats() {
+            document.getElementById('statNodes').textContent = Object.keys(droppedNodes).length;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // EDIT MODAL
+        // ═══════════════════════════════════════════════════════════
+        function setupEditModal() {
+            // Setup color picker
+            document.querySelectorAll('#colorPicker .color-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('#colorPicker .color-option').forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                });
+            });
+
+            // Setup icon picker
+            document.querySelectorAll('#iconPicker .icon-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('#iconPicker .icon-option').forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                });
+            });
+
+            // Close on overlay click
+            document.getElementById('editModal').addEventListener('click', (e) => {
+                if (e.target.id === 'editModal') {
+                    closeEditModal();
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeEditModal();
+                }
+            });
+        }
+
+        function openEditModal(nodeKey) {
+            const nodeData = droppedNodes[nodeKey];
+            if (!nodeData) return;
+
+            currentEditingNodeKey = nodeKey;
+
+            // Fill form with current values
+            document.getElementById('editLabel').value = nodeData.label || '';
+            document.getElementById('editSublabel').value = nodeData.sublabel || '';
+            document.getElementById('editInputLabel').value = nodeData.inputLabel || '';
+            document.getElementById('editOutputLabel').value = nodeData.outputLabel || '';
+
+            // Select current color
+            document.querySelectorAll('#colorPicker .color-option').forEach(o => {
+                o.classList.toggle('selected', o.dataset.color === nodeData.color);
+            });
+
+            // Select current icon
+            document.querySelectorAll('#iconPicker .icon-option').forEach(o => {
+                o.classList.toggle('selected', o.dataset.icon === nodeData.icon);
+            });
+
+            // Show/hide I/O fields based on node type
+            const ioContainer = document.getElementById('ioFieldsContainer');
+            if (nodeData.type === 'input') {
+                // Input node only has output
+                document.getElementById('editInputLabel').parentElement.style.display = 'none';
+                document.getElementById('editOutputLabel').parentElement.style.display = 'block';
+            } else if (nodeData.type === 'output') {
+                // Output node only has input
+                document.getElementById('editInputLabel').parentElement.style.display = 'block';
+                document.getElementById('editOutputLabel').parentElement.style.display = 'none';
+            } else {
+                // Other nodes have both
+                document.getElementById('editInputLabel').parentElement.style.display = 'block';
+                document.getElementById('editOutputLabel').parentElement.style.display = 'block';
+            }
+
+            // Show modal
+            document.getElementById('editModal').classList.add('visible');
+
+            // Focus on label input
+            setTimeout(() => document.getElementById('editLabel').focus(), 100);
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('visible');
+            currentEditingNodeKey = null;
+        }
+
+        function saveNodeEdit() {
+            if (!currentEditingNodeKey) return;
+
+            const nodeData = droppedNodes[currentEditingNodeKey];
+            if (!nodeData) return;
+
+            // Get new values
+            const newLabel = document.getElementById('editLabel').value.trim() || nodeData.label;
+            const newSublabel = document.getElementById('editSublabel').value.trim() || nodeData.sublabel;
+            const newInputLabel = document.getElementById('editInputLabel').value.trim() || null;
+            const newOutputLabel = document.getElementById('editOutputLabel').value.trim() || null;
+
+            const selectedColor = document.querySelector('#colorPicker .color-option.selected');
+            const newColor = selectedColor ? selectedColor.dataset.color : nodeData.color;
+
+            const selectedIcon = document.querySelector('#iconPicker .icon-option.selected');
+            const newIcon = selectedIcon ? selectedIcon.dataset.icon : nodeData.icon;
+
+            // Update stored data
+            nodeData.label = newLabel;
+            nodeData.sublabel = newSublabel;
+            nodeData.color = newColor;
+            nodeData.icon = newIcon;
+            nodeData.inputLabel = newInputLabel;
+            nodeData.outputLabel = newOutputLabel;
+
+            // Update DOM
+            const node = nodeData.element;
+            const labelEl = node.querySelector('.node-label');
+            const sublabelEl = node.querySelector('.node-sublabel');
+
+            if (labelEl) {
+                labelEl.textContent = `${newIcon} ${newLabel}`;
+            }
+            if (sublabelEl) {
+                sublabelEl.textContent = newSublabel;
+            }
+
+            // Update I/O tags
+            updateNodeIOTags(node, newInputLabel, newOutputLabel);
+
+            // Apply new color
+            applyNodeColor(node, newColor, nodeData.type);
+
+            // Close modal
+            closeEditModal();
+        }
+
+        function updateNodeIOTags(node, inputLabel, outputLabel) {
+            const nodeKey = node.dataset.key;
+
+            // Update or create input tag
+            let inputContainer = node.querySelector('.io-tags-container.input-side');
+            if (inputLabel) {
+                if (!inputContainer) {
+                    inputContainer = document.createElement('div');
+                    inputContainer.className = 'io-tags-container input-side';
+                    node.appendChild(inputContainer);
+                }
+                inputContainer.innerHTML = `
+                    <div class="io-tag input-tag">
+                        <span class="io-icon">↓</span>
+                        <span class="io-label">${inputLabel}</span>
+                    </div>
+                `;
+                // Attach click handler
+                const inputTag = inputContainer.querySelector('.io-tag.input-tag');
+                if (inputTag) {
+                    inputTag.onclick = (e) => startInlineEdit(e, nodeKey, 'input', inputTag);
+                }
+            } else if (inputContainer) {
+                inputContainer.remove();
+            }
+
+            // Update or create output tag
+            let outputContainer = node.querySelector('.io-tags-container.output-side');
+            if (outputLabel) {
+                if (!outputContainer) {
+                    outputContainer = document.createElement('div');
+                    outputContainer.className = 'io-tags-container output-side';
+                    node.appendChild(outputContainer);
+                }
+                outputContainer.innerHTML = `
+                    <div class="io-tag output-tag">
+                        <span class="io-label">${outputLabel}</span>
+                        <span class="io-icon">↑</span>
+                    </div>
+                `;
+                // Attach click handler
+                const outputTag = outputContainer.querySelector('.io-tag.output-tag');
+                if (outputTag) {
+                    outputTag.onclick = (e) => startInlineEdit(e, nodeKey, 'output', outputTag);
+                }
+            } else if (outputContainer) {
+                outputContainer.remove();
+            }
+        }
+
+        function toggleShowIO() {
+            const showIO = document.getElementById('showIOToggle').checked;
+            Object.values(droppedNodes).forEach(nodeData => {
+                if (showIO) {
+                    nodeData.element.classList.add('show-io');
+                } else {
+                    nodeData.element.classList.remove('show-io');
+                }
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // INLINE I/O EDITING
+        // ═══════════════════════════════════════════════════════════
+        let currentInlineEdit = null; // Track current inline edit to prevent duplicates
+
+        function startInlineEdit(e, nodeKey, ioType, tagElement) {
+            e.stopPropagation(); // Prevent opening the full modal
+            e.preventDefault();
+
+            // Prevent multiple edits
+            if (currentInlineEdit) return;
+
+            const nodeData = droppedNodes[nodeKey];
+            if (!nodeData) return;
+
+            const currentValue = ioType === 'input' ? nodeData.inputLabel : nodeData.outputLabel;
+            const tag = tagElement;
+
+            // Mark as editing
+            tag.classList.add('editing');
+            currentInlineEdit = { nodeKey, ioType, tag };
+
+            // Create input
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = `io-inline-input ${ioType}-type`;
+            input.value = currentValue || '';
+            input.placeholder = ioType === 'input' ? 'entrada...' : 'saída...';
+
+            // Prevent clicks on input from bubbling
+            input.onclick = (ev) => ev.stopPropagation();
+            input.onmousedown = (ev) => ev.stopPropagation();
+
+            // Replace tag content
+            tag.innerHTML = '';
+            tag.appendChild(input);
+
+            // Focus and select after a small delay
+            setTimeout(() => {
+                input.focus();
+                input.select();
+            }, 10);
+
+            // Flag to prevent double save
+            let saved = false;
+
+            // Handle save on blur or Enter
+            const saveEdit = () => {
+                if (saved) return;
+                saved = true;
+
+                const newValue = input.value.trim() || null;
+
+                // Update stored data
+                if (ioType === 'input') {
+                    nodeData.inputLabel = newValue;
+                } else {
+                    nodeData.outputLabel = newValue;
+                }
+
+                // Rebuild the tag
+                tag.classList.remove('editing');
+                currentInlineEdit = null;
+
+                if (newValue) {
+                    if (ioType === 'input') {
+                        tag.innerHTML = `
+                            <span class="io-icon">↓</span>
+                            <span class="io-label">${newValue}</span>
+                        `;
+                    } else {
+                        tag.innerHTML = `
+                            <span class="io-label">${newValue}</span>
+                            <span class="io-icon">↑</span>
+                        `;
+                    }
+                    // Re-attach click handler
+                    tag.onclick = (ev) => startInlineEdit(ev, nodeKey, ioType, tag);
+                } else {
+                    // Remove the tag container if empty
+                    const container = tag.parentElement;
+                    if (container) container.remove();
+                }
+            };
+
+            input.addEventListener('blur', saveEdit);
+            input.addEventListener('keydown', (ev) => {
+                ev.stopPropagation(); // Prevent keyboard shortcuts
+                if (ev.key === 'Enter') {
+                    ev.preventDefault();
+                    input.blur();
+                } else if (ev.key === 'Escape') {
+                    // Cancel - restore original value
+                    input.value = currentValue || '';
+                    input.blur();
+                }
+            });
+        }
+
+        function attachIOClickHandlers(node, nodeKey) {
+            const inputTag = node.querySelector('.io-tag.input-tag');
+            const outputTag = node.querySelector('.io-tag.output-tag');
+
+            if (inputTag) {
+                inputTag.onclick = (e) => startInlineEdit(e, nodeKey, 'input', inputTag);
+            }
+            if (outputTag) {
+                outputTag.onclick = (e) => startInlineEdit(e, nodeKey, 'output', outputTag);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // ZOOM & PAN
+        // ═══════════════════════════════════════════════════════════
+        function setupZoomPan() {
+            const wrapper = document.getElementById('canvasWrapper');
+            const inner = document.getElementById('canvasInner');
+
+            // Mouse wheel zoom
+            wrapper.addEventListener('wheel', (e) => {
+                e.preventDefault();
+
+                const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+                const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomLevel + delta));
+
+                if (newZoom !== zoomLevel) {
+                    // Get mouse position relative to wrapper
+                    const rect = wrapper.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+
+                    // Adjust pan to zoom towards mouse position
+                    const scale = newZoom / zoomLevel;
+                    panX = mouseX - (mouseX - panX) * scale;
+                    panY = mouseY - (mouseY - panY) * scale;
+
+                    zoomLevel = newZoom;
+                    applyZoomPan();
+                }
+            }, { passive: false });
+
+            // Pan with middle mouse button or Ctrl+drag
+            wrapper.addEventListener('mousedown', (e) => {
+                // Middle button (wheel click) or Ctrl+left click
+                if (e.button === 1 || (e.button === 0 && e.ctrlKey)) {
+                    e.preventDefault();
+                    isPanning = true;
+                    panStartX = e.clientX - panX;
+                    panStartY = e.clientY - panY;
+                    inner.classList.add('panning');
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isPanning) {
+                    panX = e.clientX - panStartX;
+                    panY = e.clientY - panStartY;
+                    applyZoomPan();
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isPanning) {
+                    isPanning = false;
+                    document.getElementById('canvasInner').classList.remove('panning');
+                }
+            });
+
+            // Update cursor when Ctrl is held
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Control') {
+                    inner.classList.add('can-pan');
+                }
+            });
+
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'Control') {
+                    inner.classList.remove('can-pan');
+                }
+            });
+        }
+
+        function zoomIn() {
+            zoomLevel = Math.min(MAX_ZOOM, zoomLevel + ZOOM_STEP);
+            applyZoomPan();
+        }
+
+        function zoomOut() {
+            zoomLevel = Math.max(MIN_ZOOM, zoomLevel - ZOOM_STEP);
+            applyZoomPan();
+        }
+
+        function resetZoom() {
+            zoomLevel = 1;
+            panX = 0;
+            panY = 0;
+            applyZoomPan();
+        }
+
+        function applyZoomPan() {
+            const inner = document.getElementById('canvasInner');
+            inner.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+
+            // Update zoom level display
+            document.getElementById('zoomLevel').textContent = Math.round(zoomLevel * 100) + '%';
+
+            // Update connections after transform
+            setTimeout(updateConnections, 50);
+        }
+
+        window.addEventListener('resize', updateConnections);
+
+        document.addEventListener('keydown', e => {
+            // Don't handle shortcuts if modal is open
+            if (document.getElementById('editModal').classList.contains('visible')) {
+                return;
+            }
+            if (e.key === ' ') { e.preventDefault(); togglePlayback(); }
+            if (e.key === 'r' || e.key === 'R') resetCanvas();
+            if (e.key >= '1' && e.key <= '5') {
+                const tabs = document.querySelectorAll('.tab');
+                tabs[parseInt(e.key) - 1]?.click();
+            }
+            // Zoom shortcuts
+            if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomIn(); }
+            if (e.key === '-' || e.key === '_') { e.preventDefault(); zoomOut(); }
+            if (e.key === '0') { e.preventDefault(); resetZoom(); }
+        });
+
+        init();
+    </script>
+</body>
+</html>

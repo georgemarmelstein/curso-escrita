@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta B - Cards Preview Diagramáticos</title>
+
+    <!-- Google Fonts - Paleta SUPER -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           PALETA SUPER
+           ============================================ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        /* ============================================
+           LAYOUT BASE
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background com imagem desfocada */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1920&h=1080&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(0.25);
+            z-index: 0;
+        }
+
+        /* ============================================
+           CONTAINER PRINCIPAL
+           ============================================ */
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+            padding: 50px 40px;
+        }
+
+        /* Header com título e numeração */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 60px;
+        }
+
+        .slide-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            font-weight: 700;
+            color: rgba(190, 156, 109, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            font-weight: 700;
+            color: var(--super-gold);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9),
+                         0 0 20px rgba(0,0,0,0.8);
+            letter-spacing: 0.5px;
+            flex: 1;
+            text-align: center;
+        }
+
+        /* ============================================
+           GRID DE CARDS
+           ============================================ */
+        .paradigms-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* Card individual */
+        .paradigm-card {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            padding: 30px 20px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            opacity: 0.8;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .paradigm-card:hover {
+            opacity: 1;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 32px rgba(190, 156, 109, 0.3);
+        }
+
+        /* Emoji do paradigma */
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+        }
+
+        /* Badge do paradigma */
+        .card-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.3), rgba(190, 156, 109, 0.15));
+            border: 1px solid var(--super-gold);
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* Ano */
+        .card-year {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.4);
+            font-weight: 300;
+        }
+
+        /* Setas de conexão */
+        .arrow-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: var(--super-gold);
+            opacity: 0.6;
+            filter: drop-shadow(0 2px 8px rgba(190, 156, 109, 0.4));
+        }
+
+        /* ============================================
+           SEÇÃO DE CONVERGÊNCIA
+           ============================================ */
+        .convergence-section {
+            margin-top: 40px;
+        }
+
+        .convergence-arrows {
+            font-size: 2em;
+            color: var(--super-gold);
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .convergence-box {
+            background: rgba(26, 26, 46, 0.7);
+            border: 2px solid var(--super-gold);
+            border-radius: 12px;
+            padding: 25px 30px;
+            backdrop-filter: blur(20px);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .convergence-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--super-gold);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .convergence-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3em;
+            color: var(--super-gold-light);
+            font-weight: 500;
+        }
+
+        /* ============================================
+           SUBTÍTULO
+           ============================================ */
+        .subtitle {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.4);
+            letter-spacing: 0.5px;
+            font-weight: 300;
+        }
+
+        /* ============================================
+           EMBED MODE (para Reveal.js)
+           ============================================ */
+        body.embed-mode {
+            min-height: 550px;
+        }
+
+        body.embed-mode .container {
+            padding: 30px 25px;
+        }
+
+        body.embed-mode .title {
+            font-size: 2em;
+        }
+
+        body.embed-mode .slide-number {
+            font-size: 2em;
+        }
+
+        body.embed-mode .header {
+            margin-bottom: 40px;
+        }
+
+        body.embed-mode .paradigms-grid {
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        body.embed-mode .paradigm-card {
+            padding: 20px 15px;
+        }
+
+        body.embed-mode .card-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        body.embed-mode .card-badge {
+            font-size: 0.7em;
+            padding: 6px 15px;
+        }
+
+        body.embed-mode .card-year {
+            font-size: 0.9em;
+        }
+
+        body.embed-mode .arrow {
+            font-size: 1.5em;
+        }
+
+        body.embed-mode .convergence-arrows {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        body.embed-mode .convergence-box {
+            padding: 18px 22px;
+        }
+
+        body.embed-mode .convergence-title {
+            font-size: 1.3em;
+        }
+
+        body.embed-mode .convergence-year {
+            font-size: 1em;
+        }
+
+        body.embed-mode .subtitle {
+            font-size: 0.85em;
+            bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="slide-number">01</div>
+            <h1 class="title">Três Paradigmas de Conhecimento</h1>
+            <div style="width: 80px;"></div> <!-- Spacer para centralizar -->
+        </div>
+
+        <div class="paradigms-grid">
+            <div class="paradigm-card">
+                <div class="card-icon">💬</div>
+                <div class="card-badge">PARAMÉTRICO</div>
+                <div class="card-year">2022</div>
+            </div>
+
+            <div class="paradigm-card">
+                <div class="card-icon">🧠</div>
+                <div class="card-badge">CONTEXTUAL</div>
+                <div class="card-year">2023</div>
+            </div>
+
+            <div class="paradigm-card">
+                <div class="card-icon">🌐</div>
+                <div class="card-badge">EXTERNO</div>
+                <div class="card-year">2023</div>
+            </div>
+        </div>
+
+        <div class="arrow-container">
+            <span class="arrow">→</span>
+            <span class="arrow">→</span>
+            <span class="arrow">→</span>
+        </div>
+
+        <div class="convergence-section">
+            <div class="convergence-arrows">↓ ↓ ↓</div>
+            <div class="convergence-box">
+                <div class="convergence-title">CONVERGÊNCIA</div>
+                <div class="convergence-year">2025</div>
+            </div>
+        </div>
+
+        <p class="subtitle">A história da IA generativa</p>
+    </div>
+
+    <script>
+        // Detectar se está em iframe (embed mode)
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

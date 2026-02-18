@@ -1,0 +1,483 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                                                                          ║
+║              AULA 13 - ENGENHARIA DE PROMPT                              ║
+║                                                                          ║
+║              Material de Estudo: Papers Selecionados                     ║
+║              Total de Papers: 26 PDFs                                    ║
+║                                                                          ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+
+═════════════════════════════════════════════════════════════════════════════
+                              COMEÇANDO POR AQUI
+═════════════════════════════════════════════════════════════════════════════
+
+Este diretório contém uma coleção cuidadosamente selecionada de papers sobre
+ENGENHARIA DE PROMPT - a arte e ciência de comunicar eficientemente com
+Large Language Models (LLMs).
+
+Engenharia de prompt é a disciplina que estuda como estruturar instruções para
+que modelos de linguagem gerem respostas precisas, coerentes e úteis. Vai além
+de simplesmente "falar com o modelo" - envolve técnicas sistemáticas para
+desbloquear capacidades latentes, induzir raciocínio complexo, e controlar o
+comportamento do modelo.
+
+
+═════════════════════════════════════════════════════════════════════════════
+                           OS 5 TEMAS CENTRAIS
+═════════════════════════════════════════════════════════════════════════════
+
+1. SURVEYS (2023-2024)
+   → Visão panorâmica com 58+ técnicas catalogadas
+   → "The Prompt Report" é o mais abrangente
+   → Taxonomias e definições padronizadas
+
+2. PAPERS SEMINAIS (2020-2021)
+   → GPT-3: O paper que mostrou few-shot learning
+   → Primeiros estudos sobre zero-shot capabilities
+   → Fundações da engenharia de prompt moderna
+
+3. CHAIN-OF-THOUGHT (2022-2023)
+   → Raciocínio passo-a-passo explícito
+   → Self-Consistency: sampling múltiplo para maior precisão
+   → Técnicas para induzir pensamento estruturado
+
+4. TÉCNICAS AVANÇADAS (2022-2023)
+   → Tree-of-Thoughts: exploração de branches de raciocínio
+   → Least-to-Most: decomposição de problemas complexos
+   → Graph of Thoughts: estruturas de raciocínio conectadas
+   → PAL: Program-Aided Language Models
+   → Instruction tuning: FLAN-T5 e evolução
+
+5. FEW-SHOT & IN-CONTEXT LEARNING (2022-2023)
+   → Como exemplos influenciam o modelo
+   → O que faz ICL funcionar (análise profunda)
+   → Papel das demonstrações e label words
+
+
+═════════════════════════════════════════════════════════════════════════════
+                            ESTRUTURA DE PASTAS
+═════════════════════════════════════════════════════════════════════════════
+
+Surveys_Prompt_Engineering_2025/     [4 PDFs]
+  └─ "The Prompt Report" (58 técnicas) + 3 surveys sistemáticos
+
+Papers_Seminal_Prompting/            [3 PDFs]
+  └─ GPT-3 (2020), Zero-shot (2021), Prompt ordering
+
+Papers_Chain_of_Thought/             [4 PDFs]
+  └─ CoT original, Self-Consistency, análises de funcionamento
+
+Papers_Advanced_Techniques/          [11 PDFs]
+  └─ Tree-of-Thoughts, Least-to-Most, Graph of Thoughts, PAL, FLAN, etc.
+
+Papers_Few_Shot_ICL/                 [4 PDFs]
+  └─ Survey de ICL, análises de demonstrações, label words
+
+
+═════════════════════════════════════════════════════════════════════════════
+                        ROTEIROS DE LEITURA SUGERIDOS
+═════════════════════════════════════════════════════════════════════════════
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 1: INICIANTE - FUNDAMENTOS (2-3 horas)
+─────────────────────────────────────────────────────────────────────────────
+Para quem está começando a entender engenharia de prompt.
+
+1º → [Survey] 2024_The_Prompt_Report_Systematic_Survey.pdf
+     Ler: Seções 1-3 (Introdução + Taxonomia básica)
+     Por quê: Visão geral das 58 técnicas catalogadas
+     Tempo: 45 min
+
+2º → [Seminal] 2020_GPT3_Language_Models_Few_Shot_Learners.pdf
+     Ler: Seções 2-3 (Few-shot learning methodology)
+     Por quê: O paper que inaugurou a era do prompting moderno
+     Tempo: 40 min
+
+3º → [CoT] 2022_Chain_of_Thought_Prompting.pdf
+     Ler: Completo (é curto)
+     Por quê: A técnica mais impactante - induzir raciocínio passo-a-passo
+     Tempo: 30 min
+
+4º → [Advanced] 2023_Prompt_Engineering_Survey.pdf
+     Ler: Seção 4 (Best practices)
+     Por quê: Consolidação de boas práticas
+     Tempo: 30 min
+
+RESULTADO: Compreensão sólida de few-shot, zero-shot, e Chain-of-Thought.
+
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 2: INTERMEDIÁRIO - TÉCNICAS AVANÇADAS (4-5 horas)
+─────────────────────────────────────────────────────────────────────────────
+Para quem já conhece o básico e quer dominar técnicas sofisticadas.
+
+1º → [CoT] 2022_Self_Consistency_CoT.pdf
+     Por quê: Evolução do CoT - sampling múltiplo para maior accuracy
+     Tempo: 45 min
+
+2º → [Advanced] 2023_Tree_of_Thoughts.pdf
+     Por quê: Exploração de múltiplos caminhos de raciocínio
+     Tempo: 50 min
+
+3º → [Advanced] 2022_Least_to_Most_Prompting.pdf
+     Por quê: Decomposição hierárquica de problemas complexos
+     Tempo: 40 min
+
+4º → [Advanced] 2023_Graph_of_Thoughts.pdf
+     Por quê: Estruturas de raciocínio interconectadas
+     Tempo: 50 min
+
+5º → [Advanced] 2023_Reflexion_Self_Refinement.pdf
+     Por quê: Auto-reflexão e refinamento iterativo
+     Tempo: 45 min
+
+6º → [Advanced] 2022_PAL_Program_Aided_Language_Models.pdf
+     Por quê: Integração de código e raciocínio simbólico
+     Tempo: 40 min
+
+RESULTADO: Domínio de técnicas avançadas de raciocínio estruturado.
+
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 3: PESQUISADOR - COMPREENSÃO PROFUNDA (6-8 horas)
+─────────────────────────────────────────────────────────────────────────────
+Para quem quer entender POR QUE as técnicas funcionam.
+
+1º → [ICL] 2022_Survey_ICL.pdf
+     Por quê: Revisão sistemática de In-Context Learning
+     Tempo: 90 min
+
+2º → [ICL] 2022_What_Makes_ICL_Work.pdf
+     Por quê: Análise empírica dos mecanismos de ICL
+     Tempo: 60 min
+
+3º → [ICL] 2022_Rethinking_Role_Demonstrations_ICL.pdf
+     Por quê: Como exemplos realmente influenciam o modelo
+     Tempo: 50 min
+
+4º → [CoT] 2022_Towards_Understanding_CoT.pdf
+     Por quê: Por que CoT funciona? Análise teórica
+     Tempo: 60 min
+
+5º → [ICL] 2023_Label_Words_Are_Anchors_ICL.pdf
+     Por quê: Papel crucial de label words em classificação
+     Tempo: 45 min
+
+6º → [Seminal] 2021_Fantastically_Ordered_Prompts_GPT3.pdf
+     Por quê: Impacto da ordem dos exemplos
+     Tempo: 40 min
+
+7º → [Advanced] 2022_Automatic_Chain_of_Thought.pdf
+     Por quê: Geração automática de demonstrações CoT
+     Tempo: 50 min
+
+RESULTADO: Compreensão profunda dos mecanismos que fazem prompting funcionar.
+
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 4: PRACTITIONER - APLICAÇÃO PRÁTICA (3-4 horas)
+─────────────────────────────────────────────────────────────────────────────
+Para quem precisa aplicar técnicas em produção.
+
+1º → [Survey] 2024_Systematic_Survey_Prompt_Engineering_LLMs.pdf
+     Ler: Seções de best practices e pitfalls
+     Por quê: Guidelines para aplicação real
+     Tempo: 60 min
+
+2º → [Advanced] 2022_Decomposed_Prompting.pdf
+     Por quê: Modularização de prompts complexos
+     Tempo: 45 min
+
+3º → [Advanced] 2023_Active_Prompting_CoT.pdf
+     Por quê: Seleção adaptativa de exemplos
+     Tempo: 40 min
+
+4º → [Advanced] 2022_PAL_Program_Aided_Language_Models.pdf
+     Por quê: Integração prática de código
+     Tempo: 40 min
+
+5º → [Survey] 2024_Survey_Prompt_Engineering_Methods_NLP.pdf
+     Ler: Seção de métodos para tarefas específicas
+     Por quê: Técnicas por tipo de problema
+     Tempo: 45 min
+
+RESULTADO: Kit de ferramentas prático para aplicação em diversos contextos.
+
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 5: INSTRUCTION TUNING & FINETUNING (3-4 horas)
+─────────────────────────────────────────────────────────────────────────────
+Para quem quer entender como modelos são treinados para seguir instruções.
+
+1º → [Advanced] 2022_Scaling_Instruction_Finetuned_Language_Models.pdf
+     Por quê: FLAN - o paper seminal sobre instruction tuning
+     Tempo: 70 min
+
+2º → [Advanced] 2023_Flan_Collection_Designing_Data.pdf
+     Por quê: Design de datasets para instruction tuning
+     Tempo: 60 min
+
+3º → [Seminal] 2021_Multitask_Prompted_Training_Zero_Shot.pdf
+     Por quê: Treinamento multitask para zero-shot capabilities
+     Tempo: 50 min
+
+4º → [Survey] 2023_Unleashing_Potential_Prompt_Engineering.pdf
+     Ler: Seções sobre soft prompts e prompt tuning
+     Por quê: Fronteira entre prompting e finetuning
+     Tempo: 50 min
+
+RESULTADO: Compreensão de como instruction tuning afeta prompting.
+
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 6: IMERSÃO COMPLETA (1-2 semanas)
+─────────────────────────────────────────────────────────────────────────────
+Para domínio total do campo de engenharia de prompt.
+
+SEMANA 1: FUNDAMENTOS E TEORIA
+Dia 1-2:   Leia todos os 4 surveys na pasta Surveys/
+Dia 3:     Papers seminais (GPT-3 completo + zero-shot papers)
+Dia 4-5:   Todos os papers de CoT (4 papers)
+Dia 6-7:   Papers de ICL (4 papers) - compreensão profunda
+
+SEMANA 2: TÉCNICAS AVANÇADAS
+Dia 8-9:   Tree/Graph/Reflexion (estruturas de raciocínio complexas)
+Dia 10-11: Least-to-Most, Decomposed, Active Prompting (decomposição)
+Dia 12:    PAL + Auto-CoT (automação e integração)
+Dia 13-14: FLAN papers + revisão geral
+
+RESULTADO: Expertise completa em engenharia de prompt.
+
+
+═════════════════════════════════════════════════════════════════════════════
+                        CONCEITOS-CHAVE PARA DOMINAR
+═════════════════════════════════════════════════════════════════════════════
+
+□ ZERO-SHOT PROMPTING
+  └─ Instruir o modelo sem exemplos prévios
+  └─ Clareza na task description é crítica
+  └─ Modelos maiores têm melhor zero-shot performance
+
+□ FEW-SHOT PROMPTING (IN-CONTEXT LEARNING)
+  └─ Fornecer 1-10 exemplos antes da query
+  └─ Ordem dos exemplos importa
+  └─ Diversidade vs. similaridade dos exemplos
+
+□ CHAIN-OF-THOUGHT (CoT)
+  └─ Induzir raciocínio passo-a-passo explícito
+  └─ "Let's think step by step" é o prompt mágico
+  └─ Especialmente efetivo em aritmética e lógica
+
+□ SELF-CONSISTENCY
+  └─ Gerar múltiplas respostas com CoT
+  └─ Usar voting/consenso para escolher a melhor
+  └─ Trade-off: maior custo, maior accuracy
+
+□ TREE-OF-THOUGHTS (ToT)
+  └─ Explorar múltiplos caminhos de raciocínio
+  └─ Backtracking quando caminho não é promissor
+  └─ Busca em árvore deliberada
+
+□ LEAST-TO-MOST PROMPTING
+  └─ Decomposição hierárquica: problema → subproblemas
+  └─ Resolver subproblemas sequencialmente
+  └─ Solução bottom-up
+
+□ PROGRAM-AIDED LANGUAGE MODELS (PAL)
+  └─ LLM gera código Python/JavaScript
+  └─ Execução externa resolve cálculos complexos
+  └─ Combina raciocínio simbólico + linguístico
+
+□ GRAPH OF THOUGHTS
+  └─ Raciocínio como grafo (não apenas árvore)
+  └─ Pensamentos podem se conectar arbitrariamente
+  └─ Agregação de múltiplas fontes de informação
+
+□ REFLEXION
+  └─ Auto-avaliação e refinamento iterativo
+  └─ Feedback loop: output → reflexão → melhoria
+  └─ Aprendizado de erros
+
+□ INSTRUCTION TUNING
+  └─ Finetuning em milhares de tarefas com instruções
+  └─ FLAN-T5, InstructGPT são exemplos
+  └─ Melhora drasticamente instruction-following
+
+□ DEMONSTRAÇÕES EM ICL
+  └─ Format matters: estrutura consistente é crucial
+  └─ Label words servem como âncoras semânticas
+  └─ Ground truth labels nem sempre necessários
+
+□ PROMPT COMPOSITION
+  └─ Modularizar prompts complexos
+  └─ Reutilização de componentes
+  └─ Chaining de prompts sequenciais
+
+
+═════════════════════════════════════════════════════════════════════════════
+                        PAPERS POR ORDEM DE IMPACTO
+═════════════════════════════════════════════════════════════════════════════
+
+★★★★★ IMPACTO MÁXIMO - LEITURA OBRIGATÓRIA
+
+1. GPT-3 (2020) - Language Models are Few-Shot Learners
+   → Inaugurou a era moderna de prompting
+
+2. Chain-of-Thought Prompting (2022)
+   → A técnica mais influente - raciocínio passo-a-passo
+
+3. The Prompt Report (2024)
+   → Survey mais abrangente - 58 técnicas catalogadas
+
+
+★★★★☆ ALTO IMPACTO - FORTEMENTE RECOMENDADO
+
+4. Self-Consistency CoT (2022)
+   → Melhoria significativa sobre CoT básico
+
+5. Tree-of-Thoughts (2023)
+   → Mudança de paradigma - exploração estruturada
+
+6. Least-to-Most Prompting (2022)
+   → Decomposição efetiva de problemas complexos
+
+7. Survey ICL (2022)
+   → Revisão sistemática de in-context learning
+
+8. Scaling Instruction-Finetuned LMs (2022) [FLAN]
+   → Fundação do instruction tuning moderno
+
+
+★★★☆☆ IMPACTO MÉDIO - RECOMENDADO
+
+9. Graph of Thoughts (2023)
+10. Reflexion (2023)
+11. PAL - Program-Aided Language Models (2022)
+12. What Makes ICL Work (2022)
+13. Automatic Chain-of-Thought (2022)
+14. Decomposed Prompting (2022)
+15. Systematic Survey Prompt Engineering LLMs (2024)
+
+
+★★☆☆☆ IMPACTO ESPECÍFICO - LEITURA COMPLEMENTAR
+
+16. Thread-of-Thought (2023)
+17. Active Prompting CoT (2023)
+18. Label Words Are Anchors (2023)
+19. Rethinking Role of Demonstrations (2022)
+20. Flan Collection (2023)
+21. Towards Understanding CoT (2022)
+22. Fantastically Ordered Prompts (2021)
+23. Multitask Prompted Training (2021)
+24. Survey Prompt Methods NLP (2024)
+25. Unleashing Potential Prompt Engineering (2023)
+26. Prompt Engineering Survey (2023)
+
+
+═════════════════════════════════════════════════════════════════════════════
+                           8 INSIGHTS PRINCIPAIS
+═════════════════════════════════════════════════════════════════════════════
+
+1. EMERGÊNCIA DE CAPACIDADES
+   Muitas técnicas de prompting (especialmente CoT) só funcionam bem em
+   modelos acima de certo tamanho (~100B parâmetros). Few-shot learning
+   emerge dramaticamente com escala.
+
+2. RACIOCÍNIO COMO TEXTO INTERMEDIÁRIO
+   Forçar o modelo a verbalizar seu raciocínio (CoT) melhora performance
+   dramaticamente. O "espaço de rascunho" textual é crucial.
+
+3. SAMPLING > GREEDY PARA RACIOCÍNIO
+   Self-Consistency mostra que gerar múltiplas soluções e usar voting
+   supera sempre greedy decoding em tarefas de raciocínio.
+
+4. EXEMPLOS SÃO DEMONSTRAÇÕES DE FORMATO
+   Em ICL, exemplos servem principalmente para mostrar o formato esperado.
+   Label accuracy nem sempre é crítica - estrutura importa mais.
+
+5. DECOMPOSIÇÃO É PODEROSA
+   Quebrar problemas complexos (Least-to-Most, Decomposed Prompting)
+   consistentemente supera prompts monolíticos, mesmo com mais tokens.
+
+6. INSTRUÇÃO > FINE-TUNING TRADICIONAL
+   Instruction tuning (FLAN) cria modelos que seguem instruções zero-shot
+   melhor que fine-tuning específico para muitas tarefas.
+
+7. EXPLORAÇÃO ESTRUTURADA DE RACIOCÍNIO
+   ToT, GoT mostram que permitir backtracking e exploração de múltiplos
+   caminhos supera geração left-to-right linear.
+
+8. REFINAMENTO ITERATIVO FUNCIONA
+   Reflexion e técnicas similares mostram que loops de feedback (output →
+   avaliação → refinamento) melhoram qualidade substancialmente.
+
+
+═════════════════════════════════════════════════════════════════════════════
+                         PERGUNTAS PARA REFLEXÃO
+═════════════════════════════════════════════════════════════════════════════
+
+Após leitura dos papers, considere:
+
+• Por que Chain-of-Thought só funciona em modelos grandes?
+• Qual é o mecanismo que permite In-Context Learning?
+• Como Tree-of-Thoughts se compara a beam search tradicional?
+• Quando usar few-shot vs. fine-tuning?
+• Como instruction tuning afeta as capacidades zero-shot?
+• Por que self-consistency melhora tanto a performance?
+• Qual é o trade-off entre complexidade de prompt e custo?
+• Como automatizar a geração de bons prompts?
+
+
+═════════════════════════════════════════════════════════════════════════════
+                            RECURSOS ADICIONAIS
+═════════════════════════════════════════════════════════════════════════════
+
+GUIA_COMPLETO_PROMPT_ENGINEERING.txt
+  → Guia técnico detalhado com exemplos práticos
+  → Implementações de código para cada técnica
+  → Pipelines completos de prompt engineering
+  → Best practices e anti-patterns
+
+INDICE_COMPLETO_PDFS.md
+  → Sumário de cada um dos 26 papers
+  → Contribuições principais, datasets, resultados
+  → Referências cruzadas entre papers
+
+
+═════════════════════════════════════════════════════════════════════════════
+                            PRÓXIMOS PASSOS
+═════════════════════════════════════════════════════════════════════════════
+
+1. ESCOLHA UM ROTEIRO
+   → Baseado no seu nível de experiência
+   → Ou crie seu próprio caminho personalizado
+
+2. LEIA ATIVAMENTE
+   → Anote conceitos-chave
+   → Teste técnicas em exemplos reais
+   → Compare abordagens diferentes
+
+3. IMPLEMENTE
+   → Reproduza experimentos básicos
+   → Adapte técnicas para seus casos de uso
+   → Meça impacto quantitativamente
+
+4. EXPLORE INTERAÇÕES
+   → Como CoT + Self-Consistency se combinam?
+   → ToT é sempre melhor que CoT?
+   → Quando usar decomposição vs. raciocínio monolítico?
+
+5. MANTENHA-SE ATUALIZADO
+   → Campo evolui rapidamente
+   → Novos surveys a cada 6-12 meses
+   → Acompanhe conferências: NeurIPS, ICML, ACL, EMNLP
+
+
+═════════════════════════════════════════════════════════════════════════════
+
+Boa leitura e bons estudos em Engenharia de Prompt!
+
+Para dúvidas ou sugestões sobre este material, consulte o GUIA_COMPLETO.
+
+═════════════════════════════════════════════════════════════════════════════

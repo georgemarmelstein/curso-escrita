@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - O Insight Final</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 50% 50%, rgba(190, 156, 109, 0.12) 0%, transparent 50%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 30%,
+                rgba(10, 10, 18, 0.7) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            padding: 5vh 6vw;
+            text-align: center;
+        }
+
+        .reveal-container {
+            max-width: 90vw;
+        }
+
+        .pre-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            color: var(--super-gold);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 4vh;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .main-insight {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(3rem, 6.5vw, 6rem);
+            font-weight: 700;
+            color: var(--super-cream);
+            line-height: 1.2;
+            margin-bottom: 5vh;
+        }
+
+        .insight-line {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .insight-line:nth-child(1) { animation: lineReveal 0.8s ease 1s forwards; }
+        .insight-line:nth-child(2) { animation: lineReveal 0.8s ease 1.5s forwards; }
+
+        @keyframes lineReveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .highlight {
+            color: var(--super-gold);
+            position: relative;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0.08em;
+            left: 0;
+            width: 100%;
+            height: 0.08em;
+            background: var(--super-gold);
+            opacity: 0.4;
+        }
+
+        .explanation {
+            max-width: 80vw;
+            margin: 0 auto;
+        }
+
+        .explanation-text {
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+            color: rgba(255, 244, 228, 0.75);
+            line-height: 1.7;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 2.5s forwards;
+        }
+
+        .explanation-text strong {
+            color: var(--super-cream);
+            font-weight: 600;
+        }
+
+        .key-words {
+            display: flex;
+            justify-content: center;
+            gap: 4vw;
+            margin-top: 5vh;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 3s forwards;
+        }
+
+        .key-word {
+            padding: 2vh 3vw;
+            background: rgba(190, 156, 109, 0.12);
+            border: 1px solid rgba(190, 156, 109, 0.35);
+            border-radius: 12px;
+        }
+
+        .key-word-strike {
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            color: rgba(255, 244, 228, 0.4);
+            text-decoration: line-through;
+            margin-bottom: 1vh;
+        }
+
+        .key-word-main {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .final-statement {
+            margin-top: 6vh;
+            padding: 3vh 5vw;
+            background: rgba(74, 222, 128, 0.12);
+            border: 2px solid rgba(74, 222, 128, 0.4);
+            border-radius: 16px;
+            opacity: 0;
+            animation: statementReveal 0.8s ease 3.5s forwards;
+        }
+
+        @keyframes statementReveal {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .final-statement-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.3rem, 2vw, 1.7rem);
+            font-weight: 500;
+            color: var(--super-green);
+        }
+
+        body.embed-mode .main-insight { font-size: clamp(2.5rem, 5.5vw, 5rem); }
+        body.embed-mode .explanation-text { font-size: clamp(1.1rem, 1.7vw, 1.5rem); }
+        body.embed-mode .key-words { gap: 3vw; }
+        body.embed-mode .key-word { padding: 1.5vh 2.5vw; }
+        body.embed-mode .key-word-main { font-size: clamp(1.3rem, 2vw, 1.8rem); }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="reveal-container">
+            <div class="pre-text">O Insight Contra-Intuitivo</div>
+
+            <div class="main-insight">
+                <div class="insight-line">O segredo não é o <span class="highlight">agente</span>.</div>
+                <div class="insight-line">É o <span class="highlight">fluxo de trabalho</span>.</div>
+            </div>
+
+            <div class="explanation">
+                <p class="explanation-text">
+                    Sistemas agênticos de sucesso não são construídos por agentes mais inteligentes.
+                    São construídos por <strong>HUMANOS</strong> que sabem projetar workflows que <strong>DISCIPLINAM</strong> os agentes.
+                </p>
+            </div>
+
+            <div class="key-words">
+                <div class="key-word">
+                    <div class="key-word-strike">Autonomia</div>
+                    <div class="key-word-main">Disciplina</div>
+                </div>
+                <div class="key-word">
+                    <div class="key-word-strike">Liberdade</div>
+                    <div class="key-word-main">Estrutura</div>
+                </div>
+                <div class="key-word">
+                    <div class="key-word-strike">Poder</div>
+                    <div class="key-word-main">Processo</div>
+                </div>
+            </div>
+
+            <div class="final-statement">
+                <p class="final-statement-text">
+                    🎯 Você não precisa de um LLM mais poderoso. Você precisa de um workflow melhor.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

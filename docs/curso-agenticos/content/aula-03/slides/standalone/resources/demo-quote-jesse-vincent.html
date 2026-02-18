@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Quote Jesse Vincent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --iron-dark: #1a1a20;
+            --iron-mid: #2a2a35;
+            --iron-light: #3a3a48;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--iron-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Industrial metal background */
+        .bg-metal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(255, 255, 255, 0.015) 100px,
+                    rgba(255, 255, 255, 0.015) 101px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(255, 255, 255, 0.015) 100px,
+                    rgba(255, 255, 255, 0.015) 101px
+                ),
+                linear-gradient(135deg, var(--iron-dark) 0%, #15151d 50%, var(--iron-dark) 100%);
+            z-index: 0;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 30%,
+                rgba(10, 10, 18, 0.7) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Container fullscreen */
+        .container {
+            position: relative;
+            z-index: 50;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5vh 8vw;
+        }
+
+        /* Iron Law badge no topo */
+        .iron-badge {
+            position: absolute;
+            top: 3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--super-gold);
+            padding: 1.2vh 3vw;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1.1vw, 1rem);
+            font-weight: 600;
+            color: var(--iron-dark);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            box-shadow: 0 6px 25px rgba(190, 156, 109, 0.4);
+            opacity: 0;
+            animation: badgeSlam 0.5s ease 0.2s forwards;
+        }
+
+        @keyframes badgeSlam {
+            0% { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(1.2); }
+            60% { transform: translateX(-50%) translateY(3px) scale(0.95); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+        }
+
+        /* Quote principal - MASSIVA */
+        .quote-container {
+            text-align: center;
+            max-width: 85vw;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(3rem, 7vw, 7rem);
+            font-weight: 800;
+            color: transparent;
+            background: linear-gradient(180deg,
+                rgba(255, 244, 228, 0.95) 0%,
+                rgba(190, 156, 109, 0.85) 50%,
+                rgba(255, 244, 228, 0.7) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow:
+                0 3px 6px rgba(0, 0, 0, 0.6),
+                0 -1px 0 rgba(255, 255, 255, 0.08);
+            line-height: 1.15;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: engrave 0.8s ease 0.5s forwards;
+        }
+
+        @keyframes engrave {
+            from { opacity: 0; letter-spacing: 8px; transform: scale(1.02); }
+            to { opacity: 1; letter-spacing: 1px; transform: scale(1); }
+        }
+
+        .highlight {
+            color: var(--super-gold);
+            -webkit-text-fill-color: var(--super-gold);
+            text-shadow: 0 0 40px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Original em ingles */
+        .original-container {
+            margin-top: 4vh;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1s forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .original-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.9rem);
+            font-style: italic;
+            color: rgba(255, 244, 228, 0.3);
+        }
+
+        /* Divider */
+        .divider {
+            width: 0;
+            height: 4px;
+            background: linear-gradient(90deg,
+                transparent,
+                var(--super-gold),
+                transparent);
+            margin: 4vh 0;
+            opacity: 0;
+            animation: dividerGrow 0.6s ease 1.2s forwards;
+        }
+
+        @keyframes dividerGrow {
+            from { opacity: 0; width: 0; }
+            to { opacity: 1; width: min(300px, 25vw); }
+        }
+
+        /* Autor */
+        .author-container {
+            text-align: center;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.4s forwards;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+            font-weight: 700;
+            color: var(--super-cream);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .author-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.8rem, 1.2vw, 1rem);
+            color: var(--super-gold);
+            margin-top: 0.8vh;
+        }
+
+        /* Implication bar no fundo */
+        .implication-bar {
+            position: absolute;
+            bottom: 4vh;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1.5vh 3vw;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.8s forwards;
+        }
+
+        .lock-icon {
+            color: var(--super-gold);
+            font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+        }
+
+        .implication-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.3vw, 1.1rem);
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .impl-highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Embed mode */
+        body.embed-mode .quote-text {
+            font-size: clamp(2.5rem, 6vw, 5.5rem);
+        }
+        body.embed-mode .container {
+            padding: 4vh 6vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-metal"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="iron-badge">Iron Law</div>
+
+        <div class="quote-container">
+            <p class="quote-text">
+                Agentes precisam de <span class="highlight">disciplina</span>,<br>não de liberdade.
+            </p>
+        </div>
+
+        <div class="original-container">
+            <p class="original-text">
+                Original: "Agents need discipline, not freedom."
+            </p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="author-container">
+            <div class="author-name">Jesse Vincent</div>
+            <div class="author-title">Creator of Superpowers Pack</div>
+        </div>
+
+        <div class="implication-bar">
+            <span class="lock-icon">🔒</span>
+            <span class="implication-text">
+                <span class="impl-highlight">Restrições criam excelência.</span>
+                O poder vem da estrutura, não da autonomia irrestrita.
+            </span>
+            <span class="lock-icon">🔒</span>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

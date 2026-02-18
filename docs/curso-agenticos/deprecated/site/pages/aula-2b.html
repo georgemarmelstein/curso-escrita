@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 2B: Claude Code na Prática | Sistemas Agênticos</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">§</span>
+                <span class="logo-text">Sistemas Agênticos</span>
+            </a>
+
+            <nav class="nav-main">
+                <a href="../index.html" class="nav-link">Início</a>
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-trigger">
+                        Aulas
+                        <svg class="dropdown-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="aula-0.html" class="dropdown-item">Aula 0: Abertura</a>
+                        <a href="aula-1.html" class="dropdown-item">Aula 1: Sistema na Prática</a>
+                        <a href="aula-2a.html" class="dropdown-item">Aula 2A: Anatomia</a>
+                        <a href="aula-2b.html" class="dropdown-item active">Aula 2B: Claude Code</a>
+                        <a href="aula-3.html" class="dropdown-item">Aula 3: Arquitetura</a>
+                        <a href="aula-4.html" class="dropdown-item">Aula 4: Construindo</a>
+                        <a href="aula-5.html" class="dropdown-item">Aula 5: Sistema Jurídico</a>
+                    </div>
+                </div>
+                <a href="glossario.html" class="nav-link">Glossário</a>
+                <a href="recursos.html" class="nav-link">Recursos</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="theme-toggle" aria-label="Alternar tema">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Lesson Hero -->
+        <section class="lesson-hero">
+            <div class="hero-content">
+                <div class="lesson-badge">Módulo 2B - Prático</div>
+                <h1 class="hero-title">Claude Code na Prática</h1>
+                <p class="hero-subtitle">
+                    Mão na massa: instalar, configurar e dominar o Claude Code,
+                    mapeando cada recurso aos conceitos da Aula 2A.
+                </p>
+                <div class="hero-meta">
+                    <span class="meta-item">
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                        </svg>
+                        ~2h30
+                    </span>
+                    <span class="meta-item">
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Hands-on Completo
+                    </span>
+                    <span class="meta-item">
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z" />
+                        </svg>
+                        8 Blocos Práticos
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lesson Content -->
+        <div class="lesson-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="lesson-sidebar">
+                <nav class="lesson-nav">
+                    <div class="nav-section">
+                        <h4 class="nav-section-title">Nesta Aula</h4>
+                        <a href="#objetivo" class="lesson-nav-link">Objetivos</a>
+                        <a href="#bloco1" class="lesson-nav-link">1. Instalação</a>
+                        <a href="#bloco2" class="lesson-nav-link">2. CLAUDE.md</a>
+                        <a href="#bloco3" class="lesson-nav-link">3. Commands</a>
+                        <a href="#bloco4" class="lesson-nav-link">4. Skills</a>
+                        <a href="#bloco5" class="lesson-nav-link">5. Task Tool</a>
+                        <a href="#bloco6" class="lesson-nav-link">6. MCPs</a>
+                        <a href="#bloco7" class="lesson-nav-link">7. Permissões</a>
+                        <a href="#bloco8" class="lesson-nav-link">8. Hooks</a>
+                        <a href="#fechamento" class="lesson-nav-link">Fechamento</a>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="lesson-content">
+                <!-- Objetivo -->
+                <section id="objetivo" class="lesson-block">
+                    <h2>Objetivo da Aula</h2>
+
+                    <p>Colocar a mão na massa: instalar, configurar e usar o Claude Code,
+                    mapeando cada recurso aos conceitos aprendidos na Aula 2A.</p>
+
+                    <div class="callout callout-gold">
+                        <div class="callout-title">Lema da Aula</div>
+                        <p><strong>"Cada conceito tem uma ferramenta. Cada ferramenta implementa um conceito."</strong></p>
+                    </div>
+
+                    <h3>Por Que Claude Code?</h3>
+
+                    <blockquote>
+                        <p>"Claude Code é a ferramenta que os engenheiros da Anthropic usam no dia a dia.
+                        Novidades chegam primeiro aqui."</p>
+                        <cite>— Jared Zoneraich, AI Engineer Summit 2024</cite>
+                    </blockquote>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              POR QUE APRENDER CLAUDE CODE?                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   1. FERRAMENTA DOS CRIADORES                                   │
+│      └── Engenheiros da Anthropic usam diariamente              │
+│      └── Features novas chegam primeiro aqui                    │
+│                                                                 │
+│   2. CONTEXTO RICO (vs Agentes Simples)                         │
+│      └── Agent SDK: prompt FIXO                                 │
+│      └── Claude Code: contexto RICO (CLAUDE.md, skills, etc.)   │
+│                                                                 │
+│   3. CRIAÇÃO DE FERRAMENTAS ON-THE-FLY                          │
+│      └── Escreve scripts quando precisa                         │
+│      └── Adapta-se ao inesperado                                │
+│                                                                 │
+│   4. DELEGAÇÃO NATIVA                                           │
+│      └── Task tool para paralelizar                             │
+│      └── Subagentes especializados                              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>Mapa Conceito → Ferramenta</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              AULA 2A (Conceito) → AULA 2B (Ferramenta)          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Contexto persistente       →   CLAUDE.md                      │
+│   Atalhos para tarefas       →   Commands (/)                   │
+│   Expertise reutilizável     →   Skills                         │
+│   Paralelização              →   Task tool + Subagentes         │
+│   Ferramentas externas       →   MCPs                           │
+│   Automação                  →   Hooks                          │
+│   Autonomia controlada       →   Permissões + Modo YOLO         │
+│   Checkpoints                →   Permissões por ação            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Vibe Engineering vs Vibe Coding</div>
+                        <p><strong>Vibe Coding</strong> é quando você não sabe o que está fazendo e deixa a IA fazer tudo.</p>
+                        <p><strong>Vibe Engineering</strong> é quando você sabe exatamente o que quer e usa IA para acelerar.</p>
+                        <p>Esta aula ensina <strong>Vibe Engineering</strong>: você entende os conceitos, controla o sistema,
+                        e usa o Claude Code como multiplicador de capacidade.</p>
+                    </div>
+                </section>
+
+                <!-- Bloco 1: Instalação -->
+                <section id="bloco1" class="lesson-block">
+                    <h2>Bloco 1: Instalação e Primeiro Contato</h2>
+                    <span class="badge badge-time">25 min</span>
+
+                    <h3>1.1 Pré-requisitos</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                     PRÉ-REQUISITOS                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ✓ Node.js 18+ instalado (para método npm)                     │
+│   ✓ Terminal (cmd, PowerShell, bash, zsh)                       │
+│   ✓ Conta na Anthropic (claude.ai)                              │
+│   ✓ Plano Pro ou Max (para Claude Code)                         │
+│                                                                 │
+│   Verificar Node.js:                                            │
+│   $ node --version                                              │
+│   v20.x.x  ✓                                                    │
+│                                                                 │
+│   NOTA: Métodos alternativos (curl, Homebrew, WinGet)           │
+│   não exigem Node.js pré-instalado.                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>1.2 Instalação (4 Métodos Oficiais)</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                   MÉTODOS DE INSTALAÇÃO                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   MÉTODO 1: npm (mais comum)                                    │
+│   ──────────────────────────────                                │
+│   $ npm install -g @anthropic-ai/claude-code                    │
+│                                                                 │
+│   MÉTODO 2: curl (Linux/macOS - não precisa Node.js)            │
+│   ──────────────────────────────────────────────────            │
+│   $ curl -fsSL https://claude.ai/install.sh | sh                │
+│                                                                 │
+│   MÉTODO 3: Homebrew (macOS)                                    │
+│   ──────────────────────────────                                │
+│   $ brew install claude-code                                    │
+│                                                                 │
+│   MÉTODO 4: WinGet (Windows - Recomendado)                      │
+│   ──────────────────────────────────────────                    │
+│   > winget install Anthropic.ClaudeCode                         │
+│                                                                 │
+│   ─────────────────────────────────────────────────────────     │
+│                                                                 │
+│   Verificar instalação:                                         │
+│   $ claude --version                                            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <th>Seu Sistema</th>
+                                <th>Método Recomendado</th>
+                                <th>Por quê</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Windows</td>
+                                <td>WinGet</td>
+                                <td>Integração nativa, atualizações automáticas</td>
+                            </tr>
+                            <tr>
+                                <td>macOS</td>
+                                <td>Homebrew</td>
+                                <td>Gerenciamento simplificado</td>
+                            </tr>
+                            <tr>
+                                <td>Linux</td>
+                                <td>curl</td>
+                                <td>Direto, sem dependências</td>
+                            </tr>
+                            <tr>
+                                <td>Qualquer (dev)</td>
+                                <td>npm</td>
+                                <td>Familiaridade para desenvolvedores</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>1.3 Primeiro Uso e Autenticação</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    PRIMEIRO USO                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   1. Abra o terminal na pasta do seu projeto                    │
+│      $ cd ~/meus-projetos/meu-projeto                           │
+│                                                                 │
+│   2. Inicie o Claude Code                                       │
+│      $ claude                                                   │
+│                                                                 │
+│   3. Na primeira vez, será solicitada autenticação              │
+│      - Abre navegador automaticamente                           │
+│      - Faça login na sua conta Anthropic                        │
+│      - Autorize o Claude Code                                   │
+│                                                                 │
+│   4. Pronto! Você verá o prompt:                                │
+│      ┌─────────────────────────────────────────────┐            │
+│      │ claude >                                    │            │
+│      │ _                                           │            │
+│      └─────────────────────────────────────────────┘            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>1.4 Anatomia da Interface</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                  ANATOMIA DA INTERFACE                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │ claude > Olá, estou em ~/projeto-juridico               │   │
+│   │                                                         │   │
+│   │ Olá! Vejo que você está no diretório projeto-juridico.  │   │
+│   │ Posso ajudar com:                                       │   │
+│   │ • Explorar a estrutura de arquivos                      │   │
+│   │ • Analisar documentos                                   │   │
+│   │ • Criar ou modificar arquivos                           │   │
+│   │                                                         │   │
+│   │ ─────────────────────────────────────────────────────── │   │
+│   │ Tokens: 1.2K | Custo: $0.02 | Modelo: claude-sonnet     │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│   ELEMENTOS:                                                    │
+│   • Prompt (claude >) - onde você digita                        │
+│   • Resposta - texto do Claude                                  │
+│   • Rodapé - tokens, custo, modelo atual                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>1.5 Comandos Básicos de Navegação</h3>
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <th>Atalho</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>Ctrl+C</code></td><td>Cancelar operação atual</td></tr>
+                            <tr><td><code>Ctrl+D</code></td><td>Sair do Claude Code</td></tr>
+                            <tr><td><code>Esc → Esc</code></td><td>Interromper resposta</td></tr>
+                            <tr><td><code>↑ / ↓</code></td><td>Navegar histórico</td></tr>
+                            <tr><td><code>Tab</code></td><td>Autocompletar</td></tr>
+                            <tr><td><code>Ctrl+R</code></td><td>Buscar no histórico</td></tr>
+                            <tr><td><code>Ctrl+O</code></td><td>Abrir arquivo no contexto</td></tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <th>Comando /</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>/help</code></td><td>Lista de comandos</td></tr>
+                            <tr><td><code>/clear</code></td><td>Limpa conversa</td></tr>
+                            <tr><td><code>/compact</code></td><td>Compacta contexto</td></tr>
+                            <tr><td><code>/cost</code></td><td>Mostra custos da sessão</td></tr>
+                            <tr><td><code>/model</code></td><td>Troca de modelo</td></tr>
+                            <tr><td><code>/config</code></td><td>Configurações</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>1.6 Recursos do Claude Code 2.0 (2025)</h3>
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <th>Recurso</th>
+                                <th>Problema que resolve</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>/init</code></td><td>Não saber por onde começar</td></tr>
+                            <tr><td>Checkpoints</td><td>Medo de perder trabalho</td></tr>
+                            <tr><td><code>/undo</code></td><td>Claude fez algo errado</td></tr>
+                            <tr><td><code>/resume</code></td><td>Continuar trabalho de ontem</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Exercício Prático</div>
+                        <ol>
+                            <li>Instale o Claude Code</li>
+                            <li>Navegue até uma pasta de projeto</li>
+                            <li>Inicie o Claude Code e faça a autenticação</li>
+                            <li>Execute <code>/init</code> e veja o que foi gerado</li>
+                            <li>Digite <code>/help</code> e explore os comandos</li>
+                            <li>Digite <code>/cost</code> para ver o custo atual</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- Bloco 2: CLAUDE.md -->
+                <section id="bloco2" class="lesson-block">
+                    <h2>Bloco 2: CLAUDE.md - O Contexto Persistente</h2>
+                    <span class="badge badge-time">30 min</span>
+
+                    <p><strong>Conceito da Aula 2A:</strong> Contexto persistente (ENTRADA do modelo)</p>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                      CLAUDE.md                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   O CLAUDE.md é um arquivo que o Claude Code lê                 │
+│   AUTOMATICAMENTE no início de cada sessão.                     │
+│                                                                 │
+│   É como um "briefing" para o agente:                           │
+│   • Quem sou eu (contexto do projeto)                           │
+│   • O que já fizemos (histórico)                                │
+│   • Quais as regras (convenções)                                │
+│   • O que evitar (restrições)                                   │
+│                                                                 │
+│   ANALOGIA JURÍDICA:                                            │
+│   É como as "instruções do gabinete" - o assessor novo          │
+│   lê antes de começar a trabalhar para entender o contexto.     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>2.2 Progressive Disclosure: O Segredo do CLAUDE.md Eficiente</h3>
+
+                    <blockquote>
+                        <p>"Metadata visible, details loaded on demand."</p>
+                        <cite>— Barry Zhang, Engineering Manager @ Anthropic</cite>
+                    </blockquote>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              PROGRESSIVE DISCLOSURE                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   PROBLEMA: CLAUDE.md muito grande = tokens desperdiçados       │
+│   SOLUÇÃO: Metadados visíveis, detalhes carregados sob demanda  │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  CLAUDE.md (sempre carregado)                           │   │
+│   │  ─────────────────────────────                          │   │
+│   │  # Projeto CLERK                                        │   │
+│   │                                                         │   │
+│   │  ## Arquitetura                                         │   │
+│   │  Ver: docs/arquitetura.md                               │   │
+│   │                                                         │   │
+│   │  ## API Reference                                       │   │
+│   │  Ver: docs/api/README.md                                │   │
+│   │                                                         │   │
+│   │  ## Commands Disponíveis                                │   │
+│   │  - /relatar-processo - Gera relatório                   │   │
+│   │  - /pesquisar-bnp - Busca precedentes                   │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                    │                                            │
+│                    │ Quando o Claude precisa de detalhes,       │
+│                    │ ele abre o arquivo referenciado.           │
+│                    ▼                                            │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  docs/arquitetura.md (carregado sob demanda)            │   │
+│   │  ─────────────────────────────────────────              │   │
+│   │  [Detalhes completos da arquitetura...]                 │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│   BENEFÍCIOS:                                                   │
+│   • CLAUDE.md fica leve (poucos tokens)                         │
+│   • Detalhes disponíveis quando necessário                      │
+│   • Contexto sempre atualizado (referências, não cópias)        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <div class="callout callout-gold">
+                        <div class="callout-title">Regra Prática</div>
+                        <ul>
+                            <li>CLAUDE.md: máximo 200-300 linhas</li>
+                            <li>Informação densa → referência para arquivo externo</li>
+                            <li>Metadados e regras críticas → sempre no CLAUDE.md</li>
+                        </ul>
+                    </div>
+
+                    <h3>2.3 Hierarquia de CLAUDE.md</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                 HIERARQUIA DE CLAUDE.md                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   O Claude Code procura CLAUDE.md em 3 níveis:                  │
+│                                                                 │
+│   1. GLOBAL (~/.claude/CLAUDE.md)                               │
+│      └── Suas preferências pessoais (idioma, estilo)            │
+│                                                                 │
+│   2. PROJETO (./CLAUDE.md na raiz do projeto)                   │
+│      └── Regras específicas do projeto                          │
+│                                                                 │
+│   3. SUBPASTA (./pasta/CLAUDE.md)                               │
+│      └── Regras específicas da pasta                            │
+│                                                                 │
+│   ORDEM DE LEITURA:                                             │
+│   Global → Projeto → Subpasta                                   │
+│   (mais específico sobrescreve mais geral)                      │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>2.4 Estrutura Recomendada</h3>
+
+                    <pre><code class="language-markdown"># CLAUDE.md
+
+## Sobre Este Projeto
+[Descrição breve do projeto - 2-3 linhas]
+
+## Contexto Importante
+- [Fato crucial 1]
+- [Fato crucial 2]
+- [Fato crucial 3]
+
+## Convenções
+| Tipo | Convenção | Exemplo |
+|------|-----------|---------|
+| Arquivos | kebab-case | `meu-arquivo.md` |
+| Variáveis | camelCase | `minhaVariavel` |
+
+## O Que Evitar
+- NÃO fazer X porque Y
+- NÃO usar Z, preferir W
+- NUNCA modificar pasta /config sem aprovação
+
+## Comandos Úteis
+- `/meu-comando` - Descrição do que faz</code></pre>
+
+                    <h3>2.5 Exemplo Real: CLAUDE.md Jurídico</h3>
+
+                    <pre><code class="language-markdown"># CLAUDE.md - Gabinete Virtual
+
+## Sobre Este Projeto
+Sistema de assessoria jurídica agêntica (CLERK) para análise
+de processos previdenciários. Foco em BPC e auxílio-doença.
+
+## Contexto Importante
+- Jurisdição: Justiça Federal (TRF5)
+- Volume: ~50 processos/mês
+- Prioridade: Qualidade > Velocidade
+
+## O Que Evitar
+- NÃO inventar jurisprudência (sempre verificar)
+- NÃO usar linguagem coloquial em minutas
+- NUNCA decidir sem análise prévia dos autos
+
+## Comandos do Gabinete
+- `/relatar-processo` - Gera relatório estruturado
+- `/pesquisar-bnp` - Busca precedentes vinculantes
+- `/elaborar-minuta` - Cria minuta de decisão</code></pre>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Exercício Prático</div>
+                        <ol>
+                            <li>Na raiz do seu projeto, crie o arquivo <code>CLAUDE.md</code></li>
+                            <li>Adicione: descrição (2-3 linhas), 3 convenções, 2 coisas a evitar</li>
+                            <li>Reinicie o Claude Code e pergunte: "O que você sabe sobre este projeto?"</li>
+                            <li>Verifique se ele entendeu o contexto</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- Bloco 3: Commands -->
+                <section id="bloco3" class="lesson-block">
+                    <h2>Bloco 3: Commands - Atalhos Inteligentes</h2>
+                    <span class="badge badge-time">25 min</span>
+
+                    <p><strong>Conceito da Aula 2A:</strong> Atalhos para tarefas recorrentes</p>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                       COMMANDS                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Commands são PROMPTS SALVOS que você invoca com /             │
+│                                                                 │
+│   Em vez de digitar:                                            │
+│   "Analise este documento e gere um relatório estruturado       │
+│    com seções para fatos, fundamentos e pedidos..."             │
+│                                                                 │
+│   Você digita:                                                  │
+│   /relatar-processo                                             │
+│                                                                 │
+│   BENEFÍCIOS:                                                   │
+│   • Economia de tokens (não repete prompt longo)                │
+│   • Consistência (mesmo prompt toda vez)                        │
+│   • Velocidade (menos digitação)                                │
+│   • Compartilhamento (equipe usa os mesmos)                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>3.2 Onde Ficam os Commands</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                  LOCALIZAÇÃO DOS COMMANDS                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   COMMANDS GLOBAIS (disponíveis em qualquer projeto):           │
+│   ~/.claude/commands/                                           │
+│       ├── meu-comando.md                                        │
+│       └── outro-comando.md                                      │
+│                                                                 │
+│   COMMANDS DO PROJETO (só neste projeto):                       │
+│   ./projeto/.claude/commands/                                   │
+│       ├── comando-projeto.md                                    │
+│       └── outro-comando.md                                      │
+│                                                                 │
+│   IMPORTANTE:                                                   │
+│   • Nome do arquivo = nome do comando                           │
+│   • meu-comando.md → /meu-comando                               │
+│   • Use kebab-case (palavras-separadas-por-hifen)               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>3.3 Anatomia de um Command</h3>
+
+                    <pre><code class="language-markdown"># /meu-comando
+
+Descrição curta do que o comando faz (aparece no /help)
+
+---
+
+Aqui vai o prompt completo que será executado.
+
+Você pode usar variáveis:
+- $ARGUMENTS - texto que o usuário passa após o comando
+- $FILE - arquivo atualmente selecionado
+
+Exemplo de uso:
+/meu-comando argumento1 argumento2
+
+O $ARGUMENTS receberá "argumento1 argumento2"</code></pre>
+
+                    <h3>3.4 Exemplo Real: Command Jurídico</h3>
+
+                    <p><strong>Arquivo:</strong> <code>.claude/commands/relatar-processo.md</code></p>
+
+                    <pre><code class="language-markdown"># /relatar-processo
+
+Gera relatório estruturado de processo judicial
+
+---
+
+Analise o processo e gere um relatório estruturado:
+
+## DADOS DO PROCESSO
+- Número
+- Partes (autor/réu)
+- Classe processual
+
+## OBJETO DA AÇÃO
+Resumo do que é pedido (2-3 parágrafos)
+
+## FATOS RELEVANTES
+Lista cronológica dos fatos importantes
+
+## FUNDAMENTOS JURÍDICOS
+- Do autor
+- Do réu (se houver contestação)
+
+## PROVAS PRODUZIDAS
+Lista das provas com breve descrição
+
+## QUESTÕES A DECIDIR
+Lista das questões jurídicas
+
+---
+
+Se $ARGUMENTS for fornecido, use como caminho do arquivo.
+Caso contrário, pergunte qual processo analisar.</code></pre>
+
+                    <h3>3.5 Usando Commands</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    USANDO COMMANDS                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   LISTAR COMMANDS DISPONÍVEIS:                                  │
+│   claude > /help                                                │
+│                                                                 │
+│   EXECUTAR COMMAND:                                             │
+│   claude > /relatar-processo                                    │
+│                                                                 │
+│   EXECUTAR COM ARGUMENTOS:                                      │
+│   claude > /relatar-processo processos/123456.txt               │
+│                                                                 │
+│   AUTOCOMPLETAR:                                                │
+│   claude > /rel[TAB]                                            │
+│   → /relatar-processo                                           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Exercício Prático</div>
+                        <ol>
+                            <li>Crie a pasta <code>.claude/commands/</code> no seu projeto</li>
+                            <li>Crie o arquivo <code>resumir-documento.md</code></li>
+                            <li>Reinicie o Claude Code</li>
+                            <li>Execute: <code>/resumir-documento caminho/do/arquivo.txt</code></li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- Bloco 4: Skills -->
+                <section id="bloco4" class="lesson-block">
+                    <h2>Bloco 4: Skills - Expertise Reutilizável</h2>
+                    <span class="badge badge-time">25 min</span>
+
+                    <p><strong>Conceito da Aula 2A:</strong> Expertise reutilizável (conhecimento procedural)</p>
+
+                    <blockquote>
+                        <p>"Skills are just folders. That's literally all they are."</p>
+                        <cite>— Barry Zhang & Mahesh Murag, Anthropic</cite>
+                    </blockquote>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                        SKILLS                                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Skills são EXPERTISE ENCAPSULADA em uma pasta.                │
+│                                                                 │
+│   A VERDADE SIMPLES:                                            │
+│   Skills são apenas pastas com arquivos Markdown.               │
+│   O Claude Code detecta e carrega automaticamente.              │
+│                                                                 │
+│   Diferente de Commands (prompt único), Skills contêm:          │
+│   • Instruções detalhadas                                       │
+│   • Exemplos                                                    │
+│   • Templates                                                   │
+│   • Restrições                                                  │
+│                                                                 │
+│   ANALOGIA:                                                     │
+│   • Command = receita rápida ("faça X")                         │
+│   • Skill = manual completo ("como fazer X bem feito")          │
+│                                                                 │
+│   QUANDO USAR SKILL:                                            │
+│   • Tarefa complexa com muitas nuances                          │
+│   • Precisa de consistência alta                                │
+│   • Vai ser reusada muitas vezes                                │
+│   • Requer conhecimento especializado                           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>4.2 Estrutura de uma Skill</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                   ESTRUTURA DE SKILL                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   .claude/skills/                                               │
+│       └── minha-skill/                                          │
+│           ├── SKILL.md          # Arquivo principal (obrigatório)
+│           ├── exemplos/         # Exemplos de uso (opcional)    │
+│           │   ├── exemplo1.md                                   │
+│           │   └── exemplo2.md                                   │
+│           └── templates/        # Templates (opcional)          │
+│               └── template.md                                   │
+│                                                                 │
+│   O Claude Code detecta automaticamente pastas com SKILL.md     │
+│   e carrega a expertise quando relevante.                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>4.3 Anatomia do SKILL.md</h3>
+
+                    <pre><code class="language-markdown"># Nome da Skill
+
+> Descrição curta (1 linha)
+
+## Quando Usar
+- Situação 1
+- Situação 2
+- Situação 3
+
+## Como Funciona
+[Explicação do processo/metodologia]
+
+## Regras Importantes
+1. SEMPRE fazer X
+2. NUNCA fazer Y
+3. PREFERIR Z sobre W
+
+## Formato de Saída
+[Template ou estrutura esperada]
+
+## Exemplos
+### Exemplo 1: [Caso simples]
+[Entrada]
+[Saída esperada]</code></pre>
+
+                    <h3>4.4 Skills vs Commands</h3>
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <th>Aspecto</th>
+                                <th>Command</th>
+                                <th>Skill</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Invocação</td>
+                                <td>Explícita (/)</td>
+                                <td>Automática</td>
+                            </tr>
+                            <tr>
+                                <td>Tamanho</td>
+                                <td>1 arquivo</td>
+                                <td>Pasta completa</td>
+                            </tr>
+                            <tr>
+                                <td>Complexidade</td>
+                                <td>Baixa/Média</td>
+                                <td>Alta</td>
+                            </tr>
+                            <tr>
+                                <td>Exemplos</td>
+                                <td>Opcional</td>
+                                <td>Recomendado</td>
+                            </tr>
+                            <tr>
+                                <td>Quando usar</td>
+                                <td>Tarefa simples</td>
+                                <td>Expertise complexa</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-gold">
+                        <div class="callout-title">Regra Prática</div>
+                        <ul>
+                            <li>&lt; 50 linhas de instrução → <strong>Command</strong></li>
+                            <li>&gt; 50 linhas ou precisa de exemplos → <strong>Skill</strong></li>
+                        </ul>
+                    </div>
+
+                    <h3>4.6 Ecossistema de Skills Recomendadas</h3>
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <th>Skill</th>
+                                <th>Para que serve</th>
+                                <th>Por que usar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>brainstorming</code></td>
+                                <td>Refinar ideias antes de implementar</td>
+                                <td>Evita retrabalho</td>
+                            </tr>
+                            <tr>
+                                <td><code>writing-plans</code></td>
+                                <td>Criar planos detalhados</td>
+                                <td>Clareza antes de agir</td>
+                            </tr>
+                            <tr>
+                                <td><code>verification-before-completion</code></td>
+                                <td>Garantir que terminou</td>
+                                <td>Evita "funciona na minha máquina"</td>
+                            </tr>
+                            <tr>
+                                <td><code>systematic-debugging</code></td>
+                                <td>Resolver problemas</td>
+                                <td>Estrutura para bugs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Bloco 5: Task Tool -->
+                <section id="bloco5" class="lesson-block">
+                    <h2>Bloco 5: Task Tool e Subagentes</h2>
+                    <span class="badge badge-time">25 min</span>
+
+                    <p><strong>Conceito da Aula 2A:</strong> Paralelização, RPI, Zona Inteligente vs Execução</p>
+
+                    <blockquote>
+                        <p>"If you do one thing: keep your agent single-threaded. Any kind of parallelism
+                        should be OUTSIDE the agent."</p>
+                        <cite>— Dex Horthy (12 Factor Agents)</cite>
+                    </blockquote>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    PARALELIZAÇÃO                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Problema: Algumas tarefas são independentes e podem           │
+│   rodar ao mesmo tempo.                                         │
+│                                                                 │
+│   SEQUENCIAL (lento):                                           │
+│   ┌───────┐   ┌───────┐   ┌───────┐                            │
+│   │Tarefa1│ → │Tarefa2│ → │Tarefa3│  = 30 min                  │
+│   └───────┘   └───────┘   └───────┘                            │
+│                                                                 │
+│   PARALELO (rápido):                                            │
+│   ┌───────┐                                                     │
+│   │Tarefa1│ ─┐                                                  │
+│   └───────┘  │                                                  │
+│   ┌───────┐  ├─→ Consolida = 10 min                            │
+│   │Tarefa2│ ─┤                                                  │
+│   └───────┘  │                                                  │
+│   ┌───────┐  │                                                  │
+│   │Tarefa3│ ─┘                                                  │
+│   └───────┘                                                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>5.2 Task Tool no Claude Code</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                      TASK TOOL                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   O Task Tool permite ao Claude Code:                           │
+│   • Criar "subagentes" para tarefas específicas                 │
+│   • Executar tarefas em paralelo                                │
+│   • Isolar contexto (cada subagente tem seu escopo)             │
+│                                                                 │
+│   COMO FUNCIONA:                                                │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  AGENTE PRINCIPAL (você conversa com ele)               │   │
+│   │       │                                                 │   │
+│   │       ├─→ [Subagente 1] → Resultado 1                   │   │
+│   │       ├─→ [Subagente 2] → Resultado 2                   │   │
+│   │       └─→ [Subagente 3] → Resultado 3                   │   │
+│   │       │                                                 │   │
+│   │       └─→ Consolida todos os resultados                 │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│   ANALOGIA JURÍDICA:                                            │
+│   Juiz (principal) delega pesquisas para 3 assessores           │
+│   (subagentes), cada um pesquisa um tema, depois consolida.     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>5.3 Quando Usar Subagentes</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                QUANDO USAR SUBAGENTES                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ✓ USE QUANDO:                                                 │
+│   • Tarefas são INDEPENDENTES (não dependem uma da outra)       │
+│   • Cada tarefa precisa de CONTEXTO ISOLADO                     │
+│   • Quer ECONOMIZAR TEMPO (paralelo é mais rápido)              │
+│   • Tarefa é PESADA (muitos tokens)                             │
+│                                                                 │
+│   ✗ NÃO USE QUANDO:                                             │
+│   • Tarefas são DEPENDENTES (B precisa do resultado de A)       │
+│   • Tarefa é SIMPLES (overhead não compensa)                    │
+│   • Precisa de CONTEXTO COMPARTILHADO                           │
+│                                                                 │
+│   EXEMPLOS JURÍDICOS:                                           │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │ ✓ Pesquisar 3 temas diferentes em paralelo              │   │
+│   │ ✓ Analisar 5 documentos independentes                   │   │
+│   │ ✓ Buscar em BNP + CJF + JULIA simultaneamente           │   │
+│   │ ✗ Fazer relatório → depois minuta (sequencial)          │   │
+│   │ ✗ Uma análise simples de 1 documento                    │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>5.4 Exemplo Prático: Pesquisa Paralela</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              EXEMPLO: PESQUISA PARALELA                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   PROMPT:                                                       │
+│   "Pesquise jurisprudência sobre BPC para idoso estrangeiro.    │
+│    Use 3 subagentes em paralelo:                                │
+│    1. Um para buscar no BNP (precedentes vinculantes)           │
+│    2. Um para buscar no CJF (STJ e TRFs)                        │
+│    3. Um para buscar no JULIA (TRF5)                            │
+│    Depois consolide os resultados."                             │
+│                                                                 │
+│   O QUE ACONTECE:                                               │
+│                                                                 │
+│   ┌──────────────┐                                              │
+│   │ Subagente 1  │ → BNP: Tema 173, Súmula...                  │
+│   └──────────────┘                                              │
+│   ┌──────────────┐                                              │
+│   │ Subagente 2  │ → CJF: 15 acórdãos STJ...                   │
+│   └──────────────┘                                              │
+│   ┌──────────────┐                                              │
+│   │ Subagente 3  │ → JULIA: 8 acórdãos TRF5...                 │
+│   └──────────────┘                                              │
+│         │                                                       │
+│         ▼                                                       │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │ CONSOLIDAÇÃO:                                            │  │
+│   │ "Encontrei X precedentes vinculantes, Y acórdãos do STJ, │  │
+│   │  Z do TRF5. A tendência jurisprudencial é..."            │  │
+│   └──────────────────────────────────────────────────────────┘  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+                </section>
+
+                <!-- Bloco 6: MCPs -->
+                <section id="bloco6" class="lesson-block">
+                    <h2>Bloco 6: MCPs - Ferramentas Externas</h2>
+                    <span class="badge badge-time">15 min</span>
+
+                    <p><strong>Conceito da Aula 2A:</strong> Ferramentas (Tools), Integração com sistemas externos</p>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                         MCPs                                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   MCP = Model Context Protocol                                  │
+│                                                                 │
+│   São FERRAMENTAS EXTERNAS que o Claude Code pode usar:         │
+│   • APIs de terceiros                                           │
+│   • Bancos de dados                                             │
+│   • Sistemas locais (arquivos, navegador)                       │
+│   • Serviços web                                                │
+│                                                                 │
+│   ANALOGIA:                                                     │
+│   MCPs são como "credenciais de acesso" que você dá ao          │
+│   assessor para acessar sistemas externos.                      │
+│                                                                 │
+│   • BNP-API → Acesso ao banco de precedentes do CNJ             │
+│   • CJF → Acesso à jurisprudência unificada                     │
+│   • Filesystem → Acesso aos arquivos do computador              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>6.2 MCPs Disponíveis</h3>
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <th>MCP</th>
+                                <th>Função</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>bnp-api</code></td><td>Precedentes vinculantes (STF/STJ)</td></tr>
+                            <tr><td><code>cjf-jurisprudencia</code></td><td>Jurisprudência unificada (TRFs)</td></tr>
+                            <tr><td><code>julia-trf5</code></td><td>Jurisprudência TRF5 (1º e 2º grau)</td></tr>
+                            <tr><td><code>filesystem</code></td><td>Ler/escrever arquivos locais</td></tr>
+                            <tr><td><code>github</code></td><td>Interagir com repositórios</td></tr>
+                            <tr><td><code>slack</code></td><td>Enviar mensagens</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>6.3 Configurando MCPs</h3>
+
+                    <pre><code class="language-json">// Arquivo: ~/.claude/settings.json
+{
+  "mcpServers": {
+    "bnp-api": {
+      "command": "python",
+      "args": ["-m", "bnp_api.server"],
+      "env": {}
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-filesystem", "/pasta"]
+    }
+  }
+}</code></pre>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Após configurar</div>
+                        <ol>
+                            <li>Reinicie o Claude Code</li>
+                            <li>Use <code>/mcp</code> para ver MCPs ativos</li>
+                            <li>Use em linguagem natural: "Busque no BNP..."</li>
+                        </ol>
+                    </div>
+
+                    <h3>6.4 Usando MCPs</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    USANDO MCPs                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   MCPs são usados em LINGUAGEM NATURAL:                         │
+│                                                                 │
+│   claude > Busque precedentes sobre BPC no BNP                  │
+│   → [Usa MCP bnp-api automaticamente]                           │
+│                                                                 │
+│   claude > Pesquise jurisprudência do STJ sobre pensão          │
+│   → [Usa MCP cjf-jurisprudencia]                                │
+│                                                                 │
+│   claude > Liste os arquivos da pasta processos/                │
+│   → [Usa MCP filesystem]                                        │
+│                                                                 │
+│   VERIFICAR MCPs ATIVOS:                                        │
+│   claude > /mcp                                                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+                </section>
+
+                <!-- Bloco 7: Permissões -->
+                <section id="bloco7" class="lesson-block">
+                    <h2>Bloco 7: Permissões e Modo YOLO</h2>
+                    <span class="badge badge-time">20 min</span>
+
+                    <p><strong>Conceito da Aula 2A:</strong> HITL/HOTL/HOOTL, Checkpoints, Autonomia controlada</p>
+
+                    <blockquote>
+                        <p>"Own your prompts. If you don't own your prompts, you don't own your agent."</p>
+                        <cite>— Dex Horthy (12 Factor Agents)</cite>
+                    </blockquote>
+
+                    <p><strong>Princípio fundamental:</strong> Autonomia é um espectro. Você decide onde o Claude opera.</p>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    PERMISSÕES                                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Por padrão, Claude Code PEDE PERMISSÃO para ações sensíveis:  │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │ Claude quer executar: rm -rf ./pasta-temporaria         │   │
+│   │                                                         │   │
+│   │ [Permitir] [Negar] [Permitir sempre]                    │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│   TIPOS DE AÇÃO QUE PEDEM PERMISSÃO:                            │
+│   • Executar comandos no terminal (Bash)                        │
+│   • Modificar/criar arquivos                                    │
+│   • Acessar a web                                               │
+│   • Usar MCPs                                                   │
+│                                                                 │
+│   ISSO É HITL (Human-in-the-loop):                              │
+│   Você está DENTRO do loop, aprovando cada ação crítica.        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>7.2 Configurando Permissões</h3>
+
+                    <pre><code class="language-json">// Arquivo: ~/.claude/settings.json
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",        // Permite npm run
+      "Bash(git *)",            // Permite comandos git
+      "Read(*)",                // Permite ler qualquer arquivo
+      "Write(docs/*)"           // Permite escrever em docs/
+    ],
+    "deny": [
+      "Bash(rm -rf *)",         // Nunca permite rm -rf
+      "Write(config/*)"         // Nunca escreve em config/
+    ]
+  }
+}
+
+// REGRA: deny > allow (negação tem prioridade)</code></pre>
+
+                    <h3>7.3 Modo YOLO (Autonomia Total)</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                      MODO YOLO                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   YOLO = "You Only Live Once" (modo sem perguntas)              │
+│                                                                 │
+│   ATIVAR (3 formas):                                            │
+│   ─────────────────────                                         │
+│                                                                 │
+│   1. Flag na linha de comando:                                  │
+│   $ claude --dangerously-skip-permissions                       │
+│                                                                 │
+│   2. No settings.json (global):                                 │
+│   {                                                             │
+│     "permissions": {                                            │
+│       "allow": ["*"]   // Permite TUDO                          │
+│     }                                                           │
+│   }                                                             │
+│                                                                 │
+│   3. YOLO seletivo (recomendado):                               │
+│   {                                                             │
+│     "permissions": {                                            │
+│       "allow": [                                                │
+│         "Read(*)",          // Leitura: sempre ok               │
+│         "Write(docs/*)",    // Escrita: só em docs/             │
+│         "Bash(npm test)",   // Bash: só testes                  │
+│         "MCP(bnp-api)"      // MCP: só pesquisa                 │
+│       ],                                                        │
+│       "deny": [                                                 │
+│         "Bash(rm *)",       // NUNCA deletar                    │
+│         "Write(*.env)"      // NUNCA configs sensíveis          │
+│       ]                                                         │
+│     }                                                           │
+│   }                                                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Cuidado com YOLO</div>
+                        <ul>
+                            <li>O agente executa SEM pedir permissão</li>
+                            <li>Pode modificar/deletar arquivos</li>
+                            <li>Pode executar comandos perigosos</li>
+                        </ul>
+                        <p><strong>YOLO seletivo é o equilíbrio:</strong> você define exatamente o que é permitido,
+                        mas dentro dessas permissões, o Claude trabalha sem interrupção.</p>
+                    </div>
+
+                    <h3>7.4 Mapeamento L1-L5 → Configuração</h3>
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <th>Nível</th>
+                                <th>Padrão</th>
+                                <th>Configuração</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>L1</td>
+                                <td>Só sugestões</td>
+                                <td><code>deny: ["*"]</code></td>
+                            </tr>
+                            <tr>
+                                <td>L2</td>
+                                <td>HITL total</td>
+                                <td>(padrão - pede tudo)</td>
+                            </tr>
+                            <tr>
+                                <td>L3</td>
+                                <td>HITL seletivo</td>
+                                <td><code>allow: ["Read", "Grep"]</code></td>
+                            </tr>
+                            <tr>
+                                <td>L4</td>
+                                <td>HOTL</td>
+                                <td><code>allow: ["Read", "Write", "Bash(safe*)"]</code></td>
+                            </tr>
+                            <tr>
+                                <td>L5</td>
+                                <td>HOOTL (YOLO)</td>
+                                <td><code>allow: ["*"]</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-gold">
+                        <div class="callout-title">Recomendação</div>
+                        <p>Comece em L2/L3, vá aumentando conforme ganha confiança.</p>
+                        <p><strong>Analogia jurídica:</strong> É como dar ao assessor uma procuração com poderes específicos:
+                        ele pode fazer X, Y, Z sem perguntar, mas para W precisa de nova autorização.</p>
+                    </div>
+                </section>
+
+                <!-- Bloco 8: Hooks -->
+                <section id="bloco8" class="lesson-block">
+                    <h2>Bloco 8: Hooks - Automação de Eventos</h2>
+                    <span class="badge badge-time">15 min</span>
+
+                    <p><strong>Conceito da Aula 2A:</strong> Automação, Checkpoints automáticos</p>
+
+                    <blockquote>
+                        <p>"Hooks are like CI/CD for your agent. They run automatically, every time,
+                        without you having to remember."</p>
+                    </blockquote>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│                        HOOKS                                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Hooks são GATILHOS AUTOMÁTICOS que executam quando            │
+│   certos eventos acontecem.                                     │
+│                                                                 │
+│   EVENTOS DISPONÍVEIS:                                          │
+│   ┌──────────────────┬────────────────────────────────────────┐ │
+│   │ Evento           │ Quando dispara                         │ │
+│   ├──────────────────┼────────────────────────────────────────┤ │
+│   │ PreToolUse       │ ANTES de usar uma ferramenta           │ │
+│   │ PostToolUse      │ DEPOIS de usar uma ferramenta          │ │
+│   │ Stop             │ Quando o agente TERMINA                │ │
+│   │ Notification     │ Para ALERTAS personalizados            │ │
+│   └──────────────────┴────────────────────────────────────────┘ │
+│                                                                 │
+│   ANALOGIA JURÍDICA:                                            │
+│   É como "regras do gabinete" que se aplicam automaticamente:   │
+│   • "Antes de enviar qualquer documento, formatar em PDF"       │
+│   • "Depois de criar minuta, salvar backup"                     │
+│   • "Ao terminar, notificar por e-mail"                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>8.2 Configurando Hooks</h3>
+
+                    <pre><code class="language-json">// Arquivo: ~/.claude/settings.json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "command": "echo 'Arquivo salvo: $FILE'"
+      }
+    ],
+    "Stop": [
+      {
+        "command": "echo 'Sessão encerrada' >> log.txt"
+      }
+    ]
+  }
+}
+
+// VARIÁVEIS DISPONÍVEIS:
+// • $TOOL - Nome da ferramenta
+// • $FILE - Arquivo envolvido
+// • $EXIT_CODE - Código de saída</code></pre>
+
+                    <h3>8.3 Exemplo: Hook de Validação</h3>
+
+                    <pre><code class="language-json">{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write(*.md)",
+        "command": "echo 'Validando markdown...' && markdownlint $FILE"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write(minutas/*)",
+        "command": "cp $FILE backups/$(date +%Y%m%d)_$(basename $FILE)"
+      }
+    ]
+  }
+}</code></pre>
+
+                    <p><strong>O que faz:</strong></p>
+                    <ul>
+                        <li>Antes de escrever qualquer .md, valida com markdownlint</li>
+                        <li>Depois de escrever em minutas/, faz backup automático</li>
+                    </ul>
+
+                    <h3>8.4 Hooks Avançados: Casos de Uso Práticos</h3>
+
+                    <pre><code class="language-json">// HOOK 1: Log de todas as ações (auditoria)
+{
+  "hooks": {
+    "PostToolUse": [{
+      "command": "echo '[$(date)] $TOOL: $FILE' >> audit.log"
+    }]
+  }
+}
+
+// HOOK 2: Backup antes de sobrescrever
+{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Write(*)",
+      "command": "cp $FILE $FILE.bak 2>/dev/null || true"
+    }]
+  }
+}
+
+// HOOK 3: Notificação ao terminar (overnight)
+{
+  "hooks": {
+    "Stop": [{
+      "command": "notify-send 'Claude Code' 'Tarefa concluída'"
+    }]
+  }
+}</code></pre>
+
+                    <div class="callout callout-gold">
+                        <div class="callout-title">Filosofia dos Hooks</div>
+                        <p>Hooks transformam o Claude Code de "ferramenta" em "pipeline automatizado".
+                        Use-os para garantir consistência, auditoria e integração com seu fluxo de trabalho.</p>
+                    </div>
+                </section>
+
+                <!-- Fechamento -->
+                <section id="fechamento" class="lesson-block">
+                    <h2>Fechamento: Juntando Tudo</h2>
+                    <span class="badge badge-time">5 min</span>
+
+                    <h3>Visão Integrada</h3>
+
+                    <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│              CLAUDE CODE - VISÃO INTEGRADA                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                     VOCÊ (Regente)                      │   │
+│   │                          │                              │   │
+│   │    ┌─────────────────────┼─────────────────────┐        │   │
+│   │    │                     │                     │        │   │
+│   │    ▼                     ▼                     ▼        │   │
+│   │ ┌──────┐            ┌──────────┐          ┌──────┐      │   │
+│   │ │CLAUDE│            │  CLAUDE  │          │ MCPs │      │   │
+│   │ │ .md  │ ─contexto─▶│   CODE   │◀─tools──│      │      │   │
+│   │ └──────┘            │          │          └──────┘      │   │
+│   │                     │ ┌──────┐ │                        │   │
+│   │ ┌──────┐            │ │Skills│ │          ┌──────┐      │   │
+│   │ │Comman│◀──invoca───│ └──────┘ │──delega─▶│ Sub  │      │   │
+│   │ │  ds  │            │          │          │agents│      │   │
+│   │ └──────┘            │ ┌──────┐ │          └──────┘      │   │
+│   │                     │ │Hooks │ │                        │   │
+│   │ ┌──────┐            │ └──────┘ │          ┌──────┐      │   │
+│   │ │Permis│──controla─▶│          │──produz─▶│Saídas│      │   │
+│   │ │ sões │            └──────────┘          └──────┘      │   │
+│   │ └──────┘                                                │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                    <h3>Checklist de Configuração</h3>
+
+                    <p>Ao final desta aula, você deve ter:</p>
+                    <ul>
+                        <li>Claude Code instalado e autenticado</li>
+                        <li>CLAUDE.md criado na raiz do projeto</li>
+                        <li>Pelo menos 1 Command personalizado</li>
+                        <li>Entendimento de quando usar Skills</li>
+                        <li>Conhecimento de como usar subagentes</li>
+                        <li>MCPs básicos configurados (se aplicável)</li>
+                        <li>Permissões ajustadas para seu nível de conforto</li>
+                        <li>Noção de como usar Hooks para automação</li>
+                    </ul>
+
+                    <h3>Material de Apoio: Comandos Essenciais</h3>
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <th>Comando</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>claude</code></td><td>Inicia Claude Code</td></tr>
+                            <tr><td><code>claude --version</code></td><td>Mostra versão</td></tr>
+                            <tr><td><code>claude --resume</code></td><td>Retoma última sessão</td></tr>
+                            <tr><td><code>/help</code></td><td>Lista comandos</td></tr>
+                            <tr><td><code>/init</code></td><td>Inicialização inteligente</td></tr>
+                            <tr><td><code>/clear</code></td><td>Limpa conversa</td></tr>
+                            <tr><td><code>/compact</code></td><td>Compacta contexto</td></tr>
+                            <tr><td><code>/cost</code></td><td>Mostra custos</td></tr>
+                            <tr><td><code>/model</code></td><td>Troca modelo</td></tr>
+                            <tr><td><code>/mcp</code></td><td>Lista MCPs ativos</td></tr>
+                            <tr><td><code>/undo</code></td><td>Desfaz última ação</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Estrutura de Pastas</h3>
+
+                    <pre class="diagram"><code>projeto/
+├── CLAUDE.md                    # Contexto do projeto
+├── .claude/
+│   ├── commands/                # Commands do projeto
+│   │   └── meu-comando.md
+│   └── skills/                  # Skills do projeto
+│       └── minha-skill/
+│           └── SKILL.md
+└── ...
+
+~/.claude/                       # Global (todos os projetos)
+├── CLAUDE.md                    # Preferências pessoais
+├── settings.json                # Configurações (MCPs, permissões, hooks)
+├── commands/                    # Commands globais
+└── skills/                      # Skills globais</code></pre>
+
+                    <h3>Próximos Passos</h3>
+
+                    <p>Na <strong>Aula 3</strong> (Arquitetura de Agentes), você vai aprender:</p>
+                    <ul>
+                        <li>Como desenhar pipelines completos</li>
+                        <li>Padrões de orquestração (sequencial, paralelo, condicional)</li>
+                        <li>Gate functions e pontos de decisão</li>
+                        <li>Tratamento de erros e recuperação</li>
+                    </ul>
+                </section>
+
+                <!-- Navigation -->
+                <nav class="lesson-navigation">
+                    <a href="aula-2a.html" class="nav-prev">
+                        <span class="nav-label">Anterior</span>
+                        <span class="nav-title">Aula 2A: Anatomia</span>
+                    </a>
+                    <a href="aula-3.html" class="nav-next">
+                        <span class="nav-label">Próxima</span>
+                        <span class="nav-title">Aula 3: Arquitetura</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Mobile TOC -->
+        <div class="mobile-toc">
+            <button class="mobile-toc-trigger">
+                <span>Navegação</span>
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+            <nav class="mobile-toc-content">
+                <a href="#objetivo">Objetivos</a>
+                <a href="#bloco1">1. Instalação</a>
+                <a href="#bloco2">2. CLAUDE.md</a>
+                <a href="#bloco3">3. Commands</a>
+                <a href="#bloco4">4. Skills</a>
+                <a href="#bloco5">5. Task Tool</a>
+                <a href="#bloco6">6. MCPs</a>
+                <a href="#bloco7">7. Permissões</a>
+                <a href="#bloco8">8. Hooks</a>
+                <a href="#fechamento">Fechamento</a>
+            </nav>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Sistemas Agênticos</h4>
+                <p>Curso prático de IA Agêntica para profissionais do Direito.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Navegação</h4>
+                <ul>
+                    <li><a href="../index.html">Início</a></li>
+                    <li><a href="glossario.html">Glossário</a></li>
+                    <li><a href="recursos.html">Recursos</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Aulas</h4>
+                <ul>
+                    <li><a href="aula-0.html">Aula 0: Abertura</a></li>
+                    <li><a href="aula-1.html">Aula 1: Sistema na Prática</a></li>
+                    <li><a href="aula-2a.html">Aula 2A: Anatomia</a></li>
+                    <li><a href="aula-2b.html">Aula 2B: Claude Code</a></li>
+                    <li><a href="aula-3.html">Aula 3: Arquitetura</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Baseado no paradigma de <strong>Regência Cognitiva</strong></p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

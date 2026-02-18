@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradigmas - Proposta A: Glassmorphism Elegante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        /* Título */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Container dos cards */
+        .paradigms-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1100px;
+        }
+
+        /* Card base */
+        .paradigm-card {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Número grande de fundo */
+        .paradigm-card::before {
+            content: attr(data-number);
+            position: absolute;
+            top: -20px;
+            right: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 8em;
+            font-weight: 700;
+            color: rgba(190, 156, 109, 0.08);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        /* Estados do spotlight */
+        .paradigm-card.dimmed {
+            opacity: 0.2;
+            transform: scale(0.92);
+            filter: grayscale(0.5);
+        }
+
+        .paradigm-card.spotlight {
+            transform: scale(1.02);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 60px rgba(190, 156, 109, 0.3),
+                        0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Header do card */
+        .card-header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(190, 156, 109, 0.15);
+            border: 2px solid var(--super-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.8em;
+        }
+
+        .card-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+
+        .card-product {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 5px;
+        }
+
+        .card-company {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Label tipo de conhecimento */
+        .knowledge-label {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        /* Badge do tipo */
+        .knowledge-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Quote */
+        .card-quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.8);
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Features */
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--super-gold);
+        }
+
+        .feature-icon {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        .feature-text {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        /* Convergência */
+        .convergence-section {
+            margin-top: 40px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .convergence-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .convergence-arrows {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-bottom: 20px;
+        }
+
+        .convergence-arrows span {
+            color: var(--super-gold);
+            font-size: 1.5em;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        .convergence-box {
+            display: inline-block;
+            padding: 25px 50px;
+            background: rgba(190, 156, 109, 0.1);
+            border: 2px solid var(--super-gold);
+            border-radius: 12px;
+        }
+
+        .convergence-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            color: var(--super-gold);
+            margin-bottom: 10px;
+        }
+
+        .convergence-text {
+            font-size: 0.95em;
+            color: var(--super-cream);
+            margin-bottom: 15px;
+        }
+
+        .convergence-question {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1em;
+            color: var(--super-gold);
+            padding-top: 15px;
+            border-top: 1px solid rgba(190, 156, 109, 0.3);
+        }
+
+        /* Stage dots */
+        .stage-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .stage-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            border: 2px solid rgba(190, 156, 109, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stage-dot.active {
+            background: var(--super-gold);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode h1 { font-size: 1.3em; margin-bottom: 25px; }
+        body.embed-mode .paradigms-container { gap: 20px; }
+        body.embed-mode .paradigm-card { width: 280px; padding: 20px; }
+        body.embed-mode .card-icon { width: 50px; height: 50px; font-size: 1.4em; }
+        body.embed-mode .card-product { font-size: 1.2em; }
+        body.embed-mode .convergence-section { margin-top: 25px; }
+        body.embed-mode .convergence-box { padding: 15px 30px; }
+    </style>
+</head>
+<body>
+    <h1>Três Paradigmas de Conhecimento</h1>
+
+    <div class="paradigms-container">
+        <!-- ChatGPT -->
+        <div class="paradigm-card" data-number="01">
+            <div class="card-header">
+                <div class="card-icon">💬</div>
+                <div class="card-year">2023</div>
+                <div class="card-product">ChatGPT</div>
+                <div class="card-company">OpenAI</div>
+            </div>
+            <div class="knowledge-label">tipo de conhecimento</div>
+            <div class="knowledge-badge">PARAMÉTRICO</div>
+            <div class="card-quote">"O que a máquina aprendeu no treino"</div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">🧠</span>
+                    <span class="feature-text">Conversa pura</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📦</span>
+                    <span class="feature-text">Limitado ao que "sabe"</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🔒</span>
+                    <span class="feature-text">Fonte: treino do modelo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Claude -->
+        <div class="paradigm-card" data-number="02">
+            <div class="card-header">
+                <div class="card-icon">📎</div>
+                <div class="card-year">2023</div>
+                <div class="card-product">Claude</div>
+                <div class="card-company">Anthropic</div>
+            </div>
+            <div class="knowledge-label">tipo de conhecimento</div>
+            <div class="knowledge-badge">CONTEXTUAL</div>
+            <div class="card-quote">"O que o usuário fornece"</div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">📄</span>
+                    <span class="feature-text">Botão de anexo</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">👤</span>
+                    <span class="feature-text">Fonte de verdade = VOCÊ</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📚</span>
+                    <span class="feature-text">100K tokens de contexto</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Perplexity -->
+        <div class="paradigm-card" data-number="03">
+            <div class="card-header">
+                <div class="card-icon">🌐</div>
+                <div class="card-year">2023</div>
+                <div class="card-product">Perplexity</div>
+                <div class="card-company">Perplexity AI</div>
+            </div>
+            <div class="knowledge-label">tipo de conhecimento</div>
+            <div class="knowledge-badge">EXTERNO</div>
+            <div class="card-quote">"O que a web sabe em tempo real"</div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">🔍</span>
+                    <span class="feature-text">Pesquisa ao vivo</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🌍</span>
+                    <span class="feature-text">Fonte = O MUNDO</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">⚡</span>
+                    <span class="feature-text">Informação em tempo real</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Convergência -->
+    <div class="convergence-section">
+        <div class="convergence-arrows">
+            <span>↓</span>
+            <span>↓</span>
+            <span>↓</span>
+        </div>
+        <div class="convergence-box">
+            <div class="convergence-title">CONVERGÊNCIA</div>
+            <div class="convergence-text">
+                Hoje, todos têm <strong>anexos</strong>, <strong>busca na web</strong> e <strong>raciocínio expandido</strong>.
+            </div>
+            <div class="convergence-question">
+                "Se todos já têm tudo... o que os agentes trazem de novo?"
+            </div>
+        </div>
+    </div>
+
+    <!-- Stage indicator -->
+    <div class="stage-indicator">
+        <div class="stage-dot" data-stage="0"></div>
+        <div class="stage-dot" data-stage="1"></div>
+        <div class="stage-dot" data-stage="2"></div>
+        <div class="stage-dot" data-stage="3"></div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Progressive Spotlight System
+        const cards = document.querySelectorAll('.paradigm-card');
+        const convergence = document.querySelector('.convergence-section');
+        const stageDots = document.querySelectorAll('.stage-dot');
+        let currentStage = 0;
+
+        function setStage(stage) {
+            currentStage = stage;
+
+            stageDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === stage);
+            });
+
+            cards.forEach((card, i) => {
+                card.classList.remove('dimmed', 'spotlight');
+                if (stage < 3) {
+                    if (i === stage) {
+                        card.classList.add('spotlight');
+                    } else {
+                        card.classList.add('dimmed');
+                    }
+                }
+            });
+
+            convergence.classList.toggle('visible', stage === 3);
+        }
+
+        function nextStage() {
+            setStage((currentStage + 1) % 4);
+        }
+
+        // Initialize
+        setStage(0);
+
+        // Click handler
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.stage-dot')) {
+                setStage(parseInt(e.target.closest('.stage-dot').dataset.stage));
+                return;
+            }
+            nextStage();
+        });
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setStage(currentStage <= 0 ? 3 : currentStage - 1);
+            }
+        });
+    </script>
+</body>
+</html>

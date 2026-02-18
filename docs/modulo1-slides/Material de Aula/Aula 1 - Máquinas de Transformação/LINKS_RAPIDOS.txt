@@ -1,0 +1,270 @@
+═══════════════════════════════════════════════════════════════════════════════
+LINKS RÁPIDOS - AULA 1: LLMs COMO MÁQUINAS DE TRANSFORMAÇÃO
+═══════════════════════════════════════════════════════════════════════════════
+
+📄 PAPERS FUNDAMENTAIS
+═══════════════════════════════════════════════════════════════════════════════
+
+[1] Attention is All You Need (Vaswani et al., 2017)
+https://arxiv.org/abs/1706.03762
+https://arxiv.org/pdf/1706.03762.pdf
+
+[2] GPT-1: Improving Language Understanding by Generative Pre-Training (2018)
+https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf
+
+[3] GPT-2: Language Models are Unsupervised Multitask Learners (2019)
+https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf
+GitHub: https://github.com/openai/gpt-2
+
+[4] GPT-3: Language Models are Few-Shot Learners (2020)
+https://arxiv.org/abs/2005.14165
+https://arxiv.org/pdf/2005.14165.pdf
+
+[5] BERT: Pre-training of Deep Bidirectional Transformers (2018)
+https://arxiv.org/abs/1810.04805
+https://arxiv.org/pdf/1810.04805.pdf
+
+[6] GPT or BERT: why not both? (2024)
+https://arxiv.org/abs/2410.24159
+https://arxiv.org/pdf/2410.24159.pdf
+
+
+📚 SURVEYS E REVISÕES
+═══════════════════════════════════════════════════════════════════════════════
+
+[7] A Comprehensive Overview of Large Language Models (2023)
+https://arxiv.org/abs/2307.06435
+https://arxiv.org/pdf/2307.06435.pdf
+
+[8] Controllable Text Generation for LLMs: A Survey (2024)
+https://arxiv.org/abs/2408.12599
+https://arxiv.org/pdf/2408.12599.pdf
+
+[9] Factuality of Large Language Models: A Survey (2024)
+https://arxiv.org/abs/2402.02420
+https://arxiv.org/pdf/2402.02420.pdf
+
+[10] Transformers and LLMs for Intrusion Detection: Survey (2025)
+https://arxiv.org/abs/2408.07583
+
+
+📖 TUTORIAIS INTERATIVOS E IMPLEMENTAÇÕES
+═══════════════════════════════════════════════════════════════════════════════
+
+[11] The Annotated Transformer - Harvard NLP
+https://nlp.seas.harvard.edu/annotated-transformer/
+https://aclanthology.org/W18-2509.pdf
+GitHub: https://github.com/harvardnlp/annotated-transformer
+
+[12] The Illustrated Transformer - Jay Alammar
+https://jalammar.github.io/illustrated-transformer/
+
+[13] The Illustrated GPT-2 - Jay Alammar
+https://jalammar.github.io/illustrated-gpt2/
+
+[14] How GPT3 Works - Visualizations and Animations - Jay Alammar
+https://jalammar.github.io/how-gpt3-works-visualizations-animations/
+
+[15] Interfaces for Explaining Transformer Language Models - Jay Alammar
+https://jalammar.github.io/explaining-transformers/
+
+[16] Jay Alammar Blog (todos os posts)
+https://jalammar.github.io/
+
+[17] Creating a Transformer From Scratch
+https://benjaminwarner.dev/2023/07/01/attention-mechanism
+
+[18] UvA Deep Learning: Transformers and Multi-Head Attention
+https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/tutorial6/Transformers_and_MHAttention.html
+
+
+🎥 VÍDEOS - ANDREJ KARPATHY
+═══════════════════════════════════════════════════════════════════════════════
+
+[19] Let's build GPT: from scratch, in code, spelled out (1h56m)
+https://www.youtube.com/watch?v=kCc8FmEb1nY
+
+[20] Deep Dive into LLMs like ChatGPT (3h31m)
+Disponível em: https://karpathy.ai/zero-to-hero.html
+
+[21] Neural Networks: Zero to Hero (série completa)
+Website: https://karpathy.ai/zero-to-hero.html
+GitHub: https://github.com/karpathy/nn-zero-to-hero
+
+[22] The spelled-out intro to language modeling: building makemore
+Disponível no canal do YouTube
+
+[23] nanoGPT - Implementação minimal de GPT
+GitHub: https://github.com/karpathy/nanoGPT
+
+
+🎥 VÍDEOS - 3BLUE1BROWN
+═══════════════════════════════════════════════════════════════════════════════
+
+[24] But what is a GPT? Visual intro to Transformers (Chapter 5)
+https://www.youtube.com/watch?v=wjZofJX0v4M
+Website: https://www.3blue1brown.com/lessons/gpt
+
+[25] Visualizing Attention, a Transformer's Heart (Chapter 6)
+Disponível no canal do YouTube
+Website: https://www.3blue1brown.com/lessons/gpt
+
+[26] Large Language Models explained briefly
+Website: https://www.3blue1brown.com/lessons/mini-llm
+
+
+🎥 VÍDEOS - STATQUEST
+═══════════════════════════════════════════════════════════════════════════════
+
+[27] Transformer Neural Networks, ChatGPT's Foundation, Clearly Explained (36min)
+Buscar no YouTube: StatQuest Transformer Neural Networks
+
+
+🔗 RECURSOS ADICIONAIS
+═══════════════════════════════════════════════════════════════════════════════
+
+[28] Papers With Code - Transformers
+https://paperswithcode.com/
+
+[29] Hugging Face - Transformers Library
+https://huggingface.co/docs/transformers/
+
+[30] OpenAI Research
+https://openai.com/research/
+
+[31] Anthropic Research
+https://www.anthropic.com/research
+
+[32] Fermat's Library - GPT-2 Annotated
+https://fermatslibrary.com/s/language-models-are-unsupervised-multitask-learners
+
+[33] Semantic Scholar - GPT-2 Paper
+https://www.semanticscholar.org/paper/Language-Models-are-Unsupervised-Multitask-Learners-Radford-Wu/9405cc0d6169988371b2755e573cc28650d14dfe
+
+
+📥 PAPERS ADICIONAIS (ARXIV)
+═══════════════════════════════════════════════════════════════════════════════
+
+[34] GPT-NeoX-20B: An Open-Source Autoregressive Language Model
+https://arxiv.org/abs/2204.06745
+
+[35] σ-GPTs: A New Approach to Autoregressive Models
+https://arxiv.org/abs/2404.09562
+
+[36] Shall We Pretrain Autoregressive LMs with Retrieval?
+https://arxiv.org/abs/2304.06762
+
+[37] RecycleGPT: An Autoregressive Language Model with Recyclable Module
+https://arxiv.org/abs/2308.03421
+
+[38] Teaching Autoregressive Language Models Complex Tasks By Demonstration
+https://arxiv.org/abs/2109.02102
+
+[39] Comparison of BERT vs GPT
+https://arxiv.org/pdf/2405.12990
+
+[40] A Comparative Study of Transformer-Based Language Models
+https://arxiv.org/pdf/2110.03142
+
+
+═══════════════════════════════════════════════════════════════════════════════
+LISTA DE VERIFICAÇÃO PARA PREPARAÇÃO DA AULA
+═══════════════════════════════════════════════════════════════════════════════
+
+□ Assistir "But what is a GPT?" (3Blue1Brown)
+□ Assistir "Let's build GPT" (Andrej Karpathy) - pelo menos primeira hora
+□ Ler "The Illustrated Transformer" (Jay Alammar)
+□ Ler paper "Attention is All You Need" (introdução e seção 3)
+□ Ler paper GPT-2 (introdução, resultados, conclusão)
+□ Explorar "The Annotated Transformer" (Harvard NLP)
+□ Baixar PDFs dos papers principais
+□ Fazer screenshots das visualizações de Jay Alammar
+□ Testar demonstrações práticas
+□ Preparar slides com citações adequadas
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ORDEM DE PRIORIDADE PARA ESTUDO
+═══════════════════════════════════════════════════════════════════════════════
+
+PRIORIDADE MÁXIMA (Essencial):
+1. Vídeo: "But what is a GPT?" - 3Blue1Brown
+2. Tutorial: "The Illustrated Transformer" - Jay Alammar
+3. Paper: "Attention is All You Need" (pelo menos introdução)
+
+ALTA PRIORIDADE (Muito Recomendado):
+4. Vídeo: "Let's build GPT" - Andrej Karpathy (primeira hora)
+5. Tutorial: "The Illustrated GPT-2" - Jay Alammar
+6. Paper: "Language Models are Unsupervised Multitask Learners" (GPT-2)
+
+MÉDIA PRIORIDADE (Recomendado):
+7. Vídeo: "Visualizing Attention" - 3Blue1Brown
+8. Paper: "Language Models are Few-Shot Learners" (GPT-3)
+9. Tutorial: "The Annotated Transformer" - Harvard NLP
+
+COMPLEMENTAR (Se houver tempo):
+10. Survey: "Factuality of Large Language Models"
+11. Vídeo: "Transformer Neural Networks" - StatQuest
+12. Tutorial: "How GPT3 Works" - Jay Alammar
+
+
+═══════════════════════════════════════════════════════════════════════════════
+DICAS PARA DOWNLOAD E ACESSO
+═══════════════════════════════════════════════════════════════════════════════
+
+📥 Para baixar papers do ArXiv:
+   - Clique em "PDF" no topo da página
+   - Ou adicione .pdf ao final do URL (ex: /abs/1706.03762 → /pdf/1706.03762.pdf)
+
+💾 Para salvar vídeos do YouTube para referência:
+   - Use YouTube Premium para download offline
+   - Ou anote timestamps importantes
+
+📑 Para salvar páginas web interativas:
+   - Use "Salvar como PDF" no navegador
+   - Ou faça screenshots das visualizações importantes
+
+🔖 Para organizar referências:
+   - Use um gerenciador de referências (Zotero, Mendeley)
+   - Ou crie uma pasta local com PDFs baixados
+
+
+═══════════════════════════════════════════════════════════════════════════════
+NOTAS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️ Alguns papers não estão no ArXiv:
+   - GPT-1 e GPT-2 foram publicados diretamente pela OpenAI
+   - Estão disponíveis no site cdn.openai.com
+
+⚠️ Alguns vídeos requerem busca direta no YouTube:
+   - Nem todos os vídeos têm URLs diretos disponíveis
+   - Use os títulos exatos fornecidos para buscar
+
+✓ Todos os recursos listados são:
+   - Gratuitos e de acesso aberto
+   - De alta qualidade acadêmica
+   - Reconhecidos pela comunidade
+   - Relevantes para o tema da aula
+
+
+═══════════════════════════════════════════════════════════════════════════════
+CONTATO E CRÉDITOS
+═══════════════════════════════════════════════════════════════════════════════
+
+Compilado para: George Marmelstein
+Curso: LLMs e suas Aplicações - Aulas 2025
+Aula: 1 - Máquinas de Transformação
+Data: 2025-01-31
+
+Fontes consultadas:
+- ArXiv (Cornell University)
+- Google Scholar
+- YouTube (canais verificados de alta qualidade)
+- Blogs técnicos reconhecidos
+- Universidades (Harvard, Stanford, MIT, etc.)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+FIM DO DOCUMENTO
+═══════════════════════════════════════════════════════════════════════════════

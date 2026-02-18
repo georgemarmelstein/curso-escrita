@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Os Dois Mundos do Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --gold-muted: rgba(190, 156, 109, 0.4);
+            --cream: #FFF4E4;
+            --cream-soft: rgba(255, 244, 228, 0.7);
+            --dark: #0a0a12;
+            --dark-elevated: #0f0f1a;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--dark);
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            color: var(--cream);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           ATMOSPHERE
+           ═══════════════════════════════════════════════════════════ */
+        .atmosphere {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 50% 80% at 25% 50%, rgba(96, 165, 250, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 80% at 75% 50%, rgba(190, 156, 109, 0.05) 0%, transparent 50%),
+                var(--dark);
+            z-index: 0;
+        }
+
+        /* Subtle grid pattern */
+        .atmosphere::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.5;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           NAVIGATION TABS
+           ═══════════════════════════════════════════════════════════ */
+        .nav-tabs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            background: rgba(10, 10, 18, 0.95);
+            border-bottom: 1px solid var(--gold-muted);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 2vh 2vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5vw;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border-bottom: 3px solid transparent;
+            position: relative;
+        }
+
+        .nav-tab::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: transparent;
+            transition: background 0.4s ease;
+        }
+
+        .nav-tab:first-child {
+            border-right: 1px solid var(--gold-muted);
+        }
+
+        .nav-tab-icon {
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+        }
+
+        .nav-tab-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .nav-tab-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        .nav-tab-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1rem, 1.8vw, 1.5rem);
+            font-weight: 600;
+            color: var(--cream-soft);
+            transition: color 0.4s ease;
+        }
+
+        /* Tab states */
+        .nav-tab.active-global::after {
+            background: var(--blue);
+        }
+        .nav-tab.active-global .nav-tab-title {
+            color: var(--blue);
+        }
+
+        .nav-tab.active-project::after {
+            background: var(--gold);
+        }
+        .nav-tab.active-project .nav-tab-title {
+            color: var(--gold);
+        }
+
+        .nav-tab:not(.active-global):not(.active-project):hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN CONTAINER
+           ═══════════════════════════════════════════════════════════ */
+        .main {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            padding-top: 10vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           WORLD VIEWS
+           ═══════════════════════════════════════════════════════════ */
+        .worlds-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .world {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 4vh 6vw;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .world.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        .world.exit-left {
+            transform: translateX(-100%);
+        }
+
+        /* World Headers */
+        .world-header {
+            text-align: center;
+            margin-bottom: 4vh;
+        }
+
+        .world-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1vw;
+            padding: 1vh 2vw;
+            border-radius: 100px;
+            margin-bottom: 2vh;
+        }
+
+        .world-global .world-badge {
+            background: rgba(96, 165, 250, 0.15);
+            border: 1px solid rgba(96, 165, 250, 0.4);
+        }
+
+        .world-project .world-badge {
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.4);
+        }
+
+        .world-badge-icon {
+            font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+        }
+
+        .world-badge-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.9rem);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .world-global .world-badge-text { color: var(--blue); }
+        .world-project .world-badge-text { color: var(--gold); }
+
+        .world-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 600;
+            margin-bottom: 1vh;
+        }
+
+        .world-global .world-title { color: var(--blue); }
+        .world-project .world-title { color: var(--gold); }
+
+        .world-subtitle {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+            font-style: italic;
+            color: var(--cream-soft);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           FILE EXPLORER
+           ═══════════════════════════════════════════════════════════ */
+        .explorer {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 4vw;
+        }
+
+        .file-tree {
+            background: rgba(15, 15, 26, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 3vh 3vw;
+            min-width: 350px;
+            max-width: 450px;
+            backdrop-filter: blur(10px);
+        }
+
+        .world-global .file-tree {
+            border-color: rgba(96, 165, 250, 0.3);
+            box-shadow: 0 0 60px rgba(96, 165, 250, 0.1);
+        }
+
+        .world-project .file-tree {
+            border-color: rgba(190, 156, 109, 0.3);
+            box-shadow: 0 0 60px rgba(190, 156, 109, 0.1);
+        }
+
+        .tree-header {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            padding-bottom: 2vh;
+            margin-bottom: 2vh;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tree-icon {
+            font-size: clamp(1.5rem, 2vw, 1.8rem);
+        }
+
+        .tree-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.8rem, 1.1vw, 1rem);
+            color: var(--cream-soft);
+        }
+
+        .world-global .tree-path { color: var(--blue); }
+        .world-project .tree-path { color: var(--gold); }
+
+        /* Tree Items */
+        .tree-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+            padding: 1vh 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            color: var(--cream-soft);
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: itemReveal 0.4s ease forwards;
+        }
+
+        .tree-item:nth-child(1) { animation-delay: 0.1s; }
+        .tree-item:nth-child(2) { animation-delay: 0.2s; }
+        .tree-item:nth-child(3) { animation-delay: 0.3s; }
+        .tree-item:nth-child(4) { animation-delay: 0.4s; }
+        .tree-item:nth-child(5) { animation-delay: 0.5s; }
+        .tree-item:nth-child(6) { animation-delay: 0.6s; }
+        .tree-item:nth-child(7) { animation-delay: 0.7s; }
+        .tree-item:nth-child(8) { animation-delay: 0.8s; }
+        .tree-item:nth-child(9) { animation-delay: 0.9s; }
+        .tree-item:nth-child(10) { animation-delay: 1.0s; }
+
+        @keyframes itemReveal {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .tree-item.folder {
+            color: var(--cyan);
+        }
+
+        .tree-item.file {
+            color: var(--cream-soft);
+        }
+
+        .tree-item.important {
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .tree-item.clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 1vh 1vw;
+            margin: 0 -1vw;
+            border-radius: 6px;
+        }
+
+        .tree-item.clickable:hover {
+            background: rgba(190, 156, 109, 0.15);
+            color: var(--gold);
+        }
+
+        .tree-indent {
+            padding-left: 2vw;
+        }
+
+        .tree-indent-2 {
+            padding-left: 4vw;
+        }
+
+        .item-icon {
+            font-size: 1.1em;
+            width: 1.5em;
+            text-align: center;
+        }
+
+        .item-name {
+            flex: 1;
+        }
+
+        .item-desc {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            font-style: italic;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           INFO PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .info-panel {
+            max-width: 400px;
+        }
+
+        .info-card {
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 3vh 2.5vw;
+            margin-bottom: 2vh;
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            margin-bottom: 1.5vh;
+        }
+
+        .info-card-icon {
+            font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+        }
+
+        .info-card-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .info-card-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(1rem, 1.3vw, 1.15rem);
+            color: var(--cream-soft);
+            line-height: 1.6;
+        }
+
+        .info-card-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: var(--cyan);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           INSIGHT BOX
+           ═══════════════════════════════════════════════════════════ */
+        .insight-box {
+            position: fixed;
+            bottom: 4vh;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 800px;
+            width: 90vw;
+            background: rgba(15, 15, 26, 0.95);
+            border: 1px solid var(--gold-muted);
+            border-radius: 12px;
+            padding: 2.5vh 4vw;
+            display: flex;
+            align-items: center;
+            gap: 2vw;
+            backdrop-filter: blur(20px);
+            z-index: 50;
+        }
+
+        .insight-icon {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+        }
+
+        .insight-content {
+            flex: 1;
+        }
+
+        .insight-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.8vw, 0.7rem);
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5vh;
+        }
+
+        .insight-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+            color: var(--cream);
+            line-height: 1.5;
+        }
+
+        .insight-text strong {
+            color: var(--gold);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .nav-tabs {
+            padding: 0;
+        }
+
+        body.embed-mode .nav-tab {
+            padding: 1.5vh 1.5vw;
+        }
+
+        body.embed-mode .world {
+            padding: 3vh 4vw;
+        }
+
+        body.embed-mode .file-tree {
+            min-width: 280px;
+            padding: 2vh 2vw;
+        }
+
+        body.embed-mode .insight-box {
+            padding: 1.5vh 2.5vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="atmosphere"></div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="nav-tab active-global" data-world="global">
+            <span class="nav-tab-icon">🌍</span>
+            <div class="nav-tab-content">
+                <span class="nav-tab-label">Zona 1</span>
+                <span class="nav-tab-title">Diretório Raiz</span>
+            </div>
+        </div>
+        <div class="nav-tab" data-world="project">
+            <span class="nav-tab-icon">📁</span>
+            <div class="nav-tab-content">
+                <span class="nav-tab-label">Zona 2</span>
+                <span class="nav-tab-title">Projeto</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="worlds-container">
+            <!-- WORLD 1: GLOBAL -->
+            <div class="world world-global active" id="worldGlobal">
+                <header class="world-header">
+                    <div class="world-badge">
+                        <span class="world-badge-icon">🌍</span>
+                        <span class="world-badge-text">Zona 1 - Configuração Global</span>
+                    </div>
+                    <h1 class="world-title">Diretório Raiz do Usuário</h1>
+                    <p class="world-subtitle">Regras que se aplicam a TODOS os projetos</p>
+                </header>
+
+                <div class="explorer">
+                    <div class="file-tree">
+                        <div class="tree-header">
+                            <span class="tree-icon">🏠</span>
+                            <span class="tree-path">~/.claude/</span>
+                        </div>
+                        <div class="tree-content">
+                            <div class="tree-item file important">
+                                <span class="item-icon">📄</span>
+                                <span class="item-name">CLAUDE.md</span>
+                                <span class="item-desc">instruções globais</span>
+                            </div>
+                            <div class="tree-item file">
+                                <span class="item-icon">⚙️</span>
+                                <span class="item-name">settings.json</span>
+                                <span class="item-desc">preferências</span>
+                            </div>
+                            <div class="tree-item file">
+                                <span class="item-icon">🎨</span>
+                                <span class="item-name">themes.json</span>
+                                <span class="item-desc">aparência</span>
+                            </div>
+                            <div class="tree-item folder">
+                                <span class="item-icon">📂</span>
+                                <span class="item-name">commands/</span>
+                                <span class="item-desc">comandos globais</span>
+                            </div>
+                            <div class="tree-item folder">
+                                <span class="item-icon">📂</span>
+                                <span class="item-name">plugins/</span>
+                                <span class="item-desc">extensões</span>
+                            </div>
+                            <div class="tree-item folder clickable" data-action="go-project">
+                                <span class="item-icon">📂</span>
+                                <span class="item-name">projetos/ →</span>
+                                <span class="item-desc">ir para zona 2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-panel">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="info-card-icon">💡</span>
+                                <span class="info-card-title">O que vai aqui?</span>
+                            </div>
+                            <p class="info-card-text">
+                                Configurações que você quer em <strong>todos</strong> os projetos:
+                                idioma preferido, estilo de código, convenções pessoais.
+                            </p>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="info-card-icon">⚡</span>
+                                <span class="info-card-title">Exemplo prático</span>
+                            </div>
+                            <p class="info-card-text">
+                                No seu <code>CLAUDE.md</code> global: "Sempre responda em português.
+                                Evite emojis. Seja direto."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WORLD 2: PROJECT -->
+            <div class="world world-project" id="worldProject">
+                <header class="world-header">
+                    <div class="world-badge">
+                        <span class="world-badge-icon">📁</span>
+                        <span class="world-badge-text">Zona 2 - Configuração do Projeto</span>
+                    </div>
+                    <h1 class="world-title">Diretório do Projeto</h1>
+                    <p class="world-subtitle">Regras específicas para ESTE projeto</p>
+                </header>
+
+                <div class="explorer">
+                    <div class="file-tree">
+                        <div class="tree-header">
+                            <span class="tree-icon">📁</span>
+                            <span class="tree-path">~/projetos/meu-projeto/</span>
+                        </div>
+                        <div class="tree-content">
+                            <div class="tree-item file important">
+                                <span class="item-icon">📄</span>
+                                <span class="item-name">CLAUDE.md</span>
+                                <span class="item-desc">instruções do projeto</span>
+                            </div>
+                            <div class="tree-item folder">
+                                <span class="item-icon">📂</span>
+                                <span class="item-name">.claude/</span>
+                            </div>
+                            <div class="tree-item folder tree-indent">
+                                <span class="item-icon">📂</span>
+                                <span class="item-name">commands/</span>
+                                <span class="item-desc">comandos locais</span>
+                            </div>
+                            <div class="tree-item folder tree-indent">
+                                <span class="item-icon">📂</span>
+                                <span class="item-name">skills/</span>
+                                <span class="item-desc">habilidades</span>
+                            </div>
+                            <div class="tree-item folder">
+                                <span class="item-icon">📂</span>
+                                <span class="item-name">docs/</span>
+                            </div>
+                            <div class="tree-item folder tree-indent important">
+                                <span class="item-icon">📂</span>
+                                <span class="item-name">plans/</span>
+                                <span class="item-desc">planos de execução</span>
+                            </div>
+                            <div class="tree-item folder">
+                                <span class="item-icon">📂</span>
+                                <span class="item-name">src/</span>
+                                <span class="item-desc">código fonte</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-panel">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="info-card-icon">💡</span>
+                                <span class="info-card-title">O que vai aqui?</span>
+                            </div>
+                            <p class="info-card-text">
+                                Configurações específicas: arquitetura do sistema,
+                                padrões de código, glossário do domínio, regras de negócio.
+                            </p>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="info-card-icon">⚡</span>
+                                <span class="info-card-title">Exemplo prático</span>
+                            </div>
+                            <p class="info-card-text">
+                                No <code>CLAUDE.md</code> do projeto: "Este é um sistema jurídico.
+                                Use terminologia processual. Siga a LGPD."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insight Box -->
+        <div class="insight-box">
+            <span class="insight-icon">🎯</span>
+            <div class="insight-content">
+                <span class="insight-label">O Insight</span>
+                <p class="insight-text" id="insightText">
+                    <strong>Global + Projeto = Contexto Completo.</strong>
+                    O Claude lê primeiro as regras globais, depois as do projeto.
+                    É como ter um advogado que conhece a lei geral E o caso específico.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Tab navigation
+        const tabs = document.querySelectorAll('.nav-tab');
+        const worlds = document.querySelectorAll('.world');
+        const insightText = document.getElementById('insightText');
+
+        const insights = {
+            global: `<strong>Global + Projeto = Contexto Completo.</strong>
+                O Claude lê primeiro as regras globais, depois as do projeto.
+                É como ter um advogado que conhece a lei geral E o caso específico.`,
+            project: `<strong>docs/plans/ é onde a mágica acontece.</strong>
+                Seus planos de execução ficam aqui. Quando você usa /write-plan,
+                o resultado vai para esta pasta. É o coração do workflow estruturado.`
+        };
+
+        function switchWorld(worldName) {
+            // Update tabs
+            tabs.forEach(tab => {
+                tab.classList.remove('active-global', 'active-project');
+                if (tab.dataset.world === worldName) {
+                    tab.classList.add(worldName === 'global' ? 'active-global' : 'active-project');
+                }
+            });
+
+            // Update worlds with animation
+            worlds.forEach(world => {
+                if (world.id === 'worldGlobal' && worldName === 'global') {
+                    world.classList.remove('exit-left');
+                    world.classList.add('active');
+                } else if (world.id === 'worldProject' && worldName === 'project') {
+                    world.classList.remove('exit-left');
+                    world.classList.add('active');
+                } else if (world.id === 'worldGlobal' && worldName === 'project') {
+                    world.classList.add('exit-left');
+                    world.classList.remove('active');
+                } else {
+                    world.classList.remove('active', 'exit-left');
+                }
+            });
+
+            // Update insight
+            insightText.innerHTML = insights[worldName];
+        }
+
+        // Tab click handlers
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchWorld(tab.dataset.world);
+            });
+        });
+
+        // Clickable folder to switch to project
+        document.querySelectorAll('[data-action="go-project"]').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                switchWorld('project');
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                switchWorld('project');
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                switchWorld('global');
+            }
+        });
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

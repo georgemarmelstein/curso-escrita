@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encerramento - Proposta C</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a12;
+            color: #FFF4E4;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1300px;
+            padding: 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .quote-side {
+            padding-right: 40px;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 56px;
+            font-style: italic;
+            line-height: 1.3;
+            color: #FFF4E4;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 0.3s forwards;
+        }
+
+        .quote-highlight {
+            color: #BE9C6D;
+            position: relative;
+        }
+
+        .attribution {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            color: #BE9C6D;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 0.8s forwards;
+        }
+
+        .divider {
+            width: 80px;
+            height: 3px;
+            background: #BE9C6D;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: expandDivider 0.8s ease-out 1.3s forwards;
+        }
+
+        .karpathy-quote {
+            font-family: 'Inter', sans-serif;
+            font-size: 19px;
+            font-weight: 300;
+            line-height: 1.7;
+            color: #FFF4E4;
+            opacity: 0;
+            animation: fadeInSlide 1s ease-out 1.8s forwards;
+        }
+
+        .karpathy-quote strong {
+            color: #BE9C6D;
+            font-weight: 500;
+        }
+
+        .build-side {
+            position: relative;
+            height: 600px;
+        }
+
+        .code-terminal {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #4ade80;
+            height: 100%;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(190, 156, 109, 0.15);
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 2s forwards;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        .code-line {
+            opacity: 0;
+            margin-bottom: 12px;
+        }
+
+        .code-line.prompt { color: #BE9C6D; }
+        .code-line.comment { color: #8892b0; }
+        .code-line.keyword { color: #4ade80; }
+        .code-line.output { color: #FFF4E4; }
+
+        .code-line:nth-child(2) { animation: typeIn 0.6s ease-out 2.3s forwards; }
+        .code-line:nth-child(3) { animation: typeIn 0.6s ease-out 2.8s forwards; }
+        .code-line:nth-child(4) { animation: typeIn 0.6s ease-out 3.3s forwards; }
+        .code-line:nth-child(5) { animation: typeIn 0.6s ease-out 3.8s forwards; }
+        .code-line:nth-child(6) { animation: typeIn 0.6s ease-out 4.3s forwards; }
+        .code-line:nth-child(7) { animation: typeIn 0.6s ease-out 4.8s forwards; }
+
+        .building-blocks {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 5.5s forwards;
+        }
+
+        .block {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #BE9C6D, #d4b88a);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 8px 20px rgba(190, 156, 109, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .block:nth-child(2) { animation-delay: 0.3s; }
+        .block:nth-child(3) { animation-delay: 0.6s; }
+
+        .glow-effect {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(74, 222, 128, 0.1) 0%, transparent 70%);
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            pointer-events: none;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes expandDivider {
+            from {
+                opacity: 0;
+                width: 0;
+            }
+            to {
+                opacity: 1;
+                width: 80px;
+            }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes typeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: translateY(-50%) scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: translateY(-50%) scale(1.15);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-effect"></div>
+
+    <div class="container">
+        <div class="quote-side">
+            <div class="quote-text">
+                "What I cannot <span class="quote-highlight">create</span>, I do not <span class="quote-highlight">understand</span>."
+            </div>
+
+            <div class="attribution">
+                — Richard Feynman
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="karpathy-quote">
+                <strong>Andrej Karpathy:</strong> "If I can't build it, I don't understand it. Build the code, arrange it, get it to work. It's the only way to go."
+            </div>
+        </div>
+
+        <div class="build-side">
+            <div class="code-terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                </div>
+
+                <div class="code-line comment"># Anatomia compreendida</div>
+                <div class="code-line prompt">$ build_agent()</div>
+                <div class="code-line keyword">→ Criando sistema agêntico...</div>
+                <div class="code-line output">  ✓ Memory integrada</div>
+                <div class="code-line output">  ✓ Tools conectadas</div>
+                <div class="code-line output">  ✓ Agent loop ativo</div>
+                <div class="code-line keyword">✨ Compreensão alcançada</div>
+            </div>
+
+            <div class="building-blocks">
+                <div class="block">🧠</div>
+                <div class="block">🔧</div>
+                <div class="block">⚡</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

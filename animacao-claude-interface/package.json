@@ -1,0 +1,20 @@
+{
+  "name": "animacao-claude-interface",
+  "version": "1.0.0",
+  "description": "Animação da interface do Claude com indicações dos componentes",
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion render ClaudeInterfaceAnimation out/claude-interface.mp4",
+    "build:gif": "remotion render ClaudeInterfaceAnimation out/claude-interface.gif"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.3.0"
+  }
+}

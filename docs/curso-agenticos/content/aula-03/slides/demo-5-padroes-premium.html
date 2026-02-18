@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Padrões Anthropic - Premium Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --gold-light: #d4b896;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --dark-card: #14141e;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --pink: #f472b6;
+            --amber: #fbbf24;
+            --blue: #60a5fa;
+            --red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════ */
+        .header {
+            background: linear-gradient(180deg, rgba(20, 20, 30, 0.95) 0%, rgba(10, 10, 18, 0.9) 100%);
+            border-bottom: 1px solid rgba(190, 156, 109, 0.2);
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1rem, 1.4vw, 1.3rem);
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .central-message {
+            background: linear-gradient(90deg, rgba(190, 156, 109, 0.15), rgba(190, 156, 109, 0.05));
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
+            max-width: 500px;
+        }
+
+        .central-message-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--cream);
+            line-height: 1.4;
+        }
+
+        .central-message-text strong {
+            color: var(--gold);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab.active {
+            background: rgba(var(--tab-rgb), 0.15);
+            border-color: var(--tab-color);
+        }
+
+        .tab-number {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--tab-color);
+            color: var(--dark);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab-name {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--cream);
+            font-weight: 500;
+        }
+
+        .tab[data-pattern="chaining"] { --tab-color: var(--amber); --tab-rgb: 251, 191, 36; }
+        .tab[data-pattern="routing"] { --tab-color: var(--blue); --tab-rgb: 96, 165, 250; }
+        .tab[data-pattern="parallel"] { --tab-color: var(--purple); --tab-rgb: 167, 139, 250; }
+        .tab[data-pattern="orchestrator"] { --tab-color: var(--cyan); --tab-rgb: 34, 211, 238; }
+        .tab[data-pattern="evaluator"] { --tab-color: var(--pink); --tab-rgb: 244, 114, 182; }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN LAYOUT
+           ═══════════════════════════════════════════════════════════ */
+        .main {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           COMPLEXITY LADDER (LEFT)
+           ═══════════════════════════════════════════════════════════ */
+        .complexity-ladder {
+            width: 60px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .ladder-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            margin-bottom: 15px;
+        }
+
+        .ladder-track {
+            flex: 1;
+            width: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            position: relative;
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+
+        .ladder-step {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--dark);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin-left: -7px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .ladder-step:hover {
+            transform: scale(1.2);
+            border-color: var(--gold);
+        }
+
+        .ladder-step.active {
+            background: var(--step-color);
+            border-color: var(--step-color);
+            color: var(--dark);
+            transform: scale(1.3);
+            box-shadow: 0 0 15px var(--step-color);
+        }
+
+        .ladder-step[data-pattern="chaining"] { --step-color: var(--amber); }
+        .ladder-step[data-pattern="routing"] { --step-color: var(--blue); }
+        .ladder-step[data-pattern="parallel"] { --step-color: var(--purple); }
+        .ladder-step[data-pattern="orchestrator"] { --step-color: var(--cyan); }
+        .ladder-step[data-pattern="evaluator"] { --step-color: var(--pink); }
+
+        /* ═══════════════════════════════════════════════════════════
+           CANVAS (CENTER)
+           ═══════════════════════════════════════════════════════════ */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas-grid {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .canvas-area {
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 80px;
+            border: 1px solid rgba(190, 156, 109, 0.15);
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* SVG Connections */
+        .connections-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Nodes */
+        .node {
+            position: absolute;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 10;
+            transition: all 0.4s ease;
+            cursor: default;
+        }
+
+        .node.spotlight {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px var(--node-glow);
+            z-index: 20;
+        }
+
+        .node.dimmed {
+            opacity: 0.3;
+            filter: grayscale(40%);
+        }
+
+        /* Router interativo (Roteamento) */
+        .node.router-interactive {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .node.router-interactive::after {
+            content: '⟳ clique';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.55rem;
+            color: var(--gold);
+            opacity: 0.7;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .node.router-interactive:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+        }
+
+        .node.route-inactive {
+            opacity: 0.25;
+            filter: grayscale(60%);
+        }
+
+        .node.route-active {
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.6);
+            transform: translate(-50%, -50%) scale(1.08);
+        }
+
+        /* Conexões inativas no routing */
+        .connection-inactive {
+            opacity: 0.15 !important;
+            stroke-dasharray: 4,4 !important;
+        }
+
+        .connection-active {
+            opacity: 1 !important;
+            stroke-width: 3px !important;
+        }
+
+        .node-icon {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .node-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .node-sublabel {
+            font-size: 0.6rem;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+
+        /* Node types */
+        .node[data-type="input"], .node[data-type="output"] {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.25), rgba(74, 222, 128, 0.1));
+            border: 2px solid var(--green);
+            --node-glow: rgba(74, 222, 128, 0.5);
+        }
+        .node[data-type="input"] .node-label, .node[data-type="output"] .node-label { color: var(--green); }
+
+        .node[data-type="llm"] {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.3), rgba(190, 156, 109, 0.15));
+            border: 2px solid var(--gold);
+            --node-glow: rgba(190, 156, 109, 0.5);
+        }
+        .node[data-type="llm"] .node-label { color: var(--gold-light); }
+
+        .node[data-type="router"] {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.1));
+            border: 2px solid var(--blue);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            padding: 20px 30px;
+            --node-glow: rgba(96, 165, 250, 0.5);
+        }
+        .node[data-type="router"] .node-label { color: var(--blue); }
+
+        .node[data-type="worker"] {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.25), rgba(34, 211, 238, 0.1));
+            border: 2px solid var(--cyan);
+            --node-glow: rgba(34, 211, 238, 0.5);
+        }
+        .node[data-type="worker"] .node-label { color: var(--cyan); }
+
+        .node[data-type="orchestrator"] {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.35), rgba(34, 211, 238, 0.15));
+            border: 3px solid var(--cyan);
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            --node-glow: rgba(34, 211, 238, 0.5);
+        }
+        .node[data-type="orchestrator"] .node-label { color: var(--cyan); font-size: 0.65rem; }
+
+        .node[data-type="aggregator"] {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.25), rgba(167, 139, 250, 0.1));
+            border: 2px solid var(--purple);
+            --node-glow: rgba(167, 139, 250, 0.5);
+        }
+        .node[data-type="aggregator"] .node-label { color: var(--purple); }
+
+        .node[data-type="generator"], .node[data-type="evaluator"] {
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.25), rgba(244, 114, 182, 0.1));
+            border: 2px solid var(--pink);
+            --node-glow: rgba(244, 114, 182, 0.5);
+        }
+        .node[data-type="generator"] .node-label, .node[data-type="evaluator"] .node-label { color: var(--pink); }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 15px var(--cyan);
+            z-index: 25;
+            pointer-events: none;
+        }
+
+        /* Playback Bar */
+        .playback-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .play-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--green);
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--green);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-btn:hover { background: rgba(74, 222, 128, 0.3); transform: scale(1.1); }
+        .play-btn.playing { border-color: var(--amber); background: rgba(251, 191, 36, 0.15); color: var(--amber); }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .speed-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .speed-slider {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(190, 156, 109, 0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--gold);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .speed-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--gold);
+            min-width: 35px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           INFO PANEL (RIGHT)
+           ═══════════════════════════════════════════════════════════ */
+        .info-panel {
+            width: 320px;
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .info-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gold);
+            color: var(--dark);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-titles {
+            flex: 1;
+        }
+
+        .info-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .info-technical {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--gold);
+        }
+
+        /* Info sections */
+        .info-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .info-section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-section-label::before {
+            content: '';
+            width: 8px;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        .analogy-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--cream);
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .when-list {
+            list-style: none;
+        }
+
+        .when-list li {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.6;
+            padding-left: 18px;
+            position: relative;
+            margin-bottom: 4px;
+        }
+
+        .when-list li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Extension badge */
+        .extension-box {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(34, 211, 238, 0.03));
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .extension-box .info-section-label {
+            color: var(--cyan);
+        }
+
+        .extension-box .info-section-label::before {
+            background: var(--cyan);
+        }
+
+        .extension-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            font-weight: 600;
+        }
+
+        .extension-desc {
+            font-size: 0.8rem;
+            color: rgba(255, 244, 228, 0.7);
+            margin-top: 4px;
+        }
+
+        /* Example box */
+        .example-box {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(74, 222, 128, 0.03));
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .example-box .info-section-label {
+            color: var(--green);
+        }
+
+        .example-box .info-section-label::before {
+            background: var(--green);
+        }
+
+        .example-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.5;
+        }
+
+        /* Quote box */
+        .quote-box {
+            background: rgba(190, 156, 109, 0.08);
+            border-left: 3px solid var(--gold);
+            padding: 10px 12px;
+            margin-top: auto;
+        }
+
+        .quote-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: rgba(255, 244, 228, 0.7);
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .quote-source {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--gold);
+            margin-top: 6px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .header { padding: 8px 15px; }
+        body.embed-mode .title { font-size: 0.95rem; }
+        body.embed-mode .central-message { max-width: 350px; padding: 6px 12px; }
+        body.embed-mode .central-message-text { font-size: 0.7rem; }
+        body.embed-mode .tab { padding: 6px 10px; gap: 6px; }
+        body.embed-mode .tab-number { width: 22px; height: 22px; font-size: 0.75rem; }
+        body.embed-mode .tab-name { font-size: 0.7rem; }
+        body.embed-mode .complexity-ladder { width: 45px; }
+        body.embed-mode .info-panel { width: 260px; padding: 15px; }
+        body.embed-mode .info-number { width: 40px; height: 40px; font-size: 1.4rem; }
+        body.embed-mode .info-name { font-size: 1.1rem; }
+        body.embed-mode .node { padding: 8px 14px; }
+        body.embed-mode .node-label { font-size: 0.65rem; }
+        body.embed-mode .playback-bar { padding: 8px 18px; gap: 10px; }
+        body.embed-mode .play-btn { width: 36px; height: 36px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="title">5 Padrões de Workflow</div>
+            <div class="central-message">
+                <div class="central-message-text">
+                    <strong>Vocabulário, não prescrição.</strong> Use o mínimo necessário. A maioria dos sistemas em produção usa workflows simples.
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs" id="tabs">
+            <div class="tab active" data-pattern="chaining">
+                <span class="tab-number">1</span>
+                <span class="tab-name">Encadeamento</span>
+            </div>
+            <div class="tab" data-pattern="routing">
+                <span class="tab-number">2</span>
+                <span class="tab-name">Roteamento</span>
+            </div>
+            <div class="tab" data-pattern="parallel">
+                <span class="tab-number">3</span>
+                <span class="tab-name">Paralelização</span>
+            </div>
+            <div class="tab" data-pattern="orchestrator">
+                <span class="tab-number">4</span>
+                <span class="tab-name">Orquestrador</span>
+            </div>
+            <div class="tab" data-pattern="evaluator">
+                <span class="tab-number">5</span>
+                <span class="tab-name">Avaliador</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="complexity-ladder">
+            <span class="ladder-label">Complexidade</span>
+            <div class="ladder-track">
+                <div class="ladder-step active" data-pattern="chaining" title="Encadeamento">1</div>
+                <div class="ladder-step" data-pattern="routing" title="Roteamento">2</div>
+                <div class="ladder-step" data-pattern="parallel" title="Paralelização">3</div>
+                <div class="ladder-step" data-pattern="orchestrator" title="Orquestrador">4</div>
+                <div class="ladder-step" data-pattern="evaluator" title="Avaliador">5</div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <div class="canvas-grid"></div>
+            <div class="canvas-area" id="canvasArea">
+                <svg class="connections-layer" id="connectionsLayer"></svg>
+                <!-- Nodes rendered by JS -->
+            </div>
+
+            <div class="playback-bar">
+                <button class="play-btn" id="playBtn" onclick="togglePlayback()">▶</button>
+                <div class="speed-control">
+                    <span class="speed-label">Vel:</span>
+                    <input type="range" class="speed-slider" id="speedSlider" min="1" max="5" value="3" onchange="updateSpeed()">
+                    <span class="speed-value" id="speedValue">1x</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel" id="infoPanel">
+            <!-- Info content rendered by JS -->
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // PATTERNS DATA - FUSÃO PREMIUM
+        // ═══════════════════════════════════════════════════════════
+        const patterns = {
+            chaining: {
+                number: 1,
+                name: 'Encadeamento',
+                technical: 'Prompt Chaining',
+                color: '#fbbf24',
+                complexity: 'Baixa',
+                analogy: '"Como uma linha de montagem: cada estação faz sua parte e passa para a próxima."',
+                when: [
+                    'Subtarefas fixas e previsíveis',
+                    'Priorizar precisão sobre latência',
+                    'Possível adicionar validações entre etapas'
+                ],
+                extension: {
+                    name: 'Progressive Skills',
+                    desc: 'Skills carregam sob demanda, economizando tokens'
+                },
+                example: 'Pipeline de Sentença: Relatório → Fundamentação → Dispositivo. Cada etapa usa o resultado da anterior para construir o documento.',
+                quote: '"Encontre a solução mais simples possível, e só aumente complexidade quando necessário."',
+                nodes: [
+                    { key: 'input', type: 'input', label: 'Processo', icon: '📁', sublabel: 'autos', x: 8, y: 45 },
+                    { key: 'llm-0', type: 'llm', label: 'Relatório', icon: '📋', sublabel: 'síntese', x: 28, y: 45 },
+                    { key: 'llm-1', type: 'llm', label: 'Fundament.', icon: '⚖️', sublabel: 'análise', x: 50, y: 45 },
+                    { key: 'llm-2', type: 'llm', label: 'Dispositivo', icon: '🎯', sublabel: 'decisão', x: 72, y: 45 },
+                    { key: 'output', type: 'output', label: 'Sentença', icon: '📜', sublabel: 'final', x: 92, y: 45 }
+                ],
+                connections: [
+                    ['input', 'llm-0'],
+                    ['llm-0', 'llm-1'],
+                    ['llm-1', 'llm-2'],
+                    ['llm-2', 'output']
+                ]
+            },
+            routing: {
+                number: 2,
+                name: 'Roteamento',
+                technical: 'Routing',
+                color: '#60a5fa',
+                complexity: 'Baixa',
+                analogy: '"Como uma triagem de hospital: cada paciente vai para o especialista certo."',
+                when: [
+                    'Categorias distintas e bem definidas',
+                    'Cada categoria requer tratamento diferente',
+                    'Classificação pode ser feita com alta precisão'
+                ],
+                extension: {
+                    name: 'Wizard Workflows',
+                    desc: 'Fluxos guiados passo-a-passo com UX de wizard'
+                },
+                example: 'Gerador de Minutas: classifica o tipo de documento (decisão, embargos, sentença) e gera a minuta específica automaticamente.',
+                quote: '"Se um humano não sabe qual ferramenta usar, não espere que um agente AI faça melhor."',
+                nodes: [
+                    { key: 'input', type: 'input', label: 'Processo', icon: '📁', sublabel: 'autos', x: 8, y: 45 },
+                    { key: 'router', type: 'router', label: 'Classifica', icon: '🔀', sublabel: 'tipo doc', x: 30, y: 45 },
+                    { key: 'llm-0', type: 'llm', label: 'Decisão', icon: '⚖️', sublabel: 'interlocutória', x: 58, y: 15 },
+                    { key: 'llm-1', type: 'llm', label: 'Embargos', icon: '📝', sublabel: 'declaração', x: 58, y: 45 },
+                    { key: 'llm-2', type: 'llm', label: 'Sentença', icon: '🏛️', sublabel: 'mérito', x: 58, y: 75 },
+                    { key: 'output', type: 'output', label: 'Minuta', icon: '📄', sublabel: 'específica', x: 88, y: 45 }
+                ],
+                connections: [
+                    ['input', 'router'],
+                    ['router', 'llm-0'],
+                    ['router', 'llm-1'],
+                    ['router', 'llm-2'],
+                    ['llm-0', 'output'],
+                    ['llm-1', 'output'],
+                    ['llm-2', 'output']
+                ]
+            },
+            parallel: {
+                number: 3,
+                name: 'Paralelização',
+                technical: 'Parallelization',
+                color: '#a78bfa',
+                complexity: 'Média',
+                analogy: '"Como uma banca de correção: 3 professores corrigem a mesma prova ao mesmo tempo."',
+                when: [
+                    'Tarefas independentes que podem ser combinadas',
+                    'Redundância aumenta confiança (voting)',
+                    'Tempo é crítico e subtarefas não dependem entre si'
+                ],
+                extension: {
+                    name: 'Master-Clone',
+                    desc: 'Agente spawna cópias de si mesmo (máx 1 nível)'
+                },
+                example: 'Pesquisa Jurídica: STF, STJ e TRFs pesquisados em paralelo. Consolidador sintetiza posição majoritária.',
+                quote: '"O sucesso não é construir o sistema mais sofisticado — é construir o sistema certo."',
+                nodes: [
+                    { key: 'input', type: 'input', label: 'Tema', icon: '❓', sublabel: 'questão', x: 8, y: 45 },
+                    { key: 'llm-0', type: 'llm', label: 'STF', icon: '🏛️', sublabel: 'constitucional', x: 35, y: 15 },
+                    { key: 'llm-1', type: 'llm', label: 'STJ', icon: '🏛️', sublabel: 'infraconst.', x: 35, y: 45 },
+                    { key: 'llm-2', type: 'llm', label: 'TRFs', icon: '🏛️', sublabel: 'regional', x: 35, y: 75 },
+                    { key: 'aggregator', type: 'aggregator', label: 'Consolida', icon: '🔗', sublabel: 'síntese', x: 65, y: 45 },
+                    { key: 'output', type: 'output', label: 'Parecer', icon: '📑', sublabel: 'consolidado', x: 90, y: 45 }
+                ],
+                connections: [
+                    ['input', 'llm-0'],
+                    ['input', 'llm-1'],
+                    ['input', 'llm-2'],
+                    ['llm-0', 'aggregator'],
+                    ['llm-1', 'aggregator'],
+                    ['llm-2', 'aggregator'],
+                    ['aggregator', 'output']
+                ]
+            },
+            orchestrator: {
+                number: 4,
+                name: 'Orquestrador',
+                technical: 'Orchestrator-Workers',
+                color: '#22d3ee',
+                complexity: 'Alta',
+                analogy: '"Como um maestro: decide quem toca o quê, quando, e combina tudo no final."',
+                when: [
+                    'Subtarefas NÃO podem ser predefinidas',
+                    'Decomposição precisa acontecer em runtime',
+                    'Workers têm especialidades diferentes'
+                ],
+                extension: {
+                    name: 'Subagents',
+                    desc: 'Workers com contexto isolado (context window própria)'
+                },
+                example: 'Triagem Processual: analisa petição e delega dinamicamente para verificar competência, requisitos e urgência.',
+                quote: '"A maioria dos sistemas em produção usa workflows simples — priorize confiabilidade."',
+                nodes: [
+                    { key: 'input', type: 'input', label: 'Processo', icon: '📁', sublabel: 'petição', x: 8, y: 45 },
+                    { key: 'orchestrator', type: 'orchestrator', label: 'Triagem', icon: '🎯', sublabel: 'coordena', x: 32, y: 45 },
+                    { key: 'worker-0', type: 'worker', label: 'Competência', icon: '🔍', sublabel: 'jurisdição', x: 62, y: 15 },
+                    { key: 'worker-1', type: 'worker', label: 'Requisitos', icon: '✅', sublabel: 'admissão', x: 62, y: 45 },
+                    { key: 'worker-2', type: 'worker', label: 'Urgência', icon: '⚡', sublabel: 'prioridade', x: 62, y: 75 },
+                    { key: 'output', type: 'output', label: 'Despacho', icon: '📋', sublabel: 'encaminha', x: 90, y: 45 }
+                ],
+                connections: [
+                    ['input', 'orchestrator'],
+                    ['orchestrator', 'worker-0', 'dashed'],
+                    ['orchestrator', 'worker-1', 'dashed'],
+                    ['orchestrator', 'worker-2', 'dashed'],
+                    ['worker-0', 'output'],
+                    ['worker-1', 'output'],
+                    ['worker-2', 'output']
+                ]
+            },
+            evaluator: {
+                number: 5,
+                name: 'Avaliador',
+                technical: 'Evaluator-Optimizer',
+                color: '#f472b6',
+                complexity: 'Alta',
+                analogy: '"Como um editor de texto: escreve, revisa, reescreve até ficar bom."',
+                when: [
+                    'Critérios de qualidade claros e mensuráveis',
+                    'Refinamento iterativo agrega valor real',
+                    'Feedback específico pode guiar melhorias'
+                ],
+                extension: {
+                    name: 'Maker-Checker',
+                    desc: 'Gerador e Avaliador em loop até aprovação'
+                },
+                example: 'Revisão de Sentença: Redator elabora, Revisor verifica qualidade jurídica. Loop até aprovação ou limite de iterações.',
+                quote: '"Esses blocos não são prescritivos — são padrões que podem ser combinados conforme necessário."',
+                nodes: [
+                    { key: 'input', type: 'input', label: 'Minuta', icon: '📝', sublabel: 'rascunho', x: 8, y: 45 },
+                    { key: 'generator', type: 'generator', label: 'Redator', icon: '✍️', sublabel: 'elabora', x: 32, y: 45 },
+                    { key: 'evaluator', type: 'evaluator', label: 'Revisor', icon: '🔍', sublabel: 'avalia', x: 60, y: 45 },
+                    { key: 'output', type: 'output', label: 'Sentença', icon: '📜', sublabel: 'aprovada', x: 88, y: 45 }
+                ],
+                connections: [
+                    ['input', 'generator'],
+                    ['generator', 'evaluator'],
+                    ['evaluator', 'generator', 'loop'],
+                    ['evaluator', 'output']
+                ]
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // STATE
+        // ═══════════════════════════════════════════════════════════
+        let currentPattern = 'chaining';
+        let nodes = {};
+        let isPlaying = false;
+        let activeRoute = 0; // Para o padrão routing: 0=Decisão, 1=Embargos, 2=Sentença
+        let playbackSpeed = 1000;
+        let playbackTimeout = null;
+
+        // ═══════════════════════════════════════════════════════════
+        // INIT
+        // ═══════════════════════════════════════════════════════════
+        function init() {
+            detectEmbedMode();
+            setupTabs();
+            setupLadder();
+            loadPattern('chaining');
+            updateSpeed();
+        }
+
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) document.body.classList.add('embed-mode');
+            } catch (e) { document.body.classList.add('embed-mode'); }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // TABS & LADDER
+        // ═══════════════════════════════════════════════════════════
+        function setupTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => selectPattern(tab.dataset.pattern));
+            });
+        }
+
+        function setupLadder() {
+            document.querySelectorAll('.ladder-step').forEach(step => {
+                step.addEventListener('click', () => selectPattern(step.dataset.pattern));
+            });
+        }
+
+        function selectPattern(patternKey) {
+            if (patternKey === currentPattern) return;
+            pausePlayback();
+            currentPattern = patternKey;
+
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.pattern === patternKey);
+            });
+
+            // Update ladder
+            document.querySelectorAll('.ladder-step').forEach(s => {
+                s.classList.toggle('active', s.dataset.pattern === patternKey);
+            });
+
+            loadPattern(patternKey);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // LOAD PATTERN
+        // ═══════════════════════════════════════════════════════════
+        function loadPattern(patternKey) {
+            const p = patterns[patternKey];
+            nodes = {};
+
+            // Render info panel
+            renderInfoPanel(p);
+
+            // Render nodes
+            renderNodes(p);
+
+            // Render connections
+            setTimeout(() => renderConnections(p), 50);
+        }
+
+        function renderInfoPanel(p) {
+            const panel = document.getElementById('infoPanel');
+            panel.innerHTML = `
+                <div class="info-header">
+                    <div class="info-number" style="background: ${p.color};">${p.number}</div>
+                    <div class="info-titles">
+                        <div class="info-name">${p.name}</div>
+                        <div class="info-technical" style="color: ${p.color};">${p.technical}</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-section-label">Pense assim</div>
+                    <div class="analogy-text">${p.analogy}</div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-section-label">Quando usar</div>
+                    <ul class="when-list">
+                        ${p.when.map(w => `<li>${w}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="extension-box">
+                    <div class="info-section-label">Extensão Prática</div>
+                    <div class="extension-name">${p.extension.name}</div>
+                    <div class="extension-desc">${p.extension.desc}</div>
+                </div>
+
+                <div class="example-box">
+                    <div class="info-section-label">Exemplo Jurídico</div>
+                    <div class="example-text">${p.example}</div>
+                </div>
+
+                <div class="quote-box">
+                    <div class="quote-text">${p.quote}</div>
+                    <div class="quote-source">— Anthropic, Building Effective Agents</div>
+                </div>
+            `;
+        }
+
+        function renderNodes(p) {
+            const canvas = document.getElementById('canvasArea');
+
+            // Clear existing nodes
+            canvas.querySelectorAll('.node').forEach(n => n.remove());
+
+            // Routing targets para destacar rota ativa
+            const routeTargets = ['llm-0', 'llm-1', 'llm-2'];
+            const routeLabels = ['Decisão', 'Embargos', 'Sentença'];
+            const routeSublabels = ['interlocutória', 'declaração', 'mérito'];
+            const outputLabels = ['Min. Decisão', 'Min. Embargos', 'Min. Sentença'];
+
+            p.nodes.forEach(n => {
+                const node = document.createElement('div');
+                node.className = 'node';
+                node.id = `node-${n.key}`;
+                node.dataset.type = n.type;
+                node.dataset.key = n.key;
+                node.style.left = `${n.x}%`;
+                node.style.top = `${n.y}%`;
+                node.style.transform = 'translate(-50%, -50%)';
+
+                // Lógica especial para Routing
+                if (currentPattern === 'routing') {
+                    // Router é clicável
+                    if (n.type === 'router') {
+                        node.classList.add('router-interactive');
+                        node.addEventListener('click', cycleRoute);
+                    }
+
+                    // Marcar rotas ativas/inativas
+                    const routeIndex = routeTargets.indexOf(n.key);
+                    if (routeIndex !== -1) {
+                        if (routeIndex === activeRoute) {
+                            node.classList.add('route-active');
+                        } else {
+                            node.classList.add('route-inactive');
+                        }
+                    }
+
+                    // Output mostra qual minuta será gerada
+                    if (n.key === 'output') {
+                        node.innerHTML = `
+                            <div class="node-icon">${n.icon}</div>
+                            <div class="node-label">${outputLabels[activeRoute]}</div>
+                            <div class="node-sublabel">gerada</div>
+                        `;
+                        nodes[n.key] = { element: node, ...n };
+                        canvas.appendChild(node);
+                        return;
+                    }
+                }
+
+                node.innerHTML = `
+                    <div class="node-icon">${n.icon}</div>
+                    <div class="node-label">${n.label}</div>
+                    <div class="node-sublabel">${n.sublabel}</div>
+                `;
+
+                nodes[n.key] = { element: node, ...n };
+                canvas.appendChild(node);
+            });
+        }
+
+        function cycleRoute() {
+            activeRoute = (activeRoute + 1) % 3;
+            const p = patterns[currentPattern];
+            renderNodes(p);
+            renderConnections(p);
+        }
+
+        function renderConnections(p) {
+            const svg = document.getElementById('connectionsLayer');
+            const canvas = document.getElementById('canvasArea');
+            const canvasRect = canvas.getBoundingClientRect();
+
+            svg.innerHTML = '';
+
+            // Create defs
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            defs.innerHTML = `
+                <marker id="arrow-gold" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#BE9C6D"/>
+                </marker>
+                <marker id="arrow-cyan" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#22d3ee"/>
+                </marker>
+                <marker id="arrow-pink" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#f472b6"/>
+                </marker>
+                <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#60a5fa"/>
+                </marker>
+            `;
+            svg.appendChild(defs);
+
+            p.connections.forEach(conn => {
+                const fromKey = conn[0];
+                const toKey = conn[1];
+                const style = conn[2] || 'solid';
+
+                const fromNode = nodes[fromKey];
+                const toNode = nodes[toKey];
+                if (!fromNode || !toNode) return;
+
+                const fromRect = fromNode.element.getBoundingClientRect();
+                const toRect = toNode.element.getBoundingClientRect();
+
+                const fromCenterX = fromRect.left + fromRect.width / 2 - canvasRect.left;
+                const fromCenterY = fromRect.top + fromRect.height / 2 - canvasRect.top;
+                const toCenterX = toRect.left + toRect.width / 2 - canvasRect.left;
+                const toCenterY = toRect.top + toRect.height / 2 - canvasRect.top;
+
+                let x1, y1, x2, y2;
+                const dx = toCenterX - fromCenterX;
+                const dy = toCenterY - fromCenterY;
+
+                if (style === 'loop') {
+                    x1 = fromCenterX;
+                    y1 = fromRect.bottom - canvasRect.top;
+                    x2 = toCenterX;
+                    y2 = toRect.bottom - canvasRect.top;
+                } else if (Math.abs(dx) > Math.abs(dy)) {
+                    if (dx > 0) {
+                        x1 = fromRect.right - canvasRect.left;
+                        y1 = fromCenterY;
+                        x2 = toRect.left - canvasRect.left;
+                        y2 = toCenterY;
+                    } else {
+                        x1 = fromRect.left - canvasRect.left;
+                        y1 = fromCenterY;
+                        x2 = toRect.right - canvasRect.left;
+                        y2 = toCenterY;
+                    }
+                } else {
+                    if (dy > 0) {
+                        x1 = fromCenterX;
+                        y1 = fromRect.bottom - canvasRect.top;
+                        x2 = toCenterX;
+                        y2 = toRect.top - canvasRect.top;
+                    } else {
+                        x1 = fromCenterX;
+                        y1 = fromRect.top - canvasRect.top;
+                        x2 = toCenterX;
+                        y2 = toRect.bottom - canvasRect.top;
+                    }
+                }
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                let pathD;
+
+                if (style === 'loop') {
+                    const loopY = Math.max(y1, y2) + 50;
+                    pathD = `M ${x1} ${y1} C ${x1} ${loopY}, ${x2} ${loopY}, ${x2} ${y2}`;
+                    path.setAttribute('stroke', '#f472b6');
+                    path.setAttribute('stroke-dasharray', '6,4');
+                    path.setAttribute('marker-end', 'url(#arrow-pink)');
+                } else {
+                    const ctrl1X = x1 + (x2 - x1) * 0.4;
+                    const ctrl2X = x1 + (x2 - x1) * 0.6;
+                    pathD = `M ${x1} ${y1} C ${ctrl1X} ${y1}, ${ctrl2X} ${y2}, ${x2} ${y2}`;
+
+                    if (style === 'dashed') {
+                        path.setAttribute('stroke', '#22d3ee');
+                        path.setAttribute('stroke-dasharray', '6,4');
+                        path.setAttribute('marker-end', 'url(#arrow-cyan)');
+                    } else {
+                        path.setAttribute('stroke', '#BE9C6D');
+                        path.setAttribute('marker-end', 'url(#arrow-gold)');
+                    }
+                }
+
+                path.setAttribute('d', pathD);
+                path.setAttribute('stroke-width', '2');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('opacity', '0.7');
+                path.dataset.from = fromKey;
+                path.dataset.to = toKey;
+
+                // Lógica de roteamento: destacar apenas rota ativa
+                if (currentPattern === 'routing') {
+                    const routeTargets = ['llm-0', 'llm-1', 'llm-2'];
+                    const activeTarget = routeTargets[activeRoute];
+
+                    // Conexões do router para os handlers
+                    if (fromKey === 'router' && routeTargets.includes(toKey)) {
+                        if (toKey === activeTarget) {
+                            path.classList.add('connection-active');
+                            path.setAttribute('stroke', '#60a5fa');
+                            path.setAttribute('marker-end', 'url(#arrow-blue)');
+                        } else {
+                            path.classList.add('connection-inactive');
+                        }
+                    }
+
+                    // Conexões dos handlers para o output
+                    if (routeTargets.includes(fromKey) && toKey === 'output') {
+                        if (fromKey === activeTarget) {
+                            path.classList.add('connection-active');
+                            path.setAttribute('stroke', '#60a5fa');
+                            path.setAttribute('marker-end', 'url(#arrow-blue)');
+                        } else {
+                            path.classList.add('connection-inactive');
+                        }
+                    }
+                }
+
+                svg.appendChild(path);
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // PLAYBACK
+        // ═══════════════════════════════════════════════════════════
+        function togglePlayback() {
+            const btn = document.getElementById('playBtn');
+            if (isPlaying) {
+                pausePlayback();
+                btn.textContent = '▶';
+                btn.classList.remove('playing');
+            } else {
+                startPlayback();
+                btn.textContent = '⏸';
+                btn.classList.add('playing');
+            }
+        }
+
+        function startPlayback() {
+            isPlaying = true;
+
+            // Dim all
+            Object.values(nodes).forEach(n => {
+                n.element.classList.add('dimmed');
+                n.element.classList.remove('spotlight');
+            });
+
+            const execOrder = buildExecutionOrder();
+            playStep(execOrder, 0);
+        }
+
+        function buildExecutionOrder() {
+            const p = patterns[currentPattern];
+            const incoming = {};
+            const outgoing = {};
+
+            p.connections.forEach(conn => {
+                const from = conn[0], to = conn[1];
+                if (!outgoing[from]) outgoing[from] = [];
+                if (!incoming[to]) incoming[to] = [];
+                outgoing[from].push(to);
+                incoming[to].push(from);
+            });
+
+            const allNodes = Object.keys(nodes);
+            const order = [];
+            const visited = new Set();
+
+            let current = allNodes.filter(n => !incoming[n] || incoming[n].length === 0);
+            if (current.length === 0 && allNodes.length > 0) current = [allNodes[0]];
+
+            while (current.length > 0 && order.length < 20) {
+                const layer = current.filter(n => !visited.has(n) && nodes[n]);
+                if (layer.length > 0) {
+                    order.push(layer);
+                    layer.forEach(n => visited.add(n));
+                }
+
+                const next = new Set();
+                current.forEach(n => {
+                    (outgoing[n] || []).forEach(to => {
+                        if (!visited.has(to)) next.add(to);
+                    });
+                });
+                current = Array.from(next);
+            }
+
+            return order;
+        }
+
+        function playStep(execOrder, stepIndex) {
+            if (!isPlaying || stepIndex >= execOrder.length) {
+                if (stepIndex >= execOrder.length) {
+                    setTimeout(() => {
+                        Object.values(nodes).forEach(n => {
+                            n.element.classList.remove('dimmed', 'spotlight');
+                        });
+                        isPlaying = false;
+                        document.getElementById('playBtn').textContent = '✓';
+                        document.getElementById('playBtn').classList.remove('playing');
+                    }, 500);
+                }
+                return;
+            }
+
+            const layer = execOrder[stepIndex];
+
+            Object.values(nodes).forEach(n => {
+                if (layer.includes(n.key)) {
+                    n.element.classList.remove('dimmed');
+                    n.element.classList.add('spotlight');
+                } else if (n.element.classList.contains('spotlight')) {
+                    n.element.classList.remove('spotlight');
+                    n.element.classList.add('dimmed');
+                }
+            });
+
+            // Animate particles
+            if (stepIndex > 0) {
+                const prevLayer = execOrder[stepIndex - 1];
+                const p = patterns[currentPattern];
+
+                prevLayer.forEach(fromKey => {
+                    layer.forEach(toKey => {
+                        const connExists = p.connections.some(c => c[0] === fromKey && c[1] === toKey);
+                        if (connExists && nodes[fromKey] && nodes[toKey]) {
+                            animateParticle(fromKey, toKey);
+                        }
+                    });
+                });
+            }
+
+            playbackTimeout = setTimeout(() => playStep(execOrder, stepIndex + 1), playbackSpeed);
+        }
+
+        function pausePlayback() {
+            isPlaying = false;
+            if (playbackTimeout) {
+                clearTimeout(playbackTimeout);
+                playbackTimeout = null;
+            }
+        }
+
+        function animateParticle(fromKey, toKey) {
+            const fromNode = nodes[fromKey];
+            const toNode = nodes[toKey];
+            if (!fromNode || !toNode) return;
+
+            const canvas = document.getElementById('canvasArea');
+            const canvasRect = canvas.getBoundingClientRect();
+
+            const fromRect = fromNode.element.getBoundingClientRect();
+            const toRect = toNode.element.getBoundingClientRect();
+
+            const startX = fromRect.right - canvasRect.left;
+            const startY = fromRect.top + fromRect.height / 2 - canvasRect.top;
+            const endX = toRect.left - canvasRect.left;
+            const endY = toRect.top + toRect.height / 2 - canvasRect.top;
+
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            canvas.appendChild(particle);
+
+            particle.animate([
+                { left: startX + 'px', top: startY + 'px', opacity: 1 },
+                { left: endX + 'px', top: endY + 'px', opacity: 1 }
+            ], {
+                duration: playbackSpeed * 0.5,
+                easing: 'ease-in-out'
+            }).onfinish = () => particle.remove();
+        }
+
+        function updateSpeed() {
+            const slider = document.getElementById('speedSlider');
+            const value = parseInt(slider.value);
+            const speeds = {
+                1: { ms: 2000, label: '0.5x' },
+                2: { ms: 1500, label: '0.75x' },
+                3: { ms: 1000, label: '1x' },
+                4: { ms: 600, label: '1.5x' },
+                5: { ms: 300, label: '2x' }
+            };
+            playbackSpeed = speeds[value].ms;
+            document.getElementById('speedValue').textContent = speeds[value].label;
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '5') {
+                const keys = ['chaining', 'routing', 'parallel', 'orchestrator', 'evaluator'];
+                selectPattern(keys[parseInt(e.key) - 1]);
+            } else if (e.key === ' ') {
+                e.preventDefault();
+                togglePlayback();
+            } else if (e.key === 'ArrowRight') {
+                const keys = ['chaining', 'routing', 'parallel', 'orchestrator', 'evaluator'];
+                const idx = keys.indexOf(currentPattern);
+                if (idx < 4) selectPattern(keys[idx + 1]);
+            } else if (e.key === 'ArrowLeft') {
+                const keys = ['chaining', 'routing', 'parallel', 'orchestrator', 'evaluator'];
+                const idx = keys.indexOf(currentPattern);
+                if (idx > 0) selectPattern(keys[idx - 1]);
+            }
+        });
+
+        // Window resize
+        window.addEventListener('resize', () => {
+            setTimeout(() => renderConnections(patterns[currentPattern]), 100);
+        });
+
+        // Init
+        init();
+    </script>
+</body>
+</html>

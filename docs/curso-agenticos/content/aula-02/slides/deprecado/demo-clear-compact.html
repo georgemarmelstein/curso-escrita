@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>/clear vs /compact</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+            --super-gold-subtle: rgba(190, 156, 109, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 100%);
+            color: var(--super-cream);
+            min-height: 100vh;
+            padding: 40px;
+            overflow-x: hidden;
+        }
+
+        body.embed-mode {
+            padding: 20px 30px;
+        }
+
+        /* TÍTULO */
+        .title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--super-gold);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        body.embed-mode .title h1 {
+            font-size: 1.8em;
+        }
+
+        /* COMPARAÇÃO */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .command-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 35px;
+            transition: all 0.4s ease;
+        }
+
+        .command-card:hover {
+            border-color: var(--super-gold-subtle);
+            box-shadow: 0 8px 32px rgba(190, 156, 109, 0.15);
+        }
+
+        .command-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .command-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2em;
+            color: var(--super-gold);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .command-subtitle {
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        /* BARRA DE CONTEXTO */
+        .context-viz {
+            margin: 25px 0;
+        }
+
+        .context-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.85em;
+        }
+
+        .label-text {
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .label-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .context-bar {
+            height: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .context-fill {
+            height: 100%;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .context-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255,255,255,0.1),
+                transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* ESTADOS */
+        .state-section {
+            margin: 25px 0;
+        }
+
+        .state-title {
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .state-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .state-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .state-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .state-icon {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* BOTÃO DE AÇÃO */
+        .action-button {
+            width: 100%;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--super-gold) 0%, var(--super-gold-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--super-bg-dark);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(190, 156, 109, 0.3);
+            margin-top: 25px;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(190, 156, 109, 0.4);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        /* QUANDO USAR */
+        .when-to-use {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .when-title {
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 10px;
+            font-size: 0.85em;
+        }
+
+        .when-list {
+            font-size: 0.88em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.7;
+        }
+
+        .when-list li {
+            margin-bottom: 6px;
+            padding-left: 18px;
+            position: relative;
+        }
+
+        .when-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--super-gold);
+        }
+
+        body.embed-mode .command-card {
+            padding: 25px;
+        }
+
+        body.embed-mode .command-name {
+            font-size: 1.5em;
+        }
+
+        body.embed-mode .state-box {
+            padding: 14px;
+            font-size: 0.85em;
+        }
+
+        body.embed-mode .action-button {
+            padding: 12px 20px;
+            font-size: 1em;
+        }
+
+        @media (max-width: 900px) {
+            .comparison {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>/clear vs /compact</h1>
+        <p>Clique nos botões para simular os comandos</p>
+    </div>
+
+    <div class="comparison">
+        <!-- CLEAR -->
+        <div class="command-card">
+            <div class="command-header">
+                <div class="command-name">/clear</div>
+                <div class="command-subtitle">Limpa completamente a conversa</div>
+            </div>
+
+            <div class="context-viz">
+                <div class="context-label">
+                    <span class="label-text">Contexto Antes</span>
+                    <span class="label-value" style="color: var(--super-red);">50K tokens</span>
+                </div>
+                <div class="context-bar">
+                    <div class="context-fill" id="clear-before" style="width: 80%; background: linear-gradient(90deg, var(--super-amber), var(--super-red));"></div>
+                </div>
+            </div>
+
+            <button class="action-button" id="btn-clear">Executar /clear</button>
+
+            <div class="context-viz">
+                <div class="context-label">
+                    <span class="label-text">Contexto Depois</span>
+                    <span class="label-value" id="clear-after-label" style="color: var(--super-green);">0 tokens</span>
+                </div>
+                <div class="context-bar">
+                    <div class="context-fill" id="clear-after" style="width: 0%; background: var(--super-green);"></div>
+                </div>
+            </div>
+
+            <div class="state-section">
+                <div class="state-title">O que acontece</div>
+                <div class="state-box">
+                    <div class="state-item">
+                        <span class="state-icon">✓</span>
+                        <span>CLAUDE.md é re-injetado</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-icon">✗</span>
+                        <span>Histórico da conversa: <strong>PERDIDO</strong></span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-icon">✓</span>
+                        <span>Arquivos criados: mantidos</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-icon">✓</span>
+                        <span>Configurações: mantidas</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="when-to-use">
+                <div class="when-title">Quando usar</div>
+                <ul class="when-list">
+                    <li>Nova tarefa, contexto diferente</li>
+                    <li>Qualidade das respostas caiu</li>
+                    <li>Contexto está confuso</li>
+                    <li>Começar do zero</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- COMPACT -->
+        <div class="command-card">
+            <div class="command-header">
+                <div class="command-name">/compact</div>
+                <div class="command-subtitle">Resume o contexto preservando o essencial</div>
+            </div>
+
+            <div class="context-viz">
+                <div class="context-label">
+                    <span class="label-text">Contexto Antes</span>
+                    <span class="label-value" style="color: var(--super-red);">50K tokens</span>
+                </div>
+                <div class="context-bar">
+                    <div class="context-fill" id="compact-before" style="width: 80%; background: linear-gradient(90deg, var(--super-amber), var(--super-red));"></div>
+                </div>
+            </div>
+
+            <button class="action-button" id="btn-compact">Executar /compact</button>
+
+            <div class="context-viz">
+                <div class="context-label">
+                    <span class="label-text">Contexto Depois</span>
+                    <span class="label-value" id="compact-after-label" style="color: var(--super-green);">~10K tokens</span>
+                </div>
+                <div class="context-bar">
+                    <div class="context-fill" id="compact-after" style="width: 20%; background: var(--super-green);"></div>
+                </div>
+            </div>
+
+            <div class="state-section">
+                <div class="state-title">O que acontece</div>
+                <div class="state-box">
+                    <div class="state-item">
+                        <span class="state-icon">✓</span>
+                        <span>CLAUDE.md é re-injetado</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-icon">✓</span>
+                        <span>Decisões críticas: <strong>PRESERVADAS</strong></span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-icon">~</span>
+                        <span>Detalhes: resumidos</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-icon">✓</span>
+                        <span>Contexto essencial: mantido</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="when-to-use">
+                <div class="when-title">Quando usar</div>
+                <ul class="when-list">
+                    <li>Tarefa longa, mesma área</li>
+                    <li>Preservar contexto essencial</li>
+                    <li>Contexto quase cheio (80%+)</li>
+                    <li>Continuar mesma sessão</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Detecção de embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // CLEAR
+        const btnClear = document.getElementById('btn-clear');
+        const clearAfter = document.getElementById('clear-after');
+        const clearAfterLabel = document.getElementById('clear-after-label');
+
+        btnClear.addEventListener('click', function() {
+            // Anima para 0
+            clearAfter.style.width = '0%';
+            clearAfterLabel.textContent = '0 tokens';
+            clearAfterLabel.style.color = 'var(--super-green)';
+
+            // Feedback visual no botão
+            this.textContent = '✓ Conversa limpa!';
+            this.style.background = 'linear-gradient(135deg, var(--super-green), #22c55e)';
+
+            setTimeout(() => {
+                this.textContent = 'Executar /clear';
+                this.style.background = 'linear-gradient(135deg, var(--super-gold), var(--super-gold-light))';
+            }, 2000);
+        });
+
+        // COMPACT
+        const btnCompact = document.getElementById('btn-compact');
+        const compactAfter = document.getElementById('compact-after');
+        const compactAfterLabel = document.getElementById('compact-after-label');
+
+        btnCompact.addEventListener('click', function() {
+            // Anima para 20% (resumo)
+            compactAfter.style.width = '20%';
+            compactAfterLabel.textContent = '~10K tokens';
+            compactAfterLabel.style.color = 'var(--super-green)';
+
+            // Feedback visual no botão
+            this.textContent = '✓ Contexto resumido!';
+            this.style.background = 'linear-gradient(135deg, var(--super-green), #22c55e)';
+
+            setTimeout(() => {
+                this.textContent = 'Executar /compact';
+                this.style.background = 'linear-gradient(135deg, var(--super-gold), var(--super-gold-light))';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

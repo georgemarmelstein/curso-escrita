@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Timeline: Onde Estamos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        .bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 75% 50%, rgba(190, 156, 109, 0.06) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5vh 5vw;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 8vh;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .header p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 1vh;
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            justify-content: center;
+        }
+
+        /* Timeline line */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0.1),
+                rgba(190, 156, 109, 0.3) 75%,
+                rgba(255, 255, 255, 0.1));
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        /* Timeline item */
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2vh;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            transition: all 0.4s ease;
+        }
+
+        .timeline-item.dimmed {
+            opacity: 0.4;
+        }
+
+        .timeline-item.current {
+            transform: scale(1.1);
+        }
+
+        /* Dot */
+        .timeline-dot {
+            width: clamp(16px, 2vw, 22px);
+            height: clamp(16px, 2vw, 22px);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: var(--green);
+            border-color: var(--green);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
+        }
+
+        .timeline-item.current .timeline-dot {
+            background: var(--gold);
+            border-color: var(--gold);
+            box-shadow: 0 0 25px rgba(190, 156, 109, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 25px rgba(190, 156, 109, 0.6); }
+            50% { box-shadow: 0 0 40px rgba(190, 156, 109, 0.8); }
+        }
+
+        .timeline-item.future .timeline-dot {
+            background: transparent;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Label */
+        .timeline-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .timeline-item.current .timeline-label {
+            color: var(--gold);
+        }
+
+        /* Card */
+        .timeline-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2vh 2vw;
+            text-align: center;
+            min-width: 180px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item.current .timeline-card {
+            background: rgba(190, 156, 109, 0.1);
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.2);
+        }
+
+        .timeline-item.completed .timeline-card {
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .card-question {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+            color: var(--cream);
+            margin-bottom: 0.8vh;
+        }
+
+        .timeline-item.current .card-question {
+            color: var(--gold);
+        }
+
+        .card-answer {
+            font-size: clamp(0.7rem, 0.95vw, 0.8rem);
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .timeline-item.current .card-answer {
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        /* Arrow indicator */
+        .current-arrow {
+            position: absolute;
+            top: -4vh;
+            font-size: clamp(1.5rem, 2vw, 2rem);
+            color: var(--gold);
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 8vh;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        .footer-text strong {
+            color: var(--gold);
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 3vh 3vw; }
+        body.embed-mode .header { margin-bottom: 5vh; }
+        body.embed-mode .timeline-card { padding: 1.5vh 1.5vw; min-width: 140px; }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Da Orquestra ao Músico</h1>
+            <p>Onde estamos na jornada</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item completed dimmed">
+                <span class="timeline-label">Aula 01</span>
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <div class="card-question">"O que é um agente?"</div>
+                    <div class="card-answer">Conceitos fundamentais</div>
+                </div>
+            </div>
+
+            <div class="timeline-item completed dimmed">
+                <span class="timeline-label">Aula 02</span>
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <div class="card-question">"Como acessar?"</div>
+                    <div class="card-answer">Instalação e setup</div>
+                </div>
+            </div>
+
+            <div class="timeline-item completed dimmed">
+                <span class="timeline-label">Aula 03</span>
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <div class="card-question">"Como se conectam?"</div>
+                    <div class="card-answer">Workflows e padrões</div>
+                </div>
+            </div>
+
+            <div class="timeline-item current">
+                <span class="current-arrow">▼</span>
+                <span class="timeline-label">Aula 04</span>
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <div class="card-question">"Quais são as peças?"</div>
+                    <div class="card-answer">Anatomia do sistema</div>
+                </div>
+            </div>
+
+            <div class="timeline-item future dimmed">
+                <span class="timeline-label">Aula 05</span>
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <div class="card-question">"Como construir?"</div>
+                    <div class="card-answer">Prática hands-on</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p class="footer-text">
+                Hoje: <strong>abrimos a caixa</strong> para ver as peças.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

@@ -1,0 +1,567 @@
+═══════════════════════════════════════════════════════════════════════════════
+                     AULA 12 - AGENTES DE LLM
+                      GUIA DE INÍCIO RÁPIDO
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 TOTAL: 24 PDFs científicos sobre Agentes de LLM
+📅 Data: 02 de novembro de 2025
+📚 Cobertura: 2022-2025 (ênfase em surveys 2024-2025)
+🎯 Foco: Agents clássicos, Reasoning, Multi-Agent, Frameworks
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📖 ARQUIVOS DE DOCUMENTAÇÃO:
+
+1. COMECE_AQUI.txt (este arquivo)
+   → Guia rápido de navegação
+
+2. GUIA_COMPLETO_AGENTES.txt
+   → Guia detalhado sobre agentes de LLM
+   → ReAct, reasoning, multi-agent, frameworks
+   → Exemplos práticos e comparações
+
+3. INDICE_COMPLETO_PDFS.md (a criar)
+   → Descrição detalhada de cada um dos 24 papers
+   → Resumos, arquiteturas, resultados, relevância
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 O QUE SÃO AGENTES DE LLM?
+
+Agentes de LLM são sistemas que vão ALÉM de simplesmente gerar texto.
+Eles podem:
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 1. PERCEBER o ambiente (observar, ler, receber feedback)                   │
+│ 2. RACIOCINAR sobre o que fazer (planning, reasoning)                      │
+│ 3. AGIR no mundo (usar ferramentas, APIs, executar código)                 │
+│ 4. APRENDER com experiência (memory, reflection, improvement)              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+**Diferença crucial:**
+- LLM puro: Query → Response (passivo)
+- Agente LLM: Goal → Plan → Act → Observe → Refine → Goal (ativo)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 TEMAS CENTRAIS DA AULA:
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 1. AGENTES CLÁSSICOS: ReAct, AutoGPT, BabyAGI                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • ReAct (2022): Thought → Action → Observation (pattern fundamental)       │
+│ • AutoGPT (2023): Autonomous task completion                                │
+│ • BabyAGI (2023): Task list manager com priorização                         │
+│ • Landscape of Agent Architectures (2024)                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 2. REASONING AGENTS: Chain-of-Thought, o1-style, Deep Research             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Chain-of-Thought (2022): Fundação de reasoning                            │
+│ • Extended thinking: o1-style models (2024-2025)                            │
+│ • Deep Research Agents (Gemini Deep Research)                               │
+│ • Search-o1: Agentic search + reasoning (2025)                              │
+│ • Reflexion: Self-reflection e learning (2023)                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 3. MULTI-AGENT SYSTEMS: Collaboration, Communication, Coordination         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Multiple agents trabalhando juntos                                        │
+│ • Patterns: Cooperative, Competitive, Debate                                │
+│ • Scaling laws para multi-agent systems                                     │
+│ • Challenges: Communication, conflict resolution                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 4. AGENT FRAMEWORKS: LangGraph, Memory, Planning                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • LangGraph: Graph-based agent workflows                                    │
+│ • Memory systems: Short-term, Long-term, Episodic                           │
+│ • Planning: Task decomposition, hierarchical                                │
+│ • Evaluation: AgentBench benchmark                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 5. NOVOS MODELOS AGÊNTICOS: ChatGPT o1, Claude Extended Thinking           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • OpenAI o1: Extended chain-of-thought reasoning                            │
+│ • Claude Sonnet 4.5: Extended thinking mode                                 │
+│ • Gemini Deep Research: Agentic research assistant                          │
+│ • Trend: From prompting to trained reasoning models                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎓 ROTEIROS DE LEITURA SUGERIDOS:
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 1: FUNDAMENTOS DE AGENTES (2-3 horas)
+─────────────────────────────────────────────────────────────────────────────
+
+OBJETIVO: Compreender o que são agentes e como funcionam
+
+1º - LEIA: GUIA_COMPLETO_AGENTES.txt (30 min)
+   → Overview completo de agentes
+   → Quando usar, por que usar
+
+2º - LEIA: Papers_Classic_Agents/2022_ReAct_Reasoning_Acting_Synergizing.pdf
+   → Paper SEMINAL do ReAct
+   → Pattern Thought → Action → Observation
+   → Usado em TODOS sistemas modernos
+   → ~1 hora
+
+3º - LEIA: Surveys_Agents_2025/2025_Survey_LLM_Autonomous_Agents.pdf
+   → Survey completo e atualizado (2025)
+   → Profile, Memory, Planning, Action modules
+   → Estado da arte até 2025
+   → ~1.5 horas
+
+4º - CONSULTE: INDICE_COMPLETO_PDFS.md
+   → Para resumos específicos
+
+RESULTADO: Você terá visão completa do que são agentes.
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 2: REASONING AGENTS (1 dia)
+─────────────────────────────────────────────────────────────────────────────
+
+OBJETIVO: Entender como agentes raciocinam (o1-style, Deep Research)
+
+MANHÃ - FUNDAMENTOS:
+
+1. Papers_Reasoning_Agents/2022_Chain_of_Thought_Prompting.pdf
+   → Fundação de reasoning em LLMs
+   → Como Chain-of-Thought funciona
+   → ~1 hora
+
+2. Papers_Reasoning_Agents/2025_Efficient_Reasoning_Models_Survey.pdf
+   → Survey sobre reasoning models (o1-style)
+   → Extended CoT, reinforcement learning
+   → ~1.5 horas
+
+TARDE - AVANÇOS RECENTES:
+
+3. Papers_Reasoning_Agents/2025_Deep_Research_Agents_Systematic.pdf
+   → Deep Research (Gemini Deep Research)
+   → Agentic research assistant
+   → Multi-source retrieval (web, arXiv)
+   → ~1 hora
+
+4. Papers_Reasoning_Agents/2025_Search_o1_Agentic_Search.pdf
+   → Search-o1: Combina reasoning + search
+   → Addresses knowledge insufficiency
+   → ~1 hora
+
+5. Papers_Reasoning_Agents/2023_Reflexion_Verbal_Reinforcement.pdf
+   → Reflexion: Self-reflection
+   → Learning from mistakes
+   → Verbal reinforcement learning
+   → ~1 hora
+
+RESULTADO: Compreensão profunda de reasoning em agentes.
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 3: MULTI-AGENT SYSTEMS (1 dia)
+─────────────────────────────────────────────────────────────────────────────
+
+OBJETIVO: Entender sistemas com múltiplos agentes colaborando
+
+MANHÃ - FUNDAMENTOS:
+
+1. Surveys_Agents_2025/2024_Survey_Multi_Agents_Progress_Challenges.pdf
+   → Survey completo sobre multi-agent systems
+   → Single-agent → Multi-agent evolution
+   → ~2 horas
+
+2. Surveys_Agents_2025/2025_Multi_Agent_Collaboration_Mechanisms.pdf
+   → Mechanisms de colaboração
+   → Cooperation, Competition, Coopetition
+   → Coordination protocols
+   → ~1.5 horas
+
+TARDE - APLICAÇÕES:
+
+3. Papers_Multi_Agent/2023_Multi_Agent_Collaboration_Power.pdf
+   → Harnessing the power de múltiplos agentes
+   → ~1 hora
+
+4. Papers_Multi_Agent/2024_Scaling_Multi_Agent_Collaboration.pdf
+   → Scaling laws para multi-agent
+   → Collaborative emergence
+   → ~1 hora
+
+5. Papers_Multi_Agent/2024_Multi_Agent_Systems_Challenges.pdf
+   → Challenges and open problems
+   → Task allocation, context management
+   → ~1 hora
+
+RESULTADO: Capacidade de projetar sistemas multi-agent.
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 4: FRAMEWORKS E FERRAMENTAS (1 dia)
+─────────────────────────────────────────────────────────────────────────────
+
+OBJETIVO: Aprender frameworks práticos (LangGraph, memory, planning)
+
+MANHÃ - FRAMEWORKS:
+
+1. Surveys_Agents_2025/2024_Survey_Agentic_Workflows.pdf
+   → Survey sobre agentic workflows
+   → LangGraph, planning, feedback learning
+   → ~2 horas
+
+2. Papers_Agent_Frameworks/2024_Agent_AI_LangGraph.pdf
+   → LangGraph framework
+   → Graph-based agent workflows
+   → ~1 hora
+
+3. Papers_Agent_Frameworks/2025_Agentic_AI_Frameworks.pdf
+   → Arquiteturas, protocolos, design challenges
+   → ~1.5 horas
+
+TARDE - MEMORY SYSTEMS:
+
+4. Papers_Agent_Frameworks/2025_Multiple_Memory_Systems.pdf
+   → Short-term, Long-term, Episodic, Semantic
+   → ~1 hora
+
+5. Papers_Agent_Frameworks/2025_Episodic_Memory_LongTerm_Agents.pdf
+   → Episodic memory como missing piece
+   → ~1 hora
+
+6. Papers_Agent_Frameworks/2023_AgentBench_Evaluating_Agents.pdf
+   → Como avaliar agentes
+   → Benchmark com 8 environments
+   → ~1 hora
+
+RESULTADO: Capacidade de implementar agentes com frameworks modernos.
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 5: NOVOS MODELOS AGÊNTICOS (meio dia)
+─────────────────────────────────────────────────────────────────────────────
+
+OBJETIVO: Entender novos modelos (o1, Claude thinking, Gemini Deep Research)
+
+1. Papers_Reasoning_Agents/2025_Efficient_Reasoning_Models_Survey.pdf
+   → o1-style models
+   → Extended CoT, reinforcement learning
+   → ~1.5 horas
+
+2. Papers_Reasoning_Agents/2025_Deep_Research_Agents_Systematic.pdf
+   → Gemini Deep Research
+   → Agentic research assistant
+   → ~1 hora
+
+3. Papers_Reasoning_Agents/2025_Search_o1_Agentic_Search.pdf
+   → Search-o1: o1 + search
+   → ~1 hora
+
+4. Blogs e documentação:
+   - OpenAI o1 documentation
+   - Claude extended thinking
+   - Gemini Deep Research overview
+   → ~30 min
+
+RESULTADO: Conhecimento sobre cutting-edge reasoning models.
+
+─────────────────────────────────────────────────────────────────────────────
+ROTEIRO 6: DEEP DIVE COMPLETO (1 semana)
+─────────────────────────────────────────────────────────────────────────────
+
+Para quem quer dominar completamente agentes:
+
+DIA 1: Fundamentos (Roteiro 1)
+DIA 2: Reasoning Agents (Roteiro 2)
+DIA 3: Multi-Agent (Roteiro 3)
+DIA 4: Frameworks (Roteiro 4)
+DIA 5: Novos modelos (Roteiro 5)
+DIA 6: Implementação prática (código)
+DIA 7: Revisão e consolidação
+
+RESULTADO: Domínio completo de agentes de LLM.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📚 ESTRUTURA DE PASTAS E CONTEÚDO:
+
+📁 Surveys_Agents_2025/ (5 PDFs)
+   ├─ Survey LLM Autonomous Agents 2025 ⭐ (LEITURA OBRIGATÓRIA)
+   ├─ Survey Multi-Agents Progress 2024
+   ├─ Agent AI Multimodal Interaction 2024
+   ├─ Multi-Agent Collaboration Mechanisms 2025
+   └─ Survey Agentic Workflows 2024
+
+📁 Papers_Classic_Agents/ (3 PDFs)
+   ├─ ReAct 2022 ⭐ (PAPER SEMINAL)
+   ├─ AutoAgents Framework 2023
+   └─ Landscape Agent Architectures 2024 ⭐
+
+📁 Papers_Reasoning_Agents/ (6 PDFs)
+   ├─ Chain-of-Thought Prompting 2022 ⭐ (FUNDACIONAL)
+   ├─ Efficient Reasoning Models Survey 2025 ⭐
+   ├─ Deep Research Agents 2025 ⭐
+   ├─ Search-o1 Agentic Search 2025
+   ├─ Reflexion Verbal Reinforcement 2023
+   └─ Self-Reflection Problem Solving 2024
+
+📁 Papers_Multi_Agent/ (3 PDFs)
+   ├─ Multi-Agent Systems Challenges 2024
+   ├─ Multi-Agent Collaboration Power 2023
+   └─ Scaling Multi-Agent Collaboration 2024
+
+📁 Papers_Agent_Frameworks/ (7 PDFs)
+   ├─ Agent AI LangGraph 2024
+   ├─ Agentic AI Frameworks 2025
+   ├─ Multiple Memory Systems 2025
+   ├─ Episodic Memory LongTerm Agents 2025
+   ├─ ShortTerm Episodic Semantic Memory 2024
+   ├─ AgentBench Evaluating Agents 2023 ⭐
+   └─ Agents OpenSource Framework 2023
+
+TOTAL: 24 PDFs cobrindo toda a área de agentes LLM
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔑 CONCEITOS-CHAVE A DOMINAR:
+
+1. ANATOMIA DE UM AGENTE:
+   □ Profile: Persona, role, backstory
+   □ Memory: Short-term (context), Long-term (storage), Episodic
+   □ Planning: Task decomposition, scheduling
+   □ Action: Tool use, API calls, code execution
+   □ Perception: Observing environment, receiving feedback
+
+2. PADRÕES FUNDAMENTAIS:
+   □ ReAct: Thought → Action → Observation
+   □ Reflexion: Action → Reflection → Improvement
+   □ Chain-of-Thought: Step-by-step reasoning
+   □ Planning-then-Executing: Plan → Execute → Monitor
+
+3. MULTI-AGENT PATTERNS:
+   □ Cooperative: Agents work together toward common goal
+   □ Competitive: Agents compete (debate, adversarial)
+   □ Hierarchical: Manager-Worker structure
+   □ Decentralized: Peer-to-peer collaboration
+
+4. MEMORY TYPES:
+   □ Short-term: Context window (immediate)
+   □ Long-term: Vector database (persistent)
+   □ Episodic: Past experiences (trajectories)
+   □ Semantic: General knowledge (facts, concepts)
+   □ Procedural: How to do things (skills)
+
+5. REASONING TECHNIQUES:
+   □ Chain-of-Thought: Intermediate reasoning steps
+   □ Self-Consistency: Generate multiple paths, vote
+   □ Tree-of-Thoughts: Explore multiple branches
+   □ Reflection: Learn from mistakes
+
+6. TOOL USE:
+   □ Function calling: LLM calls predefined functions
+   □ API calls: REST APIs, web services
+   □ Code execution: Python interpreter, sandbox
+   □ Web browsing: Search, scrape, navigate
+
+7. PLANNING:
+   □ Single-path: Linear task list
+   □ Multi-path: Explore alternatives
+   □ Hierarchical: Tasks → Subtasks → Actions
+   □ Replanning: Adjust based on feedback
+
+8. EVALUATION:
+   □ Task success rate
+   □ Efficiency (steps, time, cost)
+   □ Robustness (error handling)
+   □ Safety (harmful actions)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 PAPERS POR IMPORTÂNCIA:
+
+LEITURA OBRIGATÓRIA (Must Read):
+→ 2022_ReAct_Reasoning_Acting_Synergizing.pdf ⭐⭐⭐⭐⭐
+  Paper SEMINAL, define ReAct pattern usado em todos agentes
+
+→ 2025_Survey_LLM_Autonomous_Agents.pdf ⭐⭐⭐⭐⭐
+  Survey completo e atualizado, framework unificado
+
+→ 2022_Chain_of_Thought_Prompting.pdf ⭐⭐⭐⭐⭐
+  Fundação de reasoning, essencial para entender reasoning agents
+
+→ 2024_Landscape_Agent_Architectures.pdf ⭐⭐⭐⭐⭐
+  Overview de todas arquiteturas de agentes (AutoGPT, BabyAGI, etc.)
+
+→ 2023_AgentBench_Evaluating_Agents.pdf ⭐⭐⭐⭐⭐
+  Como avaliar agentes, benchmark fundamental
+
+ALTAMENTE RECOMENDADO:
+→ 2025_Efficient_Reasoning_Models_Survey.pdf ⭐⭐⭐⭐
+  o1-style models, extended reasoning
+
+→ 2025_Deep_Research_Agents_Systematic.pdf ⭐⭐⭐⭐
+  Gemini Deep Research, agentic research assistant
+
+→ 2024_Survey_Multi_Agents_Progress_Challenges.pdf ⭐⭐⭐⭐
+  Multi-agent systems, colaboração
+
+→ 2024_Survey_Agentic_Workflows.pdf ⭐⭐⭐⭐
+  LangGraph e frameworks práticos
+
+→ 2023_Reflexion_Verbal_Reinforcement.pdf ⭐⭐⭐⭐
+  Self-reflection, learning from mistakes
+
+APROFUNDAMENTO:
+→ Restante dos 24 papers para tópicos específicos
+
+═══════════════════════════════════════════════════════════════════════════════
+
+💡 INSIGHTS PRINCIPAIS:
+
+1. AGENTES SÃO A PRÓXIMA FRONTEIRA DE LLMs
+   → LLMs puros: Apenas geram texto (passivos)
+   → Agentes: Percebem, raciocinam, agem, aprendem (ativos)
+   → Trend: De modelos para agentes autônomos
+
+2. ReAct É O PATTERN FUNDAMENTAL
+   → Thought → Action → Observation
+   → Usado em: AutoGPT, BabyAGI, LangChain, todos frameworks
+   → Combina reasoning + acting
+
+3. REASONING ESTÁ EVOLUINDO RAPIDAMENTE
+   → 2022: Chain-of-Thought via prompting
+   → 2024: Extended CoT via reinforcement learning (o1)
+   → 2025: Agentic reasoning + search (Deep Research, Search-o1)
+   → Trend: De prompting para trained reasoning models
+
+4. MULTI-AGENT > SINGLE-AGENT EM TASKS COMPLEXAS
+   → Debate entre agentes melhora qualidade
+   → Manager-Worker permite especialização
+   → Scaling law: Qualidade ↑ com número de agentes
+   → Mas: Comunicação e coordenação são desafios
+
+5. MEMORY É ESSENCIAL PARA AGENTES DE LONGO PRAZO
+   → Short-term: Context window (limitado)
+   → Long-term: Vector DB (escalável)
+   → Episodic: Experiências passadas (learn from mistakes)
+   → Missing piece: Episodic memory
+
+6. FRAMEWORKS ESTÃO AMADURECENDO
+   → LangGraph: Graph-based workflows, stateful
+   → CrewAI: Role-based multi-agent
+   → AutoGPT/BabyAGI: Autonomous task completion
+   → Trend: Low-level, controllable frameworks
+
+7. EVALUATION É DESAFIADORA
+   → AgentBench: 8 environments, holistic
+   → Challenges: Long-term reasoning, instruction following
+   → Gap: Commercial LLMs >> Open-source (<70B)
+
+8. NOVOS MODELOS AGÊNTICOS SÃO GAME-CHANGERS
+   → OpenAI o1: Extended CoT, trained com RL
+   → Claude Sonnet 4.5: Extended thinking mode
+   → Gemini Deep Research: Agentic research (web + arXiv)
+   → Trend: From prompting → trained reasoning
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎓 DICAS DE ESTUDO:
+
+ANTES DE LER OS PAPERS:
+1. Leia GUIA_COMPLETO_AGENTES.txt para contexto geral
+2. Escolha um roteiro baseado no seu objetivo
+3. Tenha em mente perguntas que quer responder
+
+DURANTE A LEITURA:
+1. Para cada paper, pergunte:
+   - Qual problema ele resolve?
+   - Qual é o insight central?
+   - Como difere de trabalhos anteriores?
+   - Quais são as limitações?
+
+2. Compare papers:
+   - ReAct vs Reflexion (action vs reflection)
+   - Single-agent vs Multi-agent
+   - Prompting CoT vs Trained reasoning (o1)
+
+3. Implemente exemplos:
+   - ReAct pattern em Python
+   - Simple agent com LangChain/LangGraph
+   - Multi-agent debate
+
+APÓS LEITURA:
+1. Desenhe diagramas de arquiteturas
+2. Compare diferentes abordagens
+3. Pense em aplicações práticas
+
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️ AVISOS IMPORTANTES:
+
+1. AGENTES SÃO MAIS CAROS QUE LLMs PUROS
+   - Múltiplas LLM calls (Thought → Action → Observation)
+   - Tool executions (APIs, code, search)
+   - Consider: Task complexity vs cost
+
+2. AGENTES PODEM FALHAR
+   - Error propagation (erro em step N afeta steps seguintes)
+   - Hallucination em tools/APIs
+   - Infinite loops se mal desenhados
+   - SEMPRE implemente: Max steps, timeouts, error handling
+
+3. SAFETY É CRÍTICA
+   - Agentes podem executar código, chamar APIs, modificar arquivos
+   - Sandbox ambientes
+   - Validate actions antes de executar
+   - Human-in-the-loop para ações críticas
+
+4. EVALUATION É DESAFIADORA
+   - Tasks complexas, múltiplas métricas
+   - Long-term reasoning difícil de medir
+   - Use benchmarks: AgentBench, etc.
+
+5. MULTI-AGENT ADICIONA COMPLEXIDADE
+   - Communication overhead
+   - Conflict resolution
+   - Coordination protocols
+   - Start com single-agent, scale depois
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📞 PRÓXIMOS PASSOS:
+
+1. DECISÃO RÁPIDA (5 min):
+   Qual roteiro se alinha com seu objetivo?
+
+2. LEITURA INICIAL (30 min):
+   Leia GUIA_COMPLETO_AGENTES.txt para overview
+
+3. PRIMEIRA SESSÃO (2-3h):
+   Siga Roteiro 1 (Fundamentos)
+
+4. APROFUNDAMENTO:
+   Escolha roteiros 2-5 baseado em interesse
+
+5. PRÁTICA:
+   Implemente agents usando LangChain/LangGraph
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✨ BOM ESTUDO!
+
+Esta coleção cobre o estado da arte em Agentes de LLM:
+• Agentes clássicos: ReAct, AutoGPT, BabyAGI
+• Reasoning agents: Chain-of-Thought, o1, Deep Research
+• Multi-agent systems: Colaboração, debate, hierarchical
+• Frameworks: LangGraph, memory systems, planning
+• Novos modelos: o1, Claude extended thinking, Gemini Deep Research
+
+Agentes representam a próxima fronteira de LLMs.
+De modelos passivos (geram texto) para agentes ativos (percebem, raciocinam, agem).
+
+Dúvidas? Consulte os arquivos de documentação.
+
+═══════════════════════════════════════════════════════════════════════════════
+Compilado em: 02 de novembro de 2025
+Versão: 1.0

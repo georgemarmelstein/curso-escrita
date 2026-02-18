@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Marmelstein - Proposta A: Timeline Horizontal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --gold-muted: rgba(190, 156, 109, 0.4);
+            --cream: #FFF4E4;
+            --cream-soft: rgba(255, 244, 228, 0.8);
+            --dark: #0a0a12;
+            --phase-1: #fbbf24;
+            --phase-2: #22d3ee;
+            --phase-3: #a78bfa;
+            --phase-4: #60a5fa;
+            --phase-5: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3vh 4vw;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 60vh;
+            background: radial-gradient(ellipse, rgba(190, 156, 109, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            gap: 4vh;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 1vw, 0.95rem);
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 1vh;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .timeline-wrapper {
+            position: relative;
+            padding: 2vh 0;
+        }
+
+        .timeline-thread {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 3px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--gold-muted) 10%,
+                var(--gold-muted) 90%,
+                transparent 100%
+            );
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .phases {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .phase {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.5;
+            flex: 1;
+        }
+
+        .phase:hover { opacity: 0.8; }
+        .phase.active { opacity: 1; flex: 1.3; }
+
+        .phase-marker {
+            width: clamp(50px, 6vw, 70px);
+            height: clamp(50px, 6vw, 70px);
+            border-radius: 50%;
+            background: var(--dark);
+            border: 3px solid var(--gold-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 700;
+            color: var(--cream);
+            transition: all 0.4s ease;
+            margin-bottom: 1.5vh;
+        }
+
+        .phase.active .phase-marker {
+            transform: scale(1.15);
+            box-shadow:
+                0 0 0 4px var(--dark),
+                0 0 0 6px var(--phase-color),
+                0 0 30px rgba(190, 156, 109, 0.4);
+        }
+
+        .phase[data-phase="1"] { --phase-color: var(--phase-1); }
+        .phase[data-phase="2"] { --phase-color: var(--phase-2); }
+        .phase[data-phase="3"] { --phase-color: var(--phase-3); }
+        .phase[data-phase="4"] { --phase-color: var(--phase-4); }
+        .phase[data-phase="5"] { --phase-color: var(--phase-5); }
+
+        .phase.active .phase-marker {
+            border-color: var(--phase-color);
+            color: var(--phase-color);
+        }
+
+        .phase-name {
+            font-size: clamp(0.85rem, 1.2vw, 1.1rem);
+            font-weight: 600;
+            color: var(--cream);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .phase-tool {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            color: var(--gold);
+            margin-top: 0.5vh;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .phase.active .phase-tool {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .detail-card {
+            background: rgba(20, 20, 30, 0.9);
+            border: 2px solid var(--gold-muted);
+            border-radius: 16px;
+            padding: 3vh 3vw;
+            min-height: 25vh;
+            transition: all 0.4s ease;
+        }
+
+        .detail-card.active {
+            border-color: var(--phase-color);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5vw;
+            margin-bottom: 2vh;
+        }
+
+        .detail-icon {
+            font-size: clamp(2rem, 3.5vw, 3rem);
+        }
+
+        .detail-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.4rem, 2.5vw, 2rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .detail-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.8rem, 1vw, 0.95rem);
+            color: var(--gold);
+            margin-top: 0.5vh;
+        }
+
+        .detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2vw;
+        }
+
+        .detail-section h4 {
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            font-weight: 600;
+            color: var(--cream-soft);
+            margin-bottom: 1vh;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .detail-section p, .detail-section li {
+            font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.6;
+        }
+
+        .detail-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .detail-section li {
+            padding-left: 1.5em;
+            position: relative;
+            margin-bottom: 0.5vh;
+        }
+
+        .detail-section li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+        }
+
+        .nav-hint {
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.4);
+            margin-top: 2vh;
+        }
+
+        .nav-hint kbd {
+            background: rgba(255, 244, 228, 0.1);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            margin: 0 0.3em;
+        }
+
+        /* Animations */
+        .phase {
+            opacity: 0;
+            animation: phaseAppear 0.5s ease forwards;
+        }
+        .phase:nth-child(1) { animation-delay: 0.1s; }
+        .phase:nth-child(2) { animation-delay: 0.2s; }
+        .phase:nth-child(3) { animation-delay: 0.3s; }
+        .phase:nth-child(4) { animation-delay: 0.4s; }
+        .phase:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes phaseAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 0.5; transform: translateY(0); }
+        }
+
+        .phase.active {
+            animation: none;
+            opacity: 1;
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 2vh 3vw; }
+        body.embed-mode .header-title { font-size: clamp(1.4rem, 2.5vw, 2rem); }
+        body.embed-mode .phase-marker { width: clamp(40px, 5vw, 55px); height: clamp(40px, 5vw, 55px); }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Metodologia de Desenvolvimento</div>
+            <h1 class="header-title">Sistema Marmelstein</h1>
+        </div>
+
+        <div class="timeline-wrapper">
+            <div class="timeline-thread"></div>
+            <div class="phases">
+                <div class="phase active" data-phase="1">
+                    <div class="phase-marker">1</div>
+                    <div class="phase-name">Brainstorming</div>
+                    <div class="phase-tool">SuperPack</div>
+                </div>
+                <div class="phase" data-phase="2">
+                    <div class="phase-marker">2</div>
+                    <div class="phase-name">Planejamento</div>
+                    <div class="phase-tool">Writing Plan</div>
+                </div>
+                <div class="phase" data-phase="3">
+                    <div class="phase-marker">3</div>
+                    <div class="phase-name">Especificação</div>
+                    <div class="phase-tool">SuperJurista</div>
+                </div>
+                <div class="phase" data-phase="4">
+                    <div class="phase-marker">4</div>
+                    <div class="phase-name">Implementação</div>
+                    <div class="phase-tool">Feature-Dev</div>
+                </div>
+                <div class="phase" data-phase="5">
+                    <div class="phase-marker">5</div>
+                    <div class="phase-name">Init</div>
+                    <div class="phase-tool">CLAUDE.md</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-card" id="detail-card">
+            <div class="detail-header">
+                <div class="detail-icon" id="detail-icon">💡</div>
+                <div>
+                    <div class="detail-title" id="detail-title">Brainstorming</div>
+                    <div class="detail-subtitle" id="detail-subtitle">SuperPack</div>
+                </div>
+            </div>
+            <div class="detail-content">
+                <div class="detail-section">
+                    <h4>O que acontece</h4>
+                    <p id="detail-desc">Geração livre de ideias e exploração do problema. O agente questiona, sugere alternativas e refina conceitos antes de qualquer código.</p>
+                </div>
+                <div class="detail-section">
+                    <h4>Entregáveis</h4>
+                    <ul id="detail-outputs">
+                        <li>Mapa de ideias refinado</li>
+                        <li>Decisões de arquitetura</li>
+                        <li>Riscos identificados</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-hint">
+            Clique nas etapas ou use <kbd>←</kbd> <kbd>→</kbd> para navegar
+        </div>
+    </div>
+
+    <script>
+        const phases = [
+            {
+                icon: "💡",
+                title: "Brainstorming",
+                tool: "SuperPack",
+                desc: "Geração livre de ideias e exploração do problema. O agente questiona, sugere alternativas e refina conceitos antes de qualquer código.",
+                outputs: ["Mapa de ideias refinado", "Decisões de arquitetura", "Riscos identificados"]
+            },
+            {
+                icon: "📋",
+                title: "Planejamento",
+                tool: "Writing Plan",
+                desc: "Transformação das ideias em tarefas ordenadas e dependências claras. Define o roteiro de implementação com checkpoints de validação.",
+                outputs: ["Lista de tarefas priorizadas", "Dependências mapeadas", "Critérios de aceite"]
+            },
+            {
+                icon: "📜",
+                title: "Especificação",
+                tool: "SuperJurista",
+                desc: "Formalização dos requisitos em linguagem precisa. Documenta regras de negócio, restrições e comportamentos esperados.",
+                outputs: ["Documento de especificação", "Regras de negócio formais", "Casos de uso detalhados"]
+            },
+            {
+                icon: "🔨",
+                title: "Implementação",
+                tool: "Feature-Dev",
+                desc: "Ciclo de três fases: Exploração (entender código existente), Implementação (escrever código), Revisão (validar qualidade).",
+                outputs: ["Código implementado", "Testes automatizados", "Code review aprovado"]
+            },
+            {
+                icon: "📁",
+                title: "Init",
+                tool: "CLAUDE.md",
+                desc: "Documentação do projeto para futuras sessões. Registra decisões, padrões adotados e instruções para o agente.",
+                outputs: ["CLAUDE.md atualizado", "README documentado", "Padrões registrados"]
+            }
+        ];
+
+        let currentPhase = 0;
+        const phaseElements = document.querySelectorAll('.phase');
+        const detailCard = document.getElementById('detail-card');
+
+        function updateDetail(index) {
+            const phase = phases[index];
+            const phaseColor = getComputedStyle(phaseElements[index]).getPropertyValue('--phase-color');
+
+            document.getElementById('detail-icon').textContent = phase.icon;
+            document.getElementById('detail-title').textContent = phase.title;
+            document.getElementById('detail-subtitle').textContent = phase.tool;
+            document.getElementById('detail-desc').textContent = phase.desc;
+
+            const outputsList = document.getElementById('detail-outputs');
+            outputsList.innerHTML = phase.outputs.map(o => `<li>${o}</li>`).join('');
+
+            detailCard.style.setProperty('--phase-color', phaseColor);
+            detailCard.classList.add('active');
+        }
+
+        function setActivePhase(index) {
+            phaseElements.forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+            currentPhase = index;
+            updateDetail(index);
+        }
+
+        phaseElements.forEach((el, i) => {
+            el.addEventListener('click', () => setActivePhase(i));
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                setActivePhase((currentPhase + 1) % phases.length);
+            } else if (e.key === 'ArrowLeft') {
+                setActivePhase((currentPhase - 1 + phases.length) % phases.length);
+            }
+        });
+
+        // Initialize
+        updateDetail(0);
+
+        // Embed mode detection
+        try {
+            if (window.self !== window.top) {
+                document.body.classList.add('embed-mode');
+            }
+        } catch (e) {
+            document.body.classList.add('embed-mode');
+        }
+    </script>
+</body>
+</html>

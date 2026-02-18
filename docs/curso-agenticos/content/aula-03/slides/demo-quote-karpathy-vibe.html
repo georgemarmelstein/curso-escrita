@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Quote Karpathy (Vibe Coding)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #050508;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CRT Scanlines - subtle */
+        .crt-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.15) 2px,
+                rgba(0, 0, 0, 0.15) 4px
+            );
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Vignette dramática */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 20%,
+                rgba(0, 0, 0, 0.4) 60%,
+                rgba(0, 0, 0, 0.8) 100%);
+            pointer-events: none;
+            z-index: 90;
+        }
+
+        /* Glow de fundo */
+        .bg-glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120vw;
+            height: 120vh;
+            background: radial-gradient(ellipse at center,
+                rgba(239, 68, 68, 0.08) 0%,
+                transparent 50%);
+            z-index: 0;
+        }
+
+        /* Container fullscreen */
+        .container {
+            position: relative;
+            z-index: 50;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5vh 8vw;
+        }
+
+        /* Terminal prompt no topo */
+        .prompt-line {
+            position: absolute;
+            top: 4vh;
+            left: 5vw;
+            font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+            color: var(--super-green);
+            opacity: 0;
+            animation: typeIn 0.5s ease 0.2s forwards;
+        }
+
+        @keyframes typeIn {
+            to { opacity: 0.8; }
+        }
+
+        .prompt { color: var(--super-green); }
+        .command { color: var(--super-amber); }
+        .cursor {
+            display: inline-block;
+            width: 0.6em;
+            height: 1.2em;
+            background: var(--super-green);
+            animation: cursorBlink 1s step-end infinite;
+            margin-left: 4px;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes cursorBlink {
+            50% { opacity: 0; }
+        }
+
+        /* Quote principal - MASSIVO */
+        .quote-container {
+            text-align: center;
+            max-width: 90vw;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.5rem, 6vw, 5.5rem);
+            font-weight: 600;
+            color: var(--super-cream);
+            line-height: 1.25;
+            opacity: 0;
+            animation: glitchReveal 1s ease 0.5s forwards;
+        }
+
+        @keyframes glitchReveal {
+            0% { opacity: 0; transform: translateX(-10px); }
+            20% { opacity: 1; transform: translateX(5px); filter: hue-rotate(90deg); }
+            40% { transform: translateX(-3px); filter: hue-rotate(-90deg); }
+            60% { transform: translateX(3px); filter: hue-rotate(0deg); }
+            80% { transform: translateX(-1px); }
+            100% { opacity: 1; transform: translateX(0); filter: hue-rotate(0deg); }
+        }
+
+        .highlight {
+            color: var(--super-amber);
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0.05em;
+            left: 0;
+            width: 100%;
+            height: 0.08em;
+            background: var(--super-amber);
+            opacity: 0.6;
+        }
+
+        /* Original em inglês - discreto */
+        .original-container {
+            margin-top: 4vh;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.2s forwards;
+        }
+
+        .original-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1.1vw, 0.95rem);
+            font-style: italic;
+            color: rgba(255, 244, 228, 0.35);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Autor */
+        .author-container {
+            margin-top: 5vh;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.5s forwards;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.2rem, 2vw, 1.6rem);
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 0.05em;
+        }
+
+        .author-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.75rem, 1.2vw, 1rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 0.5em;
+        }
+
+        /* Warning bar no fundo */
+        .warning-bar {
+            position: absolute;
+            bottom: 4vh;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1.2vh 3vw;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            opacity: 0;
+            animation: warningPulse 1s ease 2s forwards;
+        }
+
+        @keyframes warningPulse {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            75% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .warning-icon {
+            color: var(--super-red);
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .warning-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.9rem);
+            color: var(--super-red);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* Embed mode - ajustes para iframe */
+        body.embed-mode .quote-text {
+            font-size: clamp(2rem, 5vw, 4rem);
+        }
+        body.embed-mode .container {
+            padding: 4vh 6vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-bg"></div>
+    <div class="vignette"></div>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <div class="prompt-line">
+            <span class="prompt">$</span> <span class="command">describe --method vibe-coding</span><span class="cursor"></span>
+        </div>
+
+        <div class="quote-container">
+            <p class="quote-text">
+                <span class="highlight">Vibe coding</span> é quando você está apenas deixando rolar com a IA e vendo o que acontece.
+            </p>
+        </div>
+
+        <div class="original-container">
+            <p class="original-text">
+                "Vibe coding is when you're just kind of vibing with the AI and seeing what happens."
+            </p>
+        </div>
+
+        <div class="author-container">
+            <div class="author-name">Andrej Karpathy</div>
+            <div class="author-title">Ex-Director of AI @ Tesla • Fevereiro 2025</div>
+        </div>
+
+        <div class="warning-bar">
+            <span class="warning-icon">⚠</span>
+            <span class="warning-text">Anti-pattern detectado</span>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

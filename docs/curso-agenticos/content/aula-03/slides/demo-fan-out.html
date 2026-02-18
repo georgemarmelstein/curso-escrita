@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fan-Out / Fan-In - Paralelizacao</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+            --super-blue: #60a5fa;
+            --super-purple: #a78bfa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Container do diagrama */
+        .diagram-container {
+            position: relative;
+            width: 800px;
+            height: 450px;
+        }
+
+        /* Nos do diagrama */
+        .node {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+
+        .node.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .node.active {
+            transform: scale(1.05);
+        }
+
+        .node-box {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .node.active .node-box {
+            border-color: var(--super-gold);
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.3);
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .node-label {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Posicoes dos nos */
+        .node.task { top: 0; left: 50%; transform: translateX(-50%); }
+        .node.task.visible { transform: translateX(-50%) scale(1); }
+        .node.task.active { transform: translateX(-50%) scale(1.05); }
+
+        .node.sub1 { top: 140px; left: 15%; }
+        .node.sub2 { top: 140px; left: 50%; transform: translateX(-50%); }
+        .node.sub2.visible { transform: translateX(-50%) scale(1); }
+        .node.sub2.active { transform: translateX(-50%) scale(1.05); }
+        .node.sub3 { top: 140px; right: 15%; }
+
+        .node.result1 { top: 260px; left: 15%; }
+        .node.result2 { top: 260px; left: 50%; transform: translateX(-50%); }
+        .node.result2.visible { transform: translateX(-50%) scale(1); }
+        .node.result2.active { transform: translateX(-50%) scale(1.05); }
+        .node.result3 { top: 260px; right: 15%; }
+
+        .node.consolidator { top: 380px; left: 50%; transform: translateX(-50%); }
+        .node.consolidator.visible { transform: translateX(-50%) scale(1); }
+        .node.consolidator.active { transform: translateX(-50%) scale(1.05); }
+
+        /* Cores especificas */
+        .node.task .node-box { border-color: var(--super-gold); color: var(--super-gold); }
+        .node.sub1 .node-box, .node.sub2 .node-box, .node.sub3 .node-box {
+            border-color: var(--super-blue);
+            color: var(--super-blue);
+        }
+        .node.result1 .node-box, .node.result2 .node-box, .node.result3 .node-box {
+            border-color: var(--super-green);
+            color: var(--super-green);
+        }
+        .node.consolidator .node-box {
+            border-color: var(--super-purple);
+            color: var(--super-purple);
+        }
+
+        /* Linhas de conexao */
+        .connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .connection {
+            stroke: rgba(190, 156, 109, 0.3);
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+            transition: stroke-dashoffset 0.8s ease;
+        }
+
+        .connection.active {
+            stroke-dashoffset: 0;
+            stroke: var(--super-gold);
+        }
+
+        .connection.fan-out { stroke: var(--super-blue); }
+        .connection.process { stroke: var(--super-green); }
+        .connection.fan-in { stroke: var(--super-purple); }
+
+        /* Labels de fase */
+        .phase-label {
+            position: absolute;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .phase-label.visible { opacity: 1; }
+
+        .phase-label.fan-out {
+            top: 100px;
+            right: 30px;
+            color: var(--super-blue);
+        }
+
+        .phase-label.fan-in {
+            top: 340px;
+            right: 30px;
+            color: var(--super-purple);
+        }
+
+        /* Info box */
+        .info-box {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 25px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 8px;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.7);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .info-box.visible { opacity: 1; }
+        .info-box .highlight { color: var(--super-gold); font-weight: 600; }
+
+        /* Nav indicator */
+        .nav-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode h1 { font-size: 1.2em; margin-bottom: 20px; }
+        body.embed-mode .diagram-container { width: 700px; height: 380px; }
+        body.embed-mode .node-box { padding: 10px 18px; font-size: 0.75em; }
+        body.embed-mode .node.task { top: 0; }
+        body.embed-mode .node.sub1, body.embed-mode .node.sub2, body.embed-mode .node.sub3 { top: 110px; }
+        body.embed-mode .node.result1, body.embed-mode .node.result2, body.embed-mode .node.result3 { top: 210px; }
+        body.embed-mode .node.consolidator { top: 310px; }
+        body.embed-mode .info-box { bottom: 10px; padding: 10px 18px; font-size: 0.7em; }
+    </style>
+</head>
+<body>
+    <h1>Padrao Fan-Out / Fan-In</h1>
+
+    <div class="diagram-container">
+        <!-- SVG connections -->
+        <svg class="connections" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet">
+            <!-- Fan-out lines -->
+            <path class="connection fan-out" id="conn1" d="M 400 60 Q 200 100 150 130" />
+            <path class="connection fan-out" id="conn2" d="M 400 60 L 400 130" />
+            <path class="connection fan-out" id="conn3" d="M 400 60 Q 600 100 650 130" />
+
+            <!-- Process lines -->
+            <path class="connection process" id="conn4" d="M 150 190 L 150 250" />
+            <path class="connection process" id="conn5" d="M 400 190 L 400 250" />
+            <path class="connection process" id="conn6" d="M 650 190 L 650 250" />
+
+            <!-- Fan-in lines -->
+            <path class="connection fan-in" id="conn7" d="M 150 310 Q 200 350 400 370" />
+            <path class="connection fan-in" id="conn8" d="M 400 310 L 400 370" />
+            <path class="connection fan-in" id="conn9" d="M 650 310 Q 600 350 400 370" />
+        </svg>
+
+        <!-- Nodes -->
+        <div class="node task" id="task">
+            <div class="node-box">TAREFA COMPLEXA</div>
+            <span class="node-label">Input</span>
+        </div>
+
+        <div class="node sub1" id="sub1">
+            <div class="node-box">Subagent 1</div>
+        </div>
+        <div class="node sub2" id="sub2">
+            <div class="node-box">Subagent 2</div>
+        </div>
+        <div class="node sub3" id="sub3">
+            <div class="node-box">Subagent 3</div>
+        </div>
+
+        <div class="node result1" id="result1">
+            <div class="node-box">Result 1</div>
+        </div>
+        <div class="node result2" id="result2">
+            <div class="node-box">Result 2</div>
+        </div>
+        <div class="node result3" id="result3">
+            <div class="node-box">Result 3</div>
+        </div>
+
+        <div class="node consolidator" id="consolidator">
+            <div class="node-box">CONSOLIDADOR</div>
+            <span class="node-label">Output</span>
+        </div>
+
+        <!-- Phase labels -->
+        <div class="phase-label fan-out" id="labelFanOut">FAN-OUT<br>(divergencia)</div>
+        <div class="phase-label fan-in" id="labelFanIn">FAN-IN<br>(convergencia)</div>
+
+        <!-- Info boxes -->
+        <div class="info-box" id="info1">
+            Tarefa <span class="highlight">dividida</span> em partes independentes
+        </div>
+        <div class="info-box" id="info2">
+            Subagentes trabalham <span class="highlight">em paralelo</span>
+        </div>
+        <div class="info-box" id="info3">
+            Resultados <span class="highlight">consolidados</span> em output final
+        </div>
+        <div class="info-box" id="info4">
+            Meta: <span class="highlight">90%</span> automação (não 100%)
+        </div>
+    </div>
+
+    <div class="nav-indicator">
+        <div class="nav-dot" data-stage="0"></div>
+        <div class="nav-dot" data-stage="1"></div>
+        <div class="nav-dot" data-stage="2"></div>
+        <div class="nav-dot" data-stage="3"></div>
+        <div class="nav-dot" data-stage="4"></div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Elements
+        const nodes = {
+            task: document.getElementById('task'),
+            sub1: document.getElementById('sub1'),
+            sub2: document.getElementById('sub2'),
+            sub3: document.getElementById('sub3'),
+            result1: document.getElementById('result1'),
+            result2: document.getElementById('result2'),
+            result3: document.getElementById('result3'),
+            consolidator: document.getElementById('consolidator')
+        };
+
+        const connections = {
+            conn1: document.getElementById('conn1'),
+            conn2: document.getElementById('conn2'),
+            conn3: document.getElementById('conn3'),
+            conn4: document.getElementById('conn4'),
+            conn5: document.getElementById('conn5'),
+            conn6: document.getElementById('conn6'),
+            conn7: document.getElementById('conn7'),
+            conn8: document.getElementById('conn8'),
+            conn9: document.getElementById('conn9')
+        };
+
+        const labels = {
+            fanOut: document.getElementById('labelFanOut'),
+            fanIn: document.getElementById('labelFanIn')
+        };
+
+        const infos = {
+            info1: document.getElementById('info1'),
+            info2: document.getElementById('info2'),
+            info3: document.getElementById('info3'),
+            info4: document.getElementById('info4')
+        };
+
+        const navDots = document.querySelectorAll('.nav-dot');
+        let currentStage = 0;
+
+        function hideAll() {
+            Object.values(nodes).forEach(n => n.classList.remove('visible', 'active'));
+            Object.values(connections).forEach(c => c.classList.remove('active'));
+            Object.values(labels).forEach(l => l.classList.remove('visible'));
+            Object.values(infos).forEach(i => i.classList.remove('visible'));
+        }
+
+        function setStage(stage) {
+            currentStage = stage;
+            hideAll();
+
+            navDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === stage);
+            });
+
+            if (stage === 0) {
+                // Show task
+                nodes.task.classList.add('visible', 'active');
+                infos.info1.classList.add('visible');
+            } else if (stage === 1) {
+                // Fan-out
+                nodes.task.classList.add('visible');
+                nodes.sub1.classList.add('visible', 'active');
+                nodes.sub2.classList.add('visible', 'active');
+                nodes.sub3.classList.add('visible', 'active');
+                connections.conn1.classList.add('active');
+                connections.conn2.classList.add('active');
+                connections.conn3.classList.add('active');
+                labels.fanOut.classList.add('visible');
+                infos.info2.classList.add('visible');
+            } else if (stage === 2) {
+                // Processing
+                nodes.task.classList.add('visible');
+                nodes.sub1.classList.add('visible');
+                nodes.sub2.classList.add('visible');
+                nodes.sub3.classList.add('visible');
+                nodes.result1.classList.add('visible', 'active');
+                nodes.result2.classList.add('visible', 'active');
+                nodes.result3.classList.add('visible', 'active');
+                connections.conn1.classList.add('active');
+                connections.conn2.classList.add('active');
+                connections.conn3.classList.add('active');
+                connections.conn4.classList.add('active');
+                connections.conn5.classList.add('active');
+                connections.conn6.classList.add('active');
+                labels.fanOut.classList.add('visible');
+            } else if (stage === 3) {
+                // Fan-in
+                nodes.task.classList.add('visible');
+                nodes.sub1.classList.add('visible');
+                nodes.sub2.classList.add('visible');
+                nodes.sub3.classList.add('visible');
+                nodes.result1.classList.add('visible');
+                nodes.result2.classList.add('visible');
+                nodes.result3.classList.add('visible');
+                nodes.consolidator.classList.add('visible', 'active');
+                Object.values(connections).forEach(c => c.classList.add('active'));
+                labels.fanOut.classList.add('visible');
+                labels.fanIn.classList.add('visible');
+                infos.info3.classList.add('visible');
+            } else if (stage === 4) {
+                // Complete + insight
+                Object.values(nodes).forEach(n => n.classList.add('visible'));
+                Object.values(connections).forEach(c => c.classList.add('active'));
+                labels.fanOut.classList.add('visible');
+                labels.fanIn.classList.add('visible');
+                infos.info4.classList.add('visible');
+            }
+        }
+
+        function nextStage() {
+            setStage((currentStage + 1) % 5);
+        }
+
+        // Initialize
+        setStage(0);
+
+        // Event handlers
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-dot')) {
+                setStage(parseInt(e.target.closest('.nav-dot').dataset.stage));
+                return;
+            }
+            nextStage();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (document.body.classList.contains('embed-mode')) return;
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setStage(currentStage <= 0 ? 4 : currentStage - 1);
+            }
+        });
+
+        window.addEventListener('message', (e) => {
+            if (e.data.action === 'nextStage') nextStage();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,608 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║                  📚 MATERIAL DE AULA 3 - JANELA DE CONTEXTO                   ║
+║                                                                               ║
+║                         🎯 COMECE POR AQUI! 🎯                                ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+==============================================================================
+                           📋 O QUE VOCÊ TEM AQUI
+==============================================================================
+
+✅ 35 PDFs científicos organizados em 4 categorias:
+   📊 4 Surveys de 2025 (visão geral atualizada)
+   🔬 16 Papers de 2025 (pesquisas mais recentes)
+   📈 5 Benchmarks (como medir contexto longo)
+   📖 10 Papers Fundamentais 2023-2024 (base teórica)
+
+✅ Documentação completa:
+   📄 INDICE_COMPLETO_PDFS.md (este arquivo detalha TUDO)
+   📝 COMECE_AQUI.txt (guia rápido que você está lendo)
+
+✅ Total: ~600 páginas de conteúdo científico de alta qualidade
+
+==============================================================================
+                    🚀 INÍCIO RÁPIDO - 3 CENÁRIOS
+==============================================================================
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO 1: "Tenho 2 horas e preciso dar aula amanhã!" ⏰                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+→ LEIA APENAS ESTES 3 PAPERS (80 minutos):
+
+   1. Papers_Fundamentais/2023_Lost_in_the_Middle.pdf [30 min]
+      • O paper MAIS IMPORTANTE de todos
+      • Descobriu fenômeno "lost in the middle"
+      • LEIA: Introdução + Seção 3 (experimentos) + Conclusão
+      • Você PRECISA conhecer este paper
+
+   2. Papers_Fundamentais/2024_RULER_Real_Context_Size.pdf [20 min]
+      • Mostra que modelos mentem sobre suas capacidades
+      • Contexto "nominal" vs. "efetivo"
+      • LEIA: Introdução + Resultados principais + Figuras
+      • Gráficos são excelentes para slides
+
+   3. Papers_2025/2025_SWAT_Sliding_Window_Attention_Training.pdf [30 min]
+      • Exemplo técnico de sliding window attention
+      • Conceito central da aula
+      • LEIA: Introdução + Seção de método + Experimentos
+      • Use figuras para explicar sliding window
+
+→ FOLHEIE ESTE (20 minutos):
+
+   4. Surveys_2025/2025_Survey_Comprehensive_Long_Context_LM.pdf
+      • Apenas para números atualizados
+      • Veja tabelas com janelas de contexto de modelos populares
+      • Use para contextualização inicial da aula
+
+→ PREPARE (20 minutos):
+   • 1 slide explicando o que é janela de contexto
+   • 1 slide com gráfico em U do "lost in the middle"
+   • 1 slide explicando sliding window (use figuras do SWAT)
+   • 1 slide com números: GPT-4 (128K), Claude 3 (200K), Gemini (2M)
+
+✅ RESULTADO: Você terá conteúdo suficiente para 90 minutos de aula!
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO 2: "Tenho 1-2 dias para preparar bem" 📚                        │
+└─────────────────────────────────────────────────────────────────────────┘
+
+DIA 1 - MANHÃ (3-4 horas): Fundamentos
+
+   1. Papers_Fundamentais/2023_Lost_in_the_Middle.pdf [COMPLETO]
+   2. Papers_Fundamentais/2024_RULER_Real_Context_Size.pdf [COMPLETO]
+   3. Papers_Fundamentais/2023_Survey_In_Context_Learning.pdf
+      • Entenda in-context learning (ICL)
+      • ICL é o uso primário de janela de contexto
+
+DIA 1 - TARDE (3-4 horas): Estado da Arte
+
+   4. Surveys_2025/2025_Survey_Comprehensive_Long_Context_LM.pdf
+      • Visão completa do estado da arte
+      • Números atualizados de todos os modelos
+
+   5. Papers_Fundamentais/2023_Extending_Context_RoPE.pdf
+      • Técnica fundamental usada em Llama, GPT-4, etc.
+      • Entenda como modelos estendem contexto
+
+   6. Papers_Fundamentais/2024_Yarn_Efficient_Context_Extension.pdf
+      • Melhorias sobre RoPE
+      • Estado da arte em extensão de contexto
+
+DIA 2 - MANHÃ (3-4 horas): Técnicas e Aplicações
+
+   7. Papers_2025/2025_SWAT_Sliding_Window_Attention_Training.pdf
+   8. Papers_2025/2025_Context_Degradation_Analysis.pdf
+      • Como performance degrada com contexto longo
+
+   9. Papers_2025/2025_ReAttention_Infinite_Context.pdf
+      • Técnicas para contexto "infinito"
+
+   10. Papers_Fundamentais/2023_Longformer_Long_Document_Transformer.pdf
+       • Exemplo clássico de arquitetura para contexto longo
+
+DIA 2 - TARDE (2-3 horas): Benchmarks e Revisão
+
+   11. Benchmarks/2025_100_LongBench.pdf
+       • Como se mede capacidades de contexto longo
+
+   12. Benchmarks/2025_LongCodeBench_1M_Context.pdf
+       • Aplicação prática: análise de código
+
+   13. Revisão e preparação de slides
+
+✅ RESULTADO: Aula profunda e bem fundamentada!
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ CENÁRIO 3: "Quero dominar o tema completamente" 🎓                      │
+└─────────────────────────────────────────────────────────────────────────┘
+
+SEMANA 1: Fundamentos (10 papers)
+   → Todos os Papers Fundamentais (pasta Papers_Fundamentais/)
+   → Focus: Base teórica sólida
+
+SEMANA 2: Surveys e Visão Geral (4 papers)
+   → Todos os Surveys de 2025 (pasta Surveys_2025/)
+   → Focus: Estado da arte completo
+
+SEMANA 3: Pesquisas Recentes (16 papers)
+   → Todos os Papers 2025 (pasta Papers_2025/)
+   → Focus: Técnicas cutting-edge
+   → Sugestão: 3-4 papers por dia
+
+SEMANA 4: Benchmarks e Síntese (5 papers + síntese)
+   → Todos os Benchmarks (pasta Benchmarks/)
+   → Focus: Como medir e avaliar
+   → Prepare material didático final
+
+✅ RESULTADO: Você será um expert no tema!
+
+==============================================================================
+                        🎯 ESTRUTURA SUGERIDA DA AULA
+==============================================================================
+
+Com base nos 35 papers, aqui está uma estrutura testada:
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 1: Conceitos Fundamentais [30 min]                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • O que é janela de contexto?
+   • Por que existe limite de contexto?
+   • Evolução: 2K → 4K → 8K → 128K → 1M → 4M tokens
+   • Exemplos práticos: quantos tokens em diferentes textos
+
+   📚 Papers de apoio:
+      - Survey_Comprehensive_Long_Context_LM (seção 2)
+      - From_128K_to_4M
+
+   💡 Dica: Prepare slide com timeline da evolução
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 2: Limitações Práticas [30 min] ⚠️                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • Lost in the Middle 🎯 CONCEITO ESSENCIAL
+     - LLMs têm dificuldade com informação no meio do contexto
+     - Performance em formato de U
+     - Implicações para design de prompts
+
+   • Context Degradation
+     - Performance cai com contextos mais longos
+     - Nem sempre vale a pena usar contexto máximo
+
+   • Gap Nominal vs. Efetivo
+     - GPT-4 Turbo: 128K nominal, ~40K efetivo
+     - Marketing vs. realidade
+
+   📚 Papers de apoio:
+      - 2023_Lost_in_the_Middle ⭐ PAPER PRINCIPAL
+      - 2024_RULER ⭐ PAPER PRINCIPAL
+      - 2025_Context_Degradation_Analysis
+
+   💡 Dica: Mostre o gráfico em U do Lost in the Middle
+           É visual e memorável!
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 3: Sliding Window Attention [30 min] 🔧                           │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • O que é sliding window?
+   • Por que usar? (eficiência O(n) vs O(n²))
+   • Como funciona na prática?
+   • Trade-offs: eficiência vs. capacidade
+   • Tamanho ótimo de janela
+
+   📚 Papers de apoio:
+      - 2025_SWAT ⭐ PAPER PRINCIPAL
+      - 2023_Longformer (exemplo clássico)
+      - 2025_RATTENTION (otimização)
+
+   💡 Dica: Use animação/diagrama mostrando janela deslizando
+           Conceito visual facilita muito compreensão
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 4: In-Context Learning (ICL) [20 min] 🧠                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • O que é ICL?
+   • Como LLMs "aprendem" de exemplos no contexto
+   • Zero-shot vs. Few-shot vs. Many-shot
+   • Trade-offs: mais exemplos ≠ sempre melhor
+   • Limitado pela janela de contexto
+
+   📚 Papers de apoio:
+      - 2025_Survey_Few_Shot_Learning_ICL
+      - 2025_Survey_Understanding_ICL
+      - 2023_Survey_In_Context_Learning
+
+   💡 Dica: Demonstração ao vivo com GPT-4 ou Claude
+           Mostre 0-shot vs 3-shot vs 10-shot
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 5: Técnicas de Extensão [25 min] 🚀                               │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • RoPE (Rotary Position Embedding)
+     - Base usada em Llama, GPT-4, etc.
+     - Como estender além do treinamento
+
+   • YaRN (Yet another RoPE extensioN)
+     - Melhorias sobre RoPE básico
+
+   • LongRoPE
+     - Extensão até 2M tokens
+
+   • Outras técnicas
+     - Infini-attention (memória compressiva)
+     - ReAttention (contexto "infinito")
+
+   📚 Papers de apoio:
+      - 2023_Extending_Context_RoPE
+      - 2024_Yarn
+      - 2024_LongRoPE
+      - 2024_Infini_Attention
+      - 2025_ReAttention
+
+   💡 Dica: Foque em intuições, não matemática pesada
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 6: Aplicações Práticas [15 min] 💼                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • Análise de código (repositórios completos)
+   • Análise de documentos longos
+   • Conversações multi-turno
+   • RAG vs. contexto longo
+   • Edge devices (smartphones)
+
+   📚 Papers de apoio:
+      - 2025_LongCodeBench (código)
+      - 2025_EdgeInfinite (devices)
+      - 2025_3Million_Tokens_Single_GPU (democratização)
+
+   💡 Dica: Use exemplos concretos do dia-a-dia
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 7: Como Medir? Benchmarks [10 min] 📊                             │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • Por que benchmarks especializados?
+   • Principais benchmarks:
+     - RULER (mede contexto efetivo)
+     - LongBench (multitask)
+     - 100-LongBench (abrangente)
+     - LongCodeBench (código)
+
+   • Como interpretar resultados
+
+   📚 Papers de apoio:
+      - 2024_RULER
+      - 2025_100_LongBench
+      - 2025_LongCodeBench
+
+   💡 Dica: Mostre tabela comparativa de modelos
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PARTE 8: Futuro e Conclusões [10 min] 🔮                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+   • Para onde vamos?
+     - 10M tokens? 100M tokens?
+     - Contexto infinito será realidade?
+
+   • Trade-offs fundamentais
+     - Contexto vs. custo computacional
+     - Contexto vs. qualidade
+     - Quantidade vs. eficiência
+
+   • Recomendações práticas
+     - Quando usar contexto longo?
+     - Quando usar RAG?
+     - Como otimizar uso do contexto
+
+   📚 Papers de apoio:
+      - 2025_Unshackling_Context_Length
+      - 2025_LM2_Large_Memory_Models
+      - Survey_Comprehensive (seção final)
+
+   💡 Dica: Termine com provocação/pergunta para reflexão
+
+⏱️ TOTAL: ~150 minutos (2h30min) - Ajuste conforme seu tempo disponível
+
+==============================================================================
+                       📊 PAPERS OBRIGATÓRIOS POR TEMA
+==============================================================================
+
+Se você só puder ler POUCOS papers, escolha por tema de interesse:
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Conceitos Básicos                                                 │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. Survey_Comprehensive_Long_Context_LM ⭐⭐⭐
+   2. Lost_in_the_Middle (2023) ⭐⭐⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Limitações e Problemas                                            │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. Lost_in_the_Middle (2023) ⭐⭐⭐
+   2. RULER (2024) ⭐⭐⭐
+   3. Context_Degradation_Analysis (2025) ⭐⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Sliding Window                                                    │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. SWAT (2025) ⭐⭐⭐
+   2. Longformer (2023) ⭐⭐
+   3. RATTENTION (2025) ⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: In-Context Learning                                               │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. Survey_Few_Shot_Learning_ICL (2025) ⭐⭐⭐
+   2. Survey_Understanding_ICL (2025) ⭐⭐
+   3. Survey_In_Context_Learning (2023) ⭐⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Extensão de Contexto                                              │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. Extending_Context_RoPE (2023) ⭐⭐⭐
+   2. Yarn (2024) ⭐⭐
+   3. LongRoPE (2024) ⭐⭐
+   4. From_128K_to_4M (2025) ⭐⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Contexto Infinito                                                 │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. Infini_Attention (2024) ⭐⭐⭐
+   2. ReAttention (2025) ⭐⭐
+   3. LM2 (2025) ⭐⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Aplicações Práticas                                               │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. LongCodeBench (2025) ⭐⭐
+   2. 3Million_Tokens_Single_GPU (2025) ⭐⭐
+   3. EdgeInfinite (2025) ⭐
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TEMA: Benchmarks                                                        │
+└─────────────────────────────────────────────────────────────────────────┘
+   1. RULER (2024) ⭐⭐⭐
+   2. 100-LongBench (2025) ⭐⭐
+   3. LongBench (2024) ⭐
+
+⭐⭐⭐ = Leitura essencial
+⭐⭐ = Leitura recomendada
+⭐ = Leitura complementar
+
+==============================================================================
+                         💡 DICAS PRÁTICAS PARA A AULA
+==============================================================================
+
+✅ FAÇA:
+
+   → Use MUITOS exemplos visuais
+     • Diagramas de janela de contexto
+     • Gráfico em U do Lost in the Middle
+     • Animação de sliding window
+     • Comparação visual de tamanhos (2K vs 128K vs 1M)
+
+   → Demonstrações ao vivo
+     • ICL com diferentes números de exemplos
+     • Teste do Lost in the Middle (coloque info no meio)
+     • Compare resposta com contexto curto vs longo
+
+   → Use números concretos
+     • GPT-4 Turbo: 128K tokens
+     • Claude 3 Opus: 200K tokens
+     • Gemini 1.5 Pro: 2M tokens
+     • Custo por token de contexto
+
+   → Conecte com aulas anteriores
+     • Aula 1: LLMs como transformadores (contexto é input)
+     • Aula 2: Tokens (janela medida em tokens)
+
+   → Prepare analogias
+     • Janela de contexto = RAM do computador
+     • Sliding window = holofote em teatro escuro
+     • Lost in middle = atenção humana em palestras longas
+
+❌ EVITE:
+
+   → Matemática pesada sem necessidade
+     • Foque em intuições, não equações
+     • Se mostrar equação, explique em português depois
+
+   → Excesso de detalhes técnicos
+     • Implementação específica menos importante que conceito
+     • Alunos precisam entender "o quê" e "por quê", não "exatamente como"
+
+   → Comparações injustas de modelos
+     • Contexto não é única métrica de qualidade
+     • Mais contexto ≠ sempre melhor
+
+   → Prometer que entenderão tudo
+     • Área em rápida evolução
+     • Objetivo é dar fundamentos para acompanhar novidades
+
+==============================================================================
+                           🎓 EXERCÍCIOS SUGERIDOS
+==============================================================================
+
+EXERCÍCIO 1: Teste do Lost in the Middle
+   • Crie prompt com informação no início, meio e fim
+   • Teste com GPT-4/Claude
+   • Veja qual informação é usada na resposta
+   • Discussão: Como mitigar isso?
+
+EXERCÍCIO 2: Contagem de Tokens
+   • Dê textos de diferentes tamanhos
+   • Alunos estimam quantos tokens
+   • Verificam com tokenizer
+   • Discussão: Implicações práticas
+
+EXERCÍCIO 3: ICL com Diferentes Shots
+   • Mesma tarefa com 0, 1, 3, 5, 10 exemplos
+   • Compare qualidade e custo
+   • Encontre "sweet spot"
+   • Discussão: Quando vale usar many-shot?
+
+EXERCÍCIO 4: Análise de Benchmark
+   • Dê resultados de benchmark (ex: RULER)
+   • Alunos interpretam o que significa
+   • Compare contexto nominal vs efetivo
+   • Discussão: Como escolher modelo para sua aplicação?
+
+EXERCÍCIO 5: RAG vs Contexto Longo
+   • Cenário: Análise de 50 documentos
+   • Abordagem 1: Tudo no contexto
+   • Abordagem 2: RAG com recuperação
+   • Discussão: Quando usar cada abordagem?
+
+==============================================================================
+                          📈 MÉTRICAS E NÚMEROS-CHAVE
+==============================================================================
+
+JANELAS DE CONTEXTO (Outubro 2025):
+
+   GPT-3.5 Turbo.........: 16K tokens
+   GPT-4 Turbo...........: 128K tokens
+   Claude 3 Haiku........: 200K tokens
+   Claude 3 Sonnet.......: 200K tokens
+   Claude 3 Opus.........: 200K tokens
+   Gemini 1.5 Flash......: 1M tokens (2M experimental)
+   Gemini 1.5 Pro........: 2M tokens
+
+   Modelos open-source:
+   Llama 2...............: 4K tokens
+   Llama 3...............: 8K tokens (32K com extensão)
+   Mistral...............: 8K tokens (32K v2)
+   Yi....................: 200K tokens
+
+CUSTO APROXIMADO (por 1M tokens de contexto):
+
+   GPT-4 Turbo...........: $10 input
+   Claude 3 Opus.........: $15 input
+   Gemini 1.5 Pro........: $3.5 input (mais barato!)
+
+PERFORMANCE:
+
+   Contexto efetivo típico: 30-60% do nominal
+   Degradação típica: 10-30% em 100K+ tokens
+   Lost in middle: -40% accuracy para info no meio
+
+==============================================================================
+                      🔗 RECURSOS COMPLEMENTARES ÚTEIS
+==============================================================================
+
+FERRAMENTAS ONLINE:
+
+   • OpenAI Tokenizer: https://platform.openai.com/tokenizer
+     (Conte tokens de qualquer texto)
+
+   • LMSYS Chatbot Arena: https://chat.lmsys.org/
+     (Compare modelos lado a lado)
+
+TUTORIAIS E VÍDEOS:
+
+   • Andrej Karpathy - Atenção em Transformers
+   • 3Blue1Brown - Visualização de Attention
+   • Busque "sliding window attention visualization"
+
+CÓDIGO OPEN-SOURCE:
+
+   • Muitos papers incluem repositórios GitHub
+   • Veja seções "Code Availability" nos PDFs
+   • Útil para demonstrações técnicas
+
+ATUALIZAÇÕES:
+
+   • ArXiv: https://arxiv.org/list/cs.CL/recent
+     (Papers novos diariamente)
+
+   • Twitter/X: Siga pesquisadores da área
+     (Anúncios de modelos novos)
+
+==============================================================================
+                             ❓ PERGUNTAS FREQUENTES
+==============================================================================
+
+P: Preciso ler todos os 35 papers?
+R: NÃO! Use cenários acima. Mínimo 3-5 papers, ideal 10-15.
+
+P: Qual ordem de leitura?
+R: Siga ordem dos cenários acima. Fundamentos primeiro, depois aplicações.
+
+P: Papers de 2025 são peer-reviewed?
+R: Maioria ainda em review, mas metodologia é sólida e autores são credenciados.
+
+P: Posso pular a matemática?
+R: SIM! Foque em intuições, resultados e implicações práticas.
+
+P: Como citar nas referências?
+R: Formato ArXiv:
+   Autor et al., "Título", ArXiv:XXXX.XXXXX, Ano
+
+P: Preciso demonstrar código?
+R: Não obrigatório, mas demonstrações práticas enriquecem muito a aula.
+
+P: E se aluno perguntar algo que não está nos papers?
+R: OK não saber tudo! Área evolui rápido. Anote e prometa pesquisar.
+
+P: Papers muito técnicos, e agora?
+R: Foque em: Introdução, Resultados principais, Conclusão, Figuras.
+   Pule metodologia detalhada na primeira leitura.
+
+==============================================================================
+                              ✅ CHECKLIST FINAL
+==============================================================================
+
+Antes da aula, você deve ter:
+
+   [ ] Lido ao menos 5 papers (3 se tempo curto)
+   [ ] Preparado slides com conceitos principais
+   [ ] Coletado gráficos/figuras importantes dos papers
+   [ ] Preparado ao menos 1 demonstração prática
+   [ ] Listado números atualizados de janelas de contexto
+   [ ] Preparado exemplos visuais (diagramas, animações)
+   [ ] Preparado analogias para conceitos complexos
+   [ ] Testado exemplos de ICL e Lost in Middle
+   [ ] Preparado exercícios/quiz para alunos
+   [ ] Revisado conexões com aulas anteriores
+
+==============================================================================
+                            🎯 PRÓXIMOS PASSOS
+==============================================================================
+
+1. Escolha seu cenário de preparação (1, 2 ou 3)
+2. Abra INDICE_COMPLETO_PDFS.md para detalhes de cada paper
+3. Comece a ler papers na ordem sugerida
+4. Faça anotações e marque figuras importantes
+5. Prepare slides conforme avança na leitura
+6. Teste demonstrações práticas
+7. Revise checklist final
+
+==============================================================================
+
+         💬 "Context is king, but understanding its limits is wisdom"
+                              - Anonymous ML Researcher
+
+==============================================================================
+
+Última atualização: 31/10/2025
+Para: George Marmelstein
+Aula: 3 - Janela de Contexto
+
+                              BOA AULA! 🚀

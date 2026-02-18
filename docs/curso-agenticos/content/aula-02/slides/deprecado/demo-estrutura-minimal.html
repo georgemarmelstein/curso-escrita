@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrutura de Diretorios - Minimal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--super-bg-dark);
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-bottom: 50px;
+            animation: fadeIn 0.8s ease both;
+        }
+
+        .tree-container {
+            display: flex;
+            gap: 80px;
+            align-items: flex-start;
+        }
+
+        .tree {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            color: var(--super-cream);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 35px 45px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            line-height: 1.8;
+        }
+
+        .tree .folder {
+            color: var(--super-gold);
+        }
+
+        .tree .file {
+            color: var(--super-cream);
+            opacity: 0.7;
+        }
+
+        .tree .highlight {
+            color: var(--super-green);
+            font-weight: 500;
+        }
+
+        .tree .dim {
+            opacity: 0.3;
+        }
+
+        .tree-line {
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .description-card {
+            max-width: 350px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .description-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .description-card h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2em;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+        }
+
+        .description-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.6;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 30px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Embed mode */
+        body.embed-mode .tree { font-size: 0.9em; padding: 25px 30px; }
+        body.embed-mode .tree-container { gap: 50px; }
+        body.embed-mode .description-card { max-width: 280px; padding: 20px; }
+        body.embed-mode .description-card h3 { font-size: 1em; }
+        body.embed-mode .description-card p { font-size: 0.8em; }
+        body.embed-mode .title { font-size: 1.2em; margin-bottom: 35px; }
+    </style>
+</head>
+<body>
+    <div class="title">A Estrutura do Claude Code</div>
+
+    <div class="tree-container">
+        <div class="tree" id="tree"></div>
+        <div class="description-card" id="desc">
+            <h3>CLAUDE.md</h3>
+            <p>O coração do projeto. Aqui você define regras, preferências e contexto permanente que o Claude lê em cada sessão.</p>
+        </div>
+    </div>
+
+    <div class="hint">Clique para avançar</div>
+
+    <script>
+        const treeEl = document.getElementById('tree');
+        const descEl = document.getElementById('desc');
+
+        const stages = [
+            {
+                tree: `<span class="folder">projeto/</span>
+<span class="dim">├── ...</span>
+<span class="highlight tree-line" style="animation-delay: 0.1s">└── CLAUDE.md</span>`,
+                title: 'CLAUDE.md',
+                desc: 'O coração do projeto. Aqui você define regras, preferências e contexto permanente que o Claude lê em cada sessão.'
+            },
+            {
+                tree: `<span class="folder">projeto/</span>
+<span class="folder tree-line" style="animation-delay: 0.1s">├── .claude/</span>
+<span class="highlight tree-line" style="animation-delay: 0.2s">│   ├── commands/</span>
+<span class="dim tree-line" style="animation-delay: 0.3s">│   └── ...</span>
+<span class="file tree-line" style="animation-delay: 0.4s">└── CLAUDE.md</span>`,
+                title: 'commands/',
+                desc: 'Seus slash commands personalizados. Cada arquivo .md vira um /comando que você pode invocar.'
+            },
+            {
+                tree: `<span class="folder">projeto/</span>
+<span class="folder tree-line" style="animation-delay: 0.1s">├── .claude/</span>
+<span class="file tree-line" style="animation-delay: 0.2s">│   ├── commands/</span>
+<span class="highlight tree-line" style="animation-delay: 0.3s">│   ├── skills/</span>
+<span class="dim tree-line" style="animation-delay: 0.4s">│   └── ...</span>
+<span class="file tree-line" style="animation-delay: 0.5s">└── CLAUDE.md</span>`,
+                title: 'skills/',
+                desc: 'Capacidades reutilizáveis. Como "assessores especializados" que o Claude pode invocar para tarefas complexas.'
+            },
+            {
+                tree: `<span class="folder">projeto/</span>
+<span class="folder tree-line" style="animation-delay: 0.1s">├── .claude/</span>
+<span class="file tree-line" style="animation-delay: 0.2s">│   ├── commands/</span>
+<span class="file tree-line" style="animation-delay: 0.3s">│   ├── skills/</span>
+<span class="highlight tree-line" style="animation-delay: 0.4s">│   └── settings.json</span>
+<span class="file tree-line" style="animation-delay: 0.5s">├── CLAUDE.md</span>
+<span class="highlight tree-line" style="animation-delay: 0.6s">└── CLAUDE.local.md</span>`,
+                title: 'CLAUDE.local.md',
+                desc: 'Suas preferências pessoais que NÃO vão para o repositório. Ideal para configurações locais.'
+            }
+        ];
+
+        let current = 0;
+
+        function updateDisplay() {
+            const stage = stages[current];
+            treeEl.innerHTML = stage.tree;
+            descEl.querySelector('h3').textContent = stage.title;
+            descEl.querySelector('p').textContent = stage.desc;
+            descEl.classList.add('visible');
+        }
+
+        function next() {
+            current = (current + 1) % stages.length;
+            descEl.classList.remove('visible');
+            setTimeout(updateDisplay, 300);
+        }
+
+        // Click to advance
+        document.body.addEventListener('click', next);
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                next();
+            }
+        });
+
+        // Initial display
+        setTimeout(updateDisplay, 500);
+
+        // Embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

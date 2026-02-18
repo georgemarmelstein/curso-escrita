@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta A - Timeline Minimalista</title>
+
+    <!-- Google Fonts - Paleta SUPER -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           PALETA SUPER
+           ============================================ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        /* ============================================
+           LAYOUT BASE
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background com imagem desfocada */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&h=1080&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(0.3);
+            z-index: 0;
+        }
+
+        /* ============================================
+           CONTAINER PRINCIPAL
+           ============================================ */
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 1000px;
+            padding: 60px 40px;
+        }
+
+        /* Numeração */
+        .slide-number {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            font-weight: 700;
+            color: rgba(190, 156, 109, 0.2);
+            letter-spacing: 2px;
+        }
+
+        /* Título principal */
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--super-gold);
+            margin-bottom: 80px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9),
+                         0 0 20px rgba(0,0,0,0.8);
+            letter-spacing: 1px;
+        }
+
+        /* ============================================
+           TIMELINE HORIZONTAL
+           ============================================ */
+        .timeline {
+            position: relative;
+            margin: 100px auto;
+            max-width: 800px;
+        }
+
+        /* Linha base */
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(90deg,
+                var(--super-gold) 0%,
+                var(--super-gold-light) 50%,
+                var(--super-gold) 100%);
+            box-shadow: 0 0 15px rgba(190, 156, 109, 0.4);
+        }
+
+        /* Container dos marcadores */
+        .timeline-markers {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            padding: 0 10%;
+        }
+
+        /* Cada marcador */
+        .marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            z-index: 2;
+        }
+
+        /* Círculo do marcador */
+        .marker-dot {
+            width: 20px;
+            height: 20px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.6),
+                        0 0 40px rgba(190, 156, 109, 0.3);
+            position: relative;
+        }
+
+        /* Pulse animation */
+        .marker-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--super-gold);
+            border-radius: 50%;
+            animation: pulse 2s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            50% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.5);
+            }
+        }
+
+        /* Emoji do paradigma */
+        .marker-icon {
+            font-size: 3em;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+        }
+
+        /* Ano */
+        .marker-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8em;
+            font-weight: 500;
+            color: var(--super-gold);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        /* ============================================
+           SUBTÍTULO
+           ============================================ */
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 80px;
+            letter-spacing: 0.5px;
+            font-weight: 300;
+        }
+
+        /* ============================================
+           EMBED MODE (para Reveal.js)
+           ============================================ */
+        body.embed-mode {
+            min-height: 550px;
+        }
+
+        body.embed-mode .container {
+            padding: 40px 30px;
+        }
+
+        body.embed-mode .title {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+        }
+
+        body.embed-mode .slide-number {
+            font-size: 2.5em;
+            top: 25px;
+            right: 25px;
+        }
+
+        body.embed-mode .timeline {
+            margin: 60px auto;
+        }
+
+        body.embed-mode .marker-icon {
+            font-size: 2em;
+        }
+
+        body.embed-mode .marker-year {
+            font-size: 1.3em;
+        }
+
+        body.embed-mode .subtitle {
+            font-size: 0.95em;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-number">01</div>
+
+    <div class="container">
+        <h1 class="title">Três Paradigmas de Conhecimento</h1>
+
+        <div class="timeline">
+            <div class="timeline-line"></div>
+            <div class="timeline-markers">
+                <div class="marker">
+                    <div class="marker-icon">💬</div>
+                    <div class="marker-dot"></div>
+                    <div class="marker-year">2022</div>
+                </div>
+
+                <div class="marker">
+                    <div class="marker-icon">🧠</div>
+                    <div class="marker-dot"></div>
+                    <div class="marker-year">2023</div>
+                </div>
+
+                <div class="marker">
+                    <div class="marker-icon">🌐</div>
+                    <div class="marker-dot"></div>
+                    <div class="marker-year">2025</div>
+                </div>
+            </div>
+        </div>
+
+        <p class="subtitle">A história da IA generativa</p>
+    </div>
+
+    <script>
+        // Detectar se está em iframe (embed mode)
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

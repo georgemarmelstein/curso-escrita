@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Orquestrador e Subagentes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Left Panel */
+        .panel {
+            width: 170px;
+            flex-shrink: 0;
+        }
+
+        .panel-title {
+            color: var(--super-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.25);
+        }
+
+        .panel-section {
+            margin-bottom: 15px;
+        }
+
+        .section-label {
+            font-size: 0.7em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        /* Draggable items */
+        .draggable {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            font-size: 0.8em;
+            border: 2px solid;
+        }
+
+        .draggable:hover {
+            transform: translateX(4px);
+        }
+
+        .draggable:active {
+            cursor: grabbing;
+        }
+
+        .draggable.dragging {
+            opacity: 0.4;
+        }
+
+        .draggable .icon {
+            font-size: 1.1em;
+        }
+
+        /* Agent style */
+        .draggable.agent {
+            background: rgba(190, 156, 109, 0.15);
+            border-color: rgba(190, 156, 109, 0.4);
+            color: var(--super-gold-light);
+        }
+
+        .draggable.agent:hover {
+            border-color: var(--super-gold);
+            box-shadow: 0 3px 10px rgba(190, 156, 109, 0.3);
+        }
+
+        /* File items (draggable) */
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+            border-radius: 5px;
+            margin-bottom: 4px;
+            font-size: 0.7em;
+            border-left: 3px solid;
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+
+        .file-item:hover {
+            transform: translateX(4px);
+        }
+
+        .file-item:active {
+            cursor: grabbing;
+        }
+
+        .file-item.dragging {
+            opacity: 0.4;
+        }
+
+        .file-item .icon {
+            font-size: 1em;
+        }
+
+        .file-item.input {
+            background: rgba(190, 156, 109, 0.15);
+            border-left-color: var(--super-gold);
+            color: var(--super-gold-light);
+        }
+
+        .file-item.intermediate {
+            background: rgba(255, 244, 228, 0.08);
+            border-left-color: rgba(255, 244, 228, 0.4);
+            color: var(--super-cream);
+        }
+
+        .file-item.output {
+            background: rgba(74, 222, 128, 0.15);
+            border-left-color: #4ade80;
+            color: #86efac;
+        }
+
+        /* Main Area */
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Orchestrator */
+        /* Terminal-style Orchestrator */
+        .orchestrator {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .terminal-titlebar {
+            background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #222;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .terminal-btn.close { background: #ff5f56; }
+        .terminal-btn.minimize { background: #ffbd2e; }
+        .terminal-btn.maximize { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .terminal-title .mascot {
+            width: 18px;
+            height: 18px;
+            image-rendering: pixelated;
+        }
+
+        .orchestrator-body {
+            padding: 10px 12px;
+        }
+
+        .orchestrator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed #333;
+        }
+
+        .orchestrator-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #4ade80;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .orchestrator-title::before {
+            content: '$';
+            color: var(--super-gold);
+            font-weight: 700;
+        }
+
+        .orchestrator-title .mascot {
+            display: none;
+        }
+
+        .context-stats {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: #666;
+            background: rgba(0,0,0,0.3);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .context-stats span {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .context-window {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #222;
+            border-radius: 4px;
+            padding: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-height: 36px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .context-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 0.65em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .context-item.system {
+            background: rgba(190, 156, 109, 0.2);
+            border: none;
+            color: var(--super-gold-light);
+        }
+
+        .context-item.tool {
+            background: rgba(100, 100, 120, 0.3);
+            border: none;
+            color: #aaa;
+        }
+
+        .context-item.mcp {
+            background: rgba(130, 80, 200, 0.25);
+            border: none;
+            color: #b794f6;
+        }
+
+        .context-item.prompt {
+            background: rgba(74, 222, 128, 0.2);
+            border: none;
+            color: #4ade80;
+            animation: promptAppear 0.4s ease-out;
+        }
+
+        .context-item.prompt::before {
+            content: '>';
+            color: #4ade80;
+            font-weight: 700;
+            margin-right: 2px;
+        }
+
+        @keyframes promptAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Subagents Zone */
+        .subagents-zone {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(190, 156, 109, 0.25);
+            border-radius: 12px;
+            padding: 35px 12px 12px 12px;
+            min-height: 200px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            transition: all 0.3s ease;
+        }
+
+        .subagents-zone.drag-over {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.08);
+        }
+
+        .subagents-zone.empty::before {
+            content: "Arraste agentes e caminhos aqui";
+            color: #666;
+            font-size: 0.85em;
+            width: 100%;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        /* Subagent Card */
+        .subagent-card {
+            width: 140px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            padding-top: 35px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .subagent-card:hover {
+            border-color: var(--super-gold);
+            box-shadow: 0 4px 20px rgba(190, 156, 109, 0.2);
+        }
+
+        /* Path connector above card */
+        .path-connector {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            animation: pulse-connector 2s ease infinite;
+        }
+
+        @keyframes pulse-connector {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .path-arrows {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .path-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.6em;
+        }
+
+        .path-arrow.down .arrow {
+            color: var(--super-gold);
+            font-size: 1.2em;
+        }
+
+        .path-arrow.up .arrow {
+            color: #4ade80;
+            font-size: 1.2em;
+        }
+
+        .path-arrow .label {
+            font-size: 0.8em;
+            padding: 1px 4px;
+            border-radius: 2px;
+        }
+
+        .path-arrow.down .label {
+            background: rgba(190, 156, 109, 0.3);
+            color: var(--super-gold-light);
+        }
+
+        .path-arrow.up .label {
+            background: rgba(74, 222, 128, 0.3);
+            color: #86efac;
+        }
+
+        .subagent-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .subagent-name {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--super-gold);
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .subagent-name .icon { font-size: 1.1em; }
+
+        .subagent-model {
+            font-size: 0.6em;
+            padding: 2px 5px;
+            border-radius: 3px;
+            background: rgba(190, 156, 109, 0.25);
+            color: var(--super-gold-light);
+            margin-left: 20px;
+        }
+
+        .subagent-model.haiku { background: rgba(74, 222, 128, 0.25); color: #86efac; }
+        .subagent-model.sonnet { background: rgba(190, 156, 109, 0.3); color: var(--super-gold-light); }
+        .subagent-model.opus { background: rgba(255, 244, 228, 0.2); color: var(--super-cream); }
+
+        /* Context box */
+        .context-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+            padding: 6px;
+            margin-bottom: 6px;
+        }
+
+        .context-label {
+            font-size: 0.55em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .context-files {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+
+        .file-tag {
+            font-size: 0.65em;
+            padding: 2px 5px;
+            border-radius: 3px;
+            background: rgba(255, 244, 228, 0.1);
+            color: var(--super-cream);
+        }
+
+        .file-tag.input {
+            background: rgba(74, 222, 128, 0.2);
+            color: #86efac;
+        }
+
+        .file-tag.prompt {
+            background: rgba(190, 156, 109, 0.2);
+            color: var(--super-gold-light);
+        }
+
+        /* Tool box */
+        .tool-box {
+            background: rgba(255, 244, 228, 0.05);
+            border: 1px solid rgba(255, 244, 228, 0.15);
+            border-radius: 5px;
+            padding: 5px;
+            margin-bottom: 6px;
+        }
+
+        .tool-label {
+            font-size: 0.55em;
+            color: rgba(255, 244, 228, 0.6);
+            margin-bottom: 3px;
+        }
+
+        .tool-name {
+            font-size: 0.7em;
+            color: var(--super-cream);
+        }
+
+        /* Output box */
+        .output-box {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .output-label {
+            font-size: 0.55em;
+            color: #4ade80;
+            margin-bottom: 3px;
+        }
+
+        .output-file {
+            font-size: 0.7em;
+            color: #86efac;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Remove button */
+        .remove-btn {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            background: #ef4444;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.7em;
+            cursor: pointer;
+            display: none;
+            line-height: 1;
+        }
+
+        .subagent-card:hover .remove-btn,
+        .file-card:hover .remove-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Path indicator - seta do arquivo para contexto */
+        .file-path-indicator {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: pathPulse 1.5s ease infinite;
+        }
+
+        .file-path-indicator .path-arrow {
+            color: var(--super-gold);
+            font-size: 1em;
+        }
+
+        .file-path-indicator .path-label {
+            font-size: 0.55em;
+            color: var(--super-gold-light);
+            background: rgba(190, 156, 109, 0.3);
+            padding: 1px 4px;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+
+        @keyframes pathPulse {
+            0%, 100% { opacity: 0.7; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 1; transform: translateX(-50%) translateY(-3px); }
+        }
+
+        /* Spotlight System - Fade in/out durante playback */
+        .subagent-card.dimmed,
+        .file-card.dimmed {
+            opacity: 0.35;
+            filter: grayscale(40%);
+            transform: scale(0.96);
+            transition: all 0.4s ease;
+        }
+
+        .subagent-card.spotlight,
+        .file-card.spotlight {
+            opacity: 1;
+            filter: none;
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(190, 156, 109, 0.5), 0 8px 30px rgba(0, 0, 0, 0.4);
+            border-color: var(--super-gold) !important;
+            z-index: 10;
+            transition: all 0.4s ease;
+        }
+
+        /* Contexto também recebe spotlight */
+        .context-item.prompt.spotlight {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
+            z-index: 10;
+        }
+
+        .context-item.prompt.dimmed {
+            opacity: 0.5;
+            filter: grayscale(30%);
+        }
+
+        /* Final Output */
+        .final-output {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .final-output.visible {
+            display: flex;
+        }
+
+        .output-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            animation: pulse-output 2s ease infinite;
+        }
+
+        @keyframes pulse-output {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .output-arrow .arrow {
+            color: #4ade80;
+            font-size: 1.2em;
+        }
+
+        .output-arrow .label {
+            font-size: 0.6em;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background: rgba(74, 222, 128, 0.2);
+            color: #86efac;
+        }
+
+        .output-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.1));
+            border: 2px solid #4ade80;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(74, 222, 128, 0.3);
+        }
+
+        .output-card .icon {
+            font-size: 1.5em;
+        }
+
+        .output-card .filename {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            color: #86efac;
+            font-weight: 600;
+        }
+
+        .output-card .badge {
+            font-size: 0.6em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #4ade80;
+            color: #0a0a12;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            font-size: 0.9em;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #aaa;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.orch { background: var(--super-gold); }
+        .legend-dot.sub { background: var(--super-gold-light); }
+        .legend-dot.input { background: #4ade80; }
+        .legend-dot.output { background: #86efac; }
+
+        /* Playback Controls */
+        .playback-controls {
+            background: rgba(190, 156, 109, 0.08);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .playback-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .play-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(74, 222, 128, 0.2);
+            border: 2px solid rgba(74, 222, 128, 0.5);
+            border-radius: 8px;
+            color: #86efac;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .play-btn:hover {
+            background: rgba(74, 222, 128, 0.3);
+            border-color: #4ade80;
+            transform: scale(1.02);
+        }
+
+        .play-btn.playing {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.5);
+            color: #fbbf24;
+        }
+
+        .play-btn.playing:hover {
+            background: rgba(251, 191, 36, 0.3);
+            border-color: #fbbf24;
+        }
+
+        .reset-btn-small {
+            padding: 10px 14px;
+            background: rgba(255, 244, 228, 0.08);
+            border: 2px solid rgba(255, 244, 228, 0.2);
+            border-radius: 8px;
+            color: var(--super-cream);
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn-small:hover {
+            background: rgba(255, 244, 228, 0.15);
+            border-color: rgba(255, 244, 228, 0.4);
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .speed-label {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        .speed-control input[type="range"] {
+            flex: 1;
+            min-width: 0;
+            max-width: 60px;
+            height: 4px;
+            background: rgba(190, 156, 109, 0.3);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .speed-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .speed-control input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .speed-value {
+            font-size: 0.75em;
+            color: var(--super-gold);
+            font-weight: 600;
+            min-width: 30px;
+            text-align: right;
+        }
+
+        /* Embed mode */
+        body.embed-mode {
+            padding: 8px;
+            gap: 10px;
+        }
+
+        body.embed-mode .panel {
+            width: 140px;
+        }
+
+        body.embed-mode .panel-title {
+            font-size: 0.75em;
+            margin-bottom: 8px;
+        }
+
+        body.embed-mode .draggable {
+            padding: 6px 8px;
+            font-size: 0.7em;
+        }
+
+        body.embed-mode .file-item {
+            padding: 4px 6px;
+            font-size: 0.6em;
+        }
+
+        body.embed-mode .orchestrator {
+            border-radius: 6px;
+        }
+
+        body.embed-mode .terminal-titlebar {
+            padding: 4px 8px;
+        }
+
+        body.embed-mode .terminal-btn {
+            width: 10px;
+            height: 10px;
+        }
+
+        body.embed-mode .terminal-title {
+            font-size: 0.65em;
+        }
+
+        body.embed-mode .terminal-title .mascot {
+            width: 14px;
+            height: 14px;
+        }
+
+        body.embed-mode .orchestrator-body {
+            padding: 8px 10px;
+        }
+
+        body.embed-mode .orchestrator-title {
+            font-size: 0.75em;
+        }
+
+        body.embed-mode .context-stats {
+            font-size: 0.6em;
+        }
+
+        body.embed-mode .context-item {
+            padding: 2px 5px;
+            font-size: 0.55em;
+        }
+
+        body.embed-mode .subagents-zone {
+            min-height: 160px;
+            padding: 8px;
+        }
+
+        body.embed-mode .subagent-card {
+            width: 125px;
+            padding: 8px;
+        }
+
+        body.embed-mode .subagent-name {
+            font-size: 0.75em;
+        }
+
+        body.embed-mode .legend {
+            font-size: 0.8em;
+            padding: 8px 12px;
+            gap: 15px;
+        }
+
+        body.embed-mode .final-output {
+            padding: 6px;
+        }
+
+        body.embed-mode .output-card {
+            padding: 8px 14px;
+        }
+
+        body.embed-mode .output-card .icon {
+            font-size: 1.2em;
+        }
+
+        body.embed-mode .output-card .filename {
+            font-size: 0.85em;
+        }
+
+        body.embed-mode .output-card .badge {
+            font-size: 0.5em;
+        }
+
+        body.embed-mode .playback-controls {
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        body.embed-mode .play-btn {
+            padding: 8px;
+            font-size: 1em;
+        }
+
+        body.embed-mode .reset-btn-small {
+            padding: 8px 10px;
+            font-size: 0.9em;
+        }
+
+        body.embed-mode .speed-control {
+            gap: 5px;
+        }
+
+        body.embed-mode .speed-label {
+            font-size: 0.6em;
+        }
+
+        body.embed-mode .speed-value {
+            font-size: 0.65em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Panel -->
+    <div class="panel">
+        <div class="panel-title">Componentes</div>
+
+        <!-- Controles de Reprodução -->
+        <div class="panel-section playback-controls">
+            <div class="section-label">Reprodução</div>
+            <div class="playback-buttons">
+                <button class="play-btn" id="play-btn" onclick="togglePlayback()">
+                    <span class="play-icon">▶</span>
+                </button>
+                <button class="reset-btn-small" onclick="resetDemo()">↺</button>
+            </div>
+            <div class="speed-control">
+                <span class="speed-label">Velocidade:</span>
+                <input type="range" id="speed-slider" min="1" max="5" value="3" onchange="updateSpeed()">
+                <span class="speed-value" id="speed-value">1x</span>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="section-label">Agentes</div>
+
+            <div class="draggable agent" draggable="true"
+                 data-type="agent"
+                 data-name="Extrator"
+                 data-model="haiku"
+                 data-prompt="extrator.md"
+                 data-input="processo.pdf"
+                 data-tool="Bash + OCR"
+                 data-output="processo.txt">
+                <span class="icon">🤖</span>
+                <span>Extrator</span>
+            </div>
+
+            <div class="draggable agent" draggable="true"
+                 data-type="agent"
+                 data-name="Relator"
+                 data-model="sonnet"
+                 data-prompt="relator.md"
+                 data-input="processo.txt"
+                 data-tool="Read + Write"
+                 data-output="relatorio.md">
+                <span class="icon">🤖</span>
+                <span>Relator</span>
+            </div>
+
+            <div class="draggable agent" draggable="true"
+                 data-type="agent"
+                 data-name="Analisador"
+                 data-model="opus"
+                 data-prompt="analisador.md"
+                 data-input="relatorio.md"
+                 data-tool="Read + Write"
+                 data-output="analise.md">
+                <span class="icon">🤖</span>
+                <span>Analisador</span>
+            </div>
+
+            <div class="draggable agent" draggable="true"
+                 data-type="agent"
+                 data-name="Fundamentador"
+                 data-model="sonnet"
+                 data-prompt="fundamentador.md"
+                 data-input="analise.md"
+                 data-tool="Read + Write"
+                 data-output="fundamento.md">
+                <span class="icon">🤖</span>
+                <span>Fundamentador</span>
+            </div>
+
+            <div class="draggable agent" draggable="true"
+                 data-type="agent"
+                 data-name="Minutador"
+                 data-model="sonnet"
+                 data-prompt="minutador.md"
+                 data-input="fundamento.md, relatorio.md"
+                 data-tool="Bash + Merge"
+                 data-output="sentenca.md">
+                <span class="icon">🤖</span>
+                <span>Minutador</span>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="section-label">Arquivos</div>
+
+            <div class="file-item input" draggable="true" data-type="file" data-path="processo.pdf" data-category="input">
+                <span class="icon">📄</span>
+                <span>processo.pdf</span>
+            </div>
+
+            <div class="file-item intermediate" draggable="true" data-type="file" data-path="processo.txt" data-category="intermediate">
+                <span class="icon">📝</span>
+                <span>processo.txt</span>
+            </div>
+
+            <div class="file-item intermediate" draggable="true" data-type="file" data-path="relatorio.md" data-category="intermediate">
+                <span class="icon">📋</span>
+                <span>relatorio.md</span>
+            </div>
+
+            <div class="file-item intermediate" draggable="true" data-type="file" data-path="analise.md" data-category="intermediate">
+                <span class="icon">🔍</span>
+                <span>analise.md</span>
+            </div>
+
+            <div class="file-item intermediate" draggable="true" data-type="file" data-path="fundamento.md" data-category="intermediate">
+                <span class="icon">⚖️</span>
+                <span>fundamento.md</span>
+            </div>
+
+            <div class="file-item output" draggable="true" data-type="file" data-path="sentenca.md" data-category="output">
+                <span class="icon">📜</span>
+                <span>sentenca.md</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Main Area -->
+    <div class="main-area">
+        <!-- Orchestrator (Terminal Style) -->
+        <div class="orchestrator">
+            <div class="terminal-titlebar">
+                <div class="terminal-buttons">
+                    <span class="terminal-btn close"></span>
+                    <span class="terminal-btn minimize"></span>
+                    <span class="terminal-btn maximize"></span>
+                </div>
+                <div class="terminal-title">
+                    <img src="mascote.png" alt="Claude" class="mascot">
+                    claude-code — orquestrador
+                </div>
+            </div>
+            <div class="orchestrator-body">
+                <div class="orchestrator-header">
+                    <div class="orchestrator-title">
+                        <span>claude orchestrator --context</span>
+                    </div>
+                    <div class="context-stats">
+                        <span id="orch-tokens">~5K</span> / 200K tokens
+                    </div>
+                </div>
+                <div class="context-window" id="context-window">
+                    <div class="context-item system">System</div>
+                    <div class="context-item system">CLAUDE.md</div>
+                    <div class="context-item tool">Task</div>
+                    <div class="context-item tool">Read</div>
+                    <div class="context-item tool">Write</div>
+                    <div class="context-item mcp">mcp:BNP</div>
+                    <div class="context-item mcp">mcp:CJF</div>
+                    <!-- Prompts serão adicionados dinamicamente aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Subagents Zone -->
+        <div class="subagents-zone empty" id="subagents-zone"></div>
+
+        <!-- Final Output -->
+        <div class="final-output" id="final-output">
+            <div class="output-arrow">
+                <span class="arrow">↓</span>
+                <span class="label">merge</span>
+            </div>
+            <div class="output-card">
+                <span class="icon">📜</span>
+                <span class="filename">sentenca.md</span>
+                <span class="badge">OUTPUT FINAL</span>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot orch"></div>
+                <span>Orquestrador (contexto amplo)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot sub"></div>
+                <span>Subagente (contexto isolado)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot input"></div>
+                <span>Input (path recebido)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot output"></div>
+                <span>Output (path devolvido)</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Detect embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // State
+        let itemCount = 0;
+        let promptTokens = 5; // Base tokens (5K)
+        const dropZone = document.getElementById('subagents-zone');
+        const contextWindow = document.getElementById('context-window');
+
+        // Mapeamento: arquivo -> comando que aparece no orquestrador
+        const fileToPrompt = {
+            'processo.pdf': { command: '/pipeline-sentenca', next: '/extrator' },
+            'processo.txt': { command: '/relator' },
+            'relatorio.md': { command: '/analisador' },
+            'analise.md': { command: '/fundamentador' },
+            'fundamento.md': { command: '/minutador' }
+        };
+
+        // Rastrear prompts já adicionados
+        const addedPrompts = new Set();
+
+        // Função para adicionar prompt ao orquestrador
+        function addPromptToOrchestrator(command) {
+            if (addedPrompts.has(command)) return;
+
+            addedPrompts.add(command);
+            promptTokens += 1; // +1K por prompt
+
+            const promptEl = document.createElement('div');
+            promptEl.className = 'context-item prompt';
+            promptEl.dataset.command = command;
+            promptEl.textContent = command;
+
+            contextWindow.appendChild(promptEl);
+            updateTokenCount();
+        }
+
+        // Função para remover prompt do orquestrador
+        function removePromptFromOrchestrator(command) {
+            if (!addedPrompts.has(command)) return;
+
+            addedPrompts.delete(command);
+            promptTokens -= 1;
+
+            const promptEl = contextWindow.querySelector(`[data-command="${command}"]`);
+            if (promptEl) {
+                promptEl.style.animation = 'none';
+                promptEl.style.opacity = '0';
+                promptEl.style.transform = 'scale(0.8)';
+                setTimeout(() => promptEl.remove(), 200);
+            }
+            updateTokenCount();
+        }
+
+        // Atualizar contador de tokens
+        function updateTokenCount() {
+            const agentCount = dropZone.querySelectorAll('.subagent-card').length;
+            const totalTokens = promptTokens + (agentCount * 2);
+            document.getElementById('orch-tokens').textContent = `~${totalTokens}K`;
+        }
+
+        // Drag and Drop - Agents
+        document.querySelectorAll('.draggable').forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                this.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', JSON.stringify({
+                    type: this.dataset.type,
+                    name: this.dataset.name,
+                    model: this.dataset.model,
+                    prompt: this.dataset.prompt,
+                    input: this.dataset.input,
+                    tool: this.dataset.tool,
+                    output: this.dataset.output,
+                    path: this.dataset.path
+                }));
+            });
+
+            item.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+            });
+        });
+
+        // Drag and Drop - Files
+        document.querySelectorAll('.file-item').forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                this.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', JSON.stringify({
+                    type: 'file',
+                    path: this.dataset.path,
+                    category: this.dataset.category
+                }));
+            });
+
+            item.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+            });
+        });
+
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', function() {
+            this.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+
+            const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+
+            if (data.type === 'agent') {
+                addSubagent(data);
+            } else if (data.type === 'file') {
+                addFile(data);
+            }
+        });
+
+        function addSubagent(data) {
+            itemCount++;
+            const id = 'item-' + itemCount;
+
+            dropZone.classList.remove('empty');
+
+            const card = document.createElement('div');
+            card.className = 'subagent-card';
+            card.id = id;
+            card.dataset.agent = data.name;
+            card.innerHTML = `
+                <div class="path-connector">
+                    <div class="path-arrows">
+                        <div class="path-arrow down">
+                            <span class="arrow">↓</span>
+                            <span class="label">${data.input.split(',')[0]}</span>
+                        </div>
+                        <div class="path-arrow up">
+                            <span class="label">${data.output}</span>
+                            <span class="arrow">↑</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="remove-btn" onclick="removeItem('${id}')">&times;</button>
+                <div class="subagent-header">
+                    <div class="subagent-name">
+                        <span class="icon">🤖</span>
+                        <span>${data.name}</span>
+                    </div>
+                    <span class="subagent-model ${data.model}">${data.model}</span>
+                </div>
+                <div class="context-box">
+                    <div class="context-label">Contexto Isolado</div>
+                    <div class="context-files">
+                        <span class="file-tag prompt">${data.prompt}</span>
+                        <span class="file-tag input">${data.input}</span>
+                    </div>
+                </div>
+                <div class="tool-box">
+                    <div class="tool-label">Ferramenta</div>
+                    <div class="tool-name">${data.tool}</div>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Output →</div>
+                    <div class="output-file">${data.output}</div>
+                </div>
+            `;
+
+            dropZone.appendChild(card);
+            animateEntry(card);
+            updateStats();
+        }
+
+        function addFile(data) {
+            itemCount++;
+            const id = 'item-' + itemCount;
+
+            dropZone.classList.remove('empty');
+
+            // Adicionar prompts ao orquestrador baseado no arquivo
+            const promptInfo = fileToPrompt[data.path];
+            if (promptInfo) {
+                addPromptToOrchestrator(promptInfo.command);
+                if (promptInfo.next) {
+                    setTimeout(() => addPromptToOrchestrator(promptInfo.next), 300);
+                }
+            }
+
+            // Determine colors based on category (Paleta Super)
+            const colors = {
+                input: { bg: 'rgba(190, 156, 109, 0.2)', border: '#BE9C6D', text: '#d4b896' },
+                intermediate: { bg: 'rgba(255, 244, 228, 0.1)', border: 'rgba(255, 244, 228, 0.4)', text: '#FFF4E4' },
+                output: { bg: 'rgba(74, 222, 128, 0.2)', border: '#4ade80', text: '#86efac' }
+            };
+            const color = colors[data.category] || colors.intermediate;
+
+            const fileEl = document.createElement('div');
+            fileEl.className = 'file-card';
+            fileEl.id = id;
+            fileEl.dataset.filePath = data.path; // Guardar referência para remoção
+            fileEl.style.cssText = `
+                width: 100px;
+                background: ${color.bg};
+                border: 2px solid ${color.border};
+                border-radius: 8px;
+                padding: 12px 8px;
+                position: relative;
+                text-align: center;
+            `;
+            fileEl.innerHTML = `
+                <div class="file-path-indicator">
+                    <span class="path-arrow">↑</span>
+                    <span class="path-label">${data.path}</span>
+                </div>
+                <button class="remove-btn" onclick="removeItem('${id}')">&times;</button>
+                <div style="font-size: 1.8em; margin-bottom: 6px;">📄</div>
+                <div style="color: ${color.text}; font-size: 0.75em; font-family: 'JetBrains Mono', monospace;">${data.path}</div>
+            `;
+
+            dropZone.appendChild(fileEl);
+            animateEntry(fileEl);
+            updateStats();
+        }
+
+        function animateEntry(el) {
+            el.style.opacity = '0';
+            el.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                el.style.transition = 'all 0.3s ease';
+                el.style.opacity = '1';
+                el.style.transform = 'scale(1)';
+            }, 50);
+        }
+
+        function removeItem(id) {
+            const item = document.getElementById(id);
+            if (item) {
+                // Se for um arquivo, remover os prompts correspondentes
+                if (item.dataset.filePath) {
+                    const promptInfo = fileToPrompt[item.dataset.filePath];
+                    if (promptInfo) {
+                        removePromptFromOrchestrator(promptInfo.command);
+                        if (promptInfo.next) {
+                            removePromptFromOrchestrator(promptInfo.next);
+                        }
+                    }
+                }
+
+                item.style.transition = 'all 0.2s ease';
+                item.style.opacity = '0';
+                item.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    item.remove();
+                    updateStats();
+                    if (dropZone.children.length === 0) {
+                        dropZone.classList.add('empty');
+                    }
+                }, 200);
+            }
+        }
+
+        function updateStats() {
+            // Atualizar tokens considerando agentes também (+2K por agente)
+            const agentCount = dropZone.querySelectorAll('.subagent-card').length;
+            const totalTokens = promptTokens + (agentCount * 2);
+            document.getElementById('orch-tokens').textContent = `~${totalTokens}K`;
+
+            // Show final output only when Minutador is present
+            const finalOutput = document.getElementById('final-output');
+            const hasMinutador = dropZone.querySelector('.subagent-card[data-agent="Minutador"]');
+            if (hasMinutador) {
+                finalOutput.classList.add('visible');
+            } else {
+                finalOutput.classList.remove('visible');
+            }
+        }
+
+        // ==========================================
+        // PLAYBACK AUTOMÁTICO
+        // ==========================================
+
+        let isPlaying = false;
+        let playbackTimeout = null;
+        let currentStep = 0;
+        let playbackSpeed = 1000; // ms entre passos (1x = 1000ms)
+
+        // Sequência do fluxo automático
+        const playbackSequence = [
+            { type: 'file', path: 'processo.pdf', category: 'input' },
+            { type: 'agent', name: 'Extrator', model: 'haiku', prompt: 'extrator.md', input: 'processo.pdf', tool: 'Bash + OCR', output: 'processo.txt' },
+            { type: 'file', path: 'processo.txt', category: 'intermediate' },
+            { type: 'agent', name: 'Relator', model: 'sonnet', prompt: 'relator.md', input: 'processo.txt', tool: 'Read + Write', output: 'relatorio.md' },
+            { type: 'file', path: 'relatorio.md', category: 'intermediate' },
+            { type: 'agent', name: 'Analisador', model: 'opus', prompt: 'analisador.md', input: 'relatorio.md', tool: 'Read + Write', output: 'analise.md' },
+            { type: 'file', path: 'analise.md', category: 'intermediate' },
+            { type: 'agent', name: 'Fundamentador', model: 'sonnet', prompt: 'fundamentador.md', input: 'analise.md', tool: 'Read + Write', output: 'fundamento.md' },
+            { type: 'file', path: 'fundamento.md', category: 'intermediate' },
+            { type: 'agent', name: 'Minutador', model: 'sonnet', prompt: 'minutador.md', input: 'fundamento.md, relatorio.md', tool: 'Bash + Merge', output: 'sentenca.md' },
+            { type: 'file', path: 'sentenca.md', category: 'output' }
+        ];
+
+        function togglePlayback() {
+            const btn = document.getElementById('play-btn');
+
+            if (isPlaying) {
+                // Pausar
+                isPlaying = false;
+                btn.classList.remove('playing');
+                btn.innerHTML = '<span class="play-icon">▶</span>';
+                if (playbackTimeout) {
+                    clearTimeout(playbackTimeout);
+                    playbackTimeout = null;
+                }
+            } else {
+                // Iniciar/Continuar
+                isPlaying = true;
+                btn.classList.add('playing');
+                btn.innerHTML = '<span class="play-icon">⏸</span>';
+                playNextStep();
+            }
+        }
+
+        // Aplica spotlight ao elemento atual e dimmed aos anteriores
+        function applySpotlight(newElement) {
+            // Remover spotlight anterior e aplicar dimmed a todos
+            const allCards = dropZone.querySelectorAll('.subagent-card, .file-card');
+            allCards.forEach(card => {
+                card.classList.remove('spotlight');
+                card.classList.add('dimmed');
+            });
+
+            // Aplicar spotlight ao novo elemento
+            if (newElement) {
+                newElement.classList.remove('dimmed');
+                newElement.classList.add('spotlight');
+            }
+
+            // Dimmed nos prompts anteriores, spotlight no mais recente
+            const prompts = contextWindow.querySelectorAll('.context-item.prompt');
+            prompts.forEach((p, i) => {
+                p.classList.remove('spotlight', 'dimmed');
+                if (i === prompts.length - 1) {
+                    p.classList.add('spotlight');
+                } else {
+                    p.classList.add('dimmed');
+                }
+            });
+        }
+
+        // Remove todos os estados de spotlight/dimmed
+        function clearSpotlight() {
+            const allCards = dropZone.querySelectorAll('.subagent-card, .file-card');
+            allCards.forEach(card => {
+                card.classList.remove('spotlight', 'dimmed');
+            });
+            const prompts = contextWindow.querySelectorAll('.context-item.prompt');
+            prompts.forEach(p => {
+                p.classList.remove('spotlight', 'dimmed');
+            });
+        }
+
+        function playNextStep() {
+            if (!isPlaying || currentStep >= playbackSequence.length) {
+                // Finalizou
+                if (currentStep >= playbackSequence.length) {
+                    isPlaying = false;
+                    const btn = document.getElementById('play-btn');
+                    btn.classList.remove('playing');
+                    btn.innerHTML = '<span class="play-icon">✓</span>';
+                    // Limpar spotlight ao finalizar
+                    setTimeout(clearSpotlight, 500);
+                }
+                return;
+            }
+
+            const step = playbackSequence[currentStep];
+            let newElement = null;
+
+            if (step.type === 'file') {
+                addFile({ type: 'file', path: step.path, category: step.category });
+                // Pegar o último file-card adicionado
+                const fileCards = dropZone.querySelectorAll('.file-card');
+                newElement = fileCards[fileCards.length - 1];
+            } else if (step.type === 'agent') {
+                addSubagent(step);
+                // Pegar o último subagent-card adicionado
+                const agentCards = dropZone.querySelectorAll('.subagent-card');
+                newElement = agentCards[agentCards.length - 1];
+            }
+
+            // Aplicar spotlight
+            setTimeout(() => applySpotlight(newElement), 100);
+
+            currentStep++;
+            playbackTimeout = setTimeout(playNextStep, playbackSpeed);
+        }
+
+        function resetDemo() {
+            // Parar reprodução
+            isPlaying = false;
+            if (playbackTimeout) {
+                clearTimeout(playbackTimeout);
+                playbackTimeout = null;
+            }
+
+            // Limpar estados de spotlight antes de remover elementos
+            clearSpotlight();
+
+            // Reset botão
+            const btn = document.getElementById('play-btn');
+            btn.classList.remove('playing');
+            btn.innerHTML = '<span class="play-icon">▶</span>';
+
+            // Limpar zona de drop
+            dropZone.innerHTML = '';
+            dropZone.classList.add('empty');
+
+            // Limpar prompts do orquestrador
+            const prompts = contextWindow.querySelectorAll('.context-item.prompt');
+            prompts.forEach(p => p.remove());
+
+            // Reset estado
+            currentStep = 0;
+            promptTokens = 5;
+            addedPrompts.clear();
+            updateTokenCount();
+
+            // Esconder output final
+            document.getElementById('final-output').classList.remove('visible');
+        }
+
+        function updateSpeed() {
+            const slider = document.getElementById('speed-slider');
+            const valueDisplay = document.getElementById('speed-value');
+            const value = parseInt(slider.value);
+
+            // Mapear slider para velocidade (1=lento, 5=rápido)
+            const speeds = {
+                1: { ms: 2000, label: '0.5x' },
+                2: { ms: 1500, label: '0.75x' },
+                3: { ms: 1000, label: '1x' },
+                4: { ms: 600, label: '1.5x' },
+                5: { ms: 300, label: '2x' }
+            };
+
+            playbackSpeed = speeds[value].ms;
+            valueDisplay.textContent = speeds[value].label;
+        }
+
+        // Inicializar valor do speed
+        updateSpeed();
+    </script>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agents Conceito - Proposta C: Transformação Visual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Spotlight dramático */
+        .spotlight {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse 50% 40% at 50% 40%, rgba(190, 156, 109, 0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1100px;
+            padding: 40px;
+        }
+
+        /* Split comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 40px;
+            align-items: stretch;
+        }
+
+        /* Card base */
+        .card {
+            background: linear-gradient(180deg, rgba(20, 20, 30, 0.9), rgba(10, 10, 18, 0.95));
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--super-gold), transparent);
+        }
+
+        /* Card Procuração */
+        .card-procuracao {
+            opacity: 0;
+            animation: slideInLeft 0.8s ease 0.2s forwards;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.2), rgba(190, 156, 109, 0.05));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .card-subtitle {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.4);
+            margin-top: 2px;
+        }
+
+        /* Campos do documento */
+        .doc-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .doc-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(190, 156, 109, 0.6);
+        }
+
+        .field-value {
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.85);
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid rgba(190, 156, 109, 0.3);
+        }
+
+        .field-value.highlight {
+            border-left-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.08);
+        }
+
+        /* Seta central */
+        .arrow-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            animation: arrowPulse 0.6s ease 0.8s forwards;
+        }
+
+        @keyframes arrowPulse {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .arrow-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .arrow-icon {
+            font-size: 2.5em;
+            color: var(--super-gold);
+            animation: arrowBounce 1.5s ease-in-out infinite 1.5s;
+        }
+
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(8px); }
+        }
+
+        .arrow-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6em;
+            color: rgba(255, 244, 228, 0.4);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            letter-spacing: 3px;
+        }
+
+        /* Card Agent */
+        .card-agent {
+            opacity: 0;
+            animation: slideInRight 0.8s ease 0.4s forwards;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .card-agent .card-icon {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.05));
+        }
+
+        .card-agent .card-title {
+            color: var(--super-green);
+        }
+
+        .card-agent .field-value.highlight {
+            border-left-color: var(--super-green);
+            background: rgba(74, 222, 128, 0.08);
+        }
+
+        /* Code block */
+        .code-block {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            line-height: 1.6;
+            padding: 15px 18px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .code-block .key { color: var(--super-gold); }
+        .code-block .value { color: var(--super-green); }
+        .code-block .delim { color: rgba(255, 244, 228, 0.3); }
+
+        /* Insight final */
+        .insight {
+            margin-top: 50px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 1.2s forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .insight p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--super-cream);
+            line-height: 1.4;
+        }
+
+        .insight .gold { color: var(--super-gold); }
+
+        .insight-sub {
+            margin-top: 15px;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Badge */
+        .badge {
+            margin-top: 30px;
+            opacity: 0;
+            animation: fadeUp 0.6s ease 1.6s forwards;
+        }
+
+        .badge span {
+            display: inline-block;
+            padding: 12px 35px;
+            border: 2px solid var(--super-gold);
+            color: var(--super-gold);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            border-radius: 6px;
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 25px; }
+        body.embed-mode .card { padding: 25px; }
+        body.embed-mode .insight p { font-size: 1.5em; }
+    </style>
+</head>
+<body>
+    <div class="spotlight"></div>
+
+    <div class="container">
+        <div class="comparison">
+            <!-- Procuração -->
+            <div class="card card-procuracao">
+                <div class="card-header">
+                    <div class="card-icon">📜</div>
+                    <div>
+                        <div class="card-title">Procuração</div>
+                        <div class="card-subtitle">Mundo Jurídico</div>
+                    </div>
+                </div>
+
+                <div class="doc-fields">
+                    <div class="doc-field">
+                        <span class="field-label">Outorgante</span>
+                        <div class="field-value">João da Silva</div>
+                    </div>
+                    <div class="doc-field">
+                        <span class="field-label">Poderes</span>
+                        <div class="field-value highlight">
+                            Representar em juízo, assinar contratos, movimentar contas
+                        </div>
+                    </div>
+                    <div class="doc-field">
+                        <span class="field-label">Finalidade</span>
+                        <div class="field-value">
+                            Realizar atos específicos em nome do outorgante
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seta -->
+            <div class="arrow-center">
+                <div class="arrow-content">
+                    <span class="arrow-icon">→</span>
+                    <span class="arrow-label">ANÁLOGO</span>
+                </div>
+            </div>
+
+            <!-- Agent -->
+            <div class="card card-agent">
+                <div class="card-header">
+                    <div class="card-icon">🤖</div>
+                    <div>
+                        <div class="card-title">Agent.md</div>
+                        <div class="card-subtitle">Mundo Agêntico</div>
+                    </div>
+                </div>
+
+                <div class="doc-fields">
+                    <div class="doc-field">
+                        <span class="field-label">YAML Frontmatter</span>
+                        <div class="code-block">
+<span class="delim">---</span>
+<span class="key">name:</span> <span class="value">revisor-codigo</span>
+<span class="key">tools:</span> <span class="value">Read, Grep, Glob</span>
+<span class="key">model:</span> <span class="value">sonnet</span>
+<span class="delim">---</span>
+                        </div>
+                    </div>
+                    <div class="doc-field">
+                        <span class="field-label">Instruções</span>
+                        <div class="field-value highlight">
+                            Revisar código, encontrar bugs, sugerir melhorias
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="insight">
+            <p>Agents são <span class="gold">procuradores digitais</span><br>com poderes específicos.</p>
+            <p class="insight-sub">YAML define os poderes. Markdown define a missão.</p>
+            <div class="badge">
+                <span>Simplicidade é Poder</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() { try { if (window.self !== window.top) document.body.classList.add('embed-mode'); } catch (e) { document.body.classList.add('embed-mode'); } })();
+    </script>
+</body>
+</html>

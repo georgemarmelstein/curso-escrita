@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta A - Insights de Agentes (Grid Cards)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 25px 50px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .subtitle {
+            color: rgba(255, 244, 228, 0.5);
+            font-size: 1.5em;
+            margin-top: 12px;
+        }
+
+        /* Grid de cards */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 35px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 20px;
+            padding: 45px 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.5s ease-out forwards;
+        }
+
+        .insight-card:nth-child(1) { animation-delay: 0.1s; }
+        .insight-card:nth-child(2) { animation-delay: 0.15s; }
+        .insight-card:nth-child(3) { animation-delay: 0.2s; }
+        .insight-card:nth-child(4) { animation-delay: 0.25s; }
+        .insight-card:nth-child(5) { animation-delay: 0.3s; }
+        .insight-card:nth-child(6) { animation-delay: 0.35s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estado normal (todos visíveis) */
+        .insight-card.all-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: none;
+            border-color: rgba(190, 156, 109, 0.2);
+        }
+
+        /* Estado dimmed (overlay) */
+        .insight-card.dimmed {
+            opacity: 0.25;
+            transform: translateY(0) scale(0.95);
+            filter: grayscale(50%);
+            border-color: rgba(190, 156, 109, 0.1);
+        }
+
+        /* Estado highlighted (em destaque) */
+        .insight-card.highlighted {
+            opacity: 1;
+            transform: translateY(-8px) scale(1.03);
+            filter: none;
+            border-color: var(--super-gold);
+            box-shadow: 0 15px 50px rgba(190, 156, 109, 0.3), 0 0 30px rgba(190, 156, 109, 0.15);
+            background: rgba(190, 156, 109, 0.08);
+        }
+
+        .insight-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            transition: transform 0.4s ease;
+        }
+
+        .insight-card.highlighted .insight-icon {
+            transform: scale(1.1);
+        }
+
+        .insight-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3em;
+            font-weight: 500;
+            color: var(--super-gold);
+            line-height: 1.4;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.4s ease;
+        }
+
+        .insight-card.highlighted .insight-text {
+            color: var(--super-gold-light);
+            text-shadow: 0 0 20px rgba(190, 156, 109, 0.5);
+        }
+
+        .insight-desc {
+            font-size: 1.1em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 18px;
+            font-style: italic;
+            transition: color 0.4s ease;
+        }
+
+        .insight-card.highlighted .insight-desc {
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        /* Indicador de navegação */
+        .nav-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-indicator:hover {
+            opacity: 1;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.3);
+            border: 1px solid rgba(190, 156, 109, 0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-dot.active {
+            background: var(--super-gold);
+            transform: scale(1.2);
+        }
+
+        .nav-dot:first-child {
+            width: 20px;
+            border-radius: 5px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeUp 0.5s ease-out 0.7s forwards;
+        }
+
+        .footer-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1em;
+            color: var(--super-cream);
+            font-style: italic;
+        }
+
+        .footer-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 20px 40px; justify-content: flex-start; }
+        body.embed-mode .title { margin-bottom: 30px; }
+        body.embed-mode .title h1 { font-size: 2.8em; }
+        body.embed-mode .subtitle { font-size: 1.3em; }
+        body.embed-mode .insights-grid { gap: 28px; max-width: 1300px; }
+        body.embed-mode .insight-card { padding: 35px 25px; border-radius: 18px; }
+        body.embed-mode .insight-icon { font-size: 3.2em; margin-bottom: 16px; }
+        body.embed-mode .insight-text { font-size: 1.1em; }
+        body.embed-mode .insight-desc { font-size: 0.95em; margin-top: 14px; }
+        body.embed-mode .footer { margin-top: 25px; }
+        body.embed-mode .footer-text { font-size: 1.2em; }
+        body.embed-mode .nav-indicator { bottom: 15px; }
+        body.embed-mode .nav-dot { width: 8px; height: 8px; }
+        body.embed-mode .nav-dot:first-child { width: 16px; }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>O Que Agentes Fazem</h1>
+        <div class="subtitle">6 capacidades que definem sistemas agênticos</div>
+    </div>
+
+    <div class="insights-grid">
+        <div class="insight-card all-visible">
+            <div class="insight-icon">👥</div>
+            <div class="insight-text">Trabalham em Equipe</div>
+            <div class="insight-desc">Multi-agente, subagente, orquestrador</div>
+        </div>
+
+        <div class="insight-card all-visible">
+            <div class="insight-icon">🧭</div>
+            <div class="insight-text">Decidem o Que Fazer</div>
+            <div class="insight-desc">Autonomia, LLM dirige, permissões (YOLO)</div>
+        </div>
+
+        <div class="insight-card all-visible">
+            <div class="insight-icon">⚡</div>
+            <div class="insight-text">Criam Soluções On The Fly</div>
+            <div class="insight-desc">Adaptação dinâmica, não scripts fixos</div>
+        </div>
+
+        <div class="insight-card all-visible">
+            <div class="insight-icon">🧠</div>
+            <div class="insight-text">Gerenciam Contexto</div>
+            <div class="insight-desc">Context window, compactação, memória, paralelo</div>
+        </div>
+
+        <div class="insight-card all-visible">
+            <div class="insight-icon">🔄</div>
+            <div class="insight-text">Falham, Aprendem e Tentam de Novo</div>
+            <div class="insight-desc">Loop de retry, autocorreção</div>
+        </div>
+
+        <div class="insight-card all-visible">
+            <div class="insight-icon">📤</div>
+            <div class="insight-text">Delegam para Outros Agentes</div>
+            <div class="insight-desc">Hierarquia, isolamento de contexto</div>
+        </div>
+    </div>
+
+    <!-- Indicador de navegação -->
+    <div class="nav-indicator">
+        <div class="nav-dot active" data-index="0" title="Todos"></div>
+        <div class="nav-dot" data-index="1" title="Trabalham em Equipe"></div>
+        <div class="nav-dot" data-index="2" title="Decidem o Que Fazer"></div>
+        <div class="nav-dot" data-index="3" title="Criam Soluções"></div>
+        <div class="nav-dot" data-index="4" title="Gerenciam Contexto"></div>
+        <div class="nav-dot" data-index="5" title="Falham e Tentam"></div>
+        <div class="nav-dot" data-index="6" title="Delegam"></div>
+    </div>
+
+    <script>
+        // Estado atual: 0 = todos visíveis, 1-6 = card específico destacado
+        let currentState = 0;
+        const totalCards = 6;
+        const cards = document.querySelectorAll('.insight-card');
+        const dots = document.querySelectorAll('.nav-dot');
+
+        function updateDisplay() {
+            // Atualiza dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentState);
+            });
+
+            // Atualiza cards
+            cards.forEach((card, i) => {
+                card.classList.remove('all-visible', 'dimmed', 'highlighted');
+
+                if (currentState === 0) {
+                    // Todos visíveis
+                    card.classList.add('all-visible');
+                } else {
+                    // Um card destacado
+                    if (i === currentState - 1) {
+                        card.classList.add('highlighted');
+                    } else {
+                        card.classList.add('dimmed');
+                    }
+                }
+            });
+        }
+
+        function nextState() {
+            currentState = (currentState + 1) % (totalCards + 1);
+            updateDisplay();
+        }
+
+        function prevState() {
+            currentState = (currentState - 1 + totalCards + 1) % (totalCards + 1);
+            updateDisplay();
+        }
+
+        function goToState(index) {
+            currentState = index;
+            updateDisplay();
+        }
+
+        // Clique avança
+        document.body.addEventListener('click', (e) => {
+            // Ignora clique nos dots
+            if (e.target.classList.contains('nav-dot')) return;
+            nextState();
+        });
+
+        // Clique nos dots vai direto para o estado
+        dots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                goToState(parseInt(dot.dataset.index));
+            });
+        });
+
+        // Teclado: seta direita/espaço avança, seta esquerda volta
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                nextState();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevState();
+            } else if (e.key >= '0' && e.key <= '6') {
+                goToState(parseInt(e.key));
+            }
+        });
+
+        // Detecta embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

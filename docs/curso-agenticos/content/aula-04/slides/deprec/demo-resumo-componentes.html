@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Resumo: Todos os Componentes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --cyan: #22d3ee;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+            --amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        .bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(190, 156, 109, 0.04) 0%, transparent 40%),
+                radial-gradient(ellipse at 80% 70%, rgba(74, 222, 128, 0.03) 0%, transparent 40%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 3vh 5vw;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 4vh;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .header p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 0.8vh;
+        }
+
+        /* Components Grid */
+        .components-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 2.5vw;
+            padding: 1vh 0;
+        }
+
+        .component-card {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--comp-color, rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            padding: 2.5vh 2vw;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .component-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--comp-color, var(--gold));
+        }
+
+        .component-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--comp-color, var(--gold));
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1.2vw;
+            margin-bottom: 1.5vh;
+        }
+
+        .card-icon {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+        }
+
+        .card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1rem, 1.4vw, 1.2rem);
+            font-weight: 600;
+            color: var(--comp-color, var(--cream));
+        }
+
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2vh;
+        }
+
+        .card-desc {
+            font-size: clamp(0.75rem, 1vw, 0.88rem);
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+        }
+
+        .card-traits {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8vw;
+            margin-top: auto;
+        }
+
+        .card-traits li {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 0.85vw, 0.72rem);
+            padding: 0.5vh 1vw;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        /* Component colors */
+        .card-orchestrator { --comp-color: var(--gold); }
+        .card-workers { --comp-color: var(--blue); }
+        .card-skills { --comp-color: var(--green); }
+        .card-commands { --comp-color: var(--amber); }
+        .card-tools { --comp-color: var(--purple); }
+        .card-memory { --comp-color: var(--cyan); }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2vw;
+            padding-top: 2vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-message {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1rem, 1.6vw, 1.3rem);
+            color: var(--cream);
+        }
+
+        .footer-message strong {
+            color: var(--gold);
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 2vh 3vw; }
+        body.embed-mode .components-grid { gap: 1.5vw; }
+        body.embed-mode .component-card { padding: 1.8vh 1.5vw; }
+        body.embed-mode .card-icon { font-size: clamp(1.5rem, 2.2vw, 2rem); }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Anatomia de um Sistema Agêntico</h1>
+            <p>O mapa completo dos componentes</p>
+        </div>
+
+        <div class="components-grid">
+            <div class="component-card card-orchestrator">
+                <div class="card-header">
+                    <span class="card-icon">🎯</span>
+                    <span class="card-title">Orquestrador</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Coordena tudo. Recebe a tarefa, decompõe em partes, delega para workers.</p>
+                    <ul class="card-traits">
+                        <li>coordena</li>
+                        <li>delega</li>
+                        <li>não executa</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="component-card card-workers">
+                <div class="card-header">
+                    <span class="card-icon">🤖</span>
+                    <span class="card-title">Workers</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Executam as subtarefas. Cada um com especialidade própria.</p>
+                    <ul class="card-traits">
+                        <li>especializados</li>
+                        <li>paralelos</li>
+                        <li>executores</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="component-card card-skills">
+                <div class="card-header">
+                    <span class="card-icon">📚</span>
+                    <span class="card-title">Skills</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Expertise documentada. Pastas com conhecimento reutilizável.</p>
+                    <ul class="card-traits">
+                        <li>persistente</li>
+                        <li>reutilizável</li>
+                        <li>auto-detectada</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="component-card card-commands">
+                <div class="card-header">
+                    <span class="card-icon">⚡</span>
+                    <span class="card-title">Commands</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Atalhos rápidos. Instruções frequentes em um só comando.</p>
+                    <ul class="card-traits">
+                        <li>invocáveis</li>
+                        <li>rápidos</li>
+                        <li>/comando</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="component-card card-tools">
+                <div class="card-header">
+                    <span class="card-icon">🔧</span>
+                    <span class="card-title">Tools</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Capacidades específicas. Read, Write, Grep, Bash, Web...</p>
+                    <ul class="card-traits">
+                        <li>capacidades</li>
+                        <li>específicas</li>
+                        <li>20+ disponíveis</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="component-card card-memory">
+                <div class="card-header">
+                    <span class="card-icon">🧠</span>
+                    <span class="card-title">Memory</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Contexto acumulado. CLAUDE.md, skills carregadas, conversa atual.</p>
+                    <ul class="card-traits">
+                        <li>contexto</li>
+                        <li>acumulado</li>
+                        <li>priorizado</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p class="footer-message">
+                <strong>6 peças.</strong> Infinitas combinações.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

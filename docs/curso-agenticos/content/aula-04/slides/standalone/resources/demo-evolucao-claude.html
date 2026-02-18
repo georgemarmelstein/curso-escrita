@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolução do Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* Imagem de fundo */
+        .bg-image {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('../../../site/assets/20260129_0823_Image Generation_simple_compose_01kg4qv0mjf4ea0bmq92fp9ksd.png') center center / cover no-repeat;
+            z-index: 1;
+        }
+
+        /* Overlay dividido em 3 seções */
+        .overlay-section {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            z-index: 2;
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .overlay-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 18, 0.8) 0%,
+                rgba(10, 10, 18, 0.6) 40%,
+                rgba(10, 10, 18, 0.85) 100%
+            );
+            transition: opacity 0.5s ease;
+        }
+
+        .overlay-left {
+            left: 0;
+            width: 33.33%;
+        }
+
+        .overlay-center {
+            left: 33.33%;
+            width: 33.34%;
+        }
+
+        .overlay-right {
+            left: 66.67%;
+            width: 33.33%;
+        }
+
+        /* Estado ativo - remove overlay e adiciona glow */
+        .overlay-section.active::before {
+            opacity: 0;
+        }
+
+        .overlay-section.active::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            box-shadow: inset 0 0 100px rgba(190, 156, 109, 0.3);
+            border-left: 2px solid rgba(190, 156, 109, 0.3);
+            border-right: 2px solid rgba(190, 156, 109, 0.3);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: inset 0 0 80px rgba(190, 156, 109, 0.2); }
+            50% { box-shadow: inset 0 0 120px rgba(190, 156, 109, 0.4); }
+        }
+
+        /* Container principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 60px;
+        }
+
+        /* Título no topo */
+        .header {
+            text-align: center;
+            opacity: 0;
+            animation: fadeDown 1s ease 0.3s forwards;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            font-weight: 700;
+            color: var(--super-cream);
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header h1 .gold {
+            color: var(--super-gold);
+        }
+
+        .header .subtitle {
+            margin-top: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 2px;
+        }
+
+        /* Área central - espaço para a imagem respirar */
+        .visual-space {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Timeline de evolução na parte inferior */
+        .evolution-timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 30px;
+            padding: 0 40px;
+        }
+
+        .stage {
+            flex: 1;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            cursor: pointer;
+        }
+
+        .stage:nth-child(1) { animation: stageReveal 0.8s ease 0.6s forwards; }
+        .stage:nth-child(2) { animation: stageReveal 0.8s ease 0.9s forwards; }
+        .stage:nth-child(3) { animation: stageReveal 0.8s ease 1.2s forwards; }
+
+        @keyframes stageReveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stage-box {
+            background: rgba(10, 10, 18, 0.85);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            padding: 25px 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .stage:nth-child(1) .stage-box {
+            border-bottom: 3px solid rgba(100, 150, 255, 0.6);
+        }
+
+        .stage:nth-child(2) .stage-box {
+            border-bottom: 3px solid rgba(190, 156, 109, 0.6);
+        }
+
+        .stage:nth-child(3) .stage-box {
+            border-bottom: 3px solid var(--super-gold);
+        }
+
+        .stage-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Estado ativo do stage */
+        .stage.active .stage-box {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(190, 156, 109, 0.3);
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.15);
+        }
+
+        .stage-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .stage.active .stage-number {
+            color: var(--super-gold);
+        }
+
+        .stage-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            transition: color 0.3s ease;
+        }
+
+        .stage:nth-child(1) .stage-title { color: rgba(150, 180, 255, 0.9); }
+        .stage:nth-child(2) .stage-title { color: rgba(255, 244, 228, 0.9); }
+        .stage:nth-child(3) .stage-title { color: var(--super-gold); }
+
+        .stage.active .stage-title {
+            color: var(--super-cream) !important;
+            text-shadow: 0 0 20px rgba(190, 156, 109, 0.5);
+        }
+
+        .stage-desc {
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .stage-desc strong {
+            color: var(--super-cream);
+        }
+
+        /* Hint de clique */
+        .click-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.3);
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 2s forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Badge de insight - aparece quando um stage está ativo */
+        .insight-badge {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .insight-badge.visible {
+            opacity: 1;
+        }
+
+        .insight-badge span {
+            display: inline-block;
+            padding: 10px 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            letter-spacing: 3px;
+            color: var(--super-gold);
+            border: 1px solid rgba(190, 156, 109, 0.4);
+            border-radius: 4px;
+            background: rgba(10, 10, 18, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 30px 40px; }
+        body.embed-mode .header h1 { font-size: 2.4em; }
+        body.embed-mode .stage-box { padding: 20px 15px; }
+        body.embed-mode .stage-title { font-size: 1.15em; }
+        body.embed-mode .stage-desc { font-size: 0.85em; }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+
+    <!-- Overlay dividido em 3 seções clicáveis -->
+    <div class="overlay-section overlay-left" data-stage="1"></div>
+    <div class="overlay-section overlay-center" data-stage="2"></div>
+    <div class="overlay-section overlay-right" data-stage="3"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1>A Evolução do <span class="gold">Claude Code</span></h1>
+            <p class="subtitle">DE FERRAMENTA A SISTEMA COGNITIVO</p>
+        </header>
+
+        <div class="visual-space"></div>
+
+        <div class="evolution-timeline">
+            <div class="stage" data-stage="1">
+                <div class="stage-box">
+                    <div class="stage-number">ESTÁGIO 01</div>
+                    <div class="stage-title">Gerador de Código</div>
+                    <div class="stage-desc">
+                        Ferramenta que <strong>escreve código</strong> sob comando.
+                        Executa instruções pontuais.
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage" data-stage="2">
+                <div class="stage-box">
+                    <div class="stage-number">ESTÁGIO 02</div>
+                    <div class="stage-title">Agente de Propósito Geral</div>
+                    <div class="stage-desc">
+                        Sistema que <strong>raciocina e age</strong> em loop.
+                        Resolve problemas complexos autonomamente.
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage" data-stage="3">
+                <div class="stage-box">
+                    <div class="stage-number">ESTÁGIO 03</div>
+                    <div class="stage-title">Sistema Cognitivo Especializado</div>
+                    <div class="stage-desc">
+                        Agente com <strong>expertise de domínio</strong>.
+                        Jurista, médico, contador — não apenas programador.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="click-hint">CLIQUE NOS ESTÁGIOS PARA DESTACAR</div>
+
+        <div class="insight-badge">
+            <span>EXPERTISE TRANSFORMA CAPACIDADE EM COMPETÊNCIA</span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Detect embed mode
+            try { if (window.self !== window.top) document.body.classList.add('embed-mode'); }
+            catch (e) { document.body.classList.add('embed-mode'); }
+
+            const stages = document.querySelectorAll('.stage');
+            const overlays = document.querySelectorAll('.overlay-section');
+            const clickHint = document.querySelector('.click-hint');
+            const insightBadge = document.querySelector('.insight-badge');
+
+            function clearAll() {
+                stages.forEach(s => s.classList.remove('active'));
+                overlays.forEach(o => o.classList.remove('active'));
+                insightBadge.classList.remove('visible');
+                clickHint.style.opacity = '1';
+            }
+
+            function activateStage(stageNum) {
+                clearAll();
+
+                // Ativar stage clicado
+                const stage = document.querySelector(`.stage[data-stage="${stageNum}"]`);
+                const overlay = document.querySelector(`.overlay-section[data-stage="${stageNum}"]`);
+
+                if (stage) stage.classList.add('active');
+                if (overlay) overlay.classList.add('active');
+
+                // Esconder hint e mostrar badge
+                clickHint.style.opacity = '0';
+                insightBadge.classList.add('visible');
+            }
+
+            // Click nos stages
+            stages.forEach(stage => {
+                stage.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const num = stage.dataset.stage;
+
+                    // Toggle - se já está ativo, desativa
+                    if (stage.classList.contains('active')) {
+                        clearAll();
+                    } else {
+                        activateStage(num);
+                    }
+                });
+            });
+
+            // Click fora remove destaque
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.stage')) {
+                    clearAll();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

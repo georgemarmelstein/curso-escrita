@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote A - A Ferramenta Alienígena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--super-bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Fundo com textura sutil de caverna */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(190, 156, 109, 0.05) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 80%, rgba(190, 156, 109, 0.03) 0%, transparent 40%),
+                linear-gradient(180deg, #0a0a12 0%, #12101a 50%, #0a0a12 100%);
+            z-index: 0;
+        }
+
+        /* Partículas flutuantes */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
+            50% { transform: translateY(-30px) translateX(10px); opacity: 0.5; }
+        }
+
+        /* Card principal */
+        .quote-card {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            padding: 60px 70px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        /* Ícone decorativo */
+        .quote-icon {
+            font-size: 3em;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* Citação principal */
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 700;
+        }
+
+        /* Tradução */
+        .quote-translation {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.6);
+            line-height: 1.6;
+            margin-bottom: 35px;
+            padding: 0 20px;
+        }
+
+        /* Barra decorativa */
+        .decorative-bar {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--super-gold), transparent);
+            margin: 0 auto 30px;
+            border-radius: 2px;
+        }
+
+        /* Autor */
+        .author-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .author-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid rgba(190, 156, 109, 0.4);
+            object-fit: cover;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .author-info {
+            text-align: left;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 4px;
+        }
+
+        .author-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            opacity: 0.8;
+        }
+
+        /* Badge inferior */
+        .context-badge {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 25px;
+            background: var(--super-bg-dark);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 20px;
+        }
+
+        .context-badge span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            letter-spacing: 2px;
+        }
+
+        /* Embed mode */
+        body.embed-mode .quote-card { padding: 40px 50px; max-width: 650px; }
+        body.embed-mode .quote-icon { font-size: 2em; margin-bottom: 20px; }
+        body.embed-mode .quote-text { font-size: 1.3em; }
+        body.embed-mode .quote-translation { font-size: 0.85em; margin-bottom: 25px; }
+        body.embed-mode .author-photo { width: 55px; height: 55px; }
+        body.embed-mode .author-name { font-size: 0.95em; }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+
+    <div class="particles" id="particles"></div>
+
+    <div class="quote-card">
+        <div class="quote-icon">👽</div>
+
+        <p class="quote-text">
+            "Clearly some <span class="highlight">powerful alien tool</span> was handed around except it comes with <span class="highlight">no manual</span>."
+        </p>
+
+        <p class="quote-translation">
+            "Claramente alguma ferramenta alienígena poderosa foi distribuída, exceto que ela vem sem manual."
+        </p>
+
+        <div class="decorative-bar"></div>
+
+        <div class="author-section">
+            <img src="andrej-karpathy.jpg" alt="Andrej Karpathy" class="author-photo"
+                 onerror="this.style.display='none'">
+            <div class="author-info">
+                <div class="author-name">Andrej Karpathy</div>
+                <div class="author-title">Ex-Director of AI @ Tesla</div>
+            </div>
+        </div>
+
+        <div class="context-badge">
+            <span>ESTA AULA É O MANUAL</span>
+        </div>
+    </div>
+
+    <script>
+        // Criar partículas
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrutura do Diretorio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--super-bg-dark) 0%, var(--super-bg-section) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            gap: 50px;
+            align-items: flex-start;
+            max-width: 1100px;
+        }
+
+        /* File tree side */
+        .tree-side {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .tree-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            color: var(--super-gold);
+            margin-bottom: 20px;
+        }
+
+        .file-tree {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        .tree-item {
+            padding: 6px 0;
+            padding-left: 20px;
+            color: rgba(255, 244, 228, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .tree-item:hover {
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .tree-item.active {
+            background: rgba(190, 156, 109, 0.2);
+            color: var(--super-gold);
+        }
+
+        .tree-item.folder::before {
+            content: '📁 ';
+        }
+
+        .tree-item.file::before {
+            content: '📄 ';
+        }
+
+        .tree-item.file.special::before {
+            content: '⭐ ';
+        }
+
+        .tree-level-1 { padding-left: 0; }
+        .tree-level-2 { padding-left: 25px; }
+        .tree-level-3 { padding-left: 50px; }
+
+        .tree-item .comment {
+            color: rgba(190, 156, 109, 0.6);
+            font-size: 0.85em;
+        }
+
+        /* Info side */
+        .info-side {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.4s ease;
+        }
+
+        .info-card.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .info-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .info-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5em;
+            color: var(--super-gold);
+            margin-bottom: 10px;
+        }
+
+        .info-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .info-desc {
+            font-size: 1em;
+            color: var(--super-cream);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .info-quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.8);
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 3px solid var(--super-gold);
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 10px;
+        }
+
+        .info-source {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.4);
+            text-align: right;
+        }
+
+        .info-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold-light);
+        }
+
+        .badge.green {
+            background: rgba(74, 222, 128, 0.15);
+            border-color: var(--super-green);
+            color: var(--super-green);
+        }
+
+        /* Navigation hint */
+        .nav-hint {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 20px; }
+        body.embed-mode .container { gap: 30px; }
+        body.embed-mode .tree-side { max-width: 320px; }
+        body.embed-mode .tree-title { font-size: 1.3em; margin-bottom: 15px; }
+        body.embed-mode .file-tree { padding: 18px; font-size: 0.8em; }
+        body.embed-mode .tree-item { padding: 5px 0; }
+        body.embed-mode .info-side { max-width: 400px; }
+        body.embed-mode .info-card { padding: 22px; }
+        body.embed-mode .info-icon { font-size: 2em; margin-bottom: 12px; }
+        body.embed-mode .info-title { font-size: 1.25em; }
+        body.embed-mode .info-path { font-size: 0.75em; }
+        body.embed-mode .info-desc { font-size: 0.9em; margin-bottom: 15px; }
+        body.embed-mode .info-quote { font-size: 0.9em; padding: 12px 15px; }
+        body.embed-mode .nav-hint { bottom: 15px; font-size: 0.7em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tree-side">
+            <h2 class="tree-title">Estrutura do Diretorio</h2>
+            <div class="file-tree">
+                <div class="tree-item folder tree-level-1 active" data-info="projeto">projeto/</div>
+                <div class="tree-item folder tree-level-2" data-info="dotclaude">.claude/</div>
+                <div class="tree-item file tree-level-3" data-info="commands">commands/</div>
+                <div class="tree-item file tree-level-3" data-info="skills">skills/</div>
+                <div class="tree-item file tree-level-3" data-info="agents">agents/</div>
+                <div class="tree-item file tree-level-3" data-info="rules">rules/</div>
+                <div class="tree-item file special tree-level-2" data-info="claudemd">CLAUDE.md</div>
+                <div class="tree-item file tree-level-2" data-info="claudelocal">CLAUDE.local.md</div>
+                <div class="tree-item folder tree-level-2" data-info="data">data/</div>
+            </div>
+        </div>
+
+        <div class="info-side">
+            <!-- Projeto -->
+            <div class="info-card visible" data-target="projeto">
+                <div class="info-icon">&#128193;</div>
+                <div class="info-title">Projeto Raiz</div>
+                <div class="info-path">~/meu-projeto/</div>
+                <div class="info-desc">
+                    O diretorio raiz do seu projeto. Aqui ficam todos os arquivos de codigo,
+                    documentos e a pasta especial .claude/ que guarda a "memoria" do Claude.
+                </div>
+                <div class="info-badges">
+                    <span class="badge">Versionado</span>
+                    <span class="badge">Compartilhado</span>
+                </div>
+            </div>
+
+            <!-- .claude/ -->
+            <div class="info-card" data-target="dotclaude">
+                <div class="info-icon">&#128736;</div>
+                <div class="info-title">.claude/</div>
+                <div class="info-path">.claude/</div>
+                <div class="info-desc">
+                    Pasta especial que contem configuracoes, commands, skills e agents do projeto.
+                    E o "cerebro" local do Claude Code.
+                </div>
+                <div class="info-badges">
+                    <span class="badge">Versionado</span>
+                    <span class="badge">Config Local</span>
+                </div>
+            </div>
+
+            <!-- commands/ -->
+            <div class="info-card" data-target="commands">
+                <div class="info-icon">&#9889;</div>
+                <div class="info-title">commands/</div>
+                <div class="info-path">.claude/commands/</div>
+                <div class="info-desc">
+                    Slash commands personalizados! Cada arquivo .md vira um comando.
+                    Ex: analise-processo.md → /analise-processo
+                </div>
+                <div class="info-quote">
+                    "Store prompt templates in Markdown files within the .claude/commands folder.
+                    These become available through the slash commands menu."
+                </div>
+                <div class="info-source">— Anthropic Best Practices</div>
+            </div>
+
+            <!-- skills/ -->
+            <div class="info-card" data-target="skills">
+                <div class="info-icon">&#127919;</div>
+                <div class="info-title">skills/</div>
+                <div class="info-path">.claude/skills/</div>
+                <div class="info-desc">
+                    Capacidades modulares reutilizaveis. Cada skill e uma pasta com SKILL.md,
+                    templates, exemplos e scripts.
+                </div>
+                <div class="info-quote">
+                    "Each skill is a directory with SKILL.md as the entrypoint."
+                </div>
+                <div class="info-source">— Claude Code Skills Docs</div>
+            </div>
+
+            <!-- agents/ -->
+            <div class="info-card" data-target="agents">
+                <div class="info-icon">&#129302;</div>
+                <div class="info-title">agents/</div>
+                <div class="info-path">.claude/agents/</div>
+                <div class="info-desc">
+                    Configuracoes de subagentes especializados. Define como cada agente
+                    se comporta e quais ferramentas pode usar.
+                </div>
+                <div class="info-badges">
+                    <span class="badge">Modular</span>
+                    <span class="badge">Reutilizavel</span>
+                </div>
+            </div>
+
+            <!-- rules/ -->
+            <div class="info-card" data-target="rules">
+                <div class="info-icon">&#128220;</div>
+                <div class="info-title">rules/</div>
+                <div class="info-path">.claude/rules/</div>
+                <div class="info-desc">
+                    Regras modulares que podem ser importadas no CLAUDE.md.
+                    Ex: estilo-juridico.md, citacoes.md, formatacao.md
+                </div>
+                <div class="info-badges">
+                    <span class="badge">Importavel</span>
+                    <span class="badge">Organizacao</span>
+                </div>
+            </div>
+
+            <!-- CLAUDE.md -->
+            <div class="info-card" data-target="claudemd">
+                <div class="info-icon">&#11088;</div>
+                <div class="info-title">CLAUDE.md</div>
+                <div class="info-path">./CLAUDE.md</div>
+                <div class="info-desc">
+                    O arquivo mais importante! Contem contexto permanente sobre seu projeto,
+                    preferencias e regras. Claude le automaticamente no inicio de cada sessao.
+                </div>
+                <div class="info-quote">
+                    "A CLAUDE.md file is like a README for Claude."
+                </div>
+                <div class="info-source">— Steve Kinney</div>
+                <div class="info-badges">
+                    <span class="badge green">ESSENCIAL</span>
+                    <span class="badge">Versionado</span>
+                </div>
+            </div>
+
+            <!-- CLAUDE.local.md -->
+            <div class="info-card" data-target="claudelocal">
+                <div class="info-icon">&#128274;</div>
+                <div class="info-title">CLAUDE.local.md</div>
+                <div class="info-path">./CLAUDE.local.md</div>
+                <div class="info-desc">
+                    Memoria pessoal que nao vai para o repositorio (gitignored).
+                    Preferencias individuais que nao devem ser compartilhadas.
+                </div>
+                <div class="info-badges">
+                    <span class="badge">Pessoal</span>
+                    <span class="badge">Gitignored</span>
+                </div>
+            </div>
+
+            <!-- data/ -->
+            <div class="info-card" data-target="data">
+                <div class="info-icon">&#128451;</div>
+                <div class="info-title">data/</div>
+                <div class="info-path">./data/</div>
+                <div class="info-desc">
+                    Convencao para saidas do sistema. Aqui ficam os arquivos gerados,
+                    relatorios, analises e outros outputs.
+                </div>
+                <div class="info-badges">
+                    <span class="badge">Outputs</span>
+                    <span class="badge">Convencao</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-hint">Clique nos itens da arvore para explorar</div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // State
+        const treeItems = document.querySelectorAll('.tree-item');
+        const infoCards = document.querySelectorAll('.info-card');
+
+        function showInfo(target) {
+            // Update tree
+            treeItems.forEach(item => {
+                item.classList.toggle('active', item.dataset.info === target);
+            });
+
+            // Update cards
+            infoCards.forEach(card => {
+                card.classList.toggle('visible', card.dataset.target === target);
+            });
+        }
+
+        // Click handlers
+        treeItems.forEach(item => {
+            item.addEventListener('click', () => {
+                showInfo(item.dataset.info);
+            });
+        });
+
+        // Keyboard navigation
+        let currentIndex = 0;
+        const items = Array.from(treeItems);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                currentIndex = (currentIndex + 1) % items.length;
+                showInfo(items[currentIndex].dataset.info);
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                currentIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
+                showInfo(items[currentIndex].dataset.info);
+            }
+        });
+    </script>
+</body>
+</html>

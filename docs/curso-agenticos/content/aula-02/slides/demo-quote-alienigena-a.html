@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Karpathy - Proposta A (Terminal Glitch)</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --glitch-cyan: #00ffff;
+            --glitch-magenta: #ff00ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+            position: relative;
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.3;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center,
+                transparent 0%,
+                rgba(10, 10, 18, 0.4) 50%,
+                rgba(10, 10, 18, 0.9) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+            max-width: 1000px;
+        }
+
+        /* Ícone alienígena */
+        .alien-icon {
+            font-size: 4em;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite, glitch-icon 5s ease infinite;
+            filter: drop-shadow(0 0 20px rgba(190, 156, 109, 0.5));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glitch-icon {
+            0%, 90%, 100% { filter: drop-shadow(0 0 20px rgba(190, 156, 109, 0.5)); }
+            92% { filter: drop-shadow(-3px 0 var(--glitch-cyan)) drop-shadow(3px 0 var(--glitch-magenta)); }
+            94% { filter: drop-shadow(3px 0 var(--glitch-cyan)) drop-shadow(-3px 0 var(--glitch-magenta)); }
+        }
+
+        /* Quote com efeito glitch */
+        .quote-container {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .quote {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2em;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--super-cream);
+            position: relative;
+            animation: glitch-text 8s ease infinite;
+        }
+
+        .quote::before,
+        .quote::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+
+        .quote::before {
+            color: var(--glitch-cyan);
+            animation: glitch-before 8s ease infinite;
+        }
+
+        .quote::after {
+            color: var(--glitch-magenta);
+            animation: glitch-after 8s ease infinite;
+        }
+
+        @keyframes glitch-text {
+            0%, 90%, 100% { transform: translate(0); }
+            91% { transform: translate(-2px, 1px); }
+            93% { transform: translate(2px, -1px); }
+            95% { transform: translate(-1px, 2px); }
+        }
+
+        @keyframes glitch-before {
+            0%, 90%, 100% { opacity: 0; transform: translate(0); }
+            91% { opacity: 0.8; transform: translate(-4px, -2px); }
+            93% { opacity: 0; }
+        }
+
+        @keyframes glitch-after {
+            0%, 90%, 100% { opacity: 0; transform: translate(0); }
+            92% { opacity: 0.8; transform: translate(4px, 2px); }
+            94% { opacity: 0; }
+        }
+
+        .highlight-alien {
+            color: var(--super-gold);
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(190, 156, 109, 0.5);
+        }
+
+        .highlight-manual {
+            color: var(--super-green);
+            font-weight: 700;
+            text-decoration: line-through;
+            text-decoration-color: rgba(239, 68, 68, 0.8);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Aspas decorativas */
+        .quote-mark {
+            font-size: 5em;
+            color: rgba(190, 156, 109, 0.15);
+            position: absolute;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .quote-mark.open {
+            top: -40px;
+            left: -20px;
+        }
+
+        .quote-mark.close {
+            bottom: -60px;
+            right: -20px;
+        }
+
+        /* Autor */
+        .author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .author-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid var(--super-gold);
+            object-fit: cover;
+            filter: grayscale(30%);
+        }
+
+        .author-info {
+            text-align: left;
+        }
+
+        .author-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .author-title {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 4px;
+        }
+
+        .author-date {
+            font-size: 0.75em;
+            color: rgba(190, 156, 109, 0.6);
+            margin-top: 2px;
+        }
+
+        /* Terminal prompt no final */
+        .terminal-hint {
+            margin-top: 50px;
+            font-size: 0.9em;
+            color: rgba(190, 156, 109, 0.6);
+            animation: blink-hint 2s ease infinite;
+        }
+
+        .terminal-hint span {
+            color: var(--super-gold);
+        }
+
+        @keyframes blink-hint {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.5; }
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 25px; }
+        body.embed-mode .alien-icon { font-size: 3em; margin-bottom: 20px; }
+        body.embed-mode .quote { font-size: 1.8em; }
+        body.embed-mode .author-photo { width: 55px; height: 55px; }
+        body.embed-mode .author-name { font-size: 1.1em; }
+        body.embed-mode .terminal-hint { margin-top: 35px; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="alien-icon">&#128125;</div>
+
+        <div class="quote-container">
+            <span class="quote-mark open">"</span>
+            <p class="quote" data-text="Claramente alguma ferramenta alienígena poderosa foi distribuída, exceto que ela vem sem manual.">
+                Claramente alguma <span class="highlight-alien">ferramenta alienígena</span> poderosa foi distribuída, exceto que ela vem <span class="highlight-manual">sem manual</span>.
+            </p>
+            <span class="quote-mark close">"</span>
+        </div>
+
+        <div class="author">
+            <img src="andrej-karpathy.jpg" alt="Andrej Karpathy" class="author-photo">
+            <div class="author-info">
+                <div class="author-name">Andrej Karpathy</div>
+                <div class="author-title">Ex-Tesla AI, OpenAI</div>
+                <div class="author-date">Janeiro 2025</div>
+            </div>
+        </div>
+
+        <div class="terminal-hint">
+            <span>$</span> Este curso é o manual que faltava_
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

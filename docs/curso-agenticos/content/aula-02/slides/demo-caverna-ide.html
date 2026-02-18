@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDE Extension - O Caminho para a Saída</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-red: #f87171;
+            --super-blue: #60a5fa;
+            --path-color: rgba(140, 120, 100, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* Imagem de fundo - Caverna com mais luz */
+        .bg-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('../../../site/assets/20260125_1105_Image Generation_simple_compose_01kftqh504f8hv46ba4smtz2c6.png');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.45) saturate(0.8);
+            z-index: 1;
+        }
+
+        /* Overlay médio - mais luz entrando */
+        .bg-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg,
+                rgba(10, 10, 18, 0.75) 0%,
+                rgba(30, 25, 40, 0.65) 50%,
+                rgba(60, 50, 40, 0.50) 100%);
+            z-index: 2;
+        }
+
+        /* Feixe de luz vindo da direita */
+        .light-beam {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(270deg,
+                rgba(190, 156, 109, 0.15) 0%,
+                rgba(190, 156, 109, 0.05) 50%,
+                transparent 100%);
+            z-index: 3;
+            animation: beamPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes beamPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Container principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        /* Barra de progresso lateral */
+        .progress-bar {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 20;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .progress-line {
+            width: 2px;
+            height: 40px;
+            background: rgba(190, 156, 109, 0.2);
+        }
+
+        .progress-line.done {
+            background: rgba(190, 156, 109, 0.5);
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.2);
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.done {
+            background: rgba(100, 90, 110, 0.6);
+            border-color: rgba(100, 90, 110, 0.8);
+        }
+
+        .progress-dot.active {
+            background: var(--path-color);
+            border-color: var(--path-color);
+            box-shadow: 0 0 15px var(--path-color);
+        }
+
+        .progress-dot.future {
+            opacity: 0.4;
+        }
+
+        .progress-label {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+        }
+
+        .progress-label.active {
+            color: var(--super-cream);
+        }
+
+        .progress-label.done {
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Conteúdo central */
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Título */
+        .title-section {
+            text-align: center;
+        }
+
+        .main-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 2.8em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(140, 120, 100, 0.6);
+        }
+
+        .subtitle {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.4em;
+            font-style: italic;
+            color: var(--path-color);
+            letter-spacing: 2px;
+        }
+
+        /* Mock do IDE - mais sólido */
+        .interface-mock {
+            position: relative;
+            width: 580px;
+            opacity: 0;
+            animation: ideAppear 1.2s ease 0.6s forwards;
+        }
+
+        @keyframes ideAppear {
+            0% { opacity: 0; filter: blur(10px); transform: scale(0.95); }
+            100% { opacity: 0.9; filter: blur(0); transform: scale(1); }
+        }
+
+        .ide-window {
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(140, 120, 100, 0.4);
+            box-shadow:
+                0 0 50px rgba(140, 120, 100, 0.3),
+                0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .ide-header {
+            background: #323233;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca40; }
+
+        .ide-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.85em;
+            color: var(--super-blue);
+            font-weight: 500;
+        }
+
+        .ide-body {
+            display: flex;
+            height: 220px;
+        }
+
+        .ide-sidebar {
+            width: 45px;
+            background: #252526;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 0;
+            gap: 18px;
+            border-right: 1px solid #3c3c3c;
+        }
+
+        .sidebar-icon {
+            font-size: 1.1em;
+            opacity: 0.5;
+        }
+
+        .sidebar-icon.active {
+            opacity: 1;
+        }
+
+        .ide-main {
+            flex: 1;
+            display: flex;
+        }
+
+        .ide-explorer {
+            width: 140px;
+            background: #252526;
+            padding: 12px;
+            border-right: 1px solid #3c3c3c;
+        }
+
+        .explorer-title {
+            font-size: 0.65em;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .file-tree {
+            font-size: 0.7em;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .file-item {
+            padding: 3px 0;
+            padding-left: 8px;
+        }
+
+        .file-item.folder::before { content: '📁 '; }
+        .file-item.file::before { content: '📄 '; }
+
+        .ide-editor {
+            flex: 1;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.8);
+            background: #1e1e1e;
+        }
+
+        .code-line {
+            margin-bottom: 2px;
+        }
+
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+
+        .ide-claude-panel {
+            width: 160px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #151525 100%);
+            border-left: 2px solid var(--super-gold);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .claude-header {
+            font-size: 0.7em;
+            color: var(--super-gold);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .claude-message {
+            font-size: 0.65em;
+            padding: 8px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .claude-message.user {
+            background: rgba(190, 156, 109, 0.15);
+        }
+
+        /* Peso/âncora visual */
+        .anchor-icon {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            color: rgba(140, 120, 100, 0.5);
+            opacity: 0;
+            animation: anchorAppear 1s ease 1.5s forwards, anchorFloat 3s ease-in-out 2.5s infinite;
+        }
+
+        @keyframes anchorAppear {
+            to { opacity: 0.6; }
+        }
+
+        @keyframes anchorFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(5px); }
+        }
+
+        /* Lista de características */
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: rgba(40, 35, 50, 0.6);
+            border-radius: 8px;
+            border-left: 3px solid;
+        }
+
+        .feature.pro {
+            border-color: var(--super-green);
+        }
+
+        .feature.con {
+            border-color: var(--super-red);
+        }
+
+        .feature-icon {
+            font-size: 1.1em;
+        }
+
+        .feature-text {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.8);
+        }
+
+        .feature.con .feature-text {
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        /* Luz indicando saída */
+        .exit-light {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            animation: fadeIn 1s ease 2s forwards;
+        }
+
+        .light-glow {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                rgba(190, 156, 109, 0.6) 0%,
+                rgba(190, 156, 109, 0.2) 50%,
+                transparent 70%);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .exit-text {
+            font-size: 0.7em;
+            color: rgba(190, 156, 109, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            writing-mode: vertical-rl;
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 25px; gap: 40px; }
+        body.embed-mode .main-title { font-size: 2em; }
+        body.embed-mode .subtitle { font-size: 1.1em; }
+        body.embed-mode .interface-mock { width: 480px; }
+        body.embed-mode .ide-body { height: 180px; }
+        body.embed-mode .features { gap: 8px; }
+        body.embed-mode .feature { padding: 8px 12px; }
+        body.embed-mode .feature-text { font-size: 0.75em; }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="light-beam"></div>
+
+    <!-- Barra de progresso -->
+    <div class="progress-bar">
+        <div class="progress-step">
+            <div class="progress-dot done"></div>
+            <span class="progress-label done">Sombras</span>
+        </div>
+        <div class="progress-line done"></div>
+        <div class="progress-step">
+            <div class="progress-dot active"></div>
+            <span class="progress-label active">Caminho</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            <div class="progress-dot future"></div>
+            <span class="progress-label">Luz</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div class="title-section">
+                <h1 class="main-title">IDE Extension</h1>
+                <p class="subtitle">"O caminho para a saída"</p>
+            </div>
+
+            <div class="interface-mock">
+                <div class="ide-window">
+                    <div class="ide-header">
+                        <div class="window-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <span class="ide-title">VS Code — projeto</span>
+                    </div>
+                    <div class="ide-body">
+                        <div class="ide-sidebar">
+                            <span class="sidebar-icon">📁</span>
+                            <span class="sidebar-icon">🔍</span>
+                            <span class="sidebar-icon active">🤖</span>
+                            <span class="sidebar-icon">⚙️</span>
+                        </div>
+                        <div class="ide-main">
+                            <div class="ide-explorer">
+                                <div class="explorer-title">Explorer</div>
+                                <div class="file-tree">
+                                    <div class="file-item folder">src</div>
+                                    <div class="file-item file" style="padding-left: 16px;">app.ts</div>
+                                    <div class="file-item file" style="padding-left: 16px;">utils.ts</div>
+                                    <div class="file-item folder">docs</div>
+                                    <div class="file-item file">README.md</div>
+                                </div>
+                            </div>
+                            <div class="ide-editor">
+                                <div class="code-line"><span class="keyword">function</span> <span class="function">processData</span>() {</div>
+                                <div class="code-line">  <span class="comment">// Análise de dados</span></div>
+                                <div class="code-line">  <span class="keyword">const</span> result = <span class="function">analyze</span>();</div>
+                                <div class="code-line">  <span class="keyword">return</span> result;</div>
+                                <div class="code-line">}</div>
+                            </div>
+                            <div class="ide-claude-panel">
+                                <div class="claude-header">🤖 Claude Code</div>
+                                <div class="claude-message user">Explique esta função</div>
+                                <div class="claude-message">Esta função processa dados e retorna...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="anchor-icon">⚓</div>
+            </div>
+
+            <div class="features">
+                <div class="feature pro">
+                    <span class="feature-icon">👁️</span>
+                    <span class="feature-text">Diffs visuais nativos</span>
+                </div>
+                <div class="feature pro">
+                    <span class="feature-icon">📄</span>
+                    <span class="feature-text">Preview HTML, Markdown</span>
+                </div>
+                <div class="feature con">
+                    <span class="feature-icon">🔋</span>
+                    <span class="feature-text">Maior consumo CPU/RAM</span>
+                </div>
+                <div class="feature con">
+                    <span class="feature-icon">💳</span>
+                    <span class="feature-text">Limitações de subscription</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Luz indicando saída -->
+    <div class="exit-light">
+        <div class="light-glow"></div>
+        <span class="exit-text">A saída está perto...</span>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

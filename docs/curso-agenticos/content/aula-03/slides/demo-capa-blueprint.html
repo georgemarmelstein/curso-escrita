@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Capa Blueprint</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER + BLUEPRINT
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --blueprint-blue: #0a1628;
+            --blueprint-line: rgba(190, 156, 109, 0.4);
+            --blueprint-line-bright: rgba(190, 156, 109, 0.8);
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--blueprint-blue);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Blueprint grid background */
+        .blueprint-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(190, 156, 109, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(190, 156, 109, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(190, 156, 109, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(190, 156, 109, 0.06) 1px, transparent 1px);
+            background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+            background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+            z-index: 0;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 0%,
+                rgba(10, 22, 40, 0.3) 50%,
+                rgba(10, 22, 40, 0.8) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1000px;
+            height: 600px;
+            padding: 40px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SVG DIAGRAM
+           ═══════════════════════════════════════════════════════════ */
+        .diagram-svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 500px;
+        }
+
+        /* Nodes */
+        .node {
+            fill: rgba(10, 22, 40, 0.8);
+            stroke: var(--blueprint-line);
+            stroke-width: 1.5;
+        }
+
+        .node-llm { stroke: var(--super-gold); }
+        .node-harness { stroke: var(--super-cyan); }
+        .node-tools { stroke: var(--super-green); }
+        .node-memory { stroke: #a78bfa; }
+        .node-context { stroke: #f472b6; }
+
+        .node-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            fill: var(--super-cream);
+            text-anchor: middle;
+            dominant-baseline: middle;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .node-icon {
+            font-size: 18px;
+            fill: var(--super-gold);
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        /* Connection lines */
+        .connection {
+            stroke: var(--blueprint-line);
+            stroke-width: 1;
+            fill: none;
+            stroke-dasharray: 300;
+            stroke-dashoffset: 300;
+            animation: drawLine 1.5s ease forwards;
+        }
+
+        .connection-highlight {
+            stroke: var(--super-gold);
+            stroke-width: 1.5;
+        }
+
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Arrows */
+        .arrow {
+            fill: var(--blueprint-line);
+        }
+
+        /* Pulse effect on central node */
+        .pulse-ring {
+            fill: none;
+            stroke: var(--super-cyan);
+            stroke-width: 2;
+            opacity: 0;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0; transform: scale(1); }
+            50% { opacity: 0.5; }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+
+        /* Data flow particles */
+        .particle {
+            fill: var(--super-gold);
+            opacity: 0;
+        }
+
+        .particle-1 { animation: flow1 4s ease-in-out infinite 0s; }
+        .particle-2 { animation: flow2 4s ease-in-out infinite 1s; }
+        .particle-3 { animation: flow3 4s ease-in-out infinite 2s; }
+
+        @keyframes flow1 {
+            0%, 100% { opacity: 0; offset-distance: 0%; }
+            10%, 90% { opacity: 1; }
+            100% { offset-distance: 100%; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TITLE
+           ═══════════════════════════════════════════════════════════ */
+        .title-container {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 20;
+        }
+
+        .title-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            opacity: 0;
+            animation: fadeIn 1s ease 1.5s forwards;
+        }
+
+        .title-main {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.8em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 2px;
+            text-shadow: 0 0 40px rgba(190, 156, 109, 0.3);
+            opacity: 0;
+            animation: fadeIn 1s ease 1.8s forwards;
+        }
+
+        .title-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 10px;
+            font-style: italic;
+            opacity: 0;
+            animation: fadeIn 1s ease 2.1s forwards;
+        }
+
+        /* Blueprint annotations */
+        .annotation {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            fill: rgba(190, 156, 109, 0.5);
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .dimension-line {
+            stroke: rgba(190, 156, 109, 0.3);
+            stroke-width: 0.5;
+            stroke-dasharray: 4 2;
+        }
+
+        /* Corner markers */
+        .corner-marker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+        .corner-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+        .corner-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+
+        /* Project info */
+        .project-info {
+            position: absolute;
+            top: 25px;
+            left: 60px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(190, 156, 109, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s ease 0.8s forwards;
+        }
+
+        .project-info span {
+            color: var(--super-gold);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .title-main { font-size: 2.2em; }
+        body.embed-mode .diagram-svg { width: 700px; height: 450px; }
+        body.embed-mode .title-container { bottom: 40px; }
+    </style>
+</head>
+<body>
+    <div class="blueprint-grid"></div>
+    <div class="vignette"></div>
+
+    <div class="corner-marker corner-tl"></div>
+    <div class="corner-marker corner-tr"></div>
+    <div class="corner-marker corner-bl"></div>
+    <div class="corner-marker corner-br"></div>
+
+    <div class="project-info">
+        <span>PROJ:</span> SISTEMAS-AGENTICOS <span>REV:</span> 03 <span>SHEET:</span> 1/1
+    </div>
+
+    <div class="container">
+        <svg class="diagram-svg" viewBox="0 0 800 500">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="rgba(190, 156, 109, 0.6)" />
+                </marker>
+                <marker id="arrowhead-gold" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#BE9C6D" />
+                </marker>
+            </defs>
+
+            <!-- Annotations -->
+            <text class="annotation" x="50" y="30" style="animation-delay: 2s;">// AGENTIC SYSTEM ARCHITECTURE v3.0</text>
+            <text class="annotation" x="50" y="45" style="animation-delay: 2.2s;">// LLM + HARNESS + TOOLS + MEMORY</text>
+
+            <!-- Dimension lines -->
+            <line class="dimension-line" x1="150" y1="80" x2="650" y2="80" />
+            <text class="annotation" x="400" y="75" text-anchor="middle" style="animation-delay: 2.4s;">ORCHESTRATION LAYER</text>
+
+            <!-- Connection lines (drawn with animation) -->
+            <!-- LLM to Harness -->
+            <path class="connection connection-highlight" d="M 250 200 L 400 200" marker-end="url(#arrowhead-gold)" style="animation-delay: 0.3s;" />
+
+            <!-- Harness to Tools -->
+            <path class="connection" d="M 400 230 L 400 300 L 250 300" marker-end="url(#arrowhead)" style="animation-delay: 0.6s;" />
+
+            <!-- Harness to Memory -->
+            <path class="connection" d="M 400 230 L 400 300 L 550 300" marker-end="url(#arrowhead)" style="animation-delay: 0.9s;" />
+
+            <!-- Tools feedback -->
+            <path class="connection" d="M 250 270 L 250 200 L 280 200" marker-end="url(#arrowhead)" style="animation-delay: 1.2s;" />
+
+            <!-- Memory feedback -->
+            <path class="connection" d="M 550 270 L 550 200 L 520 200" marker-end="url(#arrowhead)" style="animation-delay: 1.2s;" />
+
+            <!-- Context input -->
+            <path class="connection" d="M 400 100 L 400 170" marker-end="url(#arrowhead-gold)" style="animation-delay: 0.1s;" />
+
+            <!-- Loop indicator -->
+            <path class="connection" d="M 480 200 C 520 200 520 150 480 150 L 420 150 C 380 150 380 170 400 170" stroke-dasharray="4 2" style="animation-delay: 1.5s; stroke: rgba(190, 156, 109, 0.3);" />
+            <text class="annotation" x="500" y="145" style="animation-delay: 2s;">AGENTIC LOOP</text>
+
+            <!-- Nodes -->
+            <!-- Context (top) -->
+            <rect class="node node-context" x="340" y="60" width="120" height="40" rx="4" />
+            <text class="node-label" x="400" y="80" style="animation-delay: 0.5s;">CONTEXT</text>
+
+            <!-- LLM (left) -->
+            <rect class="node node-llm" x="150" y="170" width="100" height="60" rx="4" />
+            <text class="node-label" x="200" y="195" style="animation-delay: 0.7s; font-size: 13px; fill: #BE9C6D;">LLM</text>
+            <text class="node-label" x="200" y="212" style="animation-delay: 0.8s; font-size: 9px;">Claude</text>
+
+            <!-- Harness (center) -->
+            <rect class="node node-harness" x="320" y="170" width="160" height="60" rx="4" />
+            <circle class="pulse-ring" cx="400" cy="200" r="40" />
+            <text class="node-label" x="400" y="195" style="animation-delay: 0.9s; font-size: 13px; fill: #22d3ee;">HARNESS</text>
+            <text class="node-label" x="400" y="212" style="animation-delay: 1s; font-size: 9px;">Orchestrator</text>
+
+            <!-- Tools (bottom left) -->
+            <rect class="node node-tools" x="150" y="270" width="100" height="60" rx="4" />
+            <text class="node-label" x="200" y="295" style="animation-delay: 1.1s; font-size: 13px; fill: #4ade80;">TOOLS</text>
+            <text class="node-label" x="200" y="312" style="animation-delay: 1.2s; font-size: 9px;">Bash, Edit, MCP...</text>
+
+            <!-- Memory (bottom right) -->
+            <rect class="node node-memory" x="500" y="270" width="100" height="60" rx="4" />
+            <text class="node-label" x="550" y="295" style="animation-delay: 1.3s; font-size: 13px; fill: #a78bfa;">MEMORY</text>
+            <text class="node-label" x="550" y="312" style="animation-delay: 1.4s; font-size: 9px;">Context, History</text>
+
+            <!-- Output -->
+            <rect class="node" x="340" y="380" width="120" height="40" rx="4" style="stroke: var(--super-gold);" />
+            <text class="node-label" x="400" y="400" style="animation-delay: 1.5s;">OUTPUT</text>
+            <path class="connection" d="M 400 330 L 400 380" marker-end="url(#arrowhead-gold)" style="animation-delay: 1.4s;" />
+
+            <!-- Flow annotations -->
+            <text class="annotation" x="270" y="195" style="animation-delay: 2.2s;">prompt</text>
+            <text class="annotation" x="270" y="305" style="animation-delay: 2.4s;">execute</text>
+            <text class="annotation" x="470" y="305" style="animation-delay: 2.6s;">retrieve</text>
+        </svg>
+
+        <div class="title-container">
+            <div class="title-label">Aula 03</div>
+            <h1 class="title-main">Construindo Sistemas Agênticos</h1>
+            <p class="title-sub">Da arquitetura à implementação</p>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'capa-blueprint-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

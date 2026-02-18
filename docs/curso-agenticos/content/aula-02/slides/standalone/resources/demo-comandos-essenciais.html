@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comandos Essenciais do Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #12121c;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-purple: #a78bfa;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-cyan: #22d3ee;
+
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(190, 156, 109, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            overflow: hidden;
+        }
+
+        /* Ambient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 20% 30%, rgba(96, 165, 250, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 80% 70%, rgba(190, 156, 109, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px 30px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════ */
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2em, 4vw, 3em);
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 30px rgba(190, 156, 109, 0.25);
+        }
+
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.9em, 1.5vw, 1.2em);
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 1px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           CATEGORY LEGEND
+           ═══════════════════════════════════════════════════════════ */
+        .category-legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 18px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75em;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.inicio { background: var(--super-blue); }
+        .legend-dot.orientacao { background: var(--super-green); }
+        .legend-dot.manutencao { background: var(--super-amber); }
+        .legend-dot.extensao { background: var(--super-gold); }
+
+        .legend-label {
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN LAYOUT
+           ═══════════════════════════════════════════════════════════ */
+        .main-content {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 25px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TERMINAL COMMANDS
+           ═══════════════════════════════════════════════════════════ */
+        .terminal-container {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        /* Mac style dots */
+        .terminal-dots-mac {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        /* Windows style buttons */
+        .terminal-buttons-win {
+            display: none;
+            gap: 0;
+            margin-left: auto;
+        }
+
+        .win-btn {
+            width: 32px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: rgba(255, 244, 228, 0.6);
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.75em;
+            cursor: default;
+            transition: background 0.15s;
+        }
+
+        .win-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .win-btn.close:hover { background: #e81123; color: white; }
+
+        .win-icon {
+            font-size: 1.1em;
+            line-height: 1;
+        }
+
+        /* Windows mode: show win buttons, hide mac dots */
+        body.windows-mode .terminal-dots-mac { display: none; }
+        body.windows-mode .terminal-buttons-win { display: flex; }
+        body.windows-mode .terminal-title { text-align: left; margin-left: 8px; }
+
+        /* Windows terminal icon */
+        .terminal-icon-win {
+            display: none;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #0078d4 0%, #00bcf2 100%);
+            border-radius: 2px;
+            margin-right: 6px;
+            position: relative;
+        }
+
+        .terminal-icon-win::after {
+            content: '>';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        body.windows-mode .terminal-icon-win { display: block; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+            letter-spacing: 1px;
+        }
+
+        /* OS Toggle Button */
+        .os-toggle {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(190, 156, 109, 0.25);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        .os-toggle:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(190, 156, 109, 0.4);
+        }
+
+        .os-toggle-label {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .os-toggle-switch {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .os-option {
+            padding: 4px 8px;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .os-option.active {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            font-weight: 600;
+        }
+
+        .terminal-body {
+            padding: 15px 18px;
+            overflow-y: auto;
+            flex: 1;
+            font-size: clamp(1em, 1.8vw, 1.4em);
+            line-height: 1.5;
+        }
+
+        /* Category headers */
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 14px 0 8px 0;
+            border-top: 1px solid rgba(190, 156, 109, 0.1);
+            margin-top: 6px;
+        }
+
+        .category-header:first-child {
+            border-top: none;
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        .category-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+
+        .category-indicator.inicio { background: var(--super-blue); }
+        .category-indicator.orientacao { background: var(--super-green); }
+        .category-indicator.manutencao { background: var(--super-amber); }
+        .category-indicator.extensao { background: var(--super-gold); }
+
+        /* Command lines */
+        .command-line {
+            display: flex;
+            align-items: center;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+            margin: 2px 0;
+            border-left: 3px solid transparent;
+        }
+
+        .command-line:hover {
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .command-line.active {
+            background: rgba(190, 156, 109, 0.15);
+        }
+
+        .command-line.active.inicio { border-left-color: var(--super-blue); }
+        .command-line.active.orientacao { border-left-color: var(--super-green); }
+        .command-line.active.manutencao { border-left-color: var(--super-amber); }
+        .command-line.active.extensao { border-left-color: var(--super-gold); }
+
+        .command-line.dimmed {
+            opacity: 0.3;
+        }
+
+        .command-prompt {
+            color: var(--super-green);
+            margin-right: 8px;
+            user-select: none;
+        }
+
+        .command-name {
+            color: var(--super-cream);
+            font-weight: 500;
+        }
+
+        .command-name.inicio { color: var(--super-blue); }
+        .command-name.orientacao { color: var(--super-green); }
+        .command-name.manutencao { color: var(--super-amber); }
+        .command-name.extensao { color: var(--super-gold); }
+
+        .command-tag {
+            margin-left: auto;
+            font-size: 0.7em;
+            padding: 2px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        .command-tag.essential {
+            background: rgba(190, 156, 109, 0.2);
+            color: var(--super-gold);
+        }
+
+        .command-tag.new {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--super-green);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           DESCRIPTION PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .description-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 18px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .panel-icon {
+            font-size: 1.4em;
+            font-weight: 600;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .panel-icon.inicio {
+            background: rgba(96, 165, 250, 0.15);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: var(--super-blue);
+        }
+
+        .panel-icon.orientacao {
+            background: rgba(74, 222, 128, 0.15);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--super-green);
+        }
+
+        .panel-icon.manutencao {
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: var(--super-amber);
+        }
+
+        .panel-icon.extensao {
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            color: var(--super-gold);
+        }
+
+        .panel-meta { flex: 1; }
+
+        .panel-title {
+            font-size: clamp(1.5em, 2.5vw, 2.2em);
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .panel-category {
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .panel-category.inicio { color: var(--super-blue); }
+        .panel-category.orientacao { color: var(--super-green); }
+        .panel-category.manutencao { color: var(--super-amber); }
+        .panel-category.extensao { color: var(--super-gold); }
+
+        .panel-description {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.1em, 1.8vw, 1.5em);
+            color: rgba(255, 244, 228, 0.9);
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .panel-description strong {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        /* Syntax section */
+        .syntax-section {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+
+        .syntax-title {
+            font-size: 0.65em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .syntax-code {
+            font-size: 0.95em;
+            color: var(--super-cream);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .syntax-code .prompt { color: var(--super-green); }
+        .syntax-code .cmd { color: var(--super-gold); }
+        .syntax-code .arg { color: var(--super-blue); }
+        .syntax-code .optional { color: rgba(255, 244, 228, 0.5); }
+
+        /* What it does */
+        .effects-title {
+            font-size: 0.7em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .panel-effects {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .effect-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            border-left: 3px solid var(--super-gold);
+        }
+
+        .effect-bullet {
+            color: var(--super-gold);
+            font-weight: 600;
+            margin-top: 1px;
+        }
+
+        .effect-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1em, 1.6vw, 1.3em);
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.5;
+        }
+
+        /* Example output */
+        .output-section {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .output-title {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .output-code {
+            font-size: 0.78em;
+            color: rgba(255, 244, 228, 0.8);
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .output-code .comment { color: rgba(255, 244, 228, 0.35); }
+        .output-code .highlight { color: var(--super-gold); }
+        .output-code .success { color: var(--super-green); }
+        .output-code .warning { color: var(--super-amber); }
+
+        /* Tip box */
+        .tip-box {
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.25);
+            border-radius: 6px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .tip-icon {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .tip-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82em;
+            color: rgba(255, 244, 228, 0.85);
+            line-height: 1.5;
+        }
+
+        /* Default panel */
+        .default-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            padding: 30px;
+        }
+
+        .default-icon {
+            font-size: 2.5em;
+            color: var(--super-gold);
+            opacity: 0.2;
+            margin-bottom: 15px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .default-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .default-hint {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE - AUMENTADO para projeção em sala
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode { height: 100vh; overflow: hidden; }
+        body.embed-mode .container { padding: 15px 25px; height: 100vh; }
+        body.embed-mode header { margin-bottom: 10px; }
+        body.embed-mode h1 { font-size: clamp(1.6em, 2.8vw, 2.2em); margin-bottom: 4px; }
+        body.embed-mode .subtitle { font-size: clamp(0.85em, 1.2vw, 1em); }
+        body.embed-mode .category-legend { padding: 8px 15px; margin-bottom: 10px; gap: 20px; }
+        body.embed-mode .legend-item { font-size: clamp(0.8em, 1.1vw, 0.95em); }
+        body.embed-mode .main-content { gap: 20px; grid-template-columns: 380px 1fr; }
+        body.embed-mode .terminal-body { padding: 12px 15px; font-size: clamp(0.95em, 1.4vw, 1.15em); line-height: 1.4; }
+        body.embed-mode .command-line { padding: 5px 10px; margin: 1px 0; }
+        body.embed-mode .category-header { font-size: clamp(0.7em, 1vw, 0.85em); padding: 10px 0 5px 0; margin-top: 4px; }
+        body.embed-mode .description-panel { padding: 18px; }
+        body.embed-mode .panel-header { margin-bottom: 12px; padding-bottom: 10px; }
+        body.embed-mode .panel-icon { font-size: 1.2em; width: 45px; height: 45px; }
+        body.embed-mode .panel-title { font-size: clamp(1.3em, 2vw, 1.7em); }
+        body.embed-mode .panel-category { font-size: 0.7em; margin-bottom: 6px; }
+        body.embed-mode .panel-description { font-size: clamp(1em, 1.5vw, 1.2em); margin-bottom: 12px; line-height: 1.5; }
+        body.embed-mode .syntax-section { padding: 10px 12px; margin-bottom: 10px; }
+        body.embed-mode .syntax-title { font-size: 0.6em; margin-bottom: 6px; }
+        body.embed-mode .syntax-code { font-size: clamp(0.95em, 1.4vw, 1.1em); }
+        body.embed-mode .effects-title { font-size: 0.65em; margin-bottom: 6px; }
+        body.embed-mode .panel-effects { gap: 4px; margin-bottom: 12px; }
+        body.embed-mode .effect-item { padding: 8px 10px; }
+        body.embed-mode .effect-text { font-size: clamp(0.9em, 1.3vw, 1.05em); line-height: 1.4; }
+        body.embed-mode .output-section { padding: 10px; margin-bottom: 10px; }
+        body.embed-mode .output-title { font-size: 0.6em; margin-bottom: 6px; }
+        body.embed-mode .output-code { font-size: clamp(0.85em, 1.2vw, 1em); line-height: 1.5; }
+        body.embed-mode .tip-box { padding: 10px 12px; }
+        body.embed-mode .tip-text { font-size: clamp(0.85em, 1.2vw, 1em); }
+        body.embed-mode .os-toggle { top: 6px; right: 6px; padding: 4px 8px; }
+        body.embed-mode .os-toggle-label { font-size: 0.65em; }
+        body.embed-mode .os-option { padding: 3px 6px; font-size: 0.7em; }
+        body.embed-mode .default-text { font-size: clamp(1em, 1.4vw, 1.2em); }
+        body.embed-mode .default-hint { font-size: clamp(0.85em, 1.2vw, 1em); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(190, 156, 109, 0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(190, 156, 109, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Comandos Essenciais</h1>
+            <div class="subtitle">// Seu painel de controle no terminal</div>
+        </header>
+
+        <!-- Category Legend -->
+        <div class="category-legend">
+            <div class="legend-item">
+                <div class="legend-dot inicio"></div>
+                <span class="legend-label">Início</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot orientacao"></div>
+                <span class="legend-label">Orientação</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot manutencao"></div>
+                <span class="legend-label">Manutenção</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot extensao"></div>
+                <span class="legend-label">Extensão</span>
+            </div>
+        </div>
+
+        <!-- OS Toggle -->
+        <div class="os-toggle" id="os-toggle" title="Alternar estilo do terminal">
+            <span class="os-toggle-label">Terminal:</span>
+            <div class="os-toggle-switch">
+                <span class="os-option active" data-os="mac">Mac</span>
+                <span class="os-option" data-os="windows">Win</span>
+            </div>
+        </div>
+
+        <main class="main-content">
+            <!-- Terminal Commands -->
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <!-- Mac style -->
+                    <div class="terminal-dots-mac">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                    </div>
+
+                    <!-- Windows style icon -->
+                    <div class="terminal-icon-win"></div>
+
+                    <span class="terminal-title">claude --commands</span>
+
+                    <!-- Windows style buttons -->
+                    <div class="terminal-buttons-win">
+                        <div class="win-btn minimize"><span class="win-icon">&#x2212;</span></div>
+                        <div class="win-btn maximize"><span class="win-icon">&#x25A1;</span></div>
+                        <div class="win-btn close"><span class="win-icon">&#x2715;</span></div>
+                    </div>
+                </div>
+                <div class="terminal-body">
+                    <!-- INÍCIO -->
+                    <div class="category-header">
+                        <div class="category-indicator inicio"></div>
+                        <span>Início</span>
+                    </div>
+
+                    <div class="command-line inicio" data-cmd="init">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name inicio">/init</span>
+                        <span class="command-tag essential">setup</span>
+                    </div>
+
+                    <div class="command-line inicio" data-cmd="config">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name inicio">/config</span>
+                    </div>
+
+                    <div class="command-line inicio" data-cmd="login">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name inicio">/login</span>
+                    </div>
+
+                    <div class="command-line inicio" data-cmd="logout">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name inicio">/logout</span>
+                    </div>
+
+                    <!-- ORIENTAÇÃO -->
+                    <div class="category-header">
+                        <div class="category-indicator orientacao"></div>
+                        <span>Orientação</span>
+                    </div>
+
+                    <div class="command-line orientacao" data-cmd="help">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name orientacao">/help</span>
+                        <span class="command-tag essential">essencial</span>
+                    </div>
+
+                    <div class="command-line orientacao" data-cmd="context">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name orientacao">/context</span>
+                    </div>
+
+                    <div class="command-line orientacao" data-cmd="status">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name orientacao">/status</span>
+                    </div>
+
+                    <!-- MANUTENÇÃO -->
+                    <div class="category-header">
+                        <div class="category-indicator manutencao"></div>
+                        <span>Manutenção</span>
+                    </div>
+
+                    <div class="command-line manutencao" data-cmd="compact">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name manutencao">/compact</span>
+                        <span class="command-tag essential">essencial</span>
+                    </div>
+
+                    <div class="command-line manutencao" data-cmd="clear">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name manutencao">/clear</span>
+                    </div>
+
+                    <div class="command-line manutencao" data-cmd="cost">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name manutencao">/cost</span>
+                    </div>
+
+                    <!-- EXTENSÃO -->
+                    <div class="category-header">
+                        <div class="category-indicator extensao"></div>
+                        <span>Extensão</span>
+                    </div>
+
+                    <div class="command-line extensao" data-cmd="plugin">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name extensao">/plugin</span>
+                    </div>
+
+                    <div class="command-line extensao" data-cmd="mcp">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name extensao">/mcp</span>
+                    </div>
+
+                    <div class="command-line extensao" data-cmd="skill-creator">
+                        <span class="command-prompt">$</span>
+                        <span class="command-name extensao">/skill-creator</span>
+                        <span class="command-tag new">avançado</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Panel -->
+            <div class="description-panel" id="panel">
+                <div class="default-panel" id="default-panel">
+                    <div class="default-icon">/</div>
+                    <div class="default-text">Clique em um comando</div>
+                    <div class="default-hint">Cada comando tem um propósito específico</div>
+                </div>
+                <div id="panel-content" style="display: none;"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // Embed Mode Detection
+        // ═══════════════════════════════════════════════════════════
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // ═══════════════════════════════════════════════════════════
+        // OS Toggle (Mac / Windows)
+        // ═══════════════════════════════════════════════════════════
+        function initOSToggle() {
+            const toggle = document.getElementById('os-toggle');
+            const options = toggle.querySelectorAll('.os-option');
+
+            // Detect user's OS and set default
+            const isWindows = navigator.platform.indexOf('Win') > -1;
+            if (isWindows) {
+                setOS('windows');
+            }
+
+            // Click handlers
+            options.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const os = option.dataset.os;
+                    setOS(os);
+                });
+            });
+
+            function setOS(os) {
+                // Update body class
+                if (os === 'windows') {
+                    document.body.classList.add('windows-mode');
+                } else {
+                    document.body.classList.remove('windows-mode');
+                }
+
+                // Update toggle buttons
+                options.forEach(opt => {
+                    opt.classList.toggle('active', opt.dataset.os === os);
+                });
+
+                // Update prompt symbols
+                const prompts = document.querySelectorAll('.command-prompt');
+                prompts.forEach(p => {
+                    p.textContent = os === 'windows' ? '>' : '$';
+                });
+
+                // Save preference
+                try {
+                    localStorage.setItem('claude-terminal-os', os);
+                } catch (e) {}
+            }
+
+            // Load saved preference
+            try {
+                const saved = localStorage.getItem('claude-terminal-os');
+                if (saved) {
+                    setOS(saved);
+                }
+            } catch (e) {}
+        }
+        initOSToggle();
+
+        // ═══════════════════════════════════════════════════════════
+        // Command Data
+        // ═══════════════════════════════════════════════════════════
+        const commands = {
+            // ===== INÍCIO =====
+            'init': {
+                name: '/init',
+                category: 'inicio',
+                categoryLabel: 'Início',
+                desc: 'Inicializa a estrutura do Claude Code no projeto atual. Cria a pasta <strong>.claude/</strong> com configurações básicas e, opcionalmente, um <strong>CLAUDE.md</strong> inicial.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/init</span>',
+                effects: [
+                    { text: 'Cria .claude/ com settings.json' },
+                    { text: 'Oferece criar CLAUDE.md se não existir' },
+                    { text: 'Configura estrutura básica de comandos' },
+                    { text: 'Adiciona entradas ao .gitignore' }
+                ],
+                output: '<span class="success">Criando estrutura Claude Code...</span>\n\n  .claude/\n    settings.json  <span class="comment"># criado</span>\n    commands/      <span class="comment"># criado</span>\n\n<span class="highlight">Criar CLAUDE.md?</span> (s/n)',
+                tip: 'Execute na raiz do projeto. É o primeiro comando em qualquer projeto novo.'
+            },
+
+            'config': {
+                name: '/config',
+                category: 'inicio',
+                categoryLabel: 'Início',
+                desc: 'Abre o painel de configurações do Claude Code. Permite ajustar <strong>modelo preferido</strong>, permissões, e comportamentos.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/config</span>',
+                effects: [
+                    { text: 'Abre menu interativo de configurações' },
+                    { text: 'Permite trocar modelo (sonnet/opus/haiku)' },
+                    { text: 'Gerencia permissões allow/deny' },
+                    { text: 'Salva em ~/.claude/settings.json' }
+                ],
+                output: '<span class="highlight">Configurações do Claude Code</span>\n\n  1. Modelo: <span class="success">sonnet</span>\n  2. Permissões\n  3. Aparência\n  4. Avançado\n\nEscolha uma opção:',
+                tip: 'Configurações globais afetam todos os projetos. Use .claude/settings.json no projeto para configs específicas.'
+            },
+
+            'login': {
+                name: '/login',
+                category: 'inicio',
+                categoryLabel: 'Início',
+                desc: 'Autentica com sua conta Anthropic. Necessário para usar o Claude Code. Abre o navegador para completar o login.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/login</span>',
+                effects: [
+                    { text: 'Abre navegador para autenticação' },
+                    { text: 'Salva credenciais em ~/.claude/credentials.json' },
+                    { text: 'Conecta à API da Anthropic' }
+                ],
+                output: '<span class="highlight">Abrindo navegador para login...</span>\n\nComplete a autenticação no navegador.\nAguardando confirmação...\n\n<span class="success">Login realizado com sucesso!</span>',
+                tip: 'O login persiste entre sessões. Use /logout para desconectar.'
+            },
+
+            'logout': {
+                name: '/logout',
+                category: 'inicio',
+                categoryLabel: 'Início',
+                desc: 'Desconecta da conta Anthropic atual. Remove as credenciais salvas.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/logout</span>',
+                effects: [
+                    { text: 'Remove credenciais salvas' },
+                    { text: 'Desconecta da API' },
+                    { text: 'Requer novo /login para usar' }
+                ],
+                output: '<span class="warning">Desconectando...</span>\n\n<span class="success">Logout realizado.</span>\nUse /login para reconectar.',
+                tip: 'Use quando precisar trocar de conta ou por segurança em computador compartilhado.'
+            },
+
+            // ===== ORIENTAÇÃO =====
+            'help': {
+                name: '/help',
+                category: 'orientacao',
+                categoryLabel: 'Orientação',
+                desc: 'Mostra todos os comandos disponíveis, incluindo os <strong>slash commands personalizados</strong> do projeto. Seu guia de referência rápida.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/help</span> <span class="optional">[comando]</span>',
+                effects: [
+                    { text: 'Lista todos os comandos built-in' },
+                    { text: 'Mostra comandos customizados (.claude/commands/)' },
+                    { text: 'Exibe atalhos de teclado' },
+                    { text: 'Com argumento: ajuda específica do comando' }
+                ],
+                output: '<span class="highlight">Comandos Disponíveis</span>\n\n<span class="comment"># Built-in</span>\n/help     - Esta ajuda\n/init     - Inicializar projeto\n/compact  - Compactar contexto\n...\n\n<span class="comment"># Projeto</span>\n/review   - Revisar código\n/test     - Rodar testes',
+                tip: 'Use /help [comando] para ver detalhes de um comando específico.'
+            },
+
+            'context': {
+                name: '/context',
+                category: 'orientacao',
+                categoryLabel: 'Orientação',
+                desc: 'Mostra o que está carregado no <strong>contexto atual</strong> do Claude. Útil para entender o que ele "sabe" nesta sessão.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/context</span>',
+                effects: [
+                    { text: 'Lista arquivos lidos na sessão' },
+                    { text: 'Mostra CLAUDE.md carregado' },
+                    { text: 'Exibe uso de tokens' },
+                    { text: 'Indica capacidade restante' }
+                ],
+                output: '<span class="highlight">Contexto Atual</span>\n\nTokens: <span class="warning">45.2k</span> / 200k\n\n<span class="comment"># Arquivos</span>\nCLAUDE.md          <span class="success">carregado</span>\nsrc/main.ts        2.1k tokens\nsrc/utils.ts       0.8k tokens\n\n<span class="comment"># Memória</span>\n5 mensagens nesta sessão',
+                tip: 'Monitore o contexto para saber quando usar /compact.'
+            },
+
+            'status': {
+                name: '/status',
+                category: 'orientacao',
+                categoryLabel: 'Orientação',
+                desc: 'Exibe o status geral da sessão: conexão, modelo em uso, projeto atual e configurações ativas.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/status</span>',
+                effects: [
+                    { text: 'Mostra modelo atual (sonnet/opus/haiku)' },
+                    { text: 'Indica projeto e diretório' },
+                    { text: 'Lista plugins ativos' },
+                    { text: 'Exibe status da conexão' }
+                ],
+                output: '<span class="highlight">Status da Sessão</span>\n\nModelo:   <span class="success">claude-sonnet-4</span>\nProjeto:  meu-projeto/\nPlugins:  2 ativos\nConexão:  <span class="success">OK</span>\nCusto:    $0.12 esta sessão',
+                tip: 'Use para verificar rapidamente se está tudo configurado corretamente.'
+            },
+
+            // ===== MANUTENÇÃO =====
+            'compact': {
+                name: '/compact',
+                category: 'manutencao',
+                categoryLabel: 'Manutenção',
+                desc: 'Compacta o contexto atual, <strong>resumindo a conversa</strong> para liberar espaço. Essencial para sessões longas. O CLAUDE.md nunca é perdido.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/compact</span> <span class="optional">[instrução]</span>',
+                effects: [
+                    { text: 'Resume toda a conversa anterior' },
+                    { text: 'Libera tokens para continuar trabalhando' },
+                    { text: 'Preserva CLAUDE.md (nunca esquece)' },
+                    { text: 'Aceita instrução para focar o resumo' }
+                ],
+                output: '<span class="warning">Compactando contexto...</span>\n\nAntes: <span class="warning">180k tokens</span>\nDepois: <span class="success">12k tokens</span>\n\n<span class="success">Contexto compactado!</span>\nCLAUDE.md preservado.',
+                tip: 'Use quando o Claude começar a "esquecer" coisas ou a resposta ficar lenta.'
+            },
+
+            'clear': {
+                name: '/clear',
+                category: 'manutencao',
+                categoryLabel: 'Manutenção',
+                desc: 'Limpa toda a conversa atual e começa uma <strong>sessão nova</strong>. Diferente de /compact, apaga tudo (exceto CLAUDE.md que é recarregado).',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/clear</span>',
+                effects: [
+                    { text: 'Apaga todo o histórico da sessão' },
+                    { text: 'Recarrega CLAUDE.md automaticamente' },
+                    { text: 'Inicia conversa do zero' },
+                    { text: 'Mantém configurações do projeto' }
+                ],
+                output: '<span class="warning">Limpando sessão...</span>\n\n<span class="success">Sessão limpa!</span>\nCLAUDE.md recarregado.\n\nComo posso ajudar?',
+                tip: 'Use quando quiser mudar completamente de tarefa ou se o contexto ficou confuso.'
+            },
+
+            'cost': {
+                name: '/cost',
+                category: 'manutencao',
+                categoryLabel: 'Manutenção',
+                desc: 'Mostra o <strong>custo acumulado</strong> da sessão atual. Útil para monitorar gastos com a API.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/cost</span>',
+                effects: [
+                    { text: 'Exibe custo total da sessão' },
+                    { text: 'Mostra tokens de entrada e saída' },
+                    { text: 'Calcula custo por modelo usado' }
+                ],
+                output: '<span class="highlight">Custo da Sessão</span>\n\nInput:  125.4k tokens  $0.38\nOutput:  28.2k tokens  $0.85\n\n<span class="highlight">Total: $1.23</span>',
+                tip: 'Monitore para evitar surpresas. Opus custa mais que Sonnet.'
+            },
+
+            // ===== EXTENSÃO =====
+            'plugin': {
+                name: '/plugin',
+                category: 'extensao',
+                categoryLabel: 'Extensão',
+                desc: 'Gerencia <strong>plugins do Claude Code</strong>. Permite instalar, remover e listar extensões que adicionam funcionalidades.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/plugin</span> <span class="arg">[add|remove|list]</span>',
+                effects: [
+                    { text: '/plugin list - lista plugins instalados' },
+                    { text: '/plugin add [url] - instala novo plugin' },
+                    { text: '/plugin remove [nome] - remove plugin' },
+                    { text: 'Plugins adicionam comandos e skills' }
+                ],
+                output: '<span class="highlight">Plugins Instalados</span>\n\n<span class="success">superpowers</span>  v4.1.1\n  Skills de produtividade\n\n<span class="success">frontend-design</span>  v1.0.0\n  Geração de interfaces',
+                tip: 'Plugins são instalados globalmente em ~/.claude/plugins/'
+            },
+
+            'mcp': {
+                name: '/mcp',
+                category: 'extensao',
+                categoryLabel: 'Extensão',
+                desc: 'Gerencia conexões <strong>MCP (Model Context Protocol)</strong>. Conecta o Claude a ferramentas externas como bancos de dados, APIs e serviços.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/mcp</span> <span class="arg">[add|remove|list]</span>',
+                effects: [
+                    { text: '/mcp list - lista servidores MCP' },
+                    { text: '/mcp add - adiciona novo servidor' },
+                    { text: 'Conecta Claude a ferramentas externas' },
+                    { text: 'Ex: PostgreSQL, Slack, GitHub' }
+                ],
+                output: '<span class="highlight">Servidores MCP</span>\n\n<span class="success">postgres</span>\n  Conectado: db.exemplo.com\n\n<span class="success">slack</span>\n  Workspace: minha-empresa',
+                tip: 'MCP é o protocolo padrão para integrar IA com ferramentas. Veremos em aulas futuras.'
+            },
+
+            'skill-creator': {
+                name: '/skill-creator',
+                category: 'extensao',
+                categoryLabel: 'Extensão',
+                desc: 'Assistente para <strong>criar novas skills</strong>. Guia você pelo processo de definir uma skill reutilizável com SKILL.md, templates e scripts.',
+                syntax: '<span class="prompt">$</span> <span class="cmd">/skill-creator</span> <span class="arg">[nome]</span>',
+                effects: [
+                    { text: 'Cria estrutura de diretórios da skill' },
+                    { text: 'Gera SKILL.md com template inicial' },
+                    { text: 'Configura entrypoint e metadados' },
+                    { text: 'Adiciona exemplos e testes' }
+                ],
+                output: '<span class="highlight">Criando Skill: minha-skill</span>\n\n<span class="success">Criando estrutura...</span>\n\n  .claude/skills/minha-skill/\n    SKILL.md       <span class="success">criado</span>\n    templates/     <span class="success">criado</span>\n    examples/      <span class="success">criado</span>\n\nEdite SKILL.md para definir a skill.',
+                tip: 'Skills são mais poderosas que commands. Use para expertise que precisa de múltiplos arquivos.'
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // DOM Elements
+        // ═══════════════════════════════════════════════════════════
+        const commandItems = document.querySelectorAll('.command-line');
+        const defaultPanel = document.getElementById('default-panel');
+        const panelContent = document.getElementById('panel-content');
+
+        // ═══════════════════════════════════════════════════════════
+        // Panel Rendering
+        // ═══════════════════════════════════════════════════════════
+        function showDefaultPanel() {
+            defaultPanel.style.display = 'flex';
+            panelContent.style.display = 'none';
+        }
+
+        function selectCommand(cmdId) {
+            const data = commands[cmdId];
+            if (!data) return;
+
+            defaultPanel.style.display = 'none';
+            panelContent.style.display = 'block';
+
+            let html = `
+                <div class="panel-header">
+                    <div class="panel-icon ${data.category}">/</div>
+                    <div class="panel-meta">
+                        <div class="panel-title">${data.name}</div>
+                        <div class="panel-category ${data.category}">${data.categoryLabel}</div>
+                    </div>
+                </div>
+
+                <div class="panel-description">${data.desc}</div>
+
+                <div class="syntax-section">
+                    <div class="syntax-title">Sintaxe</div>
+                    <div class="syntax-code">${data.syntax}</div>
+                </div>
+            `;
+
+            // Effects
+            if (data.effects && data.effects.length > 0) {
+                html += `
+                    <div class="effects-title">O que faz</div>
+                    <div class="panel-effects">
+                        ${data.effects.map(e => `
+                            <div class="effect-item">
+                                <span class="effect-bullet">&gt;</span>
+                                <span class="effect-text">${e.text}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // Output example
+            if (data.output) {
+                html += `
+                    <div class="output-section">
+                        <div class="output-title">Exemplo de saída</div>
+                        <div class="output-code">${data.output}</div>
+                    </div>
+                `;
+            }
+
+            // Tip
+            if (data.tip) {
+                html += `
+                    <div class="tip-box">
+                        <span class="tip-icon">*</span>
+                        <span class="tip-text">${data.tip}</span>
+                    </div>
+                `;
+            }
+
+            panelContent.innerHTML = html;
+
+            // Highlight command item
+            commandItems.forEach(item => {
+                item.classList.remove('active', 'dimmed');
+                if (item.dataset.cmd === cmdId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.add('dimmed');
+                }
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Event Listeners
+        // ═══════════════════════════════════════════════════════════
+        commandItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const cmdId = item.dataset.cmd;
+                if (commands[cmdId]) {
+                    selectCommand(cmdId);
+                }
+            });
+        });
+
+        // Click outside to reset
+        document.body.addEventListener('click', (e) => {
+            if (!e.target.closest('.terminal-container') && !e.target.closest('.description-panel')) {
+                commandItems.forEach(item => item.classList.remove('active', 'dimmed'));
+                showDefaultPanel();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const visibleItems = [...commandItems];
+            const activeIndex = visibleItems.findIndex(i => i.classList.contains('active'));
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextIndex = activeIndex < 0 ? 0 : (activeIndex + 1) % visibleItems.length;
+                const cmdId = visibleItems[nextIndex].dataset.cmd;
+                if (commands[cmdId]) selectCommand(cmdId);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevIndex = activeIndex <= 0 ? visibleItems.length - 1 : activeIndex - 1;
+                const cmdId = visibleItems[prevIndex].dataset.cmd;
+                if (commands[cmdId]) selectCommand(cmdId);
+            } else if (e.key === 'Escape') {
+                commandItems.forEach(item => item.classList.remove('active', 'dimmed'));
+                showDefaultPanel();
+            }
+        });
+
+        // Communication with parent (Reveal.js)
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data.action === 'selectCommand' && data.cmd) {
+                selectCommand(data.cmd);
+            } else if (data.action === 'reset') {
+                commandItems.forEach(item => item.classList.remove('active', 'dimmed'));
+                showDefaultPanel();
+            }
+        });
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'comandos-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code: Slash Commands Reference</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER - Sistema de Cores Unificado
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #12121c;
+            --super-prussian: #194A68;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+            --super-purple: #a78bfa;
+            --super-cyan: #22d3ee;
+
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(190, 156, 109, 0.2);
+            --glass-blur: blur(20px);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            color: var(--super-cream);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient background effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(25, 74, 104, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(190, 156, 109, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════ */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            text-shadow: 0 0 40px rgba(190, 156, 109, 0.3);
+        }
+
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 4px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           CATEGORY TABS
+           ═══════════════════════════════════════════════════════════ */
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            font-weight: 500;
+            padding: 12px 24px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: rgba(255, 244, 228, 0.6);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--super-gold);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .tab:hover {
+            border-color: var(--super-gold);
+            color: var(--super-cream);
+            transform: translateY(-2px);
+        }
+
+        .tab:hover::before {
+            width: 60%;
+        }
+
+        .tab.active {
+            background: rgba(190, 156, 109, 0.15);
+            border-color: var(--super-gold);
+            color: var(--super-gold);
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.2);
+        }
+
+        .tab.active::before {
+            width: 80%;
+        }
+
+        .tab-icon {
+            margin-right: 8px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN LAYOUT
+           ═══════════════════════════════════════════════════════════ */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            flex: 1;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           COMMANDS GRID
+           ═══════════════════════════════════════════════════════════ */
+        .commands-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .command-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: cardAppear 0.4s ease forwards;
+        }
+
+        .command-card:nth-child(1) { animation-delay: 0.05s; }
+        .command-card:nth-child(2) { animation-delay: 0.1s; }
+        .command-card:nth-child(3) { animation-delay: 0.15s; }
+        .command-card:nth-child(4) { animation-delay: 0.2s; }
+        .command-card:nth-child(5) { animation-delay: 0.25s; }
+
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .command-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--super-gold);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .command-card:hover {
+            border-color: rgba(190, 156, 109, 0.4);
+            transform: translateX(4px);
+            background: rgba(190, 156, 109, 0.08);
+        }
+
+        .command-card:hover::before {
+            opacity: 1;
+        }
+
+        .command-card.active {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.12);
+            box-shadow:
+                0 0 30px rgba(190, 156, 109, 0.15),
+                inset 0 0 30px rgba(190, 156, 109, 0.05);
+        }
+
+        .command-card.active::before {
+            opacity: 1;
+        }
+
+        .command-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-gold);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .command-name .icon {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .command-desc {
+            font-size: 0.82em;
+            color: rgba(255, 244, 228, 0.65);
+            line-height: 1.4;
+        }
+
+        /* Category colors */
+        .command-card[data-category="essenciais"] .command-name { color: var(--super-green); }
+        .command-card[data-category="essenciais"]::before { background: var(--super-green); }
+        .command-card[data-category="essenciais"].active { border-color: var(--super-green); }
+
+        .command-card[data-category="informacao"] .command-name { color: var(--super-blue); }
+        .command-card[data-category="informacao"]::before { background: var(--super-blue); }
+        .command-card[data-category="informacao"].active { border-color: var(--super-blue); }
+
+        .command-card[data-category="configuracao"] .command-name { color: var(--super-amber); }
+        .command-card[data-category="configuracao"]::before { background: var(--super-amber); }
+        .command-card[data-category="configuracao"].active { border-color: var(--super-amber); }
+
+        .command-card[data-category="sessao"] .command-name { color: var(--super-purple); }
+        .command-card[data-category="sessao"]::before { background: var(--super-purple); }
+        .command-card[data-category="sessao"].active { border-color: var(--super-purple); }
+
+        .command-card[data-category="avancados"] .command-name { color: var(--super-cyan); }
+        .command-card[data-category="avancados"]::before { background: var(--super-cyan); }
+        .command-card[data-category="avancados"].active { border-color: var(--super-cyan); }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TERMINAL
+           ═══════════════════════════════════════════════════════════ */
+        .terminal-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-window {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
+
+        .terminal-header {
+            background: linear-gradient(180deg, rgba(30, 30, 45, 0.9) 0%, rgba(20, 20, 30, 0.9) 100%);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.15);
+        }
+
+        .traffic-lights {
+            display: flex;
+            gap: 8px;
+        }
+
+        .traffic-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .traffic-light::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .traffic-light.red { background: #ff5f56; box-shadow: 0 0 8px #ff5f56; }
+        .traffic-light.yellow { background: #ffbd2e; box-shadow: 0 0 8px #ffbd2e; }
+        .traffic-light.green { background: #27c93f; box-shadow: 0 0 8px #27c93f; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .terminal-body {
+            flex: 1;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88em;
+            line-height: 1.6;
+            overflow-y: auto;
+            min-height: 350px;
+        }
+
+        .terminal-line {
+            padding: 3px 0;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .terminal-line.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .prompt { color: var(--super-green); }
+        .slash-cmd { color: var(--super-gold); font-weight: 600; }
+        .output { color: rgba(255, 244, 228, 0.75); }
+        .success { color: var(--super-green); }
+        .info { color: var(--super-blue); }
+        .warning { color: var(--super-amber); }
+        .error { color: var(--super-red); }
+        .highlight { color: var(--super-gold); }
+        .dim { color: rgba(255, 244, 228, 0.4); }
+
+        .cursor {
+            display: inline-block;
+            width: 9px;
+            height: 18px;
+            background: var(--super-gold);
+            margin-left: 4px;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SHORTCUTS SECTION
+           ═══════════════════════════════════════════════════════════ */
+        .shortcuts-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
+
+        .shortcuts-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1em;
+            color: var(--super-gold);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shortcuts-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--glass-border) 0%, transparent 100%);
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .shortcut-item {
+            text-align: center;
+        }
+
+        .shortcut-key {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            font-weight: 500;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(190, 156, 109, 0.25);
+            border-radius: 6px;
+            color: var(--super-cream);
+            display: inline-block;
+            margin-bottom: 6px;
+            min-width: 80px;
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .shortcut-desc {
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE (for Reveal.js iframe)
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .container { padding: 15px 25px; }
+        body.embed-mode h1 { font-size: 1.5em; margin-bottom: 5px; }
+        body.embed-mode .subtitle { font-size: 0.75em; margin-bottom: 15px; }
+        body.embed-mode .category-tabs { margin-bottom: 20px; gap: 6px; }
+        body.embed-mode .tab { padding: 8px 16px; font-size: 0.7em; }
+        body.embed-mode .main-content { gap: 20px; }
+        body.embed-mode .commands-grid { gap: 8px; }
+        body.embed-mode .command-card { padding: 12px 14px; }
+        body.embed-mode .command-name { font-size: 0.95em; }
+        body.embed-mode .command-desc { font-size: 0.75em; }
+        body.embed-mode .terminal-body { padding: 15px; min-height: 280px; font-size: 0.8em; }
+        body.embed-mode .shortcuts-section { margin-top: 15px; padding: 15px; }
+        body.embed-mode .shortcuts-title { font-size: 0.85em; margin-bottom: 10px; }
+        body.embed-mode .shortcuts-grid { gap: 8px; }
+        body.embed-mode .shortcut-key { font-size: 0.75em; padding: 5px 8px; min-width: 65px; }
+        body.embed-mode .shortcut-desc { font-size: 0.65em; }
+
+        /* ═══════════════════════════════════════════════════════════
+           SCROLLBAR
+           ═══════════════════════════════════════════════════════════ */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(190, 156, 109, 0.3);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(190, 156, 109, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Slash Commands</h1>
+            <div class="subtitle">// Claude Code Reference</div>
+        </header>
+
+        <!-- Category Tabs -->
+        <nav class="category-tabs">
+            <button class="tab active" data-category="essenciais">
+                <span class="tab-icon">&#9889;</span>Essenciais
+            </button>
+            <button class="tab" data-category="informacao">
+                <span class="tab-icon">&#128202;</span>Informacao
+            </button>
+            <button class="tab" data-category="configuracao">
+                <span class="tab-icon">&#9881;</span>Configuracao
+            </button>
+            <button class="tab" data-category="sessao">
+                <span class="tab-icon">&#128257;</span>Sessao
+            </button>
+            <button class="tab" data-category="avancados">
+                <span class="tab-icon">&#128640;</span>Avancados
+            </button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Commands Grid -->
+            <section class="commands-section">
+                <div class="commands-grid" id="commands-grid">
+                    <!-- Essenciais -->
+                    <div class="command-card" data-cmd="help" data-category="essenciais">
+                        <div class="command-name"><span class="icon">?</span>/help</div>
+                        <div class="command-desc">Mostra ajuda e lista todos os comandos disponiveis</div>
+                    </div>
+                    <div class="command-card" data-cmd="clear" data-category="essenciais">
+                        <div class="command-name"><span class="icon">&#8634;</span>/clear</div>
+                        <div class="command-desc">Limpa historico da conversa (fresh start)</div>
+                    </div>
+                    <div class="command-card" data-cmd="compact" data-category="essenciais">
+                        <div class="command-name"><span class="icon">&#9660;</span>/compact</div>
+                        <div class="command-desc">Comprime conversa para economizar tokens</div>
+                    </div>
+                    <div class="command-card" data-cmd="init" data-category="essenciais">
+                        <div class="command-name"><span class="icon">&#9733;</span>/init</div>
+                        <div class="command-desc">Inicializa CLAUDE.md para o projeto</div>
+                    </div>
+                    <div class="command-card" data-cmd="exit" data-category="essenciais">
+                        <div class="command-name"><span class="icon">&#10005;</span>/exit</div>
+                        <div class="command-desc">Sai da sessao Claude Code</div>
+                    </div>
+
+                    <!-- Informacao -->
+                    <div class="command-card hidden" data-cmd="cost" data-category="informacao">
+                        <div class="command-name"><span class="icon">$</span>/cost</div>
+                        <div class="command-desc">Mostra custos de tokens da sessao atual</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="context" data-category="informacao">
+                        <div class="command-name"><span class="icon">&#9608;</span>/context</div>
+                        <div class="command-desc">Visualiza uso de contexto (fuel gauge)</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="status" data-category="informacao">
+                        <div class="command-name"><span class="icon">&#9679;</span>/status</div>
+                        <div class="command-desc">Versao e status de conectividade</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="doctor" data-category="informacao">
+                        <div class="command-name"><span class="icon">+</span>/doctor</div>
+                        <div class="command-desc">Executa diagnosticos de instalacao</div>
+                    </div>
+
+                    <!-- Configuracao -->
+                    <div class="command-card hidden" data-cmd="config" data-category="configuracao">
+                        <div class="command-name"><span class="icon">&#9881;</span>/config</div>
+                        <div class="command-desc">Abre menu de configuracoes gerais</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="permissions" data-category="configuracao">
+                        <div class="command-name"><span class="icon">&#128274;</span>/permissions</div>
+                        <div class="command-desc">Gerencia permissoes de ferramentas</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="model" data-category="configuracao">
+                        <div class="command-name"><span class="icon">&#9041;</span>/model</div>
+                        <div class="command-desc">Troca modelo (Sonnet, Opus, Haiku)</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="memory" data-category="configuracao">
+                        <div class="command-name"><span class="icon">&#128466;</span>/memory</div>
+                        <div class="command-desc">Abre CLAUDE.md para edicao</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="vim" data-category="configuracao">
+                        <div class="command-name"><span class="icon">&#9998;</span>/vim</div>
+                        <div class="command-desc">Ativa modo vim para edicao</div>
+                    </div>
+
+                    <!-- Sessao -->
+                    <div class="command-card hidden" data-cmd="resume" data-category="sessao">
+                        <div class="command-name"><span class="icon">&#9654;</span>/resume</div>
+                        <div class="command-desc">Retoma uma sessao anterior</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="add-dir" data-category="sessao">
+                        <div class="command-name"><span class="icon">&#128193;</span>/add-dir</div>
+                        <div class="command-desc">Adiciona diretorios de trabalho</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="plan" data-category="sessao">
+                        <div class="command-name"><span class="icon">&#128203;</span>/plan</div>
+                        <div class="command-desc">Ativa modo planejamento</div>
+                    </div>
+
+                    <!-- Avancados -->
+                    <div class="command-card hidden" data-cmd="agents" data-category="avancados">
+                        <div class="command-name"><span class="icon">&#129302;</span>/agents</div>
+                        <div class="command-desc">Gerencia subagentes customizados</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="skills" data-category="avancados">
+                        <div class="command-name"><span class="icon">&#128161;</span>/skills</div>
+                        <div class="command-desc">Lista skills disponiveis no projeto</div>
+                    </div>
+                    <div class="command-card hidden" data-cmd="hooks" data-category="avancados">
+                        <div class="command-name"><span class="icon">&#128279;</span>/hooks</div>
+                        <div class="command-desc">Mostra hooks configurados</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Terminal -->
+            <section class="terminal-section">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="traffic-lights">
+                            <div class="traffic-light red"></div>
+                            <div class="traffic-light yellow"></div>
+                            <div class="traffic-light green"></div>
+                        </div>
+                        <span class="terminal-title">claude -- ~/projeto</span>
+                    </div>
+                    <div class="terminal-body" id="terminal-body">
+                        <div class="terminal-line visible">
+                            <span class="dim">// Clique em um comando para ver o output</span>
+                        </div>
+                        <div class="terminal-line visible">
+                            <span class="prompt">claude></span> <span class="cursor"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shortcuts -->
+                <div class="shortcuts-section">
+                    <div class="shortcuts-title">Atalhos de Teclado</div>
+                    <div class="shortcuts-grid">
+                        <div class="shortcut-item">
+                            <div class="shortcut-key">Shift+Enter</div>
+                            <div class="shortcut-desc">Multi-linha</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-key">Tab</div>
+                            <div class="shortcut-desc">Thinking</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-key">Ctrl+C</div>
+                            <div class="shortcut-desc">Cancelar</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-key">Esc</div>
+                            <div class="shortcut-desc">Sair modo</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-key">!</div>
+                            <div class="shortcut-desc">Bash direto</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // Embed Mode Detection
+        // ═══════════════════════════════════════════════════════════
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // ═══════════════════════════════════════════════════════════
+        // Command Data
+        // ═══════════════════════════════════════════════════════════
+        const commands = {
+            // Essenciais
+            'help': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/help</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Claude Code Help ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">ESSENCIAIS</span>' },
+                    { type: 'output', text: '  /help      Mostra esta ajuda' },
+                    { type: 'output', text: '  /clear     Limpa historico' },
+                    { type: 'output', text: '  /compact   Comprime conversa' },
+                    { type: 'output', text: '  /init      Inicializa projeto' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">INFORMACAO</span>' },
+                    { type: 'output', text: '  /cost      Custos de tokens' },
+                    { type: 'output', text: '  /context   Uso de contexto' },
+                    { type: 'output', text: '  /status    Status do sistema' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Digite / para ver todos os comandos' }
+                ]
+            },
+            'clear': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/clear</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: 'Limpando historico da conversa...' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Historico limpo' },
+                    { type: 'success', text: '&#10003; CLAUDE.md preservado' },
+                    { type: 'success', text: '&#10003; Configuracoes mantidas' },
+                    { type: 'empty' },
+                    { type: 'output', text: 'Pronto para uma nova tarefa.' },
+                    { type: 'dim', text: 'Dica: /clear e melhor que /compact quando o contexto esta muito poluido' }
+                ]
+            },
+            'compact': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/compact</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: 'Compactando conversa...' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="dim">Antes:</span>  <span class="warning">45,230</span> tokens' },
+                    { type: 'output', text: '<span class="dim">Depois:</span> <span class="success">12,150</span> tokens' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Economia de 73% dos tokens!' },
+                    { type: 'empty' },
+                    { type: 'output', text: 'Contexto essencial preservado.' },
+                    { type: 'dim', text: 'Resumo da conversa criado automaticamente' }
+                ]
+            },
+            'init': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/init</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: 'Analisando estrutura do projeto...' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Criado <span class="highlight">CLAUDE.md</span>' },
+                    { type: 'success', text: '&#10003; Criado <span class="highlight">.claude/</span>' },
+                    { type: 'success', text: '&#10003; Criado <span class="highlight">.claude/settings.json</span>' },
+                    { type: 'empty' },
+                    { type: 'output', text: 'Projeto inicializado!' },
+                    { type: 'output', text: 'Edite <span class="highlight">CLAUDE.md</span> para personalizar.' },
+                    { type: 'dim', text: 'Voce pode adicionar regras, preferencias e contexto do projeto' }
+                ]
+            },
+            'exit': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/exit</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: 'Encerrando sessao Claude Code...' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="dim">Sessao:</span> 47 minutos' },
+                    { type: 'output', text: '<span class="dim">Tokens:</span> 23,450 usados' },
+                    { type: 'output', text: '<span class="dim">Custo:</span>  $0.42 estimado' },
+                    { type: 'empty' },
+                    { type: 'success', text: 'Ate a proxima! &#128075;' },
+                    { type: 'dim', text: 'Use claude --resume para continuar esta sessao depois' }
+                ]
+            },
+            // Informacao
+            'cost': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/cost</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Custos da Sessao ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="dim">Input tokens:</span>  23,450' },
+                    { type: 'output', text: '<span class="dim">Output tokens:</span> 8,230' },
+                    { type: 'output', text: '<span class="dim">Cache read:</span>    12,100' },
+                    { type: 'output', text: '<span class="dim">Cache write:</span>   5,800' },
+                    { type: 'empty' },
+                    { type: 'success', text: 'Custo estimado: <span class="highlight">$0.42</span>' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="dim">Modelo:</span> claude-sonnet-4-20250514' }
+                ]
+            },
+            'context': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/context</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Uso de Contexto ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="success">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="warning">&#9608;&#9608;&#9608;&#9608;</span><span class="dim">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;</span> 62%' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="dim">System:</span>     8,200 tokens' },
+                    { type: 'output', text: '<span class="dim">CLAUDE.md:</span>  2,100 tokens' },
+                    { type: 'output', text: '<span class="dim">Conversa:</span>  45,230 tokens' },
+                    { type: 'output', text: '<span class="dim">Arquivos:</span>  12,400 tokens' },
+                    { type: 'empty' },
+                    { type: 'warning', text: '&#9888; Contexto em 62% - considere /compact em breve' }
+                ]
+            },
+            'status': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/status</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Claude Code Status ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="dim">Versao:</span>      1.0.32' },
+                    { type: 'output', text: '<span class="dim">Modelo:</span>      claude-sonnet-4-20250514' },
+                    { type: 'output', text: '<span class="dim">API:</span>         <span class="success">&#9679; Conectado</span>' },
+                    { type: 'output', text: '<span class="dim">MCP:</span>         <span class="success">&#9679; 3 servidores ativos</span>' },
+                    { type: 'output', text: '<span class="dim">Workspace:</span>   ~/projeto' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Sistema operacional' }
+                ]
+            },
+            'doctor': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/doctor</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: 'Executando diagnosticos...' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Node.js v20.10.0' },
+                    { type: 'success', text: '&#10003; npm v10.2.0' },
+                    { type: 'success', text: '&#10003; Git v2.43.0' },
+                    { type: 'success', text: '&#10003; API key configurada' },
+                    { type: 'success', text: '&#10003; Permissoes de escrita OK' },
+                    { type: 'success', text: '&#10003; MCP servers respondendo' },
+                    { type: 'empty' },
+                    { type: 'success', text: 'Todos os diagnosticos passaram! &#127881;' }
+                ]
+            },
+            // Configuracao
+            'config': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/config</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Configuracoes ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">[1]</span> Modelo atual: claude-sonnet-4' },
+                    { type: 'output', text: '<span class="highlight">[2]</span> Auto-accept edits: <span class="warning">OFF</span>' },
+                    { type: 'output', text: '<span class="highlight">[3]</span> Theme: dark' },
+                    { type: 'output', text: '<span class="highlight">[4]</span> Vim mode: <span class="dim">OFF</span>' },
+                    { type: 'output', text: '<span class="highlight">[5]</span> MCP servers: 3 ativos' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Digite o numero para editar ou ESC para sair' }
+                ]
+            },
+            'permissions': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/permissions</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Permissoes de Ferramentas ===' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Read        Permitido' },
+                    { type: 'success', text: '&#10003; Write       Permitido' },
+                    { type: 'success', text: '&#10003; Edit        Permitido' },
+                    { type: 'warning', text: '&#9888; Bash        Perguntar' },
+                    { type: 'warning', text: '&#9888; WebFetch    Perguntar' },
+                    { type: 'error', text: '&#10005; Delete      Bloqueado' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Use /permissions [tool] [allow|deny|ask] para alterar' }
+                ]
+            },
+            'model': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/model</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Selecionar Modelo ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">[1]</span> claude-opus-4      <span class="dim">Mais capaz, mais lento</span>' },
+                    { type: 'success', text: '<span class="highlight">[2]</span> claude-sonnet-4    <span class="success">&#9679; ATUAL</span>' },
+                    { type: 'output', text: '<span class="highlight">[3]</span> claude-haiku       <span class="dim">Mais rapido, mais barato</span>' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Digite o numero para trocar de modelo' }
+                ]
+            },
+            'memory': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/memory</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: 'Abrindo arquivos de memoria...' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">Projeto:</span>  ./CLAUDE.md' },
+                    { type: 'output', text: '<span class="highlight">Global:</span>   ~/.claude/CLAUDE.md' },
+                    { type: 'output', text: '<span class="highlight">Local:</span>    ./CLAUDE.local.md' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Abrindo CLAUDE.md no editor...' },
+                    { type: 'dim', text: 'Edite para adicionar regras e preferencias' }
+                ]
+            },
+            'vim': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/vim</span>' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Vim mode ATIVADO' },
+                    { type: 'empty' },
+                    { type: 'output', text: 'Comandos disponiveis:' },
+                    { type: 'output', text: '  <span class="highlight">i</span>    Modo INSERT' },
+                    { type: 'output', text: '  <span class="highlight">ESC</span>  Modo NORMAL' },
+                    { type: 'output', text: '  <span class="highlight">dd</span>   Deletar linha' },
+                    { type: 'output', text: '  <span class="highlight">yy</span>   Copiar linha' },
+                    { type: 'output', text: '  <span class="highlight">p</span>    Colar' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Use /vim novamente para desativar' }
+                ]
+            },
+            // Sessao
+            'resume': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/resume</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Sessoes Anteriores ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">[1]</span> <span class="dim">2h atras</span>   Refatoracao do auth' },
+                    { type: 'output', text: '<span class="highlight">[2]</span> <span class="dim">5h atras</span>   Bug fix no pagamento' },
+                    { type: 'output', text: '<span class="highlight">[3]</span> <span class="dim">1d atras</span>   Nova feature de export' },
+                    { type: 'output', text: '<span class="highlight">[4]</span> <span class="dim">2d atras</span>   Setup inicial do projeto' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Digite o numero para retomar ou P para preview' }
+                ]
+            },
+            'add-dir': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/add-dir</span> ../shared' },
+                    { type: 'empty' },
+                    { type: 'info', text: 'Adicionando diretorio...' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Adicionado: ../shared' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="dim">Diretorios ativos:</span>' },
+                    { type: 'output', text: '  ~/projeto <span class="success">(principal)</span>' },
+                    { type: 'output', text: '  ~/projeto/../shared' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Util para monorepos e projetos multi-pasta' }
+                ]
+            },
+            'plan': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/plan</span>' },
+                    { type: 'empty' },
+                    { type: 'success', text: '&#10003; Modo PLANEJAMENTO ativado' },
+                    { type: 'empty' },
+                    { type: 'info', text: 'Neste modo, vou:' },
+                    { type: 'output', text: '  &#8226; Analisar a tarefa antes de executar' },
+                    { type: 'output', text: '  &#8226; Criar um plano detalhado' },
+                    { type: 'output', text: '  &#8226; Pedir sua aprovacao antes de agir' },
+                    { type: 'output', text: '  &#8226; Executar em etapas verificaveis' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Descreva a tarefa que deseja planejar...' }
+                ]
+            },
+            // Avancados
+            'agents': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/agents</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Subagentes Disponiveis ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">Built-in:</span>' },
+                    { type: 'output', text: '  &#129302; Explore     Exploracao de codebase' },
+                    { type: 'output', text: '  &#128203; Plan        Planejamento de tarefas' },
+                    { type: 'output', text: '  &#128187; Bash        Execucao de comandos' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">Custom:</span> <span class="dim">.claude/agents/</span>' },
+                    { type: 'output', text: '  &#128218; code-review  Revisao de codigo' },
+                    { type: 'output', text: '  &#128221; doc-writer   Documentacao' }
+                ]
+            },
+            'skills': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/skills</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Skills do Projeto ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="dim">.claude/skills/</span>' },
+                    { type: 'output', text: '  &#128161; slides-web      Criar slides Reveal.js' },
+                    { type: 'output', text: '  &#128196; converter-pdf   Converter PDF para texto' },
+                    { type: 'output', text: '  &#128230; pje-download    Baixar processos do PJE' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="dim">~/.claude/skills/</span>' },
+                    { type: 'output', text: '  &#128295; git-helpers     Comandos git customizados' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Use /skill-name para invocar uma skill' }
+                ]
+            },
+            'hooks': {
+                lines: [
+                    { type: 'prompt', text: 'claude> <span class="slash-cmd">/hooks</span>' },
+                    { type: 'empty' },
+                    { type: 'info', text: '=== Hooks Configurados ===' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">pre-commit:</span>' },
+                    { type: 'output', text: '  npm run lint' },
+                    { type: 'output', text: '  npm run test:unit' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">post-edit:</span>' },
+                    { type: 'output', text: '  prettier --write ${file}' },
+                    { type: 'empty' },
+                    { type: 'output', text: '<span class="highlight">on-error:</span>' },
+                    { type: 'output', text: '  notify-send "Claude Code Error"' },
+                    { type: 'empty' },
+                    { type: 'dim', text: 'Configure em .claude/settings.json' }
+                ]
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // DOM Elements
+        // ═══════════════════════════════════════════════════════════
+        const terminalBody = document.getElementById('terminal-body');
+        const commandCards = document.querySelectorAll('.command-card');
+        const tabs = document.querySelectorAll('.tab');
+
+        // ═══════════════════════════════════════════════════════════
+        // Tab Navigation
+        // ═══════════════════════════════════════════════════════════
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const category = tab.dataset.category;
+
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Show/hide cards with animation
+                commandCards.forEach((card, index) => {
+                    card.classList.remove('active');
+                    if (card.dataset.category === category) {
+                        card.classList.remove('hidden');
+                        card.style.animation = 'none';
+                        card.offsetHeight; // Trigger reflow
+                        card.style.animation = `cardAppear 0.4s ease forwards`;
+                        card.style.animationDelay = `${index * 0.05}s`;
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                // Reset terminal
+                resetTerminal();
+            });
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // Command Execution
+        // ═══════════════════════════════════════════════════════════
+        function runCommand(cmdId) {
+            const cmd = commands[cmdId];
+            if (!cmd) return;
+
+            terminalBody.innerHTML = '';
+
+            cmd.lines.forEach((line, i) => {
+                const lineEl = document.createElement('div');
+                lineEl.className = 'terminal-line';
+
+                switch(line.type) {
+                    case 'prompt':
+                        lineEl.innerHTML = `<span class="prompt">${line.text}</span>`;
+                        break;
+                    case 'empty':
+                        lineEl.innerHTML = '&nbsp;';
+                        break;
+                    case 'success':
+                        lineEl.innerHTML = `<span class="success">${line.text}</span>`;
+                        break;
+                    case 'info':
+                        lineEl.innerHTML = `<span class="info">${line.text}</span>`;
+                        break;
+                    case 'warning':
+                        lineEl.innerHTML = `<span class="warning">${line.text}</span>`;
+                        break;
+                    case 'error':
+                        lineEl.innerHTML = `<span class="error">${line.text}</span>`;
+                        break;
+                    case 'dim':
+                        lineEl.innerHTML = `<span class="dim">${line.text}</span>`;
+                        break;
+                    default:
+                        lineEl.innerHTML = `<span class="output">${line.text}</span>`;
+                }
+
+                terminalBody.appendChild(lineEl);
+
+                setTimeout(() => {
+                    lineEl.classList.add('visible');
+                }, i * 60);
+            });
+
+            // Add cursor at end
+            setTimeout(() => {
+                const cursorLine = document.createElement('div');
+                cursorLine.className = 'terminal-line visible';
+                cursorLine.innerHTML = '<span class="prompt">claude></span> <span class="cursor"></span>';
+                terminalBody.appendChild(cursorLine);
+            }, cmd.lines.length * 60 + 150);
+
+            // Update active card
+            commandCards.forEach(card => {
+                card.classList.remove('active');
+                if (card.dataset.cmd === cmdId) {
+                    card.classList.add('active');
+                }
+            });
+        }
+
+        function resetTerminal() {
+            terminalBody.innerHTML = `
+                <div class="terminal-line visible">
+                    <span class="dim">// Clique em um comando para ver o output</span>
+                </div>
+                <div class="terminal-line visible">
+                    <span class="prompt">claude></span> <span class="cursor"></span>
+                </div>
+            `;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Event Listeners
+        // ═══════════════════════════════════════════════════════════
+        commandCards.forEach(card => {
+            card.addEventListener('click', () => {
+                runCommand(card.dataset.cmd);
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const activeCards = [...commandCards].filter(c => !c.classList.contains('hidden'));
+            const activeIndex = activeCards.findIndex(c => c.classList.contains('active'));
+
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                const nextIndex = (activeIndex + 1) % activeCards.length;
+                runCommand(activeCards[nextIndex].dataset.cmd);
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                const prevIndex = activeIndex <= 0 ? activeCards.length - 1 : activeIndex - 1;
+                runCommand(activeCards[prevIndex].dataset.cmd);
+            } else if (e.key >= '1' && e.key <= '5') {
+                // Tab shortcuts
+                const tabIndex = parseInt(e.key) - 1;
+                if (tabs[tabIndex]) {
+                    tabs[tabIndex].click();
+                }
+            }
+        });
+
+        // Parent communication (for Reveal.js)
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data.action === 'runCommand' && data.cmd) {
+                runCommand(data.cmd);
+            } else if (data.action === 'reset') {
+                resetTerminal();
+                commandCards.forEach(card => card.classList.remove('active'));
+            } else if (data.action === 'setCategory' && data.category) {
+                const tab = [...tabs].find(t => t.dataset.category === data.category);
+                if (tab) tab.click();
+            }
+        });
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'slash-commands-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

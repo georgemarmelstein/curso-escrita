@@ -1,0 +1,1958 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                                                                          ║
+║          GUIA COMPLETO DE ENGENHARIA DE PROMPT                           ║
+║                                                                          ║
+║          Da Teoria à Prática: Implementações e Exemplos                  ║
+║                                                                          ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    1. INTRODUÇÃO: O QUE É PROMPT ENGINEERING?
+═════════════════════════════════════════════════════════════════════════════
+
+Engenharia de Prompt é a disciplina que estuda como estruturar entradas
+(prompts) para Large Language Models (LLMs) de forma a obter saídas
+desejadas de maneira confiável e eficiente.
+
+DEFINIÇÃO FORMAL:
+Dado um LLM P(y|x) e uma tarefa T, engenharia de prompt consiste em
+projetar x (o prompt) tal que y (a saída) maximize a probabilidade de
+sucesso em T.
+
+POR QUE IMPORTA?
+1. Modelos pré-treinados têm capacidades latentes não óbvias
+2. Mesmo prompt pode produzir resultados drasticamente diferentes
+3. Fine-tuning é caro; prompting é barato e rápido
+4. Permite controle fino sem retreinamento
+
+
+HIERARQUIA DE TÉCNICAS:
+┌─────────────────────────────────────────────────────────────┐
+│  Complexity Level                                            │
+│                                                              │
+│  Advanced:  Tree-of-Thoughts, Graph of Thoughts, Reflexion │
+│             ↑                                                │
+│  Structured: Chain-of-Thought, Self-Consistency            │
+│             ↑                                                │
+│  Basic:     Few-shot, Zero-shot                            │
+└─────────────────────────────────────────────────────────────┘
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    2. FUNDAMENTOS: ZERO-SHOT E FEW-SHOT
+═════════════════════════════════════════════════════════════════════════════
+
+─────────────────────────────────────────────────────────────────────────────
+2.1. ZERO-SHOT PROMPTING
+─────────────────────────────────────────────────────────────────────────────
+
+Instruir o modelo sem fornecer exemplos prévios.
+
+ESTRUTURA BÁSICA:
+[Task Description] + [Input] → [Output]
+
+EXEMPLO SIMPLES - Classificação de Sentimento:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Classify the sentiment of the following text as positive, negative, or neutral.
+
+Text: "I absolutely loved this movie! The acting was superb."
+Sentiment:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Output: positive
+
+
+IMPLEMENTAÇÃO EM PYTHON:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+import openai
+
+def zero_shot_classify(text, task_description="Classify sentiment"):
+    prompt = f"""{task_description}
+
+Text: "{text}"
+Sentiment:"""
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0,  # Determinístico
+        max_tokens=10
+    )
+
+    return response.choices[0].message.content.strip()
+
+# Uso
+result = zero_shot_classify("I absolutely loved this movie!")
+print(result)  # Output: positive
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+MELHORES PRÁTICAS PARA ZERO-SHOT:
+✓ Seja explícito e específico na task description
+✓ Use formatação clara (bullets, seções, delimitadores)
+✓ Especifique o formato de saída esperado
+✓ Forneça contexto suficiente mas não excessivo
+✗ Evite ambiguidade ("analise isso" é vago)
+✗ Não assuma que o modelo entende jargão específico
+
+
+VARIAÇÕES DE ZERO-SHOT:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 1. Zero-shot com role assignment
+system_message = "You are an expert sentiment analyst."
+user_message = "Classify: 'I loved it!' → Sentiment:"
+
+# 2. Zero-shot com output constraints
+prompt = """Classify sentiment as EXACTLY one of: [positive, negative, neutral]
+Text: "I loved it!"
+Sentiment:"""
+
+# 3. Zero-shot com reasoning (pré-CoT)
+prompt = """Classify the sentiment. Think about emotional tone.
+Text: "I loved it!"
+Analysis:"""
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+─────────────────────────────────────────────────────────────────────────────
+2.2. FEW-SHOT PROMPTING (IN-CONTEXT LEARNING)
+─────────────────────────────────────────────────────────────────────────────
+
+Fornecer exemplos (demonstrações) antes da query para o modelo aprender
+o padrão "in context".
+
+DESCOBERTA CHAVE (GPT-3, 2020):
+Modelos grandes conseguem aprender tarefas novas a partir de poucos exemplos
+SEM atualização de pesos - puramente através do contexto.
+
+ESTRUTURA:
+[Task Description] + [Example 1] + [Example 2] + ... + [Example N] + [Query]
+
+
+EXEMPLO - Classificação com 3-shot:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Classify the sentiment of movie reviews.
+
+Text: "The cinematography was breathtaking and the story was engaging."
+Sentiment: positive
+
+Text: "I fell asleep halfway through. Boring and predictable."
+Sentiment: negative
+
+Text: "It was okay. Nothing special but not terrible either."
+Sentiment: neutral
+
+Text: "This is the best film I've seen this year! Masterpiece!"
+Sentiment:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Output: positive
+
+
+IMPLEMENTAÇÃO - Few-Shot Framework:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+class FewShotPrompt:
+    def __init__(self, task_description, examples):
+        """
+        examples: list of (input, output) tuples
+        """
+        self.task_description = task_description
+        self.examples = examples
+
+    def build_prompt(self, query):
+        prompt = f"{self.task_description}\n\n"
+
+        # Add examples
+        for inp, out in self.examples:
+            prompt += f"Text: \"{inp}\"\nSentiment: {out}\n\n"
+
+        # Add query
+        prompt += f"Text: \"{query}\"\nSentiment:"
+
+        return prompt
+
+    def predict(self, query, model="gpt-4", temperature=0):
+        prompt = self.build_prompt(query)
+
+        response = openai.ChatCompletion.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=temperature,
+            max_tokens=10
+        )
+
+        return response.choices[0].message.content.strip()
+
+
+# Uso
+examples = [
+    ("The cinematography was breathtaking.", "positive"),
+    ("I fell asleep halfway through.", "negative"),
+    ("It was okay. Nothing special.", "neutral")
+]
+
+classifier = FewShotPrompt(
+    task_description="Classify the sentiment of movie reviews.",
+    examples=examples
+)
+
+result = classifier.predict("This is the best film I've seen!")
+print(result)  # Output: positive
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+FATORES CRÍTICOS EM FEW-SHOT:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. NÚMERO DE EXEMPLOS
+   • 0-shot: Apenas instruções
+   • 1-shot: 1 exemplo (suficiente para mostrar formato)
+   • 3-5 shot: Sweet spot para maioria das tarefas
+   • 10+ shot: Retornos diminuem; risco de ultrapassar context window
+
+2. ORDEM DOS EXEMPLOS
+   • Ordem importa! (Fantastically Ordered Prompts, 2021)
+   • Últimos exemplos têm mais influência (recency bias)
+   • Ordenar por dificuldade (fácil → difícil) pode ajudar
+
+3. QUALIDADE DOS EXEMPLOS
+   • Diversidade: Cobrir diferentes casos
+   • Representatividade: Similar à distribuição real
+   • Label accuracy: Surpreendentemente, labels errados às vezes funcionam
+     (desde que o formato seja consistente!)
+
+4. SIMILARIDADE COM QUERY
+   • Exemplos similares à query são mais efetivos
+   • Considere retrieval-based selection (buscar exemplos relevantes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+SELEÇÃO DINÂMICA DE EXEMPLOS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+class DynamicFewShot:
+    def __init__(self, task_description, example_pool):
+        """
+        example_pool: list of (input, output) tuples (large set)
+        """
+        self.task_description = task_description
+        self.example_pool = example_pool
+
+        # Encode all examples
+        self.encoder = SentenceTransformer('all-mpnet-base-v2')
+        self.example_embeddings = self.encoder.encode(
+            [ex[0] for ex in example_pool]
+        )
+
+    def select_examples(self, query, k=3):
+        """Select k most similar examples to query"""
+        query_embedding = self.encoder.encode([query])[0]
+
+        # Compute similarities
+        similarities = np.dot(self.example_embeddings, query_embedding)
+
+        # Get top k
+        top_k_indices = np.argsort(similarities)[-k:][::-1]
+
+        return [self.example_pool[i] for i in top_k_indices]
+
+    def predict(self, query, k=3):
+        # Dynamically select relevant examples
+        selected_examples = self.select_examples(query, k=k)
+
+        # Build prompt
+        prompt = f"{self.task_description}\n\n"
+        for inp, out in selected_examples:
+            prompt += f"Text: \"{inp}\"\nSentiment: {out}\n\n"
+        prompt += f"Text: \"{query}\"\nSentiment:"
+
+        # Generate
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0
+        )
+
+        return response.choices[0].message.content.strip()
+
+
+# Uso com large example pool
+example_pool = [
+    # 100+ exemplos diversos
+    ("Great movie!", "positive"),
+    ("Terrible acting.", "negative"),
+    # ... mais exemplos
+]
+
+dynamic_classifier = DynamicFewShot(
+    task_description="Classify sentiment",
+    example_pool=example_pool
+)
+
+# Automatically selects most relevant examples
+result = dynamic_classifier.predict("The visual effects were stunning!")
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    3. CHAIN-OF-THOUGHT (CoT) PROMPTING
+═════════════════════════════════════════════════════════════════════════════
+
+DESCOBERTA REVOLUCIONÁRIA (Wei et al., 2022):
+Adicionar raciocínio intermediário passo-a-passo antes da resposta final
+melhora dramaticamente a performance em tarefas de raciocínio complexo.
+
+IDEIA CENTRAL:
+Em vez de mapear input → output diretamente, forçar:
+input → reasoning steps → output
+
+Isso cria um "espaço de rascunho" textual onde o modelo pode trabalhar
+através do problema.
+
+
+─────────────────────────────────────────────────────────────────────────────
+3.1. CoT BÁSICO (Few-Shot CoT)
+─────────────────────────────────────────────────────────────────────────────
+
+EXEMPLO - Problema Aritmético:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SEM CoT (Direct prompting):
+Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
+   Each can has 3 tennis balls. How many tennis balls does he have now?
+A: 11
+
+Accuracy em GPT-3: ~40%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COM CoT:
+Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
+   Each can has 3 tennis balls. How many tennis balls does he have now?
+A: Roger started with 5 balls. 2 cans of 3 tennis balls each is
+   2 × 3 = 6 tennis balls. 5 + 6 = 11. The answer is 11.
+
+Accuracy em GPT-3: ~92%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+IMPLEMENTAÇÃO - Few-Shot CoT:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+class ChainOfThought:
+    def __init__(self, cot_examples):
+        """
+        cot_examples: list of (question, reasoning, answer) tuples
+        """
+        self.cot_examples = cot_examples
+
+    def build_prompt(self, question):
+        prompt = "Solve the following problems step by step.\n\n"
+
+        # Add CoT examples
+        for q, reasoning, ans in self.cot_examples:
+            prompt += f"Q: {q}\n"
+            prompt += f"A: {reasoning} The answer is {ans}.\n\n"
+
+        # Add query
+        prompt += f"Q: {question}\nA:"
+
+        return prompt
+
+    def solve(self, question, model="gpt-4"):
+        prompt = self.build_prompt(question)
+
+        response = openai.ChatCompletion.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=200
+        )
+
+        return response.choices[0].message.content.strip()
+
+
+# Exemplo de uso
+cot_examples = [
+    (
+        "Roger has 5 tennis balls. He buys 2 cans with 3 balls each. How many total?",
+        "Roger started with 5 balls. 2 cans × 3 balls = 6 balls. 5 + 6 = 11.",
+        "11"
+    ),
+    (
+        "A cafeteria had 23 apples. They used 20 to make lunch and bought 6 more. How many do they have?",
+        "Started with 23 apples. Used 20, so 23 - 20 = 3 left. Then bought 6 more. 3 + 6 = 9.",
+        "9"
+    )
+]
+
+cot = ChainOfThought(cot_examples)
+result = cot.solve("John has 8 books. He gives away 3 and buys 5 more. How many books now?")
+print(result)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+─────────────────────────────────────────────────────────────────────────────
+3.2. ZERO-SHOT CoT: "Let's think step by step"
+─────────────────────────────────────────────────────────────────────────────
+
+DESCOBERTA SURPREENDENTE (Kojima et al., 2022):
+Simplesmente adicionar "Let's think step by step" ao final do prompt
+induz raciocínio CoT sem necessidade de exemplos!
+
+IMPLEMENTAÇÃO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+def zero_shot_cot(question, model="gpt-4"):
+    # Step 1: Generate reasoning
+    reasoning_prompt = f"{question}\nLet's think step by step."
+
+    response1 = openai.ChatCompletion.create(
+        model=model,
+        messages=[{"role": "user", "content": reasoning_prompt}],
+        temperature=0,
+        max_tokens=200
+    )
+
+    reasoning = response1.choices[0].message.content.strip()
+
+    # Step 2: Extract answer
+    answer_prompt = f"{question}\n{reasoning}\nTherefore, the answer is:"
+
+    response2 = openai.ChatCompletion.create(
+        model=model,
+        messages=[{"role": "user", "content": answer_prompt}],
+        temperature=0,
+        max_tokens=50
+    )
+
+    answer = response2.choices[0].message.content.strip()
+
+    return {
+        "reasoning": reasoning,
+        "answer": answer
+    }
+
+
+# Uso
+question = "If a train travels 60 km in 30 minutes, what is its speed in km/h?"
+result = zero_shot_cot(question)
+print("Reasoning:", result["reasoning"])
+print("Answer:", result["answer"])
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VARIAÇÕES DO PROMPT MÁGICO:
+• "Let's think step by step."
+• "Let's solve this problem by breaking it down."
+• "Let's approach this systematically."
+• "Let's work through this carefully."
+
+
+─────────────────────────────────────────────────────────────────────────────
+3.3. SELF-CONSISTENCY: CoT com Voting
+─────────────────────────────────────────────────────────────────────────────
+
+PROBLEMA COM CoT PADRÃO:
+Raciocínio pode conter erros. Greedy decoding escolhe apenas 1 caminho.
+
+SOLUÇÃO (Wang et al., 2022):
+Gerar MÚLTIPLOS raciocínios com sampling, depois usar majority voting
+para escolher a resposta final.
+
+ALGORITMO:
+1. Gerar N diferentes caminhos de raciocínio (temperature > 0)
+2. Extrair resposta final de cada caminho
+3. Usar majority vote como resposta final
+
+
+IMPLEMENTAÇÃO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+from collections import Counter
+import re
+
+class SelfConsistency:
+    def __init__(self, cot_examples, num_samples=5):
+        self.cot_examples = cot_examples
+        self.num_samples = num_samples
+
+    def generate_reasoning_paths(self, question, model="gpt-4"):
+        """Generate multiple reasoning paths with sampling"""
+        prompt = self._build_cot_prompt(question)
+
+        paths = []
+        for _ in range(self.num_samples):
+            response = openai.ChatCompletion.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,  # Higher temperature for diversity
+                max_tokens=200
+            )
+            paths.append(response.choices[0].message.content.strip())
+
+        return paths
+
+    def extract_answer(self, reasoning_text):
+        """Extract final answer from reasoning text"""
+        # Look for "answer is X" pattern
+        match = re.search(r'answer is (\d+)', reasoning_text.lower())
+        if match:
+            return match.group(1)
+
+        # Fallback: extract last number
+        numbers = re.findall(r'\d+', reasoning_text)
+        return numbers[-1] if numbers else None
+
+    def majority_vote(self, reasoning_paths):
+        """Apply majority voting to reasoning paths"""
+        answers = [self.extract_answer(path) for path in reasoning_paths]
+        answers = [a for a in answers if a is not None]  # Remove None
+
+        if not answers:
+            return None, reasoning_paths[0]  # Fallback
+
+        # Count votes
+        vote_counts = Counter(answers)
+        winner = vote_counts.most_common(1)[0][0]
+
+        # Find a reasoning path that leads to winner
+        for path in reasoning_paths:
+            if self.extract_answer(path) == winner:
+                return winner, path
+
+        return winner, reasoning_paths[0]
+
+    def solve(self, question):
+        """Solve with self-consistency"""
+        # Generate multiple reasoning paths
+        paths = self.generate_reasoning_paths(question)
+
+        # Apply majority voting
+        final_answer, best_reasoning = self.majority_vote(paths)
+
+        return {
+            "answer": final_answer,
+            "reasoning": best_reasoning,
+            "all_paths": paths,
+            "num_samples": len(paths)
+        }
+
+    def _build_cot_prompt(self, question):
+        prompt = "Solve the following problems step by step.\n\n"
+        for q, reasoning, ans in self.cot_examples:
+            prompt += f"Q: {q}\nA: {reasoning} The answer is {ans}.\n\n"
+        prompt += f"Q: {question}\nA:"
+        return prompt
+
+
+# Uso
+cot_examples = [
+    ("5 + 3 × 2 = ?", "Order of operations: multiply first. 3 × 2 = 6. Then 5 + 6 = 11.", "11"),
+]
+
+sc = SelfConsistency(cot_examples, num_samples=5)
+result = sc.solve("10 + 2 × 5 = ?")
+
+print(f"Final Answer: {result['answer']}")
+print(f"Best Reasoning: {result['reasoning']}")
+print(f"All answers from {result['num_samples']} paths:",
+      [sc.extract_answer(p) for p in result['all_paths']])
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+GANHOS TÍPICOS:
+• CoT básico: +20-30% accuracy vs. direct prompting
+• Self-Consistency: +5-15% accuracy adicional vs. CoT greedy
+
+TRADE-OFF:
+• Custo: N× mais tokens (tipicamente N=5-10)
+• Latência: N× mais lento (pode paralelizar as gerações)
+• Benefício: Maior robustez e accuracy
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    4. TÉCNICAS AVANÇADAS DE RACIOCÍNIO
+═════════════════════════════════════════════════════════════════════════════
+
+─────────────────────────────────────────────────────────────────────────────
+4.1. TREE-OF-THOUGHTS (ToT)
+─────────────────────────────────────────────────────────────────────────────
+
+LIMITAÇÃO DE CoT:
+Raciocínio é linear (left-to-right). Sem exploração de alternativas.
+Sem backtracking quando caminho é incorreto.
+
+SOLUÇÃO (Yao et al., 2023):
+Explorar múltiplos caminhos de raciocínio como uma ÁRVORE, com capacidade
+de avaliar e fazer backtracking.
+
+COMPONENTES:
+1. Thought decomposition: Quebrar problema em "thoughts" (estados intermediários)
+2. Thought generator: Gerar k candidatos para próximo thought
+3. State evaluator: Avaliar promisingness de cada thought
+4. Search algorithm: BFS ou DFS para explorar árvore
+
+
+EXEMPLO - Game of 24:
+Dado 4 números, usar +, -, ×, ÷ para chegar em 24.
+
+Input: 4, 9, 10, 13
+Goal: 24
+
+IMPLEMENTAÇÃO SIMPLIFICADA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+class TreeOfThoughts:
+    def __init__(self, model="gpt-4", breadth=3, depth=5):
+        self.model = model
+        self.breadth = breadth  # Number of branches per node
+        self.depth = depth      # Max depth to explore
+
+    def generate_thoughts(self, state, k=3):
+        """Generate k candidate next steps from current state"""
+        prompt = f"""Given the current state of reasoning:
+{state}
+
+Generate {k} different possible next steps to continue the reasoning.
+List them as:
+1. [next step 1]
+2. [next step 2]
+3. [next step 3]"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=200
+        )
+
+        # Parse thoughts
+        text = response.choices[0].message.content
+        thoughts = re.findall(r'\d+\.\s*(.+)', text)
+        return thoughts[:k]
+
+    def evaluate_state(self, state, goal):
+        """Evaluate how promising this state is (0-10 scale)"""
+        prompt = f"""Evaluate how promising this reasoning state is for reaching the goal.
+Rate from 0 (not promising) to 10 (very promising).
+
+State: {state}
+Goal: {goal}
+
+Rating (0-10):"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=10
+        )
+
+        try:
+            rating = int(response.choices[0].message.content.strip())
+            return min(max(rating, 0), 10)  # Clamp to 0-10
+        except:
+            return 5  # Default
+
+    def is_solution(self, state, goal):
+        """Check if current state solves the problem"""
+        prompt = f"""Does this reasoning solve the problem?
+
+Reasoning: {state}
+Goal: {goal}
+
+Answer (yes/no):"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=10
+        )
+
+        return "yes" in response.choices[0].message.content.lower()
+
+    def search(self, initial_state, goal):
+        """BFS search through tree of thoughts"""
+        from queue import PriorityQueue
+
+        # Priority queue: (-rating, depth, state, path)
+        pq = PriorityQueue()
+        pq.put((0, 0, initial_state, [initial_state]))
+
+        visited = set()
+        best_solution = None
+        best_rating = -1
+
+        while not pq.empty():
+            neg_rating, current_depth, state, path = pq.get()
+
+            if state in visited:
+                continue
+            visited.add(state)
+
+            # Check if solution
+            if self.is_solution(state, goal):
+                rating = -neg_rating
+                if rating > best_rating:
+                    best_rating = rating
+                    best_solution = path
+                continue
+
+            # Max depth reached
+            if current_depth >= self.depth:
+                continue
+
+            # Generate next thoughts
+            next_thoughts = self.generate_thoughts(state, k=self.breadth)
+
+            for thought in next_thoughts:
+                new_state = state + "\n" + thought
+                rating = self.evaluate_state(new_state, goal)
+
+                pq.put((
+                    -rating,  # Negative for max-heap behavior
+                    current_depth + 1,
+                    new_state,
+                    path + [thought]
+                ))
+
+        return {
+            "solution": best_solution,
+            "rating": best_rating,
+            "states_explored": len(visited)
+        }
+
+
+# Uso
+tot = TreeOfThoughts(breadth=3, depth=4)
+
+problem = """Use the numbers 4, 9, 10, 13 with operations +, -, ×, ÷ to get 24.
+Each number must be used exactly once."""
+
+result = tot.search(
+    initial_state="Numbers available: 4, 9, 10, 13. Goal: 24",
+    goal="Reach 24 using all numbers exactly once"
+)
+
+print("Solution path:")
+for step in result["solution"]:
+    print(f"  → {step}")
+print(f"\nStates explored: {result['states_explored']}")
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+QUANDO USAR ToT:
+✓ Problemas que exigem exploração (puzzles, planning)
+✓ Quando há múltiplos caminhos possíveis
+✓ Tarefas onde backtracking é útil
+
+CUSTOS:
+• Muito mais caro que CoT (explora k^d estados no pior caso)
+• Melhor para problemas com espaço de busca limitado
+
+
+─────────────────────────────────────────────────────────────────────────────
+4.2. LEAST-TO-MOST PROMPTING
+─────────────────────────────────────────────────────────────────────────────
+
+IDEIA (Zhou et al., 2022):
+Decomposição hierárquica BOTTOM-UP.
+1. Quebrar problema complexo em subproblemas mais simples
+2. Resolver subproblemas sequencialmente
+3. Usar soluções de subproblemas para resolver problema original
+
+ESTRUTURA:
+┌─────────────────────────────────────┐
+│   Complex Problem                   │
+└─────────────────────────────────────┘
+           ↓
+    [Decomposition]
+           ↓
+┌──────────┐  ┌──────────┐  ┌──────────┐
+│ Subprob1 │  │ Subprob2 │  │ Subprob3 │
+└──────────┘  └──────────┘  └──────────┘
+     ↓              ↓              ↓
+   Solve  →      Solve  →      Solve
+     ↓              ↓              ↓
+┌─────────────────────────────────────┐
+│   Final Answer                       │
+└─────────────────────────────────────┘
+
+
+IMPLEMENTAÇÃO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+class LeastToMost:
+    def __init__(self, model="gpt-4"):
+        self.model = model
+
+    def decompose(self, problem):
+        """Decompose problem into subproblems"""
+        prompt = f"""Break down the following problem into simpler subproblems.
+List them in order from easiest to hardest.
+
+Problem: {problem}
+
+Subproblems (numbered list):"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=300
+        )
+
+        text = response.choices[0].message.content
+        subproblems = re.findall(r'\d+\.\s*(.+)', text)
+        return subproblems
+
+    def solve_subproblem(self, subproblem, context=""):
+        """Solve a single subproblem given context from previous solutions"""
+        prompt = f"""Solve the following subproblem.
+
+{"Previous solutions: " + context if context else ""}
+
+Subproblem: {subproblem}
+
+Solution:"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=200
+        )
+
+        return response.choices[0].message.content.strip()
+
+    def solve(self, problem):
+        """Solve problem using least-to-most prompting"""
+        # Step 1: Decompose
+        subproblems = self.decompose(problem)
+
+        # Step 2: Solve sequentially, accumulating context
+        solutions = []
+        context = ""
+
+        for subprob in subproblems:
+            solution = self.solve_subproblem(subprob, context)
+            solutions.append((subprob, solution))
+
+            # Add to context for next subproblem
+            context += f"\nSubproblem: {subprob}\nSolution: {solution}\n"
+
+        # Step 3: Synthesize final answer
+        final_prompt = f"""Given the solutions to subproblems, answer the original problem.
+
+Original problem: {problem}
+
+Subproblem solutions:
+{context}
+
+Final answer to original problem:"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": final_prompt}],
+            temperature=0,
+            max_tokens=200
+        )
+
+        final_answer = response.choices[0].message.content.strip()
+
+        return {
+            "problem": problem,
+            "subproblems": subproblems,
+            "solutions": solutions,
+            "final_answer": final_answer
+        }
+
+
+# Uso
+ltm = LeastToMost()
+
+problem = """Write a function that takes a list of integers and returns
+the longest increasing subsequence. Explain your approach."""
+
+result = ltm.solve(problem)
+
+print("Original Problem:", result["problem"])
+print("\nSubproblems:")
+for i, subprob in enumerate(result["subproblems"], 1):
+    print(f"  {i}. {subprob}")
+
+print("\nSolutions:")
+for subprob, sol in result["solutions"]:
+    print(f"\n  Subproblem: {subprob}")
+    print(f"  Solution: {sol[:100]}...")
+
+print("\nFinal Answer:")
+print(result["final_answer"])
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUANDO USAR:
+✓ Problemas claramente decomponíveis
+✓ Quando subproblemas têm dependências sequenciais
+✓ Tarefas de programação, matemática complexa, planejamento
+
+
+─────────────────────────────────────────────────────────────────────────────
+4.3. GRAPH OF THOUGHTS (GoT)
+─────────────────────────────────────────────────────────────────────────────
+
+EVOLUÇÃO DE ToT:
+ToT = árvore (cada thought tem 1 pai)
+GoT = grafo (thoughts podem ter múltiplos pais, loops, agregação)
+
+CASOS DE USO:
+• Agregação de informações de múltiplas fontes
+• Raciocínio que requer refinamento iterativo
+• Problemas com dependências não-hierárquicas
+
+
+ESTRUTURA:
+        ┌─────────┐
+        │ Query   │
+        └────┬────┘
+             │
+      ┌──────┴──────┐
+      │             │
+ ┌────▼───┐   ┌────▼───┐
+ │Thought1│   │Thought2│
+ └────┬───┘   └────┬───┘
+      │            │
+      └─────┬──────┘
+            │
+      ┌─────▼─────┐
+      │ Aggregate │
+      └─────┬─────┘
+            │
+      ┌─────▼─────┐
+      │  Refine   │
+      └─────┬─────┘
+            │
+      ┌─────▼─────┐
+      │  Answer   │
+      └───────────┘
+
+
+IMPLEMENTAÇÃO CONCEITUAL:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+class GraphOfThoughts:
+    def __init__(self, model="gpt-4"):
+        self.model = model
+        self.graph = {}  # node_id -> {"content": str, "parents": [], "children": []}
+
+    def add_thought(self, thought_id, content, parent_ids=[]):
+        """Add a thought node to the graph"""
+        self.graph[thought_id] = {
+            "content": content,
+            "parents": parent_ids,
+            "children": []
+        }
+
+        # Update parent's children
+        for parent_id in parent_ids:
+            if parent_id in self.graph:
+                self.graph[parent_id]["children"].append(thought_id)
+
+    def aggregate(self, thought_ids):
+        """Aggregate multiple thoughts into one"""
+        thoughts = [self.graph[tid]["content"] for tid in thought_ids]
+
+        prompt = f"""Aggregate the following thoughts into a coherent synthesis:
+
+{chr(10).join(f"{i+1}. {t}" for i, t in enumerate(thoughts))}
+
+Aggregated thought:"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=300
+        )
+
+        return response.choices[0].message.content.strip()
+
+    def refine(self, thought_id):
+        """Refine a thought based on its context"""
+        thought = self.graph[thought_id]["content"]
+        parent_thoughts = [
+            self.graph[pid]["content"]
+            for pid in self.graph[thought_id]["parents"]
+        ]
+
+        context = "\n".join(f"Context {i+1}: {t}" for i, t in enumerate(parent_thoughts))
+
+        prompt = f"""Given the context, refine the following thought:
+
+{context}
+
+Current thought: {thought}
+
+Refined thought:"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=200
+        )
+
+        return response.choices[0].message.content.strip()
+
+    def solve(self, question, num_perspectives=3):
+        """Solve using graph of thoughts"""
+        # Step 1: Generate multiple perspectives
+        self.add_thought("query", question)
+
+        for i in range(num_perspectives):
+            perspective = self._generate_perspective(question, i)
+            self.add_thought(f"perspective_{i}", perspective, ["query"])
+
+        # Step 2: Aggregate perspectives
+        perspective_ids = [f"perspective_{i}" for i in range(num_perspectives)]
+        aggregated = self.aggregate(perspective_ids)
+        self.add_thought("aggregated", aggregated, perspective_ids)
+
+        # Step 3: Refine
+        refined = self.refine("aggregated")
+        self.add_thought("refined", refined, ["aggregated"])
+
+        # Step 4: Generate final answer
+        final_answer = self._generate_final_answer(refined)
+        self.add_thought("answer", final_answer, ["refined"])
+
+        return {
+            "question": question,
+            "perspectives": [self.graph[f"perspective_{i}"]["content"] for i in range(num_perspectives)],
+            "aggregated": aggregated,
+            "refined": refined,
+            "final_answer": final_answer
+        }
+
+    def _generate_perspective(self, question, perspective_num):
+        """Generate a specific perspective on the question"""
+        perspectives = [
+            "analytical and logical",
+            "creative and intuitive",
+            "critical and skeptical"
+        ]
+
+        style = perspectives[perspective_num % len(perspectives)]
+
+        prompt = f"""Approach the following question from a {style} perspective:
+
+Question: {question}
+
+{style.capitalize()} perspective:"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=200
+        )
+
+        return response.choices[0].message.content.strip()
+
+    def _generate_final_answer(self, refined_thought):
+        """Generate final answer from refined thought"""
+        prompt = f"""Based on this refined analysis, provide a clear final answer:
+
+Analysis: {refined_thought}
+
+Final answer:"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=200
+        )
+
+        return response.choices[0].message.content.strip()
+
+
+# Uso
+got = GraphOfThoughts()
+
+question = "Should companies invest more in AI research or AI safety?"
+
+result = got.solve(question, num_perspectives=3)
+
+print("Question:", result["question"])
+print("\nPerspectives:")
+for i, p in enumerate(result["perspectives"], 1):
+    print(f"\n{i}. {p}")
+print("\nAggregated:", result["aggregated"])
+print("\nRefined:", result["refined"])
+print("\nFinal Answer:", result["final_answer"])
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+─────────────────────────────────────────────────────────────────────────────
+4.4. REFLEXION: SELF-REFINEMENT
+─────────────────────────────────────────────────────────────────────────────
+
+IDEIA (Shinn et al., 2023):
+Criar loop de feedback: generate → evaluate → reflect → refine
+
+ESTRUTURA:
+┌─────────────────────────────────────────────────┐
+│                 REFLEXION LOOP                  │
+│                                                 │
+│  ┌──────────┐   ┌──────────┐   ┌──────────┐  │
+│  │ Generate │ → │ Evaluate │ → │  Reflect │  │
+│  └──────────┘   └──────────┘   └────┬─────┘  │
+│       ↑                               │         │
+│       └───────────────────────────────┘         │
+│                  (iterate)                      │
+└─────────────────────────────────────────────────┘
+
+
+IMPLEMENTAÇÃO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+class Reflexion:
+    def __init__(self, model="gpt-4", max_iterations=3):
+        self.model = model
+        self.max_iterations = max_iterations
+
+    def generate(self, problem, previous_attempts=[], reflections=[]):
+        """Generate solution (possibly incorporating past reflections)"""
+        prompt = f"Solve the following problem:\n\n{problem}\n\n"
+
+        if reflections:
+            prompt += "Previous attempts and reflections:\n"
+            for attempt, reflection in zip(previous_attempts, reflections):
+                prompt += f"\nAttempt: {attempt[:100]}...\n"
+                prompt += f"Reflection: {reflection}\n"
+            prompt += "\nNew attempt incorporating these insights:\n"
+
+        prompt += "Solution:"
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=500
+        )
+
+        return response.choices[0].message.content.strip()
+
+    def evaluate(self, problem, solution, test_cases=None):
+        """Evaluate quality of solution"""
+        prompt = f"""Evaluate the quality of this solution.
+
+Problem: {problem}
+
+Solution: {solution}
+
+"""
+
+        if test_cases:
+            prompt += f"Test cases:\n{test_cases}\n\n"
+
+        prompt += """Evaluation:
+1. Is the solution correct? (yes/no)
+2. What are the strengths?
+3. What are the weaknesses?
+4. Score (0-10):"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=300
+        )
+
+        eval_text = response.choices[0].message.content
+
+        # Parse score
+        score_match = re.search(r'score.*?(\d+)', eval_text.lower())
+        score = int(score_match.group(1)) if score_match else 5
+
+        return {
+            "evaluation": eval_text,
+            "score": score,
+            "is_correct": "yes" in eval_text.lower().split('\n')[0]
+        }
+
+    def reflect(self, problem, solution, evaluation):
+        """Generate reflection on why solution failed/succeeded"""
+        prompt = f"""Reflect on this solution attempt:
+
+Problem: {problem}
+
+Solution: {solution}
+
+Evaluation: {evaluation["evaluation"]}
+
+Reflection (what went wrong, what to improve, what to avoid):"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=200
+        )
+
+        return response.choices[0].message.content.strip()
+
+    def solve(self, problem, test_cases=None, target_score=9):
+        """Solve with reflexion loop"""
+        attempts = []
+        evaluations = []
+        reflections = []
+
+        for iteration in range(self.max_iterations):
+            # Generate solution
+            solution = self.generate(problem, attempts, reflections)
+            attempts.append(solution)
+
+            # Evaluate
+            evaluation = self.evaluate(problem, solution, test_cases)
+            evaluations.append(evaluation)
+
+            # Check if good enough
+            if evaluation["score"] >= target_score or evaluation["is_correct"]:
+                return {
+                    "final_solution": solution,
+                    "attempts": attempts,
+                    "evaluations": evaluations,
+                    "reflections": reflections,
+                    "iterations": iteration + 1,
+                    "success": True
+                }
+
+            # Reflect on failure
+            reflection = self.reflect(problem, solution, evaluation)
+            reflections.append(reflection)
+
+        # Max iterations reached
+        return {
+            "final_solution": attempts[-1],
+            "attempts": attempts,
+            "evaluations": evaluations,
+            "reflections": reflections,
+            "iterations": self.max_iterations,
+            "success": False
+        }
+
+
+# Uso
+reflexion = Reflexion(max_iterations=3)
+
+problem = """Write a Python function to find the second largest number in a list.
+Handle edge cases (empty list, list with one element, all elements the same)."""
+
+test_cases = """
+assert second_largest([1, 2, 3, 4, 5]) == 4
+assert second_largest([5, 5, 5]) == None
+assert second_largest([1]) == None
+assert second_largest([]) == None
+"""
+
+result = reflexion.solve(problem, test_cases=test_cases, target_score=9)
+
+print(f"Success: {result['success']}")
+print(f"Iterations: {result['iterations']}")
+
+for i, (attempt, evaluation) in enumerate(zip(result['attempts'], result['evaluations']), 1):
+    print(f"\n--- Iteration {i} ---")
+    print(f"Solution:\n{attempt[:200]}...")
+    print(f"\nScore: {evaluation['score']}/10")
+    if i < len(result['reflections']):
+        print(f"Reflection: {result['reflections'][i-1][:150]}...")
+
+print(f"\n=== Final Solution ===\n{result['final_solution']}")
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+─────────────────────────────────────────────────────────────────────────────
+4.5. PROGRAM-AIDED LANGUAGE MODELS (PAL)
+─────────────────────────────────────────────────────────────────────────────
+
+PROBLEMA:
+LLMs são ruins em aritmética precisa, cálculos complexos.
+
+SOLUÇÃO (Gao et al., 2022):
+LLM gera CÓDIGO (Python) para resolver a parte computacional,
+depois executa o código para obter resposta precisa.
+
+FLUXO:
+Question → LLM generates Python → Execute code → Extract answer
+
+
+EXEMPLO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Question: "A store had 20 apples. They sold 60% of them and then received
+a shipment of 15 more. How many apples do they have now?"
+
+LLM generates:
+```python
+initial_apples = 20
+sold_percentage = 0.60
+sold_apples = initial_apples * sold_percentage
+remaining_apples = initial_apples - sold_apples
+new_shipment = 15
+final_apples = remaining_apples + new_shipment
+answer = final_apples
+```
+
+Execute → answer = 23.0
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+IMPLEMENTAÇÃO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+import re
+from io import StringIO
+import sys
+
+class ProgramAidedLM:
+    def __init__(self, model="gpt-4"):
+        self.model = model
+
+    def generate_code(self, question):
+        """Generate Python code to solve the problem"""
+        prompt = f"""Generate Python code to solve this problem.
+Store the final answer in a variable called 'answer'.
+Use comments to explain the logic.
+Do not use print statements.
+
+Problem: {question}
+
+```python
+# Your code here
+"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=300
+        )
+
+        code = response.choices[0].message.content
+
+        # Extract code from markdown if present
+        code_match = re.search(r'```python\n(.*?)\n```', code, re.DOTALL)
+        if code_match:
+            code = code_match.group(1)
+
+        return code
+
+    def execute_code(self, code):
+        """Safely execute Python code and extract answer"""
+        # Create restricted globals (for safety)
+        safe_globals = {
+            "__builtins__": {
+                "abs": abs, "round": round, "min": min, "max": max,
+                "sum": sum, "len": len, "range": range, "int": int,
+                "float": float, "str": str, "list": list, "dict": dict,
+            }
+        }
+
+        local_vars = {}
+
+        try:
+            exec(code, safe_globals, local_vars)
+            answer = local_vars.get("answer", None)
+            return {"success": True, "answer": answer, "error": None}
+        except Exception as e:
+            return {"success": False, "answer": None, "error": str(e)}
+
+    def solve(self, question):
+        """Solve problem using program-aided approach"""
+        # Generate code
+        code = self.generate_code(question)
+
+        # Execute code
+        result = self.execute_code(code)
+
+        if not result["success"]:
+            # Retry with error feedback
+            code = self.generate_code_with_error_feedback(question, code, result["error"])
+            result = self.execute_code(code)
+
+        return {
+            "question": question,
+            "code": code,
+            "answer": result["answer"],
+            "success": result["success"],
+            "error": result["error"]
+        }
+
+    def generate_code_with_error_feedback(self, question, failed_code, error):
+        """Retry code generation with error feedback"""
+        prompt = f"""The previous code had an error. Fix it.
+
+Problem: {question}
+
+Previous code:
+```python
+{failed_code}
+```
+
+Error: {error}
+
+Fixed code:
+```python
+"""
+
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=300
+        )
+
+        code = response.choices[0].message.content
+        code_match = re.search(r'```python\n(.*?)\n```', code, re.DOTALL)
+        if code_match:
+            code = code_match.group(1)
+
+        return code
+
+
+# Uso
+pal = ProgramAidedLM()
+
+questions = [
+    "A store had 20 apples. They sold 60% and received 15 more. How many now?",
+    "What is 15% of 240?",
+    "If a car travels 65 mph for 2.5 hours, how many miles does it travel?",
+    "Calculate the compound interest on $1000 at 5% annual rate for 3 years."
+]
+
+for q in questions:
+    result = pal.solve(q)
+    print(f"\nQ: {q}")
+    print(f"Generated code:\n{result['code']}")
+    print(f"Answer: {result['answer']}")
+    if not result["success"]:
+        print(f"Error: {result['error']}")
+    print("-" * 60)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+VANTAGENS DO PAL:
+✓ Aritmética 100% precisa (sem erros de cálculo do LLM)
+✓ Lógica explícita e verificável (código é interpretável)
+✓ Extensível (pode usar bibliotecas numpy, scipy, etc.)
+
+LIMITAÇÕES:
+✗ Requer execução de código (segurança!)
+✗ LLM precisa ser bom em gerar código correto
+✗ Nem todos os problemas são facilmente codificáveis
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    5. INSTRUCTION TUNING E FLAN
+═════════════════════════════════════════════════════════════════════════════
+
+CONTEXTO:
+Modelos base (pré-trained) são bons em predição de próximo token,
+mas não necessariamente em seguir instruções arbitrárias.
+
+INSTRUCTION TUNING:
+Finetuning em milhares de tarefas diferentes, todas formatadas como
+instruções ("translate this", "summarize that", "classify the sentiment").
+
+RESULTADO:
+Modelos que seguem instruções zero-shot muito melhor.
+
+
+FLAN (Finetuned Language Net) - Google, 2022:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Dataset FLAN:
+• 60+ tarefas NLP (classificação, QA, summarização, tradução, etc.)
+• Cada tarefa com 10+ templates de instrução
+• Total: ~1800 instruction templates
+
+Exemplo - Sentiment classification:
+Template 1: "Is this review positive or negative? {text}"
+Template 2: "Classify the sentiment: {text}"
+Template 3: "{text} \n\n What sentiment does this express?"
+...
+
+Resultado:
+FLAN-T5 supera T5 vanilla em zero-shot capabilities significativamente.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+IMPLICAÇÕES PARA PROMPT ENGINEERING:
+1. Instruction-tuned models (FLAN-T5, InstructGPT, ChatGPT, Claude)
+   respondem melhor a instruções diretas
+
+2. Formatação de instruções importa menos (modelo é robusto a variações)
+
+3. Zero-shot performance melhora drasticamente
+
+4. Few-shot ainda ajuda, mas gap vs. zero-shot diminui
+
+
+EXEMPLO - Comparando T5 vs. FLAN-T5:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+from transformers import T5ForConditionalGeneration, T5Tokenizer
+
+# T5 base (sem instruction tuning)
+model_base = T5ForConditionalGeneration.from_pretrained("t5-base")
+tokenizer = T5Tokenizer.from_pretrained("t5-base")
+
+prompt_base = "sst2 sentence: This movie was terrible. sentiment:"
+# T5 base não entende bem essa instrução zero-shot
+
+# FLAN-T5 (com instruction tuning)
+model_flan = T5ForConditionalGeneration.from_pretrained("google/flan-t5-base")
+
+prompt_flan = "Classify the sentiment of this review: This movie was terrible."
+# FLAN-T5 entende perfeitamente zero-shot!
+
+# FLAN-T5 permite instruções mais naturais:
+inputs = tokenizer(prompt_flan, return_tensors="pt")
+outputs = model_flan.generate(**inputs)
+print(tokenizer.decode(outputs[0], skip_special_tokens=True))
+# Output: negative
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    6. BEST PRACTICES & PITFALLS
+═════════════════════════════════════════════════════════════════════════════
+
+─────────────────────────────────────────────────────────────────────────────
+6.1. BEST PRACTICES
+─────────────────────────────────────────────────────────────────────────────
+
+✓ 1. SEJA ESPECÍFICO
+   Bad:  "Analyze this text."
+   Good: "Extract the three main arguments presented in this text,
+          providing a one-sentence summary for each."
+
+✓ 2. ESTRUTURE CLARAMENTE
+   Use delimitadores, bullets, seções numeradas:
+   """
+   Input text: {text}
+
+   Tasks:
+   1. Extract main topic
+   2. List key entities mentioned
+   3. Classify sentiment
+
+   Format your output as JSON.
+   """
+
+✓ 3. FORNEÇA EXEMPLOS (Few-shot)
+   Especialmente para tarefas com formato específico de output
+
+✓ 4. ESPECIFIQUE FORMATO DE OUTPUT
+   "Return as JSON", "List as bullet points", "Answer in one word"
+
+✓ 5. USE CoT PARA RACIOCÍNIO
+   Adicione "Let's think step by step" ou forneça exemplos com raciocínio
+
+✓ 6. ITERE E REFINE
+   Prompts raramente são perfeitos na primeira tentativa
+   Teste com casos diversos, refine baseado em falhas
+
+✓ 7. USE TEMPERATURE APROPRIADAMENTE
+   • temperature=0: Tarefas determinísticas (classificação, extração)
+   • temperature=0.7-1.0: Tarefas criativas (escrita, brainstorming)
+
+✓ 8. CONTROLE TAMANHO DE OUTPUT
+   Use max_tokens para evitar respostas verbosas quando não desejado
+
+✓ 9. USE SYSTEM MESSAGES (quando disponível)
+   OpenAI ChatGPT: system message define comportamento global
+
+   system: "You are a helpful assistant that always responds concisely."
+   user: "Explain quantum computing."
+
+✓ 10. TESTE EDGE CASES
+   Não teste apenas casos típicos - teste inputs estranhos, ambíguos
+
+
+─────────────────────────────────────────────────────────────────────────────
+6.2. PITFALLS COMUNS
+─────────────────────────────────────────────────────────────────────────────
+
+✗ 1. PROMPTS AMBÍGUOS
+   "Analyze this" - Analisar como? Que aspectos?
+
+✗ 2. ASSUNÇÕES NÃO DECLARADAS
+   Não assuma que modelo sabe contexto implícito
+
+   Bad:  "What's the capital?" (capital de quê?)
+   Good: "What is the capital city of France?"
+
+✗ 3. INSTRUÇÕES CONFLITANTES
+   "Be creative but very factual" - contraditório!
+
+✗ 4. EXCESSO DE INFORMAÇÃO
+   Context windows têm limites
+   Forneça apenas informação relevante
+
+✗ 5. IGNORAR LIMITAÇÕES DO MODELO
+   Modelos não têm acesso a internet em tempo real (a não ser com plugins)
+   Não sabem data atual (a não ser informado)
+   Não têm memória entre chamadas (a não ser gerenciado externamente)
+
+✗ 6. ESPERAR PERFEIÇÃO
+   Mesmo GPT-4 erra. Sempre valide outputs críticos.
+
+✗ 7. NÃO CONTROLAR ALEATORIEDADE
+   Para tarefas que exigem consistência, use temperature=0
+
+✗ 8. PROMPTS MUITO LONGOS SEM ESTRUTURA
+   Wall of text é difícil de processar
+   Use formatação, seções, delimitadores
+
+✗ 9. USAR FEW-SHOT QUANDO ZERO-SHOT BASTARIA
+   Com instruction-tuned models, muitas tarefas simples funcionam zero-shot
+   Few-shot consome tokens (custo!)
+
+✗ 10. NÃO MEDIR PERFORMANCE
+   Sempre avalie quantitativamente em dataset de validação
+   "Parece bom" não é métrica suficiente
+
+
+─────────────────────────────────────────────────────────────────────────────
+6.3. QUANDO USAR CADA TÉCNICA
+─────────────────────────────────────────────────────────────────────────────
+
+ZERO-SHOT:
+• Tarefas simples, bem definidas
+• Quando modelo é instruction-tuned
+• Quando não há exemplos disponíveis
+
+FEW-SHOT:
+• Formato de output específico
+• Tarefa não standard
+• Melhorar consistency
+
+CHAIN-OF-THOUGHT:
+• Raciocínio matemático
+• Lógica multi-step
+• Tarefas que humanos fariam passo-a-passo
+
+SELF-CONSISTENCY:
+• Quando accuracy é crítica
+• Problemas com múltiplas soluções válidas
+• Pode pagar pelo custo extra (N× tokens)
+
+TREE-OF-THOUGHTS:
+• Problemas de busca (puzzles, planning)
+• Quando backtracking é útil
+• Espaço de busca limitado
+
+LEAST-TO-MOST:
+• Problemas claramente decomponíveis
+• Programação, matemática complexa
+• Planejamento hierárquico
+
+REFLEXION:
+• Quando iteração/refinamento é possível
+• Tarefas com feedback claro (testes, validação)
+• Problemas de geração (código, texto longo)
+
+PAL:
+• Cálculos aritméticos precisos
+• Lógica que requer execução simbólica
+• Quando correção é crítica
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    7. PIPELINE COMPLETO DE PRODUÇÃO
+═════════════════════════════════════════════════════════════════════════════
+
+Aqui está um pipeline completo que integra múltiplas técnicas:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+class ProductionPromptPipeline:
+    """
+    Pipeline robusto de prompt engineering para produção.
+    Incorpora: routing, few-shot, CoT, retry logic, caching, logging
+    """
+
+    def __init__(self, model="gpt-4", cache_enabled=True):
+        self.model = model
+        self.cache = {} if cache_enabled else None
+        self.metrics = {
+            "calls": 0,
+            "cache_hits": 0,
+            "errors": 0,
+            "total_tokens": 0
+        }
+
+    def route_task(self, task_type):
+        """Route to appropriate prompting strategy based on task type"""
+        strategies = {
+            "classification": self.zero_shot_classify,
+            "reasoning": self.cot_solve,
+            "calculation": self.pal_solve,
+            "generation": self.few_shot_generate,
+            "complex": self.reflexion_solve
+        }
+        return strategies.get(task_type, self.zero_shot_classify)
+
+    def zero_shot_classify(self, input_text, labels):
+        """Zero-shot classification"""
+        prompt = f"""Classify the following text into one of these categories: {', '.join(labels)}
+
+Text: "{input_text}"
+
+Category:"""
+
+        return self._call_llm(prompt, temperature=0, max_tokens=10)
+
+    def few_shot_generate(self, input_text, examples, task_description):
+        """Few-shot generation with dynamic example selection"""
+        # Select most relevant examples (simplified - would use embeddings in production)
+        selected_examples = examples[:3]
+
+        prompt = f"{task_description}\n\n"
+        for ex_input, ex_output in selected_examples:
+            prompt += f"Input: {ex_input}\nOutput: {ex_output}\n\n"
+        prompt += f"Input: {input_text}\nOutput:"
+
+        return self._call_llm(prompt, temperature=0.7, max_tokens=200)
+
+    def cot_solve(self, problem):
+        """Chain-of-Thought reasoning with self-consistency"""
+        prompt = f"{problem}\n\nLet's solve this step by step."
+
+        # Generate multiple reasoning paths
+        paths = []
+        for _ in range(5):  # 5-sample self-consistency
+            response = self._call_llm(prompt, temperature=0.7, max_tokens=300)
+            paths.append(response)
+
+        # Extract answers and vote
+        answers = [self._extract_answer(p) for p in paths]
+        final_answer = max(set(answers), key=answers.count)
+
+        return {
+            "answer": final_answer,
+            "reasoning_paths": paths,
+            "confidence": answers.count(final_answer) / len(answers)
+        }
+
+    def pal_solve(self, problem):
+        """Program-Aided solving for calculations"""
+        code_gen_prompt = f"""Generate Python code to solve this problem.
+Store answer in variable 'answer'.
+
+Problem: {problem}
+
+```python
+"""
+
+        code = self._call_llm(code_gen_prompt, temperature=0, max_tokens=200)
+
+        # Execute code (in production, use sandboxed execution!)
+        try:
+            local_vars = {}
+            exec(code, {"__builtins__": {}}, local_vars)
+            answer = local_vars.get("answer")
+            return {"success": True, "answer": answer, "code": code}
+        except Exception as e:
+            return {"success": False, "error": str(e), "code": code}
+
+    def reflexion_solve(self, problem, max_iterations=3):
+        """Reflexion loop for complex problems"""
+        attempts = []
+
+        for i in range(max_iterations):
+            # Generate attempt
+            if i == 0:
+                prompt = f"Solve: {problem}\nSolution:"
+            else:
+                prompt = f"""Previous attempt had issues. Improve it.
+
+Problem: {problem}
+
+Previous attempt: {attempts[-1]['solution']}
+Issues: {attempts[-1]['evaluation']}
+
+Improved solution:"""
+
+            solution = self._call_llm(prompt, temperature=0.7, max_tokens=400)
+
+            # Evaluate
+            eval_prompt = f"""Evaluate this solution:
+
+Problem: {problem}
+Solution: {solution}
+
+Is this correct and complete? (yes/no and why):"""
+
+            evaluation = self._call_llm(eval_prompt, temperature=0, max_tokens=150)
+
+            attempts.append({
+                "solution": solution,
+                "evaluation": evaluation,
+                "iteration": i + 1
+            })
+
+            # Check if acceptable
+            if "yes" in evaluation.lower()[:50]:
+                break
+
+        return {
+            "final_solution": attempts[-1]["solution"],
+            "all_attempts": attempts,
+            "iterations": len(attempts)
+        }
+
+    def _call_llm(self, prompt, temperature=0, max_tokens=200):
+        """Internal method to call LLM with caching and metrics"""
+        # Check cache
+        cache_key = (prompt, temperature, max_tokens)
+        if self.cache is not None and cache_key in self.cache:
+            self.metrics["cache_hits"] += 1
+            return self.cache[cache_key]
+
+        # Make API call
+        self.metrics["calls"] += 1
+
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=temperature,
+                max_tokens=max_tokens
+            )
+
+            result = response.choices[0].message.content.strip()
+            self.metrics["total_tokens"] += response.usage.total_tokens
+
+            # Cache result
+            if self.cache is not None:
+                self.cache[cache_key] = result
+
+            return result
+
+        except Exception as e:
+            self.metrics["errors"] += 1
+            print(f"LLM call error: {e}")
+            return None
+
+    def _extract_answer(self, text):
+        """Extract final answer from reasoning text"""
+        # Look for common patterns
+        patterns = [
+            r'answer is (\d+)',
+            r'= (\d+)',
+            r'(\d+)$'
+        ]
+
+        for pattern in patterns:
+            match = re.search(pattern, text.lower())
+            if match:
+                return match.group(1)
+
+        return None
+
+    def get_metrics(self):
+        """Return usage metrics"""
+        return {
+            **self.metrics,
+            "cache_hit_rate": self.metrics["cache_hits"] / max(self.metrics["calls"], 1),
+            "avg_tokens_per_call": self.metrics["total_tokens"] / max(self.metrics["calls"], 1)
+        }
+
+    def process_batch(self, tasks):
+        """Process multiple tasks efficiently"""
+        results = []
+
+        for task in tasks:
+            task_type = task.get("type", "classification")
+            strategy = self.route_task(task_type)
+
+            result = strategy(**task.get("params", {}))
+            results.append({
+                "task": task,
+                "result": result
+            })
+
+        return results
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# EXEMPLO DE USO DO PIPELINE
+# ═══════════════════════════════════════════════════════════════════════
+
+pipeline = ProductionPromptPipeline(model="gpt-4", cache_enabled=True)
+
+# Batch de tarefas diversas
+tasks = [
+    {
+        "type": "classification",
+        "params": {
+            "input_text": "This product exceeded my expectations!",
+            "labels": ["positive", "negative", "neutral"]
+        }
+    },
+    {
+        "type": "reasoning",
+        "params": {
+            "problem": "If John has 5 apples and gives 2 to Mary, then buys 3 more, how many does he have?"
+        }
+    },
+    {
+        "type": "calculation",
+        "params": {
+            "problem": "Calculate the compound interest on $1000 at 5% for 3 years"
+        }
+    }
+]
+
+results = pipeline.process_batch(tasks)
+
+for i, res in enumerate(results):
+    print(f"\n{'='*60}")
+    print(f"Task {i+1}: {res['task']['type']}")
+    print(f"Result: {res['result']}")
+
+print(f"\n{'='*60}")
+print("Pipeline Metrics:")
+print(pipeline.get_metrics())
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    8. RECURSOS ADICIONAIS E PRÓXIMOS PASSOS
+═════════════════════════════════════════════════════════════════════════════
+
+LEITURA COMPLEMENTAR:
+• The Prompt Report (2024) - Catálogo de 58 técnicas
+• GPT-3 paper (2020) - Fundações de few-shot learning
+• Chain-of-Thought paper (2022) - Técnica revolucionária
+• FLAN papers - Instruction tuning methodology
+
+
+FERRAMENTAS ÚTEIS:
+• LangChain - Framework para aplicações com LLMs
+• Guidance - Structured generation para prompts
+• LMQL - Query language para LLMs
+• PromptFlow - Visual prompt engineering (Microsoft)
+
+
+PRÓXIMOS PASSOS:
+1. Experimente cada técnica em seus próprios casos de uso
+2. Combine técnicas (ex: Few-shot + CoT + Self-Consistency)
+3. Meça performance quantitativamente
+4. Otimize para custo vs. qualidade
+5. Implemente logging e monitoramento em produção
+
+
+TÓPICOS AVANÇADOS NÃO COBERTOS AQUI:
+• Automatic Prompt Optimization (APO, DSPy)
+• Prompt compression e distillation
+• Multi-modal prompting (texto + imagem)
+• Adversarial prompting e jailbreaking
+• Constitutional AI e prompting para segurança
+
+
+═════════════════════════════════════════════════════════════════════════════
+
+Este guia fornece fundação sólida em engenharia de prompt, da teoria à
+implementação prática. Pratique, experimente, e adapte para suas necessidades!
+
+═════════════════════════════════════════════════════════════════════════════

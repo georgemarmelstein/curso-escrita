@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transição: Três Paradigmas - Proposta C (Minimalista)</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: left;
+            max-width: 900px;
+            padding: 60px;
+        }
+
+        /* Número pequeno no topo */
+        .section-number {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            opacity: 0.7;
+        }
+
+        /* Título com hierarquia ultra-clara */
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--super-cream);
+            margin-bottom: 25px;
+        }
+
+        /* Palavra "Três" com cor diferente */
+        .title .number-word {
+            color: var(--super-gold);
+            display: block;
+            font-size: 6rem;
+            margin-bottom: 10px;
+        }
+
+        /* Palavra "Paradigmas" com peso diferente */
+        .title .main-word {
+            font-weight: 500;
+            color: rgba(255, 244, 228, 0.9);
+        }
+
+        /* Palavra "de Conhecimento" mais leve */
+        .title .descriptor {
+            font-weight: 400;
+            font-size: 3.5rem;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Subtítulo separado por linha fina */
+        .subtitle-container {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(190, 156, 109, 0.3);
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.6);
+            letter-spacing: 1px;
+        }
+
+        /* EMBED MODE - ajustes */
+        body.embed-mode .container {
+            padding: 40px 60px;
+        }
+
+        body.embed-mode .section-number {
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+        }
+
+        body.embed-mode .title {
+            font-size: 3.2rem;
+        }
+
+        body.embed-mode .title .number-word {
+            font-size: 4rem;
+            margin-bottom: 5px;
+        }
+
+        body.embed-mode .title .descriptor {
+            font-size: 2.2rem;
+        }
+
+        body.embed-mode .subtitle-container {
+            margin-top: 25px;
+            padding-top: 20px;
+        }
+
+        body.embed-mode .subtitle {
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Número de seção pequeno -->
+        <div class="section-number">Seção 01</div>
+
+        <!-- Título com hierarquia visual forte -->
+        <h1 class="title">
+            <span class="number-word">Três</span>
+            <span class="main-word">Paradigmas</span><br>
+            <span class="descriptor">de Conhecimento</span>
+        </h1>
+
+        <!-- Subtítulo com separador -->
+        <div class="subtitle-container">
+            <p class="subtitle">A história da IA generativa</p>
+        </div>
+    </div>
+
+    <script>
+        // Detectar se está em iframe (embed mode)
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

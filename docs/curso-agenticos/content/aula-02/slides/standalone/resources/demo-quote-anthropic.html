@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citação - Interface Universal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Spectral:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           PALETA SUPER - Sistema de Cores Unificado
+           ============================================ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+            --super-amber: #fbbf24;
+            --super-gold-dim: rgba(190, 156, 109, 0.6);
+            --super-gold-subtle: rgba(190, 156, 109, 0.3);
+            --super-gold-ghost: rgba(190, 156, 109, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Spectral', Georgia, serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* ============================================
+           BACKGROUND IMAGE
+           ============================================ */
+        .bg-image {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: url("maxresdefault.jpg") center center / cover no-repeat;
+            z-index: 0;
+        }
+
+        /* Dark overlay to make text readable */
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(10, 10, 18, 0.92) 0%,
+                rgba(10, 10, 18, 0.85) 40%,
+                rgba(10, 10, 18, 0.75) 100%
+            );
+            z-index: 1;
+        }
+
+        /* Film grain overlay */
+        .grain {
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 100;
+            animation: grainShift 0.5s steps(1) infinite;
+        }
+
+        @keyframes grainShift {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-2%, -2%); }
+            50% { transform: translate(2%, 2%); }
+            75% { transform: translate(-1%, 1%); }
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 0%,
+                rgba(10, 10, 18, 0.2) 50%,
+                rgba(10, 10, 18, 0.7) 100%);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* Cage border */
+        .cage-border {
+            position: fixed;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            border: 1px solid rgba(190, 156, 109, 0.1);
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        /* ============================================
+           QUOTE CONTAINER
+           ============================================ */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 60px 80px;
+            max-width: 750px;
+            width: 100%;
+            margin-left: 5%;
+        }
+
+        /* Opening quote mark */
+        .quote-mark {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 7em;
+            font-weight: 400;
+            color: var(--super-gold);
+            line-height: 0.5;
+            margin-bottom: -20px;
+            margin-left: -15px;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 0.25; }
+        }
+
+        /* Main quote - Portuguese only */
+        .quote-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(2.5em, 5vw, 4em);
+            font-weight: 500;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.4;
+            margin-bottom: 45px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1s ease 0.5s forwards;
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .quote-text .highlight-green {
+            color: var(--super-green);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        /* Author */
+        .quote-author {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+            opacity: 0;
+            animation: fadeInAuthor 1s ease 0.9s forwards;
+        }
+
+        @keyframes fadeInAuthor {
+            to { opacity: 1; }
+        }
+
+        .author-line {
+            width: 50px;
+            height: 1px;
+            background: var(--super-gold-subtle);
+            margin-bottom: 12px;
+        }
+
+        .author-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1em, 1.6vw, 1.4em);
+            font-weight: 500;
+            color: var(--super-gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .author-role {
+            font-family: 'Spectral', Georgia, serif;
+            font-size: clamp(1.1em, 1.8vw, 1.5em);
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* ============================================
+           EMBED MODE - AUMENTADO para projeção em sala
+           ============================================ */
+        body.embed-mode { height: 100vh; overflow: hidden; }
+        body.embed-mode .container {
+            padding: 40px 50px;
+            max-width: 800px;
+            max-height: 100vh;
+        }
+        body.embed-mode .quote-mark { font-size: clamp(5em, 8vw, 7em); margin-bottom: -15px; }
+        body.embed-mode .quote-text { font-size: clamp(1.8em, 3.5vw, 2.8em); margin-bottom: 35px; line-height: 1.4; }
+        body.embed-mode .author-name { font-size: clamp(1em, 1.5vw, 1.3em); }
+        body.embed-mode .author-role { font-size: clamp(1.1em, 1.6vw, 1.4em); }
+        body.embed-mode .author-line { width: 50px; margin-bottom: 12px; }
+        body.embed-mode .cage-border { top: 15px; left: 15px; right: 15px; bottom: 15px; }
+    </style>
+</head>
+<body>
+    <!-- Background layers -->
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="grain"></div>
+    <div class="vignette"></div>
+    <div class="cage-border"></div>
+
+    <div class="container">
+        <div class="quote-mark">"</div>
+
+        <p class="quote-text">
+            Código não é apenas um caso de uso, mas a <span class="highlight">interface universal</span> para o mundo digital. Depois de construirmos o Claude Code, percebemos que ele é, na verdade, um <span class="highlight-green">agente de propósito geral</span>.
+        </p>
+
+        <div class="quote-author">
+            <div class="author-line"></div>
+            <span class="author-name">Barry Zhang</span>
+            <span class="author-role">Anthropic — Claude Code Team</span>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

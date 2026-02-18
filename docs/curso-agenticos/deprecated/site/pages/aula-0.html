@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aula 0: Apresentação ao Mundo Agêntico - Do assistente ao agente, a mudança de paradigma na IA.">
+
+  <title>Aula 0: Apresentação ao Mundo Agêntico | Sistemas Agênticos</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖</text></svg>">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="../index.html" class="logo">
+          <div class="logo-icon">SA</div>
+          <div class="logo-text">
+            Sistemas Agênticos
+            <span>Curso para Juristas</span>
+          </div>
+        </a>
+
+        <nav class="nav-main">
+          <a href="../index.html" class="nav-link">Início</a>
+          <div class="nav-dropdown">
+            <button class="nav-link nav-dropdown-trigger active">
+              Aulas
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="nav-dropdown-menu">
+              <a href="aula-0.html" class="dropdown-item">
+                <span class="dropdown-item-number">0</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Apresentação ao Mundo Agêntico</div>
+                  <div class="dropdown-item-desc">Sensibilização e mudança de paradigma</div>
+                </div>
+              </a>
+              <a href="aula-1.html" class="dropdown-item">
+                <span class="dropdown-item-number">1</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">O Sistema Agêntico na Prática</div>
+                  <div class="dropdown-item-desc">Claude Web, Desktop e limitações</div>
+                </div>
+              </a>
+              <a href="aula-2a.html" class="dropdown-item">
+                <span class="dropdown-item-number">2A</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Anatomia de um Sistema Agêntico</div>
+                  <div class="dropdown-item-desc">Conceitos fundamentais</div>
+                </div>
+              </a>
+              <a href="aula-2b.html" class="dropdown-item">
+                <span class="dropdown-item-number">2B</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Claude Code na Prática</div>
+                  <div class="dropdown-item-desc">Instalação e primeiros passos</div>
+                </div>
+              </a>
+              <a href="aula-3.html" class="dropdown-item">
+                <span class="dropdown-item-number">3</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Arquitetura de Agentes</div>
+                  <div class="dropdown-item-desc">Padrões e design de sistemas</div>
+                </div>
+              </a>
+              <a href="aula-4.html" class="dropdown-item">
+                <span class="dropdown-item-number">4</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Construindo os Primeiros Agentes</div>
+                  <div class="dropdown-item-desc">Skills, Commands e prática</div>
+                </div>
+              </a>
+              <a href="aula-5.html" class="dropdown-item">
+                <span class="dropdown-item-number">5</span>
+                <div class="dropdown-item-content">
+                  <div class="dropdown-item-title">Sistema Jurídico Agêntico</div>
+                  <div class="dropdown-item-desc">CLERK e aplicação prática</div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <a href="glossario.html" class="nav-link">Glossário</a>
+          <a href="recursos.html" class="nav-link">Recursos</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="theme-toggle" aria-label="Alternar tema">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </button>
+          <button class="mobile-menu-toggle" aria-label="Menu" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="site-main">
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+      <div class="container">
+        <div class="lesson-hero-content">
+          <nav class="lesson-breadcrumb">
+            <a href="../index.html">Início</a>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+            <span>Aula 0</span>
+          </nav>
+
+          <div class="lesson-meta">
+            <span class="lesson-number">0</span>
+            <div class="lesson-info">
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                45-60 min
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                7 blocos
+              </span>
+            </div>
+          </div>
+
+          <h1 class="lesson-title">Apresentação ao Mundo Agêntico</h1>
+          <p class="lesson-description">
+            Sensibilização para a mudança de paradigma na interação humano-IA.
+            Do mundo dos assistentes ao mundo dos agentes — por que a interface limita
+            e como o terminal liberta todo o potencial.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lesson Layout -->
+    <div class="container">
+      <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+          <nav class="lesson-nav">
+            <div class="lesson-nav-header">
+              <span class="lesson-nav-title">Conteúdo</span>
+              <span class="lesson-progress">7 blocos</span>
+            </div>
+            <ul class="lesson-nav-list">
+              <li class="lesson-nav-item">
+                <a href="#bloco-1" class="lesson-nav-link active">
+                  <span class="nav-block-number">01</span>
+                  <span>Do Assistente ao Agente</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-2" class="lesson-nav-link">
+                  <span class="nav-block-number">02</span>
+                  <span>O Que Mudou</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-3" class="lesson-nav-link">
+                  <span class="nav-block-number">03</span>
+                  <span>Por Que a Interface Limita</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-4" class="lesson-nav-link">
+                  <span class="nav-block-number">04</span>
+                  <span>O Terminal Como Ambiente</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-5" class="lesson-nav-link">
+                  <span class="nav-block-number">05</span>
+                  <span>As Capacidades do Claude Code</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-6" class="lesson-nav-link">
+                  <span class="nav-block-number">06</span>
+                  <span>O Novo Papel do Humano</span>
+                </a>
+              </li>
+              <li class="lesson-nav-item">
+                <a href="#bloco-7" class="lesson-nav-link">
+                  <span class="nav-block-number">07</span>
+                  <span>Visão do Curso</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <article class="lesson-content">
+          <!-- Mobile TOC -->
+          <div class="mobile-toc">
+            <button class="mobile-toc-trigger">
+              <span>Conteúdo da Aula</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="mobile-toc-content">
+              <ul class="mobile-toc-list">
+                <li><a href="#bloco-1">01. Do Assistente ao Agente</a></li>
+                <li><a href="#bloco-2">02. O Que Mudou</a></li>
+                <li><a href="#bloco-3">03. Por Que a Interface Limita</a></li>
+                <li><a href="#bloco-4">04. O Terminal Como Ambiente</a></li>
+                <li><a href="#bloco-5">05. As Capacidades do Claude Code</a></li>
+                <li><a href="#bloco-6">06. O Novo Papel do Humano</a></li>
+                <li><a href="#bloco-7">07. Visão do Curso</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Bloco 1 -->
+          <section id="bloco-1" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 01</span>
+              <h2 class="block-title">Do Mundo dos Assistentes ao Mundo dos Agentes</h2>
+              <span class="block-duration">~10 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>O Mundo dos Assistentes (Onde Estávamos)</h3>
+
+              <p>
+                No fluxo tradicional de trabalho com LLMs, o humano faz tudo:
+                baixa arquivo, anexa no chat, escreve prompt, espera resposta, copia output.
+                Cada etapa requer intervenção manual.
+              </p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    MUNDO DOS ASSISTENTES                                │
+│                                                                         │
+│   HUMANO faz TUDO:                                                      │
+│   ┌──────┐    ┌──────┐    ┌──────┐    ┌──────┐    ┌──────┐             │
+│   │Baixar│───▶│Anexar│───▶│Prompt│───▶│Espera│───▶│Copiar│───▶ ...    │
+│   │ PDF  │    │ chat │    │manual│    │resp. │    │output│             │
+│   └──────┘    └──────┘    └──────┘    └──────┘    └──────┘             │
+│       │           │           │           │           │                 │
+│       ▼           ▼           ▼           ▼           ▼                 │
+│   [operação] [operação] [operação] [operação] [operação]               │
+│                                                                         │
+│   Tempo para ANÁLISE: o que sobra depois de toda a operação            │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <p><strong>O problema:</strong> O humano virou o <em>middleware</em> entre ferramentas desconectadas.</p>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Atividade</th>
+                    <th>Tipo</th>
+                    <th>Valor Agregado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Baixar arquivo</td>
+                    <td>Operacional</td>
+                    <td>Zero</td>
+                  </tr>
+                  <tr>
+                    <td>Copiar/colar entre sistemas</td>
+                    <td>Operacional</td>
+                    <td>Zero</td>
+                  </tr>
+                  <tr>
+                    <td>Formatar texto</td>
+                    <td>Operacional</td>
+                    <td>Zero</td>
+                  </tr>
+                  <tr>
+                    <td>Escolher próximo passo</td>
+                    <td>Decisão</td>
+                    <td>Alto</td>
+                  </tr>
+                  <tr>
+                    <td>Analisar resultado</td>
+                    <td>Cognitivo</td>
+                    <td><strong>Máximo</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="callout">
+                <svg class="callout-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="callout-content">
+                  <h4>Conclusão</h4>
+                  <p>80% do tempo em operação, 20% em análise. Inversão completa do valor.</p>
+                </div>
+              </div>
+
+              <h3>O Mundo dos Agentes (Para Onde Vamos)</h3>
+
+              <p>No novo paradigma, o humano define o <strong>objetivo</strong> e o sistema executa as etapas:</p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    MUNDO DOS AGENTES                                    │
+│                                                                         │
+│   HUMANO define OBJETIVO:                                               │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │ "Analise este processo de BPC e sugira uma minuta de sentença"   │ │
+│   └──────────────────────────────────────────────────────────────────┘ │
+│                              │                                          │
+│                              ▼                                          │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │                    SISTEMA AGÊNTICO                              │ │
+│   │  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐     │ │
+│   │  │ Baixar │─▶│Converter│─▶│Relatar │─▶│Pesquisar│─▶│ Minutar│     │ │
+│   │  │  PJE   │  │  PDF   │  │  autos │  │preceden.│  │sentença│     │ │
+│   │  └────────┘  └────────┘  └────────┘  └────────┘  └────────┘     │ │
+│   │       ▲           ▲           ▲           ▲           ▲          │ │
+│   │       └───────────┴───────────┴───────────┴───────────┘          │ │
+│   │                    Orquestração automática                        │ │
+│   └──────────────────────────────────────────────────────────────────┘ │
+│                              │                                          │
+│                              ▼                                          │
+│   HUMANO revisa e decide (ALTO VALOR)                                   │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <div class="key-points">
+                <h4 class="key-points-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Pontos-Chave
+                </h4>
+                <ul>
+                  <li>Tarefas encadeadas em pipelines (não uma de cada vez)</li>
+                  <li>Sistema executa etapas operacionais</li>
+                  <li>Múltiplas ferramentas automáticas</li>
+                  <li>Acesso total: arquivos, comandos, rede</li>
+                  <li>Subagentes especializados em paralelo</li>
+                  <li>Trabalho em background</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Bloco 2 -->
+          <section id="bloco-2" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 02</span>
+              <h2 class="block-title">O Que Mudou (Contexto)</h2>
+              <span class="block-duration">~8 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>2025: O Ano dos Agentes LLM</h3>
+
+              <div class="citation">
+                <div class="citation-avatar">AK</div>
+                <div class="citation-content">
+                  <p class="citation-text">
+                    "O Claude Code emergiu como a primeira demonstração convincente do que
+                    um Agente LLM parece."
+                  </p>
+                  <p class="citation-author">Andrej Karpathy</p>
+                  <p class="citation-source">2025: Year of the LLM Agent</p>
+                </div>
+              </div>
+
+              <p>
+                Em 2024, LLMs eram poderosos mas limitados à conversa. Em 2025,
+                a combinação de ferramentas, contexto persistente e orquestração
+                transformou assistentes em <strong>agentes</strong>.
+              </p>
+
+              <h3>A "Ferramenta Alienígena"</h3>
+
+              <div class="citation">
+                <div class="citation-avatar">AK</div>
+                <div class="citation-content">
+                  <p class="citation-text">
+                    "Ferramenta alienígena poderosa distribuída... sem manual...
+                    terremoto magnitude 9"
+                  </p>
+                  <p class="citation-author">Andrej Karpathy</p>
+                  <p class="citation-source">Sobre o impacto dos agentes LLM</p>
+                </div>
+              </div>
+
+              <p>
+                A lista de conceitos novos é vasta: agentes, subagentes, prompts,
+                contextos, memória, modos, permissões, tools, plugins, skills,
+                hooks, MCP... Este curso é o manual que faltava.
+              </p>
+
+              <h3>O Paradoxo METR</h3>
+
+              <p>
+                Estudo recente mostrou que especialistas ficaram <strong>19% mais lentos</strong>
+                usando ferramentas de IA. Por quê?
+              </p>
+
+              <ul>
+                <li>Ter a ferramenta não basta</li>
+                <li>Precisa estar entre 95-99% de confiabilidade para compensar</li>
+                <li>O tempo gasto verificando outputs anula ganhos</li>
+              </ul>
+
+              <div class="callout callout-warning">
+                <svg class="callout-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div class="callout-content">
+                  <h4>Advertência Importante</h4>
+                  <p>
+                    "Não dê ferramentas de IA para seus estagiários. Dê para seus seniores."
+                    — Kitze, sobre Vibe Coding vs Vibe Engineering
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Bloco 3 -->
+          <section id="bloco-3" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 03</span>
+              <h2 class="block-title">Por Que a Interface Limita</h2>
+              <span class="block-duration">~7 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>A Metáfora do Bruce Lee</h3>
+
+              <p>
+                Imagine o mais habilidoso lutador do mundo... vestido com uma armadura medieval.
+                Mal consegue se mover. Toda a capacidade está lá, mas a <em>interface</em> limita.
+              </p>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    A EVOLUÇÃO DA INTERFACE                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   WEB                    DESKTOP                  TERMINAL              │
+│   ┌─────────┐           ┌─────────┐              ┌─────────┐           │
+│   │ ARMADURA│           │ JEANS + │              │  LIVRE  │           │
+│   │MEDIEVAL │           │ PALETÓ  │              │         │           │
+│   │         │           │         │              │    🥋    │           │
+│   │ 🛡️ 🗡️  │           │   👔    │              │         │           │
+│   └─────────┘           └─────────┘              └─────────┘           │
+│   Imobilizado           Melhor, mas              Potencial             │
+│                         ainda limita             máximo                │
+│                                                                         │
+│   Limites: anexos,      MCPs locais,            Acesso total:          │
+│   sem arquivos,         filesystem              arquivos, bash,        │
+│   sem comandos          limitado                rede, código           │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <h3>Limitações Práticas do Web</h3>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Limitação</th>
+                    <th>Impacto no Jurista</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Máx. 30MB por arquivo</td>
+                    <td>Processos grandes não cabem</td>
+                  </tr>
+                  <tr>
+                    <td>Máx. 20 arquivos por conversa</td>
+                    <td>Análise de múltiplos processos impossível</td>
+                  </tr>
+                  <tr>
+                    <td>Sem acesso ao filesystem</td>
+                    <td>Não salva, não organiza, não automatiza</td>
+                  </tr>
+                  <tr>
+                    <td>Sem execução de comandos</td>
+                    <td>Não roda scripts, não integra sistemas</td>
+                  </tr>
+                  <tr>
+                    <td>Sessão isolada</td>
+                    <td>Todo contexto perdido ao fechar</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Bloco 4 -->
+          <section id="bloco-4" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 04</span>
+              <h2 class="block-title">O Terminal Como Ambiente Agêntico</h2>
+              <span class="block-duration">~6 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>Dar um Computador para a IA</h3>
+
+              <div class="citation">
+                <div class="citation-avatar">AK</div>
+                <div class="citation-content">
+                  <p class="citation-text">
+                    "É um fantasma/espírito no seu computador que pode fazer coisas por você."
+                  </p>
+                  <p class="citation-author">Andrej Karpathy</p>
+                </div>
+              </div>
+
+              <p>O que significa "dar um computador" para o Claude:</p>
+
+              <ul>
+                <li><strong>Acesso ao sistema de arquivos</strong> — Ler, criar, editar documentos</li>
+                <li><strong>Execução de comandos</strong> — Rodar scripts, compilar, testar</li>
+                <li><strong>Acesso à rede</strong> — Buscar informações, APIs, pesquisa</li>
+                <li><strong>Criação de ferramentas</strong> — Escrever código e executar on-the-fly</li>
+                <li><strong>Delegação</strong> — Acionar subagentes especializados</li>
+              </ul>
+
+              <div class="citation">
+                <div class="citation-avatar">JZ</div>
+                <div class="citation-content">
+                  <p class="citation-text">
+                    "Give it tools and then get out of the way."
+                  </p>
+                  <p class="citation-author">Jared Zoneraich (PromptLayer)</p>
+                  <p class="citation-source">Dê ferramentas e saia do caminho</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Bloco 5 -->
+          <section id="bloco-5" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 05</span>
+              <h2 class="block-title">As Capacidades do Claude Code</h2>
+              <span class="block-duration">~8 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>Os Subagentes Especializados</h3>
+
+              <p>
+                No mundo agêntico, não é um único assistente fazendo tudo.
+                São <strong>múltiplos especialistas</strong> trabalhando em conjunto:
+              </p>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Subagente</th>
+                    <th>Especialidade</th>
+                    <th>Característica</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Explorador</strong></td>
+                    <td>Navegar codebase, entender estrutura</td>
+                    <td>Contexto limpo, foco em descoberta</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Pesquisador</strong></td>
+                    <td>Buscar precedentes, jurisprudência</td>
+                    <td>Acesso a MCPs e WebSearch</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Redator</strong></td>
+                    <td>Escrever minutas, relatórios</td>
+                    <td>Foco em qualidade textual</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Revisor</strong></td>
+                    <td>Verificar consistência, erros</td>
+                    <td>Olhar crítico, sem viés de confirmação</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Testador</strong></td>
+                    <td>Validar outputs, executar checks</td>
+                    <td>Execução em background</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="key-points">
+                <h4 class="key-points-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Vantagem Arquitetural
+                </h4>
+                <ul>
+                  <li>Cada subagente tem <strong>contexto limpo</strong> (não poluído pelo resto)</li>
+                  <li>Trabalham em <strong>paralelo</strong> (economia de tempo)</li>
+                  <li>Executam em <strong>background</strong> (você continua trabalhando)</li>
+                  <li>São <strong>descartáveis</strong> (contexto não volta para o principal)</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Bloco 6 -->
+          <section id="bloco-6" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 06</span>
+              <h2 class="block-title">O Novo Papel do Humano</h2>
+              <span class="block-duration">~6 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>A Inversão do Tempo</h3>
+
+              <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    INVERSÃO DO PARADIGMA                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ANTES (Assistentes):                                                  │
+│   ┌────────────────────────────────────────────────────────┐           │
+│   │████████████████████████████████████████████░░░░░░░░░░│           │
+│   └────────────────────────────────────────────────────────┘           │
+│           80% OPERAÇÃO                    20% ANÁLISE                   │
+│                                                                         │
+│   DEPOIS (Agentes):                                                     │
+│   ┌────────────────────────────────────────────────────────┐           │
+│   │░░░░░░░░░░████████████████████████████████████████████│           │
+│   └────────────────────────────────────────────────────────┘           │
+│   20% SUPERVISÃO                     80% ANÁLISE E DECISÃO              │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre>
+
+              <p>
+                <strong>O humano sai do papel de <em>middleware</em> e assume o papel de <em>diretor</em>.</strong>
+              </p>
+
+              <div class="citation">
+                <div class="citation-avatar">DH</div>
+                <div class="citation-content">
+                  <p class="citation-text">
+                    "A IA não pode substituir o pensamento. Ela só pode amplificar
+                    o pensamento que você já fez."
+                  </p>
+                  <p class="citation-author">Dex Horthy</p>
+                  <p class="citation-source">12 Factor Agents</p>
+                </div>
+              </div>
+
+              <h3>Regência Cognitiva</h3>
+
+              <p>
+                A filosofia central deste curso: você é o <strong>regente</strong> de uma orquestra.
+                Não toca cada instrumento — dirige o conjunto. Define o resultado, supervisiona a execução,
+                intervém quando necessário.
+              </p>
+            </div>
+          </section>
+
+          <!-- Bloco 7 -->
+          <section id="bloco-7" class="lesson-block">
+            <div class="block-header">
+              <span class="block-number">Bloco 07</span>
+              <h2 class="block-title">Visão do Curso</h2>
+              <span class="block-duration">~5 minutos</span>
+            </div>
+
+            <div class="block-content">
+              <h3>O Que Você Vai Aprender</h3>
+
+              <ol>
+                <li><strong>Aula 1:</strong> Claude Web e Desktop na prática — o que já é possível</li>
+                <li><strong>Aula 2:</strong> Anatomia de sistemas agênticos + Claude Code hands-on</li>
+                <li><strong>Aula 3:</strong> Arquitetura de agentes — padrões e design</li>
+                <li><strong>Aula 4:</strong> Construindo seus primeiros agentes — Skills e Commands</li>
+                <li><strong>Aula 5:</strong> Sistema Jurídico Agêntico — o CLERK completo</li>
+              </ol>
+
+              <h3>O CLERK: Seu Assessor Agêntico</h3>
+
+              <p>
+                Ao final do curso, você terá construído o <strong>CLERK</strong>
+                (<em>Collaborative Legal Expert for Research and Knowledge</em>):
+              </p>
+
+              <ul>
+                <li>Download automático do PJE</li>
+                <li>Conversão inteligente PDF → Texto</li>
+                <li>Relatórios estruturados</li>
+                <li>Pesquisa em bases jurídicas (BNP, CJF, JULIA)</li>
+                <li>Elaboração de minutas</li>
+                <li>Revisão com subagentes paralelos</li>
+              </ul>
+
+              <div class="callout callout-success">
+                <svg class="callout-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="callout-content">
+                  <h4>Próximo Passo</h4>
+                  <p>
+                    Na Aula 1, vamos explorar o Claude Web e Desktop na prática —
+                    ver o que já é possível antes de migrar para o terminal.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Navigation -->
+          <nav class="lesson-navigation">
+            <div></div>
+            <a href="aula-1.html" class="lesson-nav-btn next">
+              <span class="label">Próxima Aula</span>
+              <span class="title">O Sistema Agêntico na Prática →</span>
+            </a>
+          </nav>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2025 Sistemas Agênticos. Curso educacional.</p>
+        <p>Feito com Claude Code</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

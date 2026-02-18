@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Analogia Judicial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                linear-gradient(180deg,
+                    rgba(34, 211, 238, 0.04) 0%,
+                    transparent 50%,
+                    rgba(190, 156, 109, 0.04) 100%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            max-width: 1000px;
+            padding: 25px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        .parallel-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .track-headers {
+            display: grid;
+            grid-template-columns: 1fr 60px 1fr;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .track-header {
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .track-header.dev {
+            background: rgba(34, 211, 238, 0.15);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+
+        .track-header.judicial {
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+        }
+
+        .track-header-icon {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .track-header-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .track-header.dev .track-header-title { color: var(--super-cyan); }
+        .track-header.judicial .track-header-title { color: var(--super-gold); }
+
+        .connector-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 244, 228, 0.3);
+            font-size: 1.5em;
+        }
+
+        .parallel-row {
+            display: grid;
+            grid-template-columns: 1fr 60px 1fr;
+            gap: 15px;
+            align-items: center;
+            opacity: 0;
+            animation: rowAppear 0.4s ease forwards;
+        }
+
+        .parallel-row:nth-child(1) { animation-delay: 0.1s; }
+        .parallel-row:nth-child(2) { animation-delay: 0.2s; }
+        .parallel-row:nth-child(3) { animation-delay: 0.3s; }
+        .parallel-row:nth-child(4) { animation-delay: 0.4s; }
+        .parallel-row:nth-child(5) { animation-delay: 0.5s; }
+        .parallel-row:nth-child(6) { animation-delay: 0.6s; }
+        .parallel-row:nth-child(7) { animation-delay: 0.7s; }
+        .parallel-row:nth-child(8) { animation-delay: 0.8s; }
+        .parallel-row:nth-child(9) { animation-delay: 0.9s; }
+
+        @keyframes rowAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-box {
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .step-box:hover {
+            transform: translateX(5px);
+        }
+
+        .step-box.dev {
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+        }
+
+        .step-box.dev:hover {
+            border-color: var(--super-cyan);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+        }
+
+        .step-box.judicial {
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .step-box.judicial:hover {
+            border-color: var(--super-gold);
+            box-shadow: 0 0 20px rgba(190, 156, 109, 0.2);
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-box.dev .step-number {
+            background: var(--super-cyan);
+            color: var(--super-bg-dark);
+        }
+
+        .step-box.judicial .step-number {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 2px;
+        }
+
+        .step-desc {
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .connector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 244, 228, 0.2);
+            font-size: 1.2em;
+        }
+
+        .parallel-row:hover .connector {
+            color: var(--super-gold);
+        }
+
+        .insight-bar {
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .insight-text {
+            font-size: 0.85em;
+            color: var(--super-green);
+        }
+
+        body.embed-mode .container { padding: 15px; }
+        body.embed-mode .header-title { font-size: 1.3em; }
+        body.embed-mode .step-box { padding: 10px 12px; }
+        body.embed-mode .step-title { font-size: 0.75em; }
+        body.embed-mode .step-number { width: 24px; height: 24px; font-size: 0.65em; }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Correspondência 1:1</div>
+            <h1 class="header-title">Ciclo de Desenvolvimento × Processo Decisório</h1>
+        </div>
+
+        <div class="track-headers">
+            <div class="track-header dev">
+                <div class="track-header-icon">💻</div>
+                <div class="track-header-title">Desenvolvimento Agêntico</div>
+            </div>
+            <div class="connector-header">≡</div>
+            <div class="track-header judicial">
+                <div class="track-header-icon">⚖️</div>
+                <div class="track-header-title">Processo Judicial</div>
+            </div>
+        </div>
+
+        <div class="parallel-container">
+            <div class="parallel-row">
+                <div class="step-box dev">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Ideação</div>
+                        <div class="step-desc">Brainstorm do problema</div>
+                    </div>
+                </div>
+                <div class="connector">↔</div>
+                <div class="step-box judicial">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Leitura dos Autos</div>
+                        <div class="step-desc">Compreensão inicial do caso</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parallel-row">
+                <div class="step-box dev">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Planejamento</div>
+                        <div class="step-desc">Definição de tarefas</div>
+                    </div>
+                </div>
+                <div class="connector">↔</div>
+                <div class="step-box judicial">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Identificação das Questões</div>
+                        <div class="step-desc">Pontos a decidir</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parallel-row">
+                <div class="step-box dev">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Especificação</div>
+                        <div class="step-desc">Arquitetura e contratos</div>
+                    </div>
+                </div>
+                <div class="connector">↔</div>
+                <div class="step-box judicial">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Estruturação do Relatório</div>
+                        <div class="step-desc">Organização lógica</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parallel-row">
+                <div class="step-box dev">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Implementação</div>
+                        <div class="step-desc">Codificação</div>
+                    </div>
+                </div>
+                <div class="connector">↔</div>
+                <div class="step-box judicial">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Redação da Fundamentação</div>
+                        <div class="step-desc">Argumentação jurídica</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parallel-row">
+                <div class="step-box dev">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <div class="step-title">Teste</div>
+                        <div class="step-desc">Validação automatizada</div>
+                    </div>
+                </div>
+                <div class="connector">↔</div>
+                <div class="step-box judicial">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <div class="step-title">Verificação de Conformidade</div>
+                        <div class="step-desc">Checagem de precedentes</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parallel-row">
+                <div class="step-box dev">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <div class="step-title">Correção</div>
+                        <div class="step-desc">Debugging sistemático</div>
+                    </div>
+                </div>
+                <div class="connector">↔</div>
+                <div class="step-box judicial">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <div class="step-title">Revisão de Inconsistências</div>
+                        <div class="step-desc">Ajustes na argumentação</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parallel-row">
+                <div class="step-box dev">
+                    <div class="step-number">7</div>
+                    <div class="step-content">
+                        <div class="step-title">Aprimoramento</div>
+                        <div class="step-desc">Refinamento</div>
+                    </div>
+                </div>
+                <div class="connector">↔</div>
+                <div class="step-box judicial">
+                    <div class="step-number">7</div>
+                    <div class="step-content">
+                        <div class="step-title">Polimento Textual</div>
+                        <div class="step-desc">Clareza e concisão</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parallel-row">
+                <div class="step-box dev">
+                    <div class="step-number">8</div>
+                    <div class="step-content">
+                        <div class="step-title">Validação Final</div>
+                        <div class="step-desc">Verificação completa</div>
+                    </div>
+                </div>
+                <div class="connector">↔</div>
+                <div class="step-box judicial">
+                    <div class="step-number">8</div>
+                    <div class="step-content">
+                        <div class="step-title">Revisão Final</div>
+                        <div class="step-desc">Última checagem</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parallel-row">
+                <div class="step-box dev">
+                    <div class="step-number">9</div>
+                    <div class="step-content">
+                        <div class="step-title">Deploy/Manutenção</div>
+                        <div class="step-desc">Evolução contínua</div>
+                    </div>
+                </div>
+                <div class="connector">↔</div>
+                <div class="step-box judicial">
+                    <div class="step-number">9</div>
+                    <div class="step-content">
+                        <div class="step-title">Assinatura e Publicação</div>
+                        <div class="step-desc">Decisão final</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="insight-bar">
+            <div class="insight-text">💡 O processo que vocês já dominam é o mesmo que rege sistemas agênticos</div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

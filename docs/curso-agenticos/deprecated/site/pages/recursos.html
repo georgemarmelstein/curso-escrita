@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recursos e Materiais - Sistemas Agenticos</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">&#9670;</span>
+        <span>Sistemas Agenticos</span>
+      </a>
+      <nav class="nav-main">
+        <a href="../index.html">Inicio</a>
+        <a href="aula-0.html">Aulas</a>
+        <a href="glossario.html">Glossario</a>
+        <a href="recursos.html" class="active">Recursos</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Alternar tema">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Resources Hero -->
+  <section class="lesson-hero">
+    <div class="container">
+      <div class="lesson-hero-content">
+        <span class="lesson-badge">Material de Apoio</span>
+        <h1>Recursos e Materiais</h1>
+        <p class="lesson-subtitle">Ferramentas, documentacao e materiais complementares para o curso</p>
+        <div class="lesson-meta">
+          <span class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Downloads
+          </span>
+          <span class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            Links Uteis
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+      <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+        <nav class="lesson-nav">
+          <h3>Navegacao</h3>
+          <ul>
+            <li><a href="#kit-instalacao" class="lesson-nav-link">Kit de Instalacao</a></li>
+            <li><a href="#documentacao" class="lesson-nav-link">Documentacao Oficial</a></li>
+            <li><a href="#mcps-juridicos" class="lesson-nav-link">MCPs Juridicos</a></li>
+            <li><a href="#ferramentas" class="lesson-nav-link">Ferramentas</a></li>
+            <li><a href="#materiais-estudo" class="lesson-nav-link">Materiais de Estudo</a></li>
+            <li><a href="#templates" class="lesson-nav-link">Templates</a></li>
+            <li><a href="#comunidade" class="lesson-nav-link">Comunidade</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Content -->
+      <div class="lesson-content">
+
+        <!-- Kit de Instalacao -->
+        <section id="kit-instalacao" class="lesson-block">
+          <h2>Kit de Instalacao</h2>
+
+          <div class="callout callout-context">
+            <div class="callout-title">Requisitos Minimos</div>
+            <p>Antes de instalar o Claude Code, certifique-se de ter os requisitos minimos do sistema.</p>
+          </div>
+
+          <h3>Requisitos do Sistema</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Componente</th>
+                <th>Requisito</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Sistema Operacional</strong></td>
+                <td>Windows 10+, macOS 10.15+, Linux (Ubuntu 20.04+)</td>
+              </tr>
+              <tr>
+                <td><strong>Node.js</strong></td>
+                <td>Versao 18 ou superior</td>
+              </tr>
+              <tr>
+                <td><strong>npm</strong></td>
+                <td>Versao 9 ou superior</td>
+              </tr>
+              <tr>
+                <td><strong>Memoria RAM</strong></td>
+                <td>8 GB (recomendado 16 GB)</td>
+              </tr>
+              <tr>
+                <td><strong>Espaco em Disco</strong></td>
+                <td>500 MB para instalacao</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Instalacao Rapida</h3>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Metodo Recomendado</div>
+            <p>A forma mais simples de instalar o Claude Code e via npm global.</p>
+          </div>
+
+          <pre><code># Instalar Claude Code globalmente
+npm install -g @anthropic-ai/claude-code
+
+# Verificar instalacao
+claude --version
+
+# Autenticar (sera solicitada a chave API)
+claude auth
+
+# Testar
+claude "Ola, Claude!"</code></pre>
+
+          <h3>Instalacao Alternativa (Windows)</h3>
+
+          <pre><code># Via PowerShell (Administrador)
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+npm install -g @anthropic-ai/claude-code
+
+# Se houver erro de permissao
+npm config set prefix %USERPROFILE%\.npm-global
+$env:PATH += ";$env:USERPROFILE\.npm-global"</code></pre>
+
+          <h3>Verificacao da Instalacao</h3>
+
+          <pre><code># Verificar versao
+claude --version
+
+# Verificar autenticacao
+claude auth status
+
+# Verificar MCPs configurados
+claude /mcp
+
+# Executar diagnostico
+claude /doctor</code></pre>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Problemas Comuns</div>
+            <ul>
+              <li><strong>Erro de permissao:</strong> Execute como administrador ou configure prefix do npm</li>
+              <li><strong>Node nao encontrado:</strong> Reinstale o Node.js e reinicie o terminal</li>
+              <li><strong>Erro de autenticacao:</strong> Verifique a chave API em <code>~/.claude/settings.json</code></li>
+            </ul>
+          </div>
+
+          <h3>Kit Completo de Instalacao</h3>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Material Complementar</div>
+            <p>Disponibilizamos um kit completo com guias detalhados por sistema operacional, troubleshooting extenso, templates e exercicios praticos.</p>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Arquivo</th>
+                <th>Descricao</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>guia-windows.md</strong></td>
+                <td>Instalacao passo-a-passo no Windows (WinGet, npm)</td>
+              </tr>
+              <tr>
+                <td><strong>guia-macos.md</strong></td>
+                <td>Instalacao no macOS (Homebrew, curl)</td>
+              </tr>
+              <tr>
+                <td><strong>guia-linux.md</strong></td>
+                <td>Instalacao no Linux (Ubuntu, Debian, Fedora, Arch)</td>
+              </tr>
+              <tr>
+                <td><strong>troubleshooting.md</strong></td>
+                <td>Solucoes para 30+ problemas comuns</td>
+              </tr>
+              <tr>
+                <td><strong>checklist-verificacao.md</strong></td>
+                <td>Lista de verificacao pos-instalacao</td>
+              </tr>
+              <tr>
+                <td><strong>templates/</strong></td>
+                <td>CLAUDE.md e settings.json prontos para uso</td>
+              </tr>
+              <tr>
+                <td><strong>exercicios/</strong></td>
+                <td>3 exercicios praticos para validar instalacao</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>Acesse o kit na pasta <code>kit-instalacao/</code> do repositorio do curso.</p>
+        </section>
+
+        <!-- Documentacao Oficial -->
+        <section id="documentacao" class="lesson-block">
+          <h2>Documentacao Oficial</h2>
+
+          <h3>Anthropic</h3>
+
+          <div class="resource-grid">
+            <div class="resource-card">
+              <h4>Claude Code Documentation</h4>
+              <p>Documentacao oficial completa do Claude Code, incluindo instalacao, configuracao e uso avancado.</p>
+              <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" class="resource-link">Acessar Documentacao</a>
+            </div>
+
+            <div class="resource-card">
+              <h4>Building Effective Agents</h4>
+              <p>Guia de melhores praticas da Anthropic para construir agentes eficazes.</p>
+              <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" class="resource-link">Ler Artigo</a>
+            </div>
+
+            <div class="resource-card">
+              <h4>Claude Agent SDK</h4>
+              <p>SDK para construir agentes customizados com Claude em aplicacoes de producao.</p>
+              <a href="https://docs.anthropic.com/en/docs/claude-agent-sdk" target="_blank" class="resource-link">Ver SDK</a>
+            </div>
+
+            <div class="resource-card">
+              <h4>Model Context Protocol</h4>
+              <p>Especificacao do protocolo MCP para integracao de ferramentas.</p>
+              <a href="https://modelcontextprotocol.io" target="_blank" class="resource-link">Especificacao MCP</a>
+            </div>
+          </div>
+
+          <h3>Recursos de Aprendizado</h3>
+
+          <div class="resource-grid">
+            <div class="resource-card">
+              <h4>Prompt Engineering Guide</h4>
+              <p>Guia completo de engenharia de prompts da Anthropic.</p>
+              <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering" target="_blank" class="resource-link">Aprender Prompts</a>
+            </div>
+
+            <div class="resource-card">
+              <h4>Claude API Reference</h4>
+              <p>Referencia completa da API do Claude para desenvolvedores.</p>
+              <a href="https://docs.anthropic.com/en/api" target="_blank" class="resource-link">API Reference</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- MCPs Juridicos -->
+        <section id="mcps-juridicos" class="lesson-block">
+          <h2>MCPs Juridicos</h2>
+
+          <div class="callout callout-context">
+            <div class="callout-title">Sobre os MCPs do Curso</div>
+            <p>Estes MCPs foram desenvolvidos especificamente para o contexto juridico brasileiro, permitindo pesquisa de precedentes e jurisprudencia diretamente do Claude Code.</p>
+          </div>
+
+          <h3>BNP-API (Banco Nacional de Precedentes)</h3>
+
+          <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────┐
+│                      MCP: BNP-API                           │
+├─────────────────────────────────────────────────────────────┤
+│  FONTE: Banco Nacional de Precedentes (CNJ/PANGEA)          │
+│                                                             │
+│  COBERTURA:                                                 │
+│  ├── Repercussao Geral (STF)                                │
+│  ├── Recursos Repetitivos (STJ)                             │
+│  ├── Sumulas Vinculantes                                    │
+│  └── IRDRs e IACs                                           │
+│                                                             │
+│  TOOLS:                                                     │
+│  ├── buscar_precedentes    → Busca estruturada              │
+│  └── gerar_relatorio       → Relatorio formatado            │
+│                                                             │
+│  SINTAXE: +termo -exclusao "frase exata"                    │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+
+          <h4>Exemplos de Uso</h4>
+
+          <pre><code># Busca simples
+"Pesquise precedentes sobre BPC para idoso estrangeiro"
+
+# Busca estruturada
++aposentadoria +especial +EPI
+
+# Tema especifico
+"tema 1066"</code></pre>
+
+          <h3>CJF-Jurisprudencia (Conselho da Justica Federal)</h3>
+
+          <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────┐
+│                  MCP: CJF-JURISPRUDENCIA                    │
+├─────────────────────────────────────────────────────────────┤
+│  FONTE: Portal Unificado CJF                                │
+│                                                             │
+│  COBERTURA:                                                 │
+│  ├── STF e STJ                                              │
+│  ├── TRF1 a TRF6                                            │
+│  └── Inteiro teor disponivel                                │
+│                                                             │
+│  TOOLS:                                                     │
+│  ├── buscar_jurisprudencia_cjf → Busca avancada             │
+│  └── gerar_relatorio_cjf       → Relatorio completo         │
+│                                                             │
+│  SINTAXE: E, OU, NAO, ADJ[n], PROX[n], [CAMPO]              │
+│                                                             │
+│  CAMPOS: [EMEN], [REL], [TRIB], [ORGA], [DECI]              │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+
+          <h4>Exemplos de Uso</h4>
+
+          <pre><code># Busca com operadores
+(pensao E morte)[EMEN] E homoafetivo
+
+# Busca por relator
+Fux[REL] E previdenciario[INDE]
+
+# Busca por tribunal
+"auxilio-doenca"[EMEN] E TRF4[TRIB]</code></pre>
+
+          <h3>JULIA-TRF5 (Jurisprudencia Unificada)</h3>
+
+          <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────┐
+│                     MCP: JULIA-TRF5                         │
+├─────────────────────────────────────────────────────────────┤
+│  FONTE: Sistema JULIA do TRF5                               │
+│                                                             │
+│  COBERTURA:                                                 │
+│  ├── 2o Grau: TRF5 (acordaos)                               │
+│  └── 1o Grau: JFCE, JFRN, JFPB, JFPE, JFAL, JFSE            │
+│                                                             │
+│  TOOLS:                                                     │
+│  ├── buscar_julia              → Busca geral                │
+│  ├── relatorio_segundo_grau    → Acordaos TRF5              │
+│  └── relatorio_primeiro_grau   → Sentencas por SJ           │
+│                                                             │
+│  SINTAXE: e, ou, nao, prox, adj, $ (minusculo!)             │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+
+          <h4>Exemplos de Uso</h4>
+
+          <pre><code># Busca basica (operadores minusculos!)
+pensao e morte e homoafetivo
+
+# Com wildcard
+aposentad$ e especial e eletricista
+
+# Filtro por turma
+termo="bpc e estrangeiro" orgao_julgador="1a TURMA"</code></pre>
+
+          <h3>Instalacao dos MCPs</h3>
+
+          <pre><code># 1. Clonar repositorio dos MCPs
+git clone https://github.com/seu-repo/mcps-juridicos.git
+
+# 2. Instalar dependencias
+cd mcps-juridicos
+pip install -r requirements.txt
+
+# 3. Configurar em ~/.claude/settings.json
+{
+  "mcpServers": {
+    "bnp-api": {
+      "command": "python",
+      "args": ["caminho/para/bnp_server.py"]
+    },
+    "cjf-jurisprudencia": {
+      "command": "python",
+      "args": ["caminho/para/cjf_server.py"]
+    },
+    "julia-trf5": {
+      "command": "python",
+      "args": ["caminho/para/julia_server.py"]
+    }
+  }
+}
+
+# 4. Reiniciar Claude Code e verificar
+claude /mcp</code></pre>
+        </section>
+
+        <!-- Ferramentas -->
+        <section id="ferramentas" class="lesson-block">
+          <h2>Ferramentas Recomendadas</h2>
+
+          <h3>Editores de Codigo</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Ferramenta</th>
+                <th>Descricao</th>
+                <th>Integracao</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>VS Code</strong></td>
+                <td>Editor gratuito da Microsoft, extensivel</td>
+                <td>Extensao Claude disponivel</td>
+              </tr>
+              <tr>
+                <td><strong>Cursor</strong></td>
+                <td>Fork do VS Code com IA integrada</td>
+                <td>Suporte nativo a Claude</td>
+              </tr>
+              <tr>
+                <td><strong>Zed</strong></td>
+                <td>Editor rapido escrito em Rust</td>
+                <td>Plugin Claude Code</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Terminais</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Sistema</th>
+                <th>Terminal Recomendado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Windows</strong></td>
+                <td>Windows Terminal, PowerShell 7</td>
+              </tr>
+              <tr>
+                <td><strong>macOS</strong></td>
+                <td>iTerm2, Terminal nativo</td>
+              </tr>
+              <tr>
+                <td><strong>Linux</strong></td>
+                <td>Alacritty, Kitty, Terminal nativo</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Utilidades</h3>
+
+          <div class="resource-grid">
+            <div class="resource-card">
+              <h4>Git</h4>
+              <p>Controle de versao essencial para projetos de codigo.</p>
+              <a href="https://git-scm.com" target="_blank" class="resource-link">Download</a>
+            </div>
+
+            <div class="resource-card">
+              <h4>Node.js</h4>
+              <p>Runtime JavaScript necessario para o Claude Code.</p>
+              <a href="https://nodejs.org" target="_blank" class="resource-link">Download</a>
+            </div>
+
+            <div class="resource-card">
+              <h4>Python 3.10+</h4>
+              <p>Necessario para MCPs em Python (FastMCP).</p>
+              <a href="https://python.org" target="_blank" class="resource-link">Download</a>
+            </div>
+
+            <div class="resource-card">
+              <h4>jq</h4>
+              <p>Processador JSON para linha de comando.</p>
+              <a href="https://jqlang.github.io/jq/" target="_blank" class="resource-link">Download</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Materiais de Estudo -->
+        <section id="materiais-estudo" class="lesson-block">
+          <h2>Materiais de Estudo</h2>
+
+          <div class="callout callout-context">
+            <div class="callout-title">Glossario de Precisao Terminologica</div>
+            <p>Compilamos um <strong>glossario de precisao</strong> com definicoes EXATAS dos termos usados pelos especialistas da Anthropic, HumanLayer, Pydantic e Prefect. Cada termo inclui citacao original em ingles, exemplos de uso correto e incorreto, e confusoes comuns a evitar.</p>
+            <p><a href="../docs/glossario-precisao-terminologica.md">Acessar Glossario de Precisao</a></p>
+          </div>
+
+          <h3>Videos e Palestras</h3>
+
+          <div class="callout callout-insight">
+            <div class="callout-title">AI Engineer Summit</div>
+            <p>As palestras do AI Engineer Summit 2024-2025 sao a principal fonte de insights sobre Claude Code e agentes.</p>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Palestrante</th>
+                <th>Empresa</th>
+                <th>Topico</th>
+                <th>Insights-Chave</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Barry Zhang</strong></td>
+                <td>Anthropic</td>
+                <td>How We Build Effective Agents</td>
+                <td>"Models using tools in a loop", Think like your agents</td>
+              </tr>
+              <tr>
+                <td><strong>Dex Horthy</strong></td>
+                <td>HumanLayer</td>
+                <td>12 Factor Agents</td>
+                <td>"Context engineering", Micro-agents, Own your control flow</td>
+              </tr>
+              <tr>
+                <td><strong>Jared Zoneraich</strong></td>
+                <td>PromptLayer</td>
+                <td>How Claude Code Works</td>
+                <td>"Trust the model", "Bash is all you need", Sub-agent forking</td>
+              </tr>
+              <tr>
+                <td><strong>Boris Cherny</strong></td>
+                <td>Anthropic</td>
+                <td>Claude Code Evolution</td>
+                <td>"The more general model wins", Plan Mode, Bitter Lesson</td>
+              </tr>
+              <tr>
+                <td><strong>Jeremiah Lowin</strong></td>
+                <td>Prefect</td>
+                <td>Your MCP Server is Bad</td>
+                <td>"UI for AI", 50 tools max, Outcomes not operations</td>
+              </tr>
+              <tr>
+                <td><strong>Thariq Shihipar</strong></td>
+                <td>Anthropic</td>
+                <td>Agent SDK Workshop</td>
+                <td>Skills, Hooks, State in files, "Never do compact"</td>
+              </tr>
+              <tr>
+                <td><strong>Samuel Colvin</strong></td>
+                <td>Pydantic</td>
+                <td>MCP is All You Need</td>
+                <td>Sampling (callback to LLM), MCP architecture</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Artigos Essenciais</h3>
+
+          <ul>
+            <li><strong>Building Effective Agents (Anthropic)</strong> - Documento fundamental sobre arquitetura de agentes</li>
+            <li><strong>The Bitter Lesson (Rich Sutton)</strong> - Contexto historico sobre scaling em IA</li>
+            <li><strong>Prompt Engineering Guide</strong> - Tecnicas avancadas de prompting</li>
+          </ul>
+
+          <h3>Conceitos Fundamentais</h3>
+
+          <pre class="diagram"><code>┌────────────────────────────────────────────────────────────────────┐
+│                    TRILHA DE APRENDIZADO                           │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│  FUNDAMENTOS                                                       │
+│  ├── O que e um LLM                                                │
+│  ├── Prompting basico                                              │
+│  └── Chat vs Agente                                                │
+│                                                                    │
+│  CLAUDE CODE                                                       │
+│  ├── Instalacao e configuracao                                     │
+│  ├── CLAUDE.md e contexto                                          │
+│  ├── Commands e Skills                                             │
+│  └── Task Tool e paralelizacao                                     │
+│                                                                    │
+│  ARQUITETURA                                                       │
+│  ├── Workflow vs Agent patterns                                    │
+│  ├── Orchestration (pipeline, router, fan-out)                     │
+│  └── Gate functions e verificacao                                  │
+│                                                                    │
+│  AVANCADO                                                          │
+│  ├── MCP (criar e consumir)                                        │
+│  ├── Extended Thinking                                             │
+│  └── Agent SDK (producao)                                          │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘</code></pre>
+        </section>
+
+        <!-- Templates -->
+        <section id="templates" class="lesson-block">
+          <h2>Templates</h2>
+
+          <h3>Template de CLAUDE.md</h3>
+
+          <pre><code># CLAUDE.md - [Nome do Projeto]
+
+## Proposito
+[Descricao breve do projeto e seu objetivo]
+
+## Convencoes
+- Idioma da documentacao: Portugues brasileiro
+- Idioma do codigo: Ingles
+- Formatacao: [suas regras]
+
+## Estrutura do Projeto
+```
+projeto/
+├── src/          # Codigo-fonte
+├── docs/         # Documentacao
+├── tests/        # Testes
+└── .claude/      # Configuracoes Claude
+```
+
+## Fluxos de Trabalho
+[Descreva os principais fluxos]
+
+## Glossario
+[Termos especificos do dominio]</code></pre>
+
+          <h3>Template de Skill</h3>
+
+          <pre><code># [Nome da Skill]
+
+## Proposito
+[O que esta skill faz]
+
+## Quando Usar
+- [Cenario 1]
+- [Cenario 2]
+
+## Metodologia
+[Passo a passo da abordagem]
+
+## Formato de Saida
+[Como deve ser o output]
+
+## Restricoes
+- [Restricao 1]
+- [Restricao 2]</code></pre>
+
+          <h3>Template de Command</h3>
+
+          <pre><code>---
+description: [Descricao curta para autocompletar]
+model: sonnet
+---
+
+# Instrucoes para o Command
+
+## Contexto
+[Explicacao do contexto]
+
+## Tarefa
+[O que deve ser feito]
+
+## Entrada
+$ARGUMENTS
+
+## Formato de Saida
+[Como formatar o resultado]</code></pre>
+        </section>
+
+        <!-- Comunidade -->
+        <section id="comunidade" class="lesson-block">
+          <h2>Comunidade</h2>
+
+          <h3>Canais Oficiais</h3>
+
+          <div class="resource-grid">
+            <div class="resource-card">
+              <h4>Anthropic Discord</h4>
+              <p>Comunidade oficial para discussoes sobre Claude e produtos Anthropic.</p>
+              <a href="https://discord.gg/anthropic" target="_blank" class="resource-link">Entrar no Discord</a>
+            </div>
+
+            <div class="resource-card">
+              <h4>GitHub Anthropic</h4>
+              <p>Repositorios oficiais, issues e contribuicoes.</p>
+              <a href="https://github.com/anthropics" target="_blank" class="resource-link">Ver GitHub</a>
+            </div>
+          </div>
+
+          <h3>Boas Praticas da Comunidade</h3>
+
+          <ul>
+            <li><strong>Compartilhe aprendizados:</strong> Documente o que funciona (e o que nao funciona)</li>
+            <li><strong>Contribua com MCPs:</strong> A comunidade se beneficia de novas integracoes</li>
+            <li><strong>Reporte bugs:</strong> Issues bem documentadas ajudam a melhorar o produto</li>
+            <li><strong>Respeite limites:</strong> Nao compartilhe prompts proprietarios ou dados sensiveis</li>
+          </ul>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Dica para Juristas</div>
+            <p>Considere criar um grupo de discussao especifico para uso de IA no Judiciario. A troca de experiencias entre colegas acelera o aprendizado e identifica casos de uso relevantes.</p>
+          </div>
+        </section>
+
+        <!-- CTA Final -->
+        <section class="lesson-block">
+          <h2>Proximo Passo</h2>
+
+          <div class="callout callout-context">
+            <div class="callout-title">Pronto para Comecar?</div>
+            <p>Agora que voce tem todos os recursos, comece sua jornada pelo curso.</p>
+          </div>
+
+          <div class="cta-section">
+            <a href="aula-0.html" class="btn btn-primary">Comecar pela Aula 0</a>
+            <a href="glossario.html" class="btn btn-secondary">Consultar Glossario</a>
+          </div>
+        </section>
+
+        <!-- Navigation -->
+        <nav class="lesson-nav-footer">
+          <a href="glossario.html" class="nav-prev">
+            <span class="nav-label">Anterior</span>
+            <span class="nav-title">Glossario e Taxonomia</span>
+          </a>
+          <a href="../index.html" class="nav-next">
+            <span class="nav-label">Voltar ao</span>
+            <span class="nav-title">Inicio do Curso</span>
+          </a>
+        </nav>
+
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Sistemas Agenticos</h4>
+          <p>Curso pratico de Claude Code para profissionais do Direito</p>
+        </div>
+        <div class="footer-section">
+          <h4>Navegacao</h4>
+          <ul>
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="aula-0.html">Aulas</a></li>
+            <li><a href="glossario.html">Glossario</a></li>
+            <li><a href="recursos.html">Recursos</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Filosofia</h4>
+          <p>Regencia Cognitiva: O humano dirige, a IA executa</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Janeiro 2026 - Material Educacional</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 04 - Tools: O Catálogo de Capacidades</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #BE9C6D;
+            --cream: #FFF4E4;
+            --dark: #0a0a12;
+            --green: #4ade80;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+            --amber: #fbbf24;
+            --cyan: #22d3ee;
+            --pink: #f472b6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+        }
+
+        .bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 50% 50%, rgba(167, 139, 250, 0.04) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 3vh 5vw;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 2vw;
+            margin-bottom: 3vh;
+        }
+
+        .header-icon {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+        }
+
+        .header-text h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+            font-weight: 600;
+            color: var(--purple);
+        }
+
+        .header-text p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 0.5vh;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 2vw;
+            padding: 2vh 0;
+        }
+
+        .tool-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            border-radius: 16px;
+            padding: 2.5vh 1.5vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--tool-color, var(--purple));
+            opacity: 0.8;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--tool-color, var(--purple));
+            box-shadow: 0 10px 30px rgba(167, 139, 250, 0.2);
+        }
+
+        .tool-card.active {
+            border-color: var(--tool-color, var(--purple));
+            background: rgba(167, 139, 250, 0.1);
+        }
+
+        .tool-icon {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            margin-bottom: 1.5vh;
+        }
+
+        .tool-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1rem, 1.4vw, 1.2rem);
+            font-weight: 600;
+            color: var(--tool-color, var(--purple));
+            margin-bottom: 0.8vh;
+        }
+
+        .tool-label {
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 1.5vh;
+        }
+
+        .tool-desc {
+            font-size: clamp(0.75rem, 1vw, 0.88rem);
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+        }
+
+        /* Tool colors */
+        .tool-read { --tool-color: #60a5fa; }
+        .tool-write { --tool-color: #4ade80; }
+        .tool-grep { --tool-color: #fbbf24; }
+        .tool-web { --tool-color: #22d3ee; }
+        .tool-bash { --tool-color: #ef4444; }
+        .tool-mcp { --tool-color: #a78bfa; }
+        .tool-notebook { --tool-color: #f472b6; }
+        .tool-ask { --tool-color: #BE9C6D; }
+
+        /* Footer message */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2vw;
+            padding-top: 2vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-message {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1rem, 1.6vw, 1.3rem);
+            color: rgba(255, 244, 228, 0.7);
+        }
+
+        .footer-message strong {
+            color: var(--purple);
+        }
+
+        .footer-badge {
+            background: rgba(167, 139, 250, 0.15);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            padding: 0.8vh 1.5vw;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: var(--purple);
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 2vh 3vw; }
+        body.embed-mode .tools-grid { gap: 1.5vw; }
+        body.embed-mode .tool-card { padding: 2vh 1vw; }
+        body.embed-mode .tool-icon { font-size: clamp(2rem, 3vw, 2.5rem); }
+        body.embed-mode .tool-name { font-size: clamp(0.85rem, 1.2vw, 1rem); }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="container">
+        <div class="header">
+            <span class="header-icon">🔧</span>
+            <div class="header-text">
+                <h1>Tools - O Catálogo de Capacidades</h1>
+                <p>O que o agente SABE fazer</p>
+            </div>
+        </div>
+
+        <div class="tools-grid">
+            <div class="tool-card tool-read">
+                <span class="tool-icon">📖</span>
+                <div class="tool-name">Read</div>
+                <div class="tool-label">Ler arquivos</div>
+                <div class="tool-desc">Acessa conteúdo de qualquer arquivo do projeto</div>
+            </div>
+
+            <div class="tool-card tool-write">
+                <span class="tool-icon">✏️</span>
+                <div class="tool-name">Write</div>
+                <div class="tool-label">Escrever arquivos</div>
+                <div class="tool-desc">Cria e modifica arquivos no sistema</div>
+            </div>
+
+            <div class="tool-card tool-grep">
+                <span class="tool-icon">🔍</span>
+                <div class="tool-name">Grep</div>
+                <div class="tool-label">Buscar conteúdo</div>
+                <div class="tool-desc">Encontra padrões em múltiplos arquivos</div>
+            </div>
+
+            <div class="tool-card tool-web">
+                <span class="tool-icon">🌐</span>
+                <div class="tool-name">WebSearch</div>
+                <div class="tool-label">Pesquisar na web</div>
+                <div class="tool-desc">Busca informações atualizadas online</div>
+            </div>
+
+            <div class="tool-card tool-bash">
+                <span class="tool-icon">💻</span>
+                <div class="tool-name">Bash</div>
+                <div class="tool-label">Executar comandos</div>
+                <div class="tool-desc">Roda comandos no terminal do sistema</div>
+            </div>
+
+            <div class="tool-card tool-mcp">
+                <span class="tool-icon">🔌</span>
+                <div class="tool-name">MCP</div>
+                <div class="tool-label">Conexões externas</div>
+                <div class="tool-desc">Conecta a APIs e serviços externos</div>
+            </div>
+
+            <div class="tool-card tool-notebook">
+                <span class="tool-icon">📊</span>
+                <div class="tool-name">Notebook</div>
+                <div class="tool-label">Jupyter notebooks</div>
+                <div class="tool-desc">Executa código em células interativas</div>
+            </div>
+
+            <div class="tool-card tool-ask">
+                <span class="tool-icon">❓</span>
+                <div class="tool-name">Ask</div>
+                <div class="tool-label">Perguntar ao usuário</div>
+                <div class="tool-desc">Solicita informações quando necessário</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <span class="footer-message"><strong>Cada tool</strong> = uma capacidade específica</span>
+            <span class="footer-badge">20+ tools disponíveis</span>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Add hover animation effect
+        document.querySelectorAll('.tool-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('active');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

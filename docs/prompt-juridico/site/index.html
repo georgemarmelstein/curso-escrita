@@ -1,0 +1,3588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P.O.E.M.A. — Framework de Engenharia de Prompts Jurídicos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f172a;
+            --ink-light: #334155;
+            --ink-muted: #64748b;
+            --paper: #faf9f7;
+            --paper-warm: #f5f3ef;
+            --accent: #b45309;
+            --accent-light: #fbbf24;
+            --accent-glow: rgba(180, 83, 9, 0.15);
+            --success: #059669;
+            --border: #e2e0dc;
+            --border-dark: #d4d0c8;
+            --shadow-soft: 0 4px 24px rgba(15, 23, 42, 0.06);
+            --shadow-medium: 0 8px 32px rgba(15, 23, 42, 0.1);
+            --font-display: 'Cormorant Garamond', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --nav-width: 280px;
+            --header-height: 72px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: calc(var(--header-height) + 32px);
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.7;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: rgba(250, 249, 247, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent) 0%, #92400e 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 20px;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            color: var(--ink-muted);
+            margin-left: 16px;
+            padding-left: 16px;
+            border-left: 1px solid var(--border);
+        }
+
+        .header-progress {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-bar {
+            width: 180px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: var(--ink-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: var(--nav-width);
+            height: calc(100vh - var(--header-height));
+            background: var(--paper-warm);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 32px 0;
+            z-index: 50;
+        }
+
+        .nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .nav::-webkit-scrollbar-thumb {
+            background: var(--border-dark);
+            border-radius: 3px;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ink-muted);
+            padding: 0 24px;
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 24px;
+            color: var(--ink-light);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .nav-link:hover {
+            background: rgba(180, 83, 9, 0.06);
+            color: var(--ink);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+            background: var(--accent-glow);
+        }
+
+        .nav-link.active::before {
+            opacity: 1;
+        }
+
+        .nav-step {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink-muted);
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .nav-link.active .nav-step {
+            background: var(--accent);
+            color: white;
+        }
+
+        .nav-link.completed .nav-step {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-link.completed .nav-step::after {
+            content: '✓';
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--nav-width);
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 64px 48px 120px;
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(24px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.15s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.25s; }
+        .section:nth-child(5) { animation-delay: 0.3s; }
+
+        .section-header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .section-step-number {
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 42px;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--ink-light);
+            max-width: 600px;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h3 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--ink);
+            margin: 40px 0 16px;
+            letter-spacing: -0.3px;
+        }
+
+        h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            margin: 24px 0 12px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--ink-light);
+        }
+
+        strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        /* ===== FRAMEWORK DIAGRAM ===== */
+        .framework-diagram {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .framework-diagram::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .framework-letters {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .framework-letter {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent) 0%, #92400e 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 16px rgba(180, 83, 9, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .framework-letter:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(180, 83, 9, 0.5);
+        }
+
+        .framework-items {
+            display: grid;
+            gap: 12px;
+            position: relative;
+        }
+
+        .framework-item {
+            display: grid;
+            grid-template-columns: 48px 1fr 1fr;
+            gap: 16px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s;
+        }
+
+        .framework-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .framework-item-letter {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+
+        .framework-item-name {
+            font-weight: 600;
+            color: white;
+            font-size: 15px;
+        }
+
+        .framework-item-desc {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        /* ===== TABS ===== */
+        .tabs {
+            margin: 32px 0;
+        }
+
+        .tabs-header {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -1px;
+            height: 2px;
+            background: var(--accent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tab-button:hover {
+            color: var(--ink);
+        }
+
+        .tab-button.active {
+            color: var(--accent);
+        }
+
+        .tab-button.active::after {
+            opacity: 1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== CODE BLOCKS ===== */
+        .code-block {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .code-lang {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .code-copy {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .code-copy:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .code-copy.copied {
+            background: var(--success);
+            color: white;
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        pre code {
+            font-family: inherit;
+        }
+
+        /* Syntax highlighting */
+        .token-tag { color: #f472b6; }
+        .token-attr { color: #7dd3fc; }
+        .token-string { color: #86efac; }
+        .token-comment { color: #64748b; font-style: italic; }
+        .token-keyword { color: #c4b5fd; }
+        .token-placeholder { color: #fbbf24; background: rgba(251, 191, 36, 0.15); padding: 2px 4px; border-radius: 3px; }
+
+        /* Inline code */
+        code:not(pre code) {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            background: var(--paper-warm);
+            padding: 3px 6px;
+            border-radius: 4px;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+
+        /* ===== TABLES ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 24px 0;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            text-align: left;
+            padding: 14px 16px;
+            background: var(--paper-warm);
+            font-weight: 600;
+            color: var(--ink);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--ink-light);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(180, 83, 9, 0.03);
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 12px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .card-mini {
+            background: var(--paper-warm);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .card-mini:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .card-mini-title {
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .card-mini-desc {
+            font-size: 13px;
+            color: var(--ink-muted);
+        }
+
+        /* ===== CHECKLIST ===== */
+        .checklist {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .checklist-title {
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checklist-title::before {
+            content: '✓';
+            width: 24px;
+            height: 24px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-item:hover {
+            background: rgba(180, 83, 9, 0.03);
+            margin: 0 -24px;
+            padding-left: 24px;
+            padding-right: 24px;
+        }
+
+        .checklist-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-dark);
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-top: 2px;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .checklist-item.checked .checklist-checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        .checklist-item.checked .checklist-text {
+            color: var(--ink-muted);
+            text-decoration: line-through;
+        }
+
+        .checklist-text {
+            font-size: 14px;
+            color: var(--ink-light);
+        }
+
+        /* ===== CALLOUTS ===== */
+        .callout {
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin: 24px 0;
+            display: flex;
+            gap: 16px;
+        }
+
+        .callout-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .callout-content {
+            flex: 1;
+        }
+
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .callout-text {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .callout-warning {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+        }
+
+        .callout-warning .callout-title { color: #92400e; }
+        .callout-warning .callout-text { color: #a16207; }
+
+        .callout-tip {
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+
+        .callout-tip .callout-title { color: #166534; }
+        .callout-tip .callout-text { color: #15803d; }
+
+        .callout-info {
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+        }
+
+        .callout-info .callout-title { color: #0369a1; }
+        .callout-info .callout-text { color: #0284c7; }
+
+        /* ===== ACCORDION ===== */
+        .accordion {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 24px 0;
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 18px 24px;
+            background: white;
+            border: none;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ink);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .accordion-header:hover {
+            background: var(--paper-warm);
+        }
+
+        .accordion-header::after {
+            content: '+';
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--ink-muted);
+            transition: transform 0.3s;
+        }
+
+        .accordion-item.active .accordion-header::after {
+            transform: rotate(45deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-content-inner {
+            padding: 0 24px 24px;
+        }
+
+        /* ===== LISTS ===== */
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--ink-light);
+        }
+
+        li::marker {
+            color: var(--accent);
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 100px;
+        }
+
+        .badge-rigid {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-flexible {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* ===== EXAMPLE BLOCKS ===== */
+        .example {
+            margin: 24px 0;
+            border-left: 3px solid var(--accent);
+            padding-left: 20px;
+        }
+
+        .example-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        /* ===== MOBILE TOGGLE ===== */
+        .nav-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            position: relative;
+            margin-right: 16px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--ink);
+            position: absolute;
+            left: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-toggle span:nth-child(1) { top: 12px; }
+        .nav-toggle span:nth-child(2) { top: 19px; }
+        .nav-toggle span:nth-child(3) { top: 26px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            :root {
+                --nav-width: 260px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                width: 280px;
+                background: var(--paper);
+                box-shadow: var(--shadow-medium);
+            }
+
+            .nav.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .content {
+                padding: 32px 24px 80px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .header-subtitle,
+            .header-progress {
+                display: none;
+            }
+
+            .framework-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== SCROLL INDICATOR ===== */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-medium);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .scroll-indicator.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-indicator:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(180, 83, 9, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <button class="nav-toggle" onclick="toggleNav()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="header-brand">
+            <div class="header-logo">P</div>
+            <span class="header-title">P.O.E.M.A.</span>
+        </div>
+        <span class="header-subtitle">Framework de Engenharia de Prompts Jurídicos</span>
+        <div class="header-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="progress-text" id="progressText">0%</span>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-section">
+            <div class="nav-section-title">Introdução</div>
+            <a href="#introducao" class="nav-link active">
+                <span class="nav-step">1</span>
+                O que é P.O.E.M.A.?
+            </a>
+            <a href="#tipos" class="nav-link">
+                <span class="nav-step">2</span>
+                Tipos de Prompts
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Os 5 Passos</div>
+            <a href="#persona" class="nav-link">
+                <span class="nav-step">P</span>
+                Persona
+            </a>
+            <a href="#objetivo" class="nav-link">
+                <span class="nav-step">O</span>
+                Objetivo
+            </a>
+            <a href="#estilo" class="nav-link">
+                <span class="nav-step">E</span>
+                Estilo
+            </a>
+            <a href="#modelo" class="nav-link">
+                <span class="nav-step">M</span>
+                Modelo
+            </a>
+            <a href="#adicionais" class="nav-link">
+                <span class="nav-step">A</span>
+                Adicionais
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Avançado</div>
+            <a href="#metaprompts" class="nav-link">
+                <span class="nav-step">+</span>
+                Metaprompts
+            </a>
+            <a href="#yaml" class="nav-link">
+                <span class="nav-step">+</span>
+                YAML Frontmatter
+            </a>
+            <a href="#checklist-final" class="nav-link">
+                <span class="nav-step">✓</span>
+                Checklist Final
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Formatação</div>
+            <a href="#markdown" class="nav-link">
+                <span class="nav-step">#</span>
+                Markdown
+            </a>
+            <a href="#delimitadores" class="nav-link">
+                <span class="nav-step">&lt;&gt;</span>
+                Delimitadores XML
+            </a>
+            <a href="#atencao" class="nav-link">
+                <span class="nav-step">!</span>
+                Chamar Atenção
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Extras</div>
+            <a href="#superdicas" class="nav-link">
+                <span class="nav-step">★</span>
+                Super Dicas
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="content">
+            <!-- SECTION: Introdução -->
+            <section class="section" id="introducao">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">1</span>
+                        Introdução
+                    </div>
+                    <h1 class="section-title">O que é o P.O.E.M.A.?</h1>
+                    <p class="section-subtitle">Um framework para construção de prompts estruturados, desenvolvido com base nas melhores práticas de engenharia de prompts da Anthropic.</p>
+                </div>
+
+                <p>O <strong>P.O.E.M.A.</strong> é um acrônimo que representa os cinco componentes obrigatórios de um prompt bem estruturado. Cada componente tem uma função específica e, juntos, garantem que o modelo de linguagem entenda exatamente o que você precisa.</p>
+
+                <div class="framework-diagram">
+                    <div class="framework-letters">
+                        <div class="framework-letter">P</div>
+                        <div class="framework-letter">O</div>
+                        <div class="framework-letter">E</div>
+                        <div class="framework-letter">M</div>
+                        <div class="framework-letter">A</div>
+                    </div>
+                    <div class="framework-items">
+                        <div class="framework-item">
+                            <span class="framework-item-letter">P</span>
+                            <span class="framework-item-name">Persona</span>
+                            <span class="framework-item-desc">Quem o modelo deve ser</span>
+                        </div>
+                        <div class="framework-item">
+                            <span class="framework-item-letter">O</span>
+                            <span class="framework-item-name">Objetivo</span>
+                            <span class="framework-item-desc">O que deve fazer + como processar</span>
+                        </div>
+                        <div class="framework-item">
+                            <span class="framework-item-letter">E</span>
+                            <span class="framework-item-name">Estilo</span>
+                            <span class="framework-item-desc">Como escrever + como se comportar</span>
+                        </div>
+                        <div class="framework-item">
+                            <span class="framework-item-letter">M</span>
+                            <span class="framework-item-name">Modelo</span>
+                            <span class="framework-item-desc">Metodologia + formato de saída</span>
+                        </div>
+                        <div class="framework-item">
+                            <span class="framework-item-letter">A</span>
+                            <span class="framework-item-name">Adicionais</span>
+                            <span class="framework-item-desc">Restrições + critérios de qualidade</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Estrutura XML</h3>
+                <p>Cada componente é delimitado por tags XML, criando uma estrutura clara e organizada:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">XML</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;persona&gt;</span>
+<span class="token-comment">[conteúdo]</span>
+<span class="token-tag">&lt;/persona&gt;</span>
+
+<span class="token-tag">&lt;objetivo&gt;</span>
+<span class="token-comment">[conteúdo]</span>
+<span class="token-tag">&lt;/objetivo&gt;</span>
+
+<span class="token-tag">&lt;estilo&gt;</span>
+<span class="token-comment">[conteúdo]</span>
+<span class="token-tag">&lt;/estilo&gt;</span>
+
+<span class="token-tag">&lt;modelo&gt;</span>
+<span class="token-comment">[conteúdo]</span>
+  <span class="token-tag">&lt;formato_saida&gt;</span>
+  <span class="token-comment">[template estruturado]</span>
+  <span class="token-tag">&lt;/formato_saida&gt;</span>
+<span class="token-tag">&lt;/modelo&gt;</span>
+
+<span class="token-tag">&lt;adicionais&gt;</span>
+<span class="token-comment">[conteúdo]</span>
+<span class="token-tag">&lt;/adicionais&gt;</span></code></pre>
+                </div>
+            </section>
+
+            <!-- SECTION: Tipos de Prompts -->
+            <section class="section" id="tipos">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">2</span>
+                        Fundamentos
+                    </div>
+                    <h1 class="section-title">Os 4 Tipos de Prompts</h1>
+                    <p class="section-subtitle">Antes de construir um prompt, identifique seu tipo. Cada tipo tem características próprias que afetam como você deve estruturá-lo.</p>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Rigidez</th>
+                                <th>Foco</th>
+                                <th>Autonomia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Análise</strong></td>
+                                <td><span class="badge badge-rigid">Rígido</span></td>
+                                <td>Extração, interpretação, compreensão</td>
+                                <td>Baixa</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Escrita</strong></td>
+                                <td><span class="badge badge-rigid">Rígido</span></td>
+                                <td>Produção de documentos com formato específico</td>
+                                <td>Baixa</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Criação</strong></td>
+                                <td><span class="badge badge-flexible">Flexível</span></td>
+                                <td>Conteúdo original, liberdade criativa</td>
+                                <td>Alta</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pesquisa</strong></td>
+                                <td><span class="badge badge-flexible">Flexível</span></td>
+                                <td>Busca e síntese de múltiplas fontes</td>
+                                <td>Alta</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tabs">
+                    <div class="tabs-header">
+                        <button class="tab-button active" onclick="switchTab(event, 'tab-rigidos')">Prompts Rígidos</button>
+                        <button class="tab-button" onclick="switchTab(event, 'tab-flexiveis')">Prompts Flexíveis</button>
+                    </div>
+                    <div class="tab-content active" id="tab-rigidos">
+                        <div class="card">
+                            <div class="card-title">Análise e Escrita</div>
+                            <ul>
+                                <li>Formato de saída fixo (template)</li>
+                                <li>Metodologia definida pelo prompt</li>
+                                <li>Guardrails fortes contra alucinação</li>
+                                <li>Fidelidade absoluta ao documento</li>
+                            </ul>
+                            <div class="callout callout-warning">
+                                <span class="callout-icon">⚠️</span>
+                                <div class="callout-content">
+                                    <div class="callout-title">Atenção</div>
+                                    <p class="callout-text">Prompts rígidos exigem guardrails contra alucinação. O modelo deve usar APENAS dados dos documentos fornecidos.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="tab-flexiveis">
+                        <div class="card">
+                            <div class="card-title">Criação e Pesquisa</div>
+                            <ul>
+                                <li>Autonomia metodológica: <em>"Você tem autonomia para definir sua própria metodologia..."</em></li>
+                                <li>Linguagem permissiva: <em>"Sinta-se livre para..."</em>, <em>"Use seu senso crítico..."</em></li>
+                                <li>Formato de saída adaptável ao contexto</li>
+                            </ul>
+                            <div class="callout callout-tip">
+                                <span class="callout-icon">💡</span>
+                                <div class="callout-content">
+                                    <div class="callout-title">Dica</div>
+                                    <p class="callout-text">Prompts flexíveis incentivam o modelo a trazer insights e fazer conexões interdisciplinares.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Persona -->
+            <section class="section" id="persona">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">P</span>
+                        Passo 1
+                    </div>
+                    <h1 class="section-title">Persona</h1>
+                    <p class="section-subtitle">Define o papel que o modelo deve assumir. Funciona como uma ativação da rede neural para que o modelo circule no vocabulário e terminologia adequados.</p>
+                </div>
+
+                <div class="callout callout-info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Não é o componente mais importante</div>
+                        <p class="callout-text">Não gaste muito espaço aqui. Use "expertise" em vez de "habilidades" (evita confusão com skills do sistema). Seja direto — uma ou duas frases bastam.</p>
+                    </div>
+                </div>
+
+                <h3>Perguntas Diretrizes</h3>
+                <ol>
+                    <li><strong>Qual papel profissional</strong> o modelo deve assumir?</li>
+                    <li><strong>Quais áreas de especialização</strong> são relevantes para a tarefa?</li>
+                    <li><strong>Quais competências específicas</strong> são necessárias?</li>
+                </ol>
+
+                <h3>Template Base</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">XML</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;persona&gt;</span>
+Você é um <span class="token-placeholder">[PAPEL]</span> DE ALTO NÍVEL especializado em
+<span class="token-placeholder">[ÁREA 1]</span>, <span class="token-placeholder">[ÁREA 2]</span> e <span class="token-placeholder">[ÁREA 3]</span>, com expertise em
+<span class="token-placeholder">[COMPETÊNCIA 1]</span>, <span class="token-placeholder">[COMPETÊNCIA 2]</span> e <span class="token-placeholder">[COMPETÊNCIA 3]</span>.
+<span class="token-tag">&lt;/persona&gt;</span></code></pre>
+                </div>
+
+                <h3>Exemplos Práticos</h3>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            Para prompts de Análise (firac.md)
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span class="code-lang">XML</span>
+                                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                                    </div>
+                                    <pre><code><span class="token-tag">&lt;persona&gt;</span>
+Você é um ASSISTENTE JURÍDICO DE ALTO NÍVEL especializado
+EM DIREITO, LINGUAGEM E INTERPRETAÇÃO, com expertise em
+análise processual, teoria da decisão e pensamento crítico.
+<span class="token-tag">&lt;/persona&gt;</span></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            Para prompts de Escrita
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span class="code-lang">XML</span>
+                                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                                    </div>
+                                    <pre><code><span class="token-tag">&lt;persona&gt;</span>
+Você é um ASSISTENTE JURÍDICO DE ALTO NÍVEL especializado
+EM ESCRITA JURÍDICA, LINGUAGEM E INTERPRETAÇÃO, com expertise
+em análise processual, teoria da decisão e estilo de escrita.
+<span class="token-tag">&lt;/persona&gt;</span></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            Para prompts de Criação
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span class="code-lang">XML</span>
+                                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                                    </div>
+                                    <pre><code><span class="token-tag">&lt;persona&gt;</span>
+Você é um ESPECIALISTA EM CRIAÇÃO DE CONTEÚDO JURÍDICO,
+com expertise em <span class="token-placeholder">[área específica]</span>, combinando rigor
+técnico-jurídico com capacidade criativa para produzir
+conteúdo original e de alta qualidade.
+<span class="token-tag">&lt;/persona&gt;</span></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-title">Checklist da Persona</div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Papel profissional claro?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Áreas de especialização relevantes?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Competências alinhadas com a tarefa?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Texto conciso (1-2 frases)?</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Objetivo -->
+            <section class="section" id="objetivo">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">O</span>
+                        Passo 2
+                    </div>
+                    <h1 class="section-title">Objetivo</h1>
+                    <p class="section-subtitle">O componente mais importante. Define a tarefa, como processar o input e quais capacidades ativar.</p>
+                </div>
+
+                <div class="callout callout-warning">
+                    <span class="callout-icon">⚡</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Por que é crítico</div>
+                        <p class="callout-text">Nenhum modelo "lê" 1000 páginas de uma vez. Modelos ativam ferramentas: OCR para digitalizados, chunking para documentos longos. Quanto mais explícito o objetivo, melhor a performance.</p>
+                    </div>
+                </div>
+
+                <h3>Perguntas Diretrizes</h3>
+                <ol>
+                    <li><strong>Qual é a tarefa principal?</strong> (verbo de ação + objeto)</li>
+                    <li><strong>Qual é a finalidade?</strong> (para que serve o output)</li>
+                    <li><strong>Qual metodologia usar?</strong> (como realizar a tarefa)</li>
+                    <li><strong>Como processar o input?</strong> (instruções de leitura)</li>
+                    <li><strong>Quais ferramentas ativar?</strong> (OCR, visão multimodal, busca)</li>
+                </ol>
+
+                <h3>Template Base</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">XML</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;objetivo&gt;</span>
+Sua tarefa é <span class="token-placeholder">[VERBO DE AÇÃO]</span> + <span class="token-placeholder">[OBJETO]</span> + <span class="token-placeholder">[QUALIFICADORES]</span>,
+para <span class="token-placeholder">[FINALIDADE]</span>, visando a <span class="token-placeholder">[OBJETIVO METODOLÓGICO]</span>.
+
+<span class="token-placeholder">[INSTRUÇÕES DE PROCESSAMENTO DO INPUT]</span>
+<span class="token-tag">&lt;/objetivo&gt;</span></code></pre>
+                </div>
+
+                <h3>Instruções de Leitura</h3>
+                <p><strong>Obrigatório para análise e escrita.</strong> Sempre inclua instruções explícitas sobre como processar documentos:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Texto</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code>Consulte todos os documentos fornecidos na íntegra.
+Eles podem ter informações contraditórias. Por isso,
+faça uma leitura holística para captar todos os pontos
+controvertidos e todas as questões jurídicas.
+
+Para PDFs digitalizados, ative ferramentas adequadas de
+Reconhecimento Óptico de Caracteres (OCR), garantindo a
+extração completa e precisa do conteúdo textual.
+
+Se o documento apresentar layout complexo (tabelas, gráficos
+ou elementos visuais), utilize análise visual multimodal
+para interpretar corretamente todos os componentes.</code></pre>
+                </div>
+
+                <h3>Níveis de Leitura</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nível</th>
+                                <th>Quando usar</th>
+                                <th>Instrução</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Seletiva</strong></td>
+                                <td>Processos longos com foco definido</td>
+                                <td>"Leia apenas [DOCUMENTOS ESPECÍFICOS]"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Integral</strong></td>
+                                <td>Análise completa do caso</td>
+                                <td>"Leia TODOS os documentos na íntegra"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dirigida</strong></td>
+                                <td>Extração de dados pontuais</td>
+                                <td>"Busque especificamente [INFORMAÇÃO]"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-title">Checklist do Objetivo</div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Tarefa principal clara (verbo + objeto)?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Finalidade explícita?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Metodologia indicada?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Instruções de leitura incluídas (para análise/escrita)?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Ferramentas ativadas quando necessário (OCR, visão)?</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Estilo -->
+            <section class="section" id="estilo">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">E</span>
+                        Passo 3
+                    </div>
+                    <h1 class="section-title">Estilo</h1>
+                    <p class="section-subtitle">Define como o modelo deve escrever e se comportar: tom, características de escrita, comportamento e instrução de início.</p>
+                </div>
+
+                <h3>Perguntas Diretrizes</h3>
+                <ol>
+                    <li><strong>Qual tom adotar?</strong> (profissional, autoritativo, didático, conversacional)</li>
+                    <li><strong>Qual nível de tecnicidade?</strong> (técnico puro, técnico acessível, leigo)</li>
+                    <li><strong>Qual extensão?</strong> (conciso, moderado, exaustivo)</li>
+                    <li><strong>Quais comportamentos reforçar?</strong> (imparcialidade, anti-viés)</li>
+                    <li><strong>Onde começar a resposta?</strong> (prefill)</li>
+                </ol>
+
+                <h3>Template Base</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">XML</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;estilo&gt;</span>
+Adote um tom <span class="token-placeholder">[ADJETIVO 1]</span> e <span class="token-placeholder">[ADJETIVO 2]</span>, sem <span class="token-placeholder">[ELEMENTO A EVITAR]</span>.
+Escreva de modo <span class="token-placeholder">[CARACTERÍSTICA]</span>, mas <span class="token-placeholder">[QUALIFICADOR]</span>, sem <span class="token-placeholder">[DEFEITO]</span>.
+<span class="token-placeholder">[INSTRUÇÃO DE INÍCIO]</span>.
+
+<span class="token-placeholder">[COMPORTAMENTO: imparcialidade, anti-viés, postura analítica...]</span>
+<span class="token-tag">&lt;/estilo&gt;</span></code></pre>
+                </div>
+
+                <h3>Instruções Anti-Viés</h3>
+                <p><strong>Obrigatório para análise.</strong> Evita que o modelo seja influenciado pela posição ou estilo dos documentos:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Texto</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code>Sua ANÁLISE é objetiva, imparcial e multifacetada, captando as
+sutilezas e elementos para além do óbvio. Você não é influenciado
+por vieses de posição, pois sabe que podem existir informações
+valiosas em todas as partes do documento.
+
+Você dá igual peso para todos os componentes do caso,
+independentemente de estarem no início, no meio ou no fim.
+
+Você é capaz de perceber que a análise objetiva não pode ser
+influenciada por fatores irrelevantes como estrutura do documento,
+estilo do texto, assertividade ou adjetivos usados nos documentos.</code></pre>
+                </div>
+
+                <h3>Plain Language</h3>
+                <p>Para prompts de escrita, elimine o juridiquês:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Texto</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code>Regras de estilo:
+- Use plain language. Garanta que o estilo seja livre de
+  juridiquês, jargões, latinismos e verbosidade
+- Priorize sempre a clareza e qualidade da escrita
+- Corte os clichês de IA: Elimine "é importante notar",
+  "vale ressaltar", "em suma", "é crucial" e outras
+  introduções vazias
+- Conecte as ideias de modo orgânico</code></pre>
+                </div>
+
+                <h3>Instrução de Início (Prefill)</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo de Prompt</th>
+                                <th>Instrução de Início</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Análise FIRAC+</td>
+                                <td>"Vá direto para a resposta, começando com <strong>DADOS DO PROCESSO</strong>"</td>
+                            </tr>
+                            <tr>
+                                <td>Relatório 1º grau</td>
+                                <td>"Comece o texto com 'RELATÓRIO' (sem aspas)"</td>
+                            </tr>
+                            <tr>
+                                <td>Relatório 2º grau</td>
+                                <td>"Inicie com 'R E L A T Ó R I O' com espaços"</td>
+                            </tr>
+                            <tr>
+                                <td>Sentença</td>
+                                <td>"Comece com 'RELATÓRIO'"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-title">Checklist do Estilo</div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Tom definido?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Características de escrita claras?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Instruções anti-viés incluídas (para análise)?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Plain language (para escrita)?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Instrução de início (prefill)?</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Modelo -->
+            <section class="section" id="modelo">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">M</span>
+                        Passo 4
+                    </div>
+                    <h1 class="section-title">Modelo</h1>
+                    <p class="section-subtitle">Define a metodologia e o formato de saída. Contém como o modelo deve pensar e como deve apresentar o resultado.</p>
+                </div>
+
+                <div class="callout callout-tip">
+                    <span class="callout-icon">🎯</span>
+                    <div class="callout-content">
+                        <div class="callout-title">A Técnica do Nome Único</div>
+                        <p class="callout-text">Dê à sua metodologia um nome específico e original. Quando você usa "FIRAC", o modelo pode ignorar suas instruções. Quando usa "FIRAC+" ou "SUPER FIRAC", o modelo é forçado a ler e seguir suas customizações.</p>
+                    </div>
+                </div>
+
+                <h3>Estratégias de Nomenclatura</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estratégia</th>
+                                <th>Padrão</th>
+                                <th>Exemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Intensificador</strong></td>
+                                <td>PREFIXO + Base</td>
+                                <td>SUPER FIRAC, ULTRA FIRAC</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Base + SUFIXO</td>
+                                <td>FIRAC+, FIRAC 2.0</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ancoragem teórica</strong></td>
+                                <td>Método (Autor)</td>
+                                <td>Análise Causal (Judea Pearl)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Metáfora evocativa</strong></td>
+                                <td>Nome expressivo</td>
+                                <td>Crítica Matadora</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Importação externa</strong></td>
+                                <td>De outra área</td>
+                                <td>Smart Brevity, Cross-Examination</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Template Base</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">XML</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;modelo&gt;</span>
+Use a metodologia <span class="token-placeholder">[NOME ÚNICO DA METODOLOGIA]</span>, conforme instruções:
+
+<span class="token-tag">&lt;formato_saida&gt;</span>
+### **<span class="token-placeholder">[SEÇÃO 1]</span>**
+<span class="token-placeholder">`[INSTRUÇÃO EM MAIÚSCULAS SOBRE O QUE INCLUIR]`</span>
+
+### **<span class="token-placeholder">[SEÇÃO 2]</span>**
+<span class="token-placeholder">`[INSTRUÇÃO EM MAIÚSCULAS SOBRE O QUE INCLUIR]`</span>
+
+### **<span class="token-placeholder">[SEÇÃO 3]</span>**
+<span class="token-placeholder">`[INSTRUÇÃO EM MAIÚSCULAS SOBRE O QUE INCLUIR]`</span>
+<span class="token-tag">&lt;/formato_saida&gt;</span>
+<span class="token-tag">&lt;/modelo&gt;</span></code></pre>
+                </div>
+
+                <h3>Placeholders</h3>
+                <p>Use placeholders entre backticks para indicar o que deve ser preenchido:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Exemplo</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-placeholder">`NOME DA PARTE AUTORA EM MAIÚSCULAS`</span> propôs a presente ação
+<span class="token-placeholder">`TIPO DE AÇÃO JUDICIAL EM MINÚSCULAS`</span> contra <span class="token-placeholder">`NOME DA PARTE
+REQUERIDA EM MAIÚSCULAS`</span>, alegando que <span class="token-placeholder">`RESUMIR EM DETALHES
+OS FATOS ALEGADOS PELA PARTE AUTORA`</span>.</code></pre>
+                </div>
+
+                <h3>Técnica M&M Marrom (Van Halen)</h3>
+                <p>Insira diretrizes específicas e verificáveis que permitem identificar rapidamente se as regras foram cumpridas:</p>
+
+                <div class="card-grid">
+                    <div class="card-mini">
+                        <div class="card-mini-title">Emojis verificadores</div>
+                        <div class="card-mini-desc">"Use ✅ para requisitos presentes e ❌ para ausentes"</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">Palavras-chave</div>
+                        <div class="card-mini-desc">"Sempre inicie a conclusão com 'Em síntese'"</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">Estruturas fixas</div>
+                        <div class="card-mini-desc">"Cada requisito: Nome | Status | Fundamentação"</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">Formato numérico</div>
+                        <div class="card-mini-desc">"Enumere todos os fatos cronologicamente"</div>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-title">Checklist do Modelo</div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Nome único para a metodologia?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Metodologia clara (passos ou estrutura)?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Formato de saída estruturado?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Placeholders entre backticks?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Sinalizadores M&M Marrom (quando aplicável)?</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Adicionais -->
+            <section class="section" id="adicionais">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">A</span>
+                        Passo 5
+                    </div>
+                    <h1 class="section-title">Adicionais</h1>
+                    <p class="section-subtitle">Consolida guardrails, critérios de qualidade, reforços de instrução e regras específicas.</p>
+                </div>
+
+                <h3>Guardrails Obrigatórios</h3>
+                <p><strong>Para análise e escrita.</strong> Previne alucinação:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Guardrail</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code>Sua análise deve se basear exclusivamente nos documentos
+fornecidos. **USE EXCLUSIVAMENTE** as evidências, fatos e
+informações contidos no documento fornecido.
+
+**PROIBIÇÃO ABSOLUTA** de incorporar elementos probatórios
+ou factuais de fontes externas.
+
+SOMENTE USE OS ELEMENTOS PROBATÓRIOS DO CASO FORNECIDO.
+
+**JAMAIS ACRESCENTE FATOS, PRECEDENTES OU NORMAS QUE NÃO
+ESTEJAM NO DOCUMENTO ANEXADO PELO USUÁRIO.**</code></pre>
+                </div>
+
+                <h3>Regras para Citações</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Regra</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Fatos</strong></td>
+                                <td>Citar apenas do documento, com riqueza de detalhes</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Datas/Nomes/IDs</strong></td>
+                                <td>Usar APENAS os existentes no documento, NUNCA inventar</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Precedentes</strong></td>
+                                <td>Citar de forma INDIRETA, apenas se no documento</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Legislação</strong></td>
+                                <td>Referenciar apenas se mencionada no documento</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout callout-warning">
+                    <span class="callout-icon">🚫</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Proibições Absolutas</div>
+                        <p class="callout-text">NUNCA incluir instrução para citar precedentes específicos, doutrina ou legislação não referenciada no documento.</p>
+                    </div>
+                </div>
+
+                <h3>Critérios de Qualidade Padrão</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Critérios</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code>**Critérios de qualidade:**
+1. **Completude**: Analise INTEGRALMENTE todos os documentos
+2. **Imparcialidade**: Não demonstre preferência por qualquer parte
+3. **Profundidade**: Vá além da superfície, captando nuances
+4. **Sistematicidade**: Siga rigorosamente a estrutura estabelecida
+5. **Precisão**: Use terminologia jurídica adequada e precisa
+6. **Objetividade**: Baseie-se exclusivamente nos documentos
+7. **Integridade**: Cite dados estritamente referenciados no caso
+8. **Detalhamento**: Prover riqueza de detalhes nos FATOS</code></pre>
+                </div>
+
+                <h3>Reforços de Instrução</h3>
+                <p>Para regras críticas, use repetição com ênfase:</p>
+
+                <div class="card-grid">
+                    <div class="card-mini">
+                        <div class="card-mini-title">IMPORTANTE:</div>
+                        <div class="card-mini-desc">[Regra crítica]</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">ATENÇÃO:</div>
+                        <div class="card-mini-desc">[Regra crítica]</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">NUNCA:</div>
+                        <div class="card-mini-desc">[Proibição absoluta]</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">SEMPRE:</div>
+                        <div class="card-mini-desc">[Obrigação absoluta]</div>
+                    </div>
+                </div>
+
+                <h3>Flexibilidade (para criação e pesquisa)</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Regras de Criação</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code>**Regras de criação:**
+- Você é livre para experimentar abordagens não convencionais
+  quando isso agregar valor ao conteúdo
+- Tem autorização para fazer conexões interdisciplinares e
+  incluir insights relevantes
+- Use seu senso crítico para equilibrar criatividade e rigor
+  técnico-jurídico
+- Adapte a extensão e profundidade conforme a complexidade
+  do tema</code></pre>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-title">Checklist dos Adicionais</div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Guardrails contra alucinação?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Critérios de qualidade listados?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Proibições claras?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Reforços de instrução para regras críticas?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Flexibilidade adequada ao tipo de prompt?</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Metaprompts -->
+            <section class="section" id="metaprompts">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">+</span>
+                        Avançado
+                    </div>
+                    <h1 class="section-title">Metaprompts</h1>
+                    <p class="section-subtitle">Prompts que geram outros prompts. São prompts de segundo nível que analisam uma solicitação e produzem como saída um novo prompt estruturado.</p>
+                </div>
+
+                <h3>Tipos de Metaprompts</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Descrição</th>
+                                <th>Exemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Independente</strong></td>
+                                <td>Gera prompts sozinho</td>
+                                <td>meta-analise.md</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Orquestrador</strong></td>
+                                <td>Coordena subagentes</td>
+                                <td>meta-escrita.md</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Subagente</strong></td>
+                                <td>Executa parte de um fluxo</td>
+                                <td>meta-escrita-template.md</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Estrutura de um Metaprompt</h3>
+                <p>Um metaprompt contém:</p>
+                <ol>
+                    <li><code>&lt;prompt_template&gt;</code> — Template base para o prompt gerado</li>
+                    <li><code>&lt;exemplo&gt;</code> — Exemplo completo de prompt gerado</li>
+                    <li><strong>Regras de elaboração</strong> — Como adaptar o template</li>
+                    <li><strong>Formato de início obrigatório</strong> — Como o prompt gerado deve começar</li>
+                </ol>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Estrutura de Metaprompt</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;modelo&gt;</span>
+Use como base de estilo e estrutura o TEMPLATE abaixo:
+
+<span class="token-tag">&lt;prompt_template&gt;</span>
+Você é um ASSISTENTE JURÍDICO DE ALTO NÍVEL...
+Sua tarefa é realizar a análise abrangente...
+<span class="token-placeholder">`DEFINIR A TAREFA ESPECÍFICA SOLICITADA PELO USUÁRIO`</span>
+...
+<span class="token-tag">&lt;/prompt_template&gt;</span>
+
+<span class="token-tag">&lt;exemplo&gt;</span>
+[PROMPT COMPLETO DE EXEMPLO]
+<span class="token-tag">&lt;/exemplo&gt;</span>
+<span class="token-tag">&lt;/modelo&gt;</span>
+
+<span class="token-tag">&lt;adicionais&gt;</span>
+**Regras de elaboração:**
+1. Use como base tudo o que estiver na tag prompt_template
+2. Inclua critérios de análise mais precisos
+3. O modelo que irá executar não conhece legislação nem precedentes
+4. Toda instrução deve ser clara e explicativa
+5. Insira TODO O PROMPT em um **BLOCO DE CÓDIGO**
+
+**Formato de início obrigatório:**
+Você é um ASSISTENTE JURÍDICO DE ALTO NÍVEL especializado...
+<span class="token-tag">&lt;/adicionais&gt;</span></code></pre>
+                </div>
+
+                <div class="callout callout-info">
+                    <span class="callout-icon">📦</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Saída em Bloco de Código</div>
+                        <p class="callout-text">Todo prompt gerado por um metaprompt deve ser entregue em bloco de código markdown para facilitar a cópia.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: YAML -->
+            <section class="section" id="yaml">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">+</span>
+                        Avançado
+                    </div>
+                    <h1 class="section-title">YAML Frontmatter</h1>
+                    <p class="section-subtitle">Todo prompt deve incluir um cabeçalho YAML para documentação e organização.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">YAML</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-comment">---</span>
+<span class="token-attr">name:</span> <span class="token-string">identificador-unico-em-kebab-case</span>
+<span class="token-attr">description:</span> <span class="token-string">Descrição concisa do que o prompt faz (1-2 frases)</span>
+<span class="token-attr">tipo:</span> <span class="token-string">analise | escrita | criacao | pesquisa | metaprompt</span>
+<span class="token-attr">uso:</span> <span class="token-string">Instruções práticas de como usar o prompt</span>
+<span class="token-comment">---</span></code></pre>
+                </div>
+
+                <h3>Exemplo Completo</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">YAML</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-comment">---</span>
+<span class="token-attr">name:</span> <span class="token-string">firac-plus</span>
+<span class="token-attr">description:</span> <span class="token-string">Prompt de análise jurídica completa usando metodologia
+             FIRAC+. Gera relatório estruturado com dados do processo,
+             fatos, questão central, direito aplicável e conclusão.</span>
+<span class="token-attr">tipo:</span> <span class="token-string">analise</span>
+<span class="token-attr">uso:</span> <span class="token-string">Anexe o documento processual (PDF ou texto) e o prompt
+      irá gerar análise estruturada seguindo FIRAC+.</span>
+<span class="token-comment">---</span></code></pre>
+                </div>
+            </section>
+
+            <!-- SECTION: Checklist Final -->
+            <section class="section" id="checklist-final">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">✓</span>
+                        Validação
+                    </div>
+                    <h1 class="section-title">Checklist Final</h1>
+                    <p class="section-subtitle">Use estes checklists para validar seu prompt antes de usá-lo em produção.</p>
+                </div>
+
+                <div class="tabs">
+                    <div class="tabs-header">
+                        <button class="tab-button active" onclick="switchTab(event, 'check-todos')">Todos os Prompts</button>
+                        <button class="tab-button" onclick="switchTab(event, 'check-rigidos')">Análise e Escrita</button>
+                        <button class="tab-button" onclick="switchTab(event, 'check-flexiveis')">Criação e Pesquisa</button>
+                        <button class="tab-button" onclick="switchTab(event, 'check-meta')">Metaprompts</button>
+                    </div>
+                    <div class="tab-content active" id="check-todos">
+                        <div class="checklist">
+                            <div class="checklist-title">Para TODOS os prompts</div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Segue estrutura P.O.E.M.A. completa?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem YAML frontmatter?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Nome único para a metodologia (não genérico)?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem instrução de início (prefill)?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Está livre de clichês de IA?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Está em plain language?</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="check-rigidos">
+                        <div class="checklist">
+                            <div class="checklist-title">Prompts de Análise e Escrita (Rígidos)</div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem instruções de leitura profunda de documentos?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem guardrails contra alucinação?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem instruções anti-viés?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem formato de saída estruturado/template?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem critérios de qualidade listados?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Proíbe citação direta de precedentes/doutrina?</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="check-flexiveis">
+                        <div class="checklist">
+                            <div class="checklist-title">Prompts de Criação e Pesquisa (Flexíveis)</div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Concede autonomia metodológica ao modelo?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Permite adaptação do formato de saída?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Inclui instruções de flexibilidade?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Autoriza expansão de escopo quando relevante?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Encoraja insights e conexões interdisciplinares?</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="check-meta">
+                        <div class="checklist">
+                            <div class="checklist-title">Metaprompts</div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem &lt;prompt_template&gt; com template base?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem &lt;exemplo&gt; com prompt completo?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem regras de elaboração?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Tem formato de início obrigatório?</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this)">
+                                <div class="checklist-checkbox"></div>
+                                <span class="checklist-text">Instrui entrega em bloco de código?</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Reference -->
+                <h3>Referência Rápida</h3>
+                <div class="framework-diagram" style="margin-top: 32px;">
+                    <div style="font-family: var(--font-mono); font-size: 14px; color: #e2e8f0; line-height: 1.8;">
+                        <div style="margin-bottom: 24px; text-align: center; color: var(--accent-light); font-weight: 600;">P.O.E.M.A. EM UMA LINHA</div>
+                        <div style="display: grid; gap: 8px;">
+                            <div><span style="color: var(--accent-light);">PERSONA</span>   <span style="opacity: 0.5;">→</span> Quem (papel + expertise)</div>
+                            <div><span style="color: var(--accent-light);">OBJETIVO</span>  <span style="opacity: 0.5;">→</span> O quê (tarefa + leitura + ferramentas)</div>
+                            <div><span style="color: var(--accent-light);">ESTILO</span>    <span style="opacity: 0.5;">→</span> Como comunica (tom + anti-viés + prefill)</div>
+                            <div><span style="color: var(--accent-light);">MODELO</span>    <span style="opacity: 0.5;">→</span> Como pensa e entrega (metodologia + template)</div>
+                            <div><span style="color: var(--accent-light);">ADICIONAIS</span><span style="opacity: 0.5;">→</span> Proteções (guardrails + qualidade + reforços)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border);">
+                    <p style="font-size: 14px; color: var(--ink-muted);">
+                        <strong>Framework P.O.E.M.A.</strong> — Versão 2.2<br>
+                        Material didático para engenharia de prompts jurídicos<br>
+                        <span style="font-size: 12px;">Inclui: Markdown, Delimitadores XML, Técnicas de Ênfase e Super Dicas</span>
+                    </p>
+                </div>
+            </section>
+
+            <!-- SECTION: Markdown -->
+            <section class="section" id="markdown">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">#</span>
+                        Formatação
+                    </div>
+                    <h1 class="section-title">Markdown para Prompts</h1>
+                    <p class="section-subtitle">O básico de Markdown para estruturar prompts de forma clara e universal. Esta é a abordagem padrão da Anthropic na construção de agentes.</p>
+                </div>
+
+                <div class="callout callout-tip">
+                    <span class="callout-icon">💡</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Por que Markdown?</div>
+                        <p class="callout-text">Markdown é a linguagem de formatação mais universal para prompts. É simples, legível tanto por humanos quanto por modelos, e funciona em qualquer plataforma. A Anthropic usa Markdown como padrão na construção de seus próprios agentes.</p>
+                    </div>
+                </div>
+
+                <h3>Hierarquia de Cabeçalhos</h3>
+                <p>Use cabeçalhos para criar estrutura e hierarquia clara no seu prompt. O modelo entende a relação entre seções através dos níveis.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Markdown</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-keyword"># TÍTULO PRINCIPAL</span>
+Contexto geral ou instrução principal
+
+<span class="token-keyword">## Seção de Nível 2</span>
+Subseção importante
+
+<span class="token-keyword">### Subseção de Nível 3</span>
+Detalhamento específico
+
+<span class="token-keyword">#### Nível 4</span>
+Granularidade máxima recomendada</code></pre>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nível</th>
+                                <th>Sintaxe</th>
+                                <th>Uso em Prompts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong># H1</strong></td>
+                                <td><code># Título</code></td>
+                                <td>Título principal, nome da tarefa</td>
+                            </tr>
+                            <tr>
+                                <td><strong>## H2</strong></td>
+                                <td><code>## Seção</code></td>
+                                <td>Seções principais (Objetivo, Estilo, etc.)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>### H3</strong></td>
+                                <td><code>### Subseção</code></td>
+                                <td>Detalhamento de regras ou passos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>#### H4</strong></td>
+                                <td><code>#### Item</code></td>
+                                <td>Itens específicos dentro de subseções</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Listas</h3>
+                <p>Listas organizam informações de forma clara e escaneável. Use listas não ordenadas para itens sem sequência e ordenadas para passos sequenciais.</p>
+
+                <div class="tabs">
+                    <div class="tabs-header">
+                        <button class="tab-button active" onclick="switchTab(event, 'tab-nao-ordenadas')">Não Ordenadas</button>
+                        <button class="tab-button" onclick="switchTab(event, 'tab-ordenadas')">Ordenadas</button>
+                    </div>
+                    <div class="tab-content active" id="tab-nao-ordenadas">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">Markdown</span>
+                                <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                            </div>
+                            <pre><code><span class="token-comment">Três sintaxes equivalentes:</span>
+
+- Item com hífen
+- Outro item
+
+* Item com asterisco
+* Outro item
+
++ Item com mais
++ Outro item
+
+<span class="token-comment">Lista aninhada:</span>
+- Item principal
+  - Subitem
+  - Outro subitem
+- Segundo item principal</code></pre>
+                        </div>
+                        <p>Use para: regras, critérios, características, opções sem ordem específica.</p>
+                    </div>
+                    <div class="tab-content" id="tab-ordenadas">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">Markdown</span>
+                                <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                            </div>
+                            <pre><code>1. Primeiro passo
+2. Segundo passo
+3. Terceiro passo
+
+<span class="token-comment">Lista aninhada:</span>
+1. Etapa principal
+   1. Sub-etapa A
+   2. Sub-etapa B
+2. Segunda etapa principal</code></pre>
+                        </div>
+                        <p>Use para: passos de metodologia, sequência de ações, prioridades ordenadas.</p>
+                    </div>
+                </div>
+
+                <h3>Placeholders (Marcadores de Preenchimento)</h3>
+                <p>Placeholders indicam onde o modelo (ou você) deve inserir informações específicas. São essenciais para criar templates reutilizáveis.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Sintaxe</th>
+                                <th>Quando Usar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Código inline</strong></td>
+                                <td><code>`INSTRUÇÃO EM MAIÚSCULAS`</code></td>
+                                <td>Instruções para o modelo preencher</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Colchetes</strong></td>
+                                <td><code>[CAMPO A PREENCHER]</code></td>
+                                <td>Lacunas em templates, variáveis</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chaves</strong></td>
+                                <td><code>{variável}</code></td>
+                                <td>Variáveis de sistema, interpolação</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chaves duplas</strong></td>
+                                <td><code>{{TEXTO}}</code></td>
+                                <td>Conteúdo dinâmico (padrão Anthropic)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Exemplo Prático</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-comment">Template de relatório com placeholders:</span>
+
+## RELATÓRIO
+
+<span class="token-placeholder">`NOME DA PARTE AUTORA EM MAIÚSCULAS`</span> propôs a presente
+<span class="token-placeholder">[tipo de ação]</span> contra <span class="token-placeholder">`NOME DO RÉU`</span>.
+
+Valor da causa: R$ <span class="token-placeholder">{{valor}}</span>
+
+<span class="token-comment">O modelo substituirá pelos dados reais do documento.</span></code></pre>
+                </div>
+
+                <h3>Tabelas</h3>
+                <p>Tabelas são úteis para organizar informações estruturadas, comparações e dados tabulares.</p>
+
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            Alinhamento Padrão (Esquerda)
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span class="code-lang">Markdown</span>
+                                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                                    </div>
+                                    <pre><code>| Cabeçalho 1 | Cabeçalho 2 |
+|-------------|-------------|
+| Item 1      | Item 2      |
+| Item 3      | Item 4      |</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            Alinhamento Centralizado
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span class="code-lang">Markdown</span>
+                                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                                    </div>
+                                    <pre><code>| Cabeçalho 1 | Cabeçalho 2 |
+|:-----------:|:-----------:|
+| Item 1      | Item 2      |
+| Item 3      | Item 4      |</code></pre>
+                                </div>
+                                <p>Os dois-pontos <code>:</code> nos dois lados centralizam o conteúdo.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            Alinhamento à Direita
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span class="code-lang">Markdown</span>
+                                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                                    </div>
+                                    <pre><code>| Cabeçalho 1 | Cabeçalho 2 |
+|------------:|------------:|
+| Item 1      | Item 2      |
+| Item 3      | Item 4      |</code></pre>
+                                </div>
+                                <p>Dois-pontos <code>:</code> apenas à direita alinha o conteúdo à direita.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Outros Elementos Úteis</h3>
+
+                <div class="card-grid">
+                    <div class="card-mini">
+                        <div class="card-mini-title">> Citações (Quotes)</div>
+                        <div class="card-mini-desc"><code>> Texto citado</code> para destacar regras ou avisos importantes</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">--- Quebra de Linha</div>
+                        <div class="card-mini-desc"><code>---</code> ou <code>***</code> para separar seções visualmente</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">[Links](url)</div>
+                        <div class="card-mini-desc"><code>[texto](url)</code> para referências externas</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">**Negrito** e *Itálico*</div>
+                        <div class="card-mini-desc">Para ênfase: <code>**negrito**</code> e <code>*itálico*</code></div>
+                    </div>
+                </div>
+
+                <div class="callout callout-info">
+                    <span class="callout-icon">📝</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Quando usar Markdown</div>
+                        <p class="callout-text">Use Markdown como padrão para a maioria dos prompts. É a abordagem mais universal e funciona bem em qualquer modelo de linguagem. Reserve XML para casos específicos onde você precisa de delimitação mais precisa.</p>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-title">Checklist de Markdown</div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Hierarquia de cabeçalhos clara (#, ##, ###)?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Listas para organizar itens múltiplos?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Placeholders consistentes em todo o prompt?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Tabelas apenas quando dados são tabulares?</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Delimitadores XML -->
+            <section class="section" id="delimitadores">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">&lt;&gt;</span>
+                        Formatação
+                    </div>
+                    <h1 class="section-title">Tags XML como Delimitadores</h1>
+                    <p class="section-subtitle">Use tags XML para delimitar blocos de informação com precisão cirúrgica. Ideal para tarefas complexas e alinhamento com o prompt de sistema do Claude.</p>
+                </div>
+
+                <div class="callout callout-warning">
+                    <span class="callout-icon">⚠️</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Quando usar XML</div>
+                        <p class="callout-text">XML é mais poderoso que Markdown para delimitar blocos, mas também é mais verboso. Use quando precisar de separação inequívoca entre seções, especialmente em tarefas complexas ou quando trabalhar com o Claude, que foi refinado para prestar atenção especial à estrutura criada por tags XML.</p>
+                    </div>
+                </div>
+
+                <h3>Por que Delimitar?</h3>
+                <p>Delimitadores melhoram a <strong>dirigibilidade</strong> do prompt. Quando você marca claramente onde começa e termina cada bloco de informação, o modelo:</p>
+                <ul>
+                    <li>Entende melhor a estrutura do seu prompt</li>
+                    <li>Separa instruções de conteúdo a processar</li>
+                    <li>Produz respostas mais organizadas</li>
+                    <li>Facilita templates reutilizáveis</li>
+                </ul>
+
+                <h3>Sintaxe Básica de Tags XML</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">XML</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;nome_da_tag&gt;</span>
+Conteúdo delimitado aqui
+<span class="token-tag">&lt;/nome_da_tag&gt;</span>
+
+<span class="token-comment">&lt;!-- Exemplo prático: --&gt;</span>
+<span class="token-tag">&lt;documento&gt;</span>
+{{TEXTO DO DOCUMENTO}}
+<span class="token-tag">&lt;/documento&gt;</span>
+
+<span class="token-tag">&lt;instrucoes&gt;</span>
+Analise o documento acima e extraia os principais argumentos.
+<span class="token-tag">&lt;/instrucoes&gt;</span></code></pre>
+                </div>
+
+                <h3>Tags Comuns em Prompts</h3>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tag</th>
+                                <th>Uso</th>
+                                <th>Exemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>&lt;documento&gt;</code></td>
+                                <td>Texto a ser processado</td>
+                                <td><code>&lt;documento&gt;{{PDF}}&lt;/documento&gt;</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>&lt;instrucoes&gt;</code></td>
+                                <td>Diretrizes para o modelo</td>
+                                <td><code>&lt;instrucoes&gt;Analise...&lt;/instrucoes&gt;</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>&lt;exemplo&gt;</code></td>
+                                <td>Exemplo de entrada/saída</td>
+                                <td><code>&lt;exemplo&gt;Input → Output&lt;/exemplo&gt;</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>&lt;formato_saida&gt;</code></td>
+                                <td>Template de resposta</td>
+                                <td><code>&lt;formato_saida&gt;## Seção...&lt;/formato_saida&gt;</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>&lt;regras&gt;</code></td>
+                                <td>Restrições e guardrails</td>
+                                <td><code>&lt;regras&gt;NUNCA invente...&lt;/regras&gt;</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>&lt;contexto&gt;</code></td>
+                                <td>Informação de background</td>
+                                <td><code>&lt;contexto&gt;O caso trata de...&lt;/contexto&gt;</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout callout-info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Nomes de Tags</div>
+                        <p class="callout-text">Não há nomes reservados ou especiais em XML. Use nomes descritivos que façam sentido para sua tarefa. O importante é manter a formatação correta: abrir com <code>&lt;tag&gt;</code> e fechar com <code>&lt;/tag&gt;</code>.</p>
+                    </div>
+                </div>
+
+                <h3>Chaves como Delimitadores</h3>
+                <p>Além de XML, você pode usar chaves para diferentes propósitos:</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Sintaxe</th>
+                                <th>Uso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Simples</strong></td>
+                                <td><code>{variável}</code></td>
+                                <td>Variáveis, parâmetros, lacunas a preencher</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Duplas</strong></td>
+                                <td><code>{{TEXTO}}</code></td>
+                                <td>Conteúdo dinâmico, padrão Anthropic</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Triplas</strong></td>
+                                <td><code>{{{bloco}}}</code></td>
+                                <td>Blocos extensos, aninhamento</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Exemplo com Chaves</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-comment">Template com variáveis:</span>
+
+Escreva um tweet sobre <span class="token-placeholder">{tópico}</span> com no máximo <span class="token-placeholder">{número}</span> caracteres.
+
+<span class="token-comment">Conteúdo dinâmico (padrão Anthropic):</span>
+
+Aqui está o texto para processar:
+<span class="token-placeholder">{{TEXTO}}</span>
+
+Por favor, resuma em 3 pontos principais.</code></pre>
+                </div>
+
+                <h3>Tags na Saída</h3>
+                <p>Você também pode pedir ao modelo para usar tags XML na resposta. Isso facilita a extração automática de informações:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Exemplo de Prompt</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;documento&gt;</span>
+{{TEXTO DO DOCUMENTO}}
+<span class="token-tag">&lt;/documento&gt;</span>
+
+Analise o documento acima e extraia:
+1. A questão jurídica central
+2. Os principais argumentos
+3. A conclusão
+
+<span class="token-keyword">Coloque sua resposta dentro de tags:</span>
+- Use <span class="token-tag">&lt;questao&gt;</span> para a questão central
+- Use <span class="token-tag">&lt;argumentos&gt;</span> para os argumentos
+- Use <span class="token-tag">&lt;conclusao&gt;</span> para a conclusão</code></pre>
+                </div>
+
+                <h3>Markdown vs XML: Quando Usar Cada Um</h3>
+
+                <div class="tabs">
+                    <div class="tabs-header">
+                        <button class="tab-button active" onclick="switchTab(event, 'tab-prefira-md')">Prefira Markdown</button>
+                        <button class="tab-button" onclick="switchTab(event, 'tab-prefira-xml')">Prefira XML</button>
+                    </div>
+                    <div class="tab-content active" id="tab-prefira-md">
+                        <div class="card">
+                            <div class="card-title">Use Markdown quando:</div>
+                            <ul>
+                                <li>Prompts simples a moderados</li>
+                                <li>Estrutura hierárquica clara (seções, subseções)</li>
+                                <li>Compatibilidade com qualquer modelo</li>
+                                <li>Legibilidade humana é prioridade</li>
+                                <li>Listas, tabelas e formatação de texto</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="tab-prefira-xml">
+                        <div class="card">
+                            <div class="card-title">Use XML quando:</div>
+                            <ul>
+                                <li>Tarefas complexas com múltiplos blocos de informação</li>
+                                <li>Precisa separar instruções de conteúdo a processar</li>
+                                <li>Quer extrair partes específicas da resposta automaticamente</li>
+                                <li>Trabalha especificamente com Claude (otimizado para XML)</li>
+                                <li>Framework P.O.E.M.A. completo (persona, objetivo, estilo, modelo, adicionais)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <div class="example-title">Exemplo: Combinando Markdown e XML</div>
+                    <p>Você pode combinar as duas abordagens. Use XML para a estrutura macro e Markdown para formatação interna:</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Combinação</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;objetivo&gt;</span>
+Sua tarefa é <span class="token-keyword">**analisar**</span> o documento fornecido e:
+
+1. Identificar a questão central
+2. Listar os argumentos principais
+3. Avaliar a força probatória
+
+<span class="token-comment">| Critério | Peso |
+|----------|------|
+| Relevância | Alto |
+| Clareza | Médio |</span>
+<span class="token-tag">&lt;/objetivo&gt;</span>
+
+<span class="token-tag">&lt;documento&gt;</span>
+{{TEXTO}}
+<span class="token-tag">&lt;/documento&gt;</span></code></pre>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-title">Checklist de Delimitadores</div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Tags XML abertas e fechadas corretamente?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Nomes de tags descritivos e consistentes?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Separação clara entre instruções e conteúdo?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Tags de saída solicitadas quando necessário?</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Chamando a Atenção -->
+            <section class="section" id="atencao">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">!</span>
+                        Formatação
+                    </div>
+                    <h1 class="section-title">Chamando a Atenção do Modelo</h1>
+                    <p class="section-subtitle">Técnicas para destacar informações críticas e garantir que o modelo preste atenção nas regras mais importantes do seu prompt.</p>
+                </div>
+
+                <div class="callout callout-info">
+                    <span class="callout-icon">🧠</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Mecanismos de Atenção</div>
+                        <p class="callout-text">Modelos de linguagem usam mecanismos de atenção para decidir quais partes do texto são mais relevantes. Você pode influenciar essa atenção através de formatação, repetição e posicionamento estratégico.</p>
+                    </div>
+                </div>
+
+                <h3>1. MAIÚSCULAS e Negrito</h3>
+                <p>A forma mais direta de "gritar" para o modelo. Use com moderação para não perder o efeito.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Ênfase</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-comment">MAIÚSCULAS para regras críticas:</span>
+NUNCA invente dados que não estejam no documento.
+SEMPRE cite a fonte das informações.
+JAMAIS inclua precedentes não mencionados.
+
+<span class="token-comment">**Negrito** para destaque:</span>
+Sua análise deve ser **exclusivamente** baseada nos documentos.
+Use **APENAS** as evidências fornecidas.
+
+<span class="token-comment">Combinação (máximo impacto):</span>
+**PROIBIÇÃO ABSOLUTA** de incorporar elementos externos.</code></pre>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Técnica</th>
+                                <th>Sintaxe</th>
+                                <th>Impacto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>MAIÚSCULAS</strong></td>
+                                <td>TEXTO EM CAPS</td>
+                                <td>Alto — use para proibições e obrigações</td>
+                            </tr>
+                            <tr>
+                                <td><strong>**Negrito**</strong></td>
+                                <td><code>**texto**</code></td>
+                                <td>Médio-alto — destaque sem "gritar"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>*Itálico*</strong></td>
+                                <td><code>*texto*</code></td>
+                                <td>Baixo — ênfase sutil</td>
+                            </tr>
+                            <tr>
+                                <td><strong>~~Tachado~~</strong></td>
+                                <td><code>~~texto~~</code></td>
+                                <td>Para indicar o que NÃO fazer</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>2. Palavras-Chave Fortes</h3>
+                <p>Certas palavras carregam mais peso semântico e ativam comportamentos específicos:</p>
+
+                <div class="card-grid">
+                    <div class="card-mini">
+                        <div class="card-mini-title">Obrigação</div>
+                        <div class="card-mini-desc">SEMPRE, DEVE, OBRIGATÓRIO, ESSENCIAL, CRÍTICO</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">Proibição</div>
+                        <div class="card-mini-desc">NUNCA, JAMAIS, PROIBIDO, NÃO PODE, VEDADO</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">Urgência</div>
+                        <div class="card-mini-desc">IMPORTANTE, ATENÇÃO, ALERTA, CUIDADO</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">Exclusividade</div>
+                        <div class="card-mini-desc">APENAS, SOMENTE, EXCLUSIVAMENTE, UNICAMENTE</div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Exemplo</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-comment">Fraco:</span>
+Tente usar apenas os dados do documento.
+
+<span class="token-comment">Forte:</span>
+<span class="token-keyword">**OBRIGATÓRIO:**</span> Use <span class="token-keyword">EXCLUSIVAMENTE</span> os dados do documento.
+<span class="token-keyword">**PROIBIÇÃO ABSOLUTA**</span> de incorporar informações externas.</code></pre>
+                </div>
+
+                <h3>3. Repetição Estratégica</h3>
+                <p>Repetir uma regra em diferentes partes do prompt reforça sua importância:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Repetição</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;objetivo&gt;</span>
+...baseando-se <span class="token-keyword">exclusivamente</span> nos documentos fornecidos.
+<span class="token-tag">&lt;/objetivo&gt;</span>
+
+<span class="token-tag">&lt;estilo&gt;</span>
+...cite <span class="token-keyword">apenas</span> dados presentes nos documentos.
+<span class="token-tag">&lt;/estilo&gt;</span>
+
+<span class="token-tag">&lt;adicionais&gt;</span>
+<span class="token-keyword">IMPORTANTE:</span> Use <span class="token-keyword">SOMENTE</span> informações dos documentos anexados.
+<span class="token-keyword">NUNCA</span> invente dados, datas, nomes ou valores.
+<span class="token-tag">&lt;/adicionais&gt;</span></code></pre>
+                </div>
+
+                <h3>4. Posicionamento: Lost in the Middle</h3>
+                <p>Pesquisas mostram que modelos de linguagem prestam mais atenção ao <strong>início</strong> e ao <strong>fim</strong> do prompt, com tendência a "perder" informações no meio.</p>
+
+                <div class="framework-diagram">
+                    <div style="font-family: var(--font-mono); font-size: 14px; color: #e2e8f0; line-height: 1.8; text-align: center;">
+                        <div style="margin-bottom: 16px; color: var(--accent-light); font-weight: 600;">CURVA DE ATENÇÃO DO MODELO</div>
+                        <div style="display: flex; justify-content: space-around; align-items: flex-end; height: 100px; margin-bottom: 16px;">
+                            <div style="text-align: center;">
+                                <div style="background: var(--accent); width: 60px; height: 80px; border-radius: 4px 4px 0 0;"></div>
+                                <div style="margin-top: 8px;">INÍCIO</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Alta atenção</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="background: var(--accent); opacity: 0.4; width: 60px; height: 30px; border-radius: 4px 4px 0 0;"></div>
+                                <div style="margin-top: 8px;">MEIO</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Baixa atenção</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="background: var(--accent); width: 60px; height: 90px; border-radius: 4px 4px 0 0;"></div>
+                                <div style="margin-top: 8px;">FIM</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Muito alta</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout callout-tip">
+                    <span class="callout-icon">💡</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Estratégia de Posicionamento</div>
+                        <p class="callout-text">Coloque regras críticas no <strong>final</strong> do prompt (maior atenção) e no <strong>início</strong> (contexto inicial). Repita no meio se necessário, mas sempre reforce no final.</p>
+                    </div>
+                </div>
+
+                <h3>5. Estrutura de Reforço</h3>
+                <p>Combine múltiplas técnicas para máximo impacto:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Estrutura Completa</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-comment">No INÍCIO do prompt:</span>
+<span class="token-tag">&lt;objetivo&gt;</span>
+Analise o documento fornecido, usando <span class="token-keyword">EXCLUSIVAMENTE</span>
+as informações nele contidas.
+<span class="token-tag">&lt;/objetivo&gt;</span>
+
+<span class="token-comment">No MEIO (contexto):</span>
+<span class="token-tag">&lt;documento&gt;</span>
+{{TEXTO}}
+<span class="token-tag">&lt;/documento&gt;</span>
+
+<span class="token-comment">No FINAL (máximo impacto):</span>
+<span class="token-tag">&lt;adicionais&gt;</span>
+<span class="token-keyword">**REGRAS INVIOLÁVEIS:**</span>
+
+1. <span class="token-keyword">**NUNCA**</span> invente dados, datas, nomes ou valores
+2. <span class="token-keyword">**SEMPRE**</span> cite a fonte das informações
+3. <span class="token-keyword">**JAMAIS**</span> inclua precedentes não mencionados
+
+<span class="token-keyword">IMPORTANTE:</span> Estas regras são <span class="token-keyword">ABSOLUTAS</span> e não admitem exceções.
+<span class="token-tag">&lt;/adicionais&gt;</span></code></pre>
+                </div>
+
+                <h3>Resumo: Técnicas de Ênfase</h3>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Técnica</th>
+                                <th>Quando Usar</th>
+                                <th>Exemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>MAIÚSCULAS</strong></td>
+                                <td>Proibições absolutas</td>
+                                <td>NUNCA invente dados</td>
+                            </tr>
+                            <tr>
+                                <td><strong>**Negrito**</strong></td>
+                                <td>Termos-chave importantes</td>
+                                <td>Use **exclusivamente**</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Repetição</strong></td>
+                                <td>Regras críticas</td>
+                                <td>3x em diferentes seções</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Posição final</strong></td>
+                                <td>Instruções mais importantes</td>
+                                <td>Guardrails no &lt;adicionais&gt;</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Palavras fortes</strong></td>
+                                <td>Obrigações e proibições</td>
+                                <td>SEMPRE, JAMAIS, PROIBIDO</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-title">Checklist de Ênfase</div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Regras críticas em MAIÚSCULAS?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Termos importantes em **negrito**?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Repetição estratégica (início, meio, fim)?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Guardrails posicionados no FINAL?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Palavras-chave fortes (SEMPRE, NUNCA)?</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Super Dicas -->
+            <section class="section" id="superdicas">
+                <div class="section-header">
+                    <div class="section-step">
+                        <span class="section-step-number">★</span>
+                        Extras
+                    </div>
+                    <h1 class="section-title">Super Dicas</h1>
+                    <p class="section-subtitle">Técnicas exclusivas e avançadas de engenharia de prompts, testadas e refinadas na prática.</p>
+                </div>
+
+                <!-- DICA 1: M&M Marrom -->
+                <h3>1. Técnica M&M Marrom (Van Halen)</h3>
+
+                <div class="callout callout-info">
+                    <span class="callout-icon">🎸</span>
+                    <div class="callout-content">
+                        <div class="callout-title">A História</div>
+                        <p class="callout-text">A banda Van Halen incluía em seus contratos uma cláusula exigindo um pote de M&Ms no camarim — sem nenhum marrom. Não era capricho: era um teste. Se houvesse M&Ms marrons, significava que o contratante não leu as instruções com atenção, e provavelmente outras exigências técnicas críticas (som, segurança) também foram ignoradas.</p>
+                    </div>
+                </div>
+
+                <p>Em engenharia de prompts, podemos usar a mesma lógica: inserir <strong>instruções verificáveis</strong> que nos permitem checar rapidamente se o modelo seguiu as regras.</p>
+
+                <h4>Como aplicar</h4>
+                <p>Inclua no seu prompt instruções específicas e verificáveis:</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo de Verificador</th>
+                                <th>Exemplo</th>
+                                <th>O que verificar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Emoji sinalizador</strong></td>
+                                <td>"Use ✅ para presente e ❌ para ausente"</td>
+                                <td>Presença dos emojis corretos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Frase de início</strong></td>
+                                <td>"Comece com RELATÓRIO"</td>
+                                <td>Primeira palavra da resposta</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Frase de fim</strong></td>
+                                <td>"Termine com 'Análise concluída.'"</td>
+                                <td>Última frase da resposta</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Estrutura fixa</strong></td>
+                                <td>"Cada item: Nome | Status | Fonte"</td>
+                                <td>Formato das linhas</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Palavra-chave obrigatória</strong></td>
+                                <td>"Inclua a palavra VERIFICADO ao final"</td>
+                                <td>Presença da palavra</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Exemplo Prático</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;adicionais&gt;</span>
+<span class="token-keyword">**Sinalizadores obrigatórios (M&M Marrom):**</span>
+
+1. Comece a resposta com "## ANÁLISE FIRAC+"
+2. Para cada requisito, use: ✅ (presente) ou ❌ (ausente)
+3. Termine cada seção com uma linha em branco
+4. Finalize com: "---\n*Análise concluída em {{data}}*"
+
+<span class="token-comment">Se estes sinalizadores não aparecerem, o modelo não
+seguiu as instruções corretamente.</span>
+<span class="token-tag">&lt;/adicionais&gt;</span></code></pre>
+                </div>
+
+                <div class="callout callout-tip">
+                    <span class="callout-icon">💡</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Benefício</div>
+                        <p class="callout-text">Verificadores M&M Marrom permitem validar instantaneamente se o modelo leu e seguiu suas instruções. Se o sinalizador não aparecer, você sabe que precisa ajustar o prompt ou reforçar a instrução.</p>
+                    </div>
+                </div>
+
+                <!-- DICA 2: Prompt Pré-estruturado -->
+                <h3>2. Prompt Pré-estruturado (Palavras na Boca)</h3>
+
+                <p>Esta técnica consiste em <strong>pré-escrever partes do texto</strong> que você quer que o modelo complete, deixando apenas os espaços variáveis para preenchimento. Você coloca literalmente "palavras na boca" do modelo.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Técnica</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-comment">Em vez de:</span>
+"Escreva um relatório sobre o caso"
+
+<span class="token-comment">Use:</span>
+<span class="token-tag">&lt;formato_saida&gt;</span>
+## RELATÓRIO
+
+<span class="token-placeholder">`NOME DA PARTE AUTORA`</span> propôs a presente <span class="token-placeholder">`tipo de ação`</span>
+em face de <span class="token-placeholder">`NOME DO RÉU`</span>, objetivando <span class="token-placeholder">`pedido principal`</span>.
+
+**Dos Fatos**
+
+Alega a parte autora que <span class="token-placeholder">`resumo dos fatos alegados`</span>.
+
+**Do Direito**
+
+<span class="token-placeholder">`fundamentos jurídicos aplicáveis`</span>
+
+**Conclusão**
+
+Ante o exposto, <span class="token-placeholder">`conclusão da análise`</span>.
+<span class="token-tag">&lt;/formato_saida&gt;</span></code></pre>
+                </div>
+
+                <h4>Vantagens</h4>
+                <ul>
+                    <li><strong>Controle de estilo:</strong> O modelo mantém seu tom e estrutura</li>
+                    <li><strong>Consistência:</strong> Todas as saídas seguem o mesmo padrão</li>
+                    <li><strong>Clareza:</strong> O modelo sabe exatamente onde e o que preencher</li>
+                    <li><strong>Economia de tokens:</strong> Menos instruções, mais contexto útil</li>
+                </ul>
+
+                <div class="card-grid">
+                    <div class="card-mini">
+                        <div class="card-mini-title">`Backticks`</div>
+                        <div class="card-mini-desc">Use para instruções de preenchimento em MAIÚSCULAS</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">[Colchetes]</div>
+                        <div class="card-mini-desc">Use para campos variáveis simples</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">{{Chaves duplas}}</div>
+                        <div class="card-mini-desc">Use para conteúdo dinâmico extenso</div>
+                    </div>
+                    <div class="card-mini">
+                        <div class="card-mini-title">Texto fixo</div>
+                        <div class="card-mini-desc">Mantenha conectivos e estrutura que você quer preservar</div>
+                    </div>
+                </div>
+
+                <!-- DICA 3: Leia com Atenção -->
+                <h3>3. "Leia com Atenção" (Técnica Anthropic)</h3>
+
+                <p>A Anthropic usa em seus próprios prompts de sistema uma técnica simples mas eficaz: <strong>avisar explicitamente</strong> que uma instrução é importante e merece atenção especial.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Padrão Anthropic</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-keyword">Leia com atenção as instruções abaixo. Elas são importantes
+para o sucesso da tarefa.</span>
+
+<span class="token-comment">Ou:</span>
+
+<span class="token-keyword">IMPORTANTE:</span> A seção a seguir contém regras críticas.
+<span class="token-keyword">Preste atenção especial a estas instruções.</span>
+
+<span class="token-comment">Ou:</span>
+
+<span class="token-keyword">A instrução abaixo é essencial. Leia cuidadosamente:</span>
+[instrução crítica aqui]</code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <span class="callout-icon">⚠️</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Use com moderação</div>
+                        <p class="callout-text">Se tudo for "importante", nada será importante. Reserve esta técnica para 1-2 instruções verdadeiramente críticas no seu prompt. O efeito se dilui com uso excessivo.</p>
+                    </div>
+                </div>
+
+                <h4>Variações eficazes</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Frase</th>
+                                <th>Quando usar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>"Leia com atenção as instruções abaixo."</td>
+                                <td>Antes de regras complexas</td>
+                            </tr>
+                            <tr>
+                                <td>"Esta instrução é crítica para o sucesso da tarefa."</td>
+                                <td>Antes de guardrails</td>
+                            </tr>
+                            <tr>
+                                <td>"Preste atenção especial ao seguinte:"</td>
+                                <td>Antes de proibições</td>
+                            </tr>
+                            <tr>
+                                <td>"O ponto a seguir é essencial:"</td>
+                                <td>Antes de requisitos obrigatórios</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- DICA 4: Comece Simples -->
+                <h3>4. Comece Simples (Desenvolvimento Iterativo)</h3>
+
+                <div class="callout callout-tip">
+                    <span class="callout-icon">🎯</span>
+                    <div class="callout-content">
+                        <div class="callout-title">Regra de Ouro</div>
+                        <p class="callout-text">Sempre comece com o prompt mais simples possível. Adicione complexidade apenas quando necessário e de forma incremental.</p>
+                    </div>
+                </div>
+
+                <p>Muitos engenheiros de prompt caem na armadilha de criar prompts ultra-complexos desde o início. Isso gera problemas:</p>
+
+                <ul>
+                    <li><strong>Desperdício de tokens:</strong> Instruções desnecessárias consomem contexto</li>
+                    <li><strong>Confusão do modelo:</strong> Muitas regras podem conflitar</li>
+                    <li><strong>Dificuldade de debug:</strong> Não sabe qual instrução causou o problema</li>
+                    <li><strong>Over-engineering:</strong> Complexidade sem benefício real</li>
+                </ul>
+
+                <h4>Processo iterativo recomendado</h4>
+
+                <div class="framework-diagram">
+                    <div style="font-family: var(--font-mono); font-size: 14px; color: #e2e8f0; line-height: 1.8;">
+                        <div style="margin-bottom: 16px; text-align: center; color: var(--accent-light); font-weight: 600;">CICLO DE DESENVOLVIMENTO</div>
+                        <div style="display: grid; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="background: var(--accent); padding: 4px 12px; border-radius: 4px; font-weight: 600;">1</span>
+                                <span>Prompt mínimo → Teste → Funciona? ✅ Pare aqui</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="background: var(--accent); padding: 4px 12px; border-radius: 4px; font-weight: 600;">2</span>
+                                <span>Não funciona? → Identifique o problema específico</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="background: var(--accent); padding: 4px 12px; border-radius: 4px; font-weight: 600;">3</span>
+                                <span>Adicione UMA instrução para resolver → Teste</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="background: var(--accent); padding: 4px 12px; border-radius: 4px; font-weight: 600;">4</span>
+                                <span>Repita até atingir o resultado desejado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Exemplo de Evolução</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-comment">Versão 1 (mínima):</span>
+Analise este documento jurídico e identifique a questão central.
+
+<span class="token-comment">Versão 2 (+ estrutura):</span>
+Analise este documento jurídico.
+Identifique: 1) Questão central 2) Partes 3) Pedido
+
+<span class="token-comment">Versão 3 (+ formato):</span>
+Analise este documento jurídico usando o formato:
+## Questão Central
+## Partes
+## Pedido
+
+<span class="token-comment">Versão 4 (+ guardrail, se necessário):</span>
+[adiciona apenas se o modelo estiver inventando dados]
+IMPORTANTE: Use APENAS informações do documento.</code></pre>
+                </div>
+
+                <!-- DICA 5: Cuidado com Few-Shot -->
+                <h3>5. Cuidado com Exemplos (Few-Shot)</h3>
+
+                <p>Exemplos (few-shot) são poderosos para ensinar o modelo a mimetizar um estilo ou formato. Mas têm <strong>efeitos colaterais</strong> que precisam ser gerenciados.</p>
+
+                <div class="tabs">
+                    <div class="tabs-header">
+                        <button class="tab-button active" onclick="switchTab(event, 'tab-contaminacao')">Risco de Contaminação</button>
+                        <button class="tab-button" onclick="switchTab(event, 'tab-enviesamento')">Viés do Exemplo</button>
+                        <button class="tab-button" onclick="switchTab(event, 'tab-quando-usar')">Quando Usar</button>
+                    </div>
+                    <div class="tab-content active" id="tab-contaminacao">
+                        <div class="card">
+                            <div class="card-title">Contaminação de Contexto</div>
+                            <p>O modelo pode confundir o <strong>conteúdo do exemplo</strong> com o <strong>conteúdo real</strong> a ser processado.</p>
+
+                            <div class="example">
+                                <div class="example-title">Problema</div>
+                                <p>Se seu exemplo menciona "João Silva" e o documento real menciona "Maria Santos", o modelo pode misturar os nomes ou usar dados do exemplo na resposta real.</p>
+                            </div>
+
+                            <h4>Soluções:</h4>
+                            <ul>
+                                <li>Use delimitadores claros: <code>&lt;exemplo&gt;</code> e <code>&lt;documento_real&gt;</code></li>
+                                <li>Inclua aviso explícito: "O exemplo acima é APENAS ilustrativo. Use SOMENTE os dados do documento real."</li>
+                                <li>Use nomes fictícios óbvios no exemplo: "EXEMPLO_AUTOR", "EXEMPLO_RÉU"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="tab-enviesamento">
+                        <div class="card">
+                            <div class="card-title">Viés de Formato e Quantidade</div>
+                            <p>O modelo tende a <strong>replicar exatamente</strong> o padrão do exemplo, mesmo quando a tarefa pede algo diferente.</p>
+
+                            <div class="example">
+                                <div class="example-title">Problema</div>
+                                <p>Se seu exemplo tem uma lista com 3 itens, o modelo tenderá a produzir listas com 3 itens, mesmo que o documento real tenha 7 pontos relevantes.</p>
+                            </div>
+
+                            <h4>Soluções:</h4>
+                            <ul>
+                                <li>Adicione instrução: "O número de itens deve refletir o conteúdo real, não o exemplo"</li>
+                                <li>Use exemplos com quantidades variadas (um com 2, outro com 5)</li>
+                                <li>Explicite: "Liste TODOS os itens relevantes, independente da quantidade"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="tab-quando-usar">
+                        <div class="card">
+                            <div class="card-title">Quando Usar (e Não Usar) Exemplos</div>
+
+                            <h4>✅ Use exemplos quando:</h4>
+                            <ul>
+                                <li>Precisa de um formato muito específico difícil de descrever</li>
+                                <li>Quer mimetizar um estilo de escrita particular</li>
+                                <li>A tarefa é não-convencional e instruções não bastam</li>
+                                <li>Precisa mostrar o nível de detalhe esperado</li>
+                            </ul>
+
+                            <h4>❌ Evite exemplos quando:</h4>
+                            <ul>
+                                <li>Instruções claras são suficientes</li>
+                                <li>O conteúdo do exemplo pode contaminar a resposta</li>
+                                <li>Você precisa de flexibilidade na quantidade/formato</li>
+                                <li>O contexto já está limitado (poucos tokens disponíveis)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Exemplo Seguro de Few-Shot</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+                    </div>
+                    <pre><code><span class="token-tag">&lt;exemplo&gt;</span>
+<span class="token-comment">&lt;!-- ATENÇÃO: Este é apenas um exemplo de FORMATO.
+     Os dados abaixo são FICTÍCIOS e ilustrativos. --&gt;</span>
+
+**Análise do Caso EXEMPLO_001**
+- Autor: EXEMPLO_AUTOR
+- Réu: EXEMPLO_RÉU
+- Questão: [descrição genérica]
+
+<span class="token-keyword">Nota: O número de itens e a extensão devem se adaptar
+ao documento real, não a este exemplo.</span>
+<span class="token-tag">&lt;/exemplo&gt;</span>
+
+<span class="token-tag">&lt;documento_real&gt;</span>
+{{DOCUMENTO}}
+<span class="token-tag">&lt;/documento_real&gt;</span>
+
+<span class="token-keyword">IMPORTANTE:</span> Use o exemplo acima APENAS como referência de formato.
+Todos os dados devem vir EXCLUSIVAMENTE do documento real.
+A quantidade de itens deve refletir o conteúdo real, não o exemplo.</code></pre>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-title">Checklist de Super Dicas</div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Incluiu verificadores M&M Marrom para validação rápida?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Usou prompt pré-estruturado quando precisa de controle de estilo?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Usou "Leia com atenção" apenas para instruções críticas?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Começou simples e adicionou complexidade iterativamente?</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox"></div>
+                        <span class="checklist-text">Se usou exemplos, protegeu contra contaminação e viés?</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scroll to top button -->
+    <button class="scroll-indicator" id="scrollTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+        // Navigation toggle for mobile
+        function toggleNav() {
+            document.getElementById('nav').classList.toggle('open');
+        }
+
+        // Close nav when clicking a link on mobile
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('nav').classList.remove('open');
+            });
+        });
+
+        // Tab switching
+        function switchTab(event, tabId) {
+            const parent = event.target.closest('.tabs');
+            parent.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            parent.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Accordion
+        function toggleAccordion(button) {
+            const item = button.parentElement;
+            const content = button.nextElementSibling;
+            const isActive = item.classList.contains('active');
+
+            // Close all other accordions in the same group
+            item.parentElement.querySelectorAll('.accordion-item').forEach(i => {
+                i.classList.remove('active');
+                i.querySelector('.accordion-content').style.maxHeight = '0';
+            });
+
+            if (!isActive) {
+                item.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        }
+
+        // Checklist toggle
+        function toggleCheck(item) {
+            item.classList.toggle('checked');
+            updateProgress();
+        }
+
+        // Copy code
+        function copyCode(button) {
+            const code = button.closest('.code-block').querySelector('pre code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copiado!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = 'Copiar';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const total = document.querySelectorAll('.checklist-item').length;
+            const checked = document.querySelectorAll('.checklist-item.checked').length;
+            const percentage = Math.round((checked / total) * 100);
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '%';
+        }
+
+        // Active navigation on scroll
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Show/hide scroll to top button
+            const scrollButton = document.getElementById('scrollTop');
+            if (window.scrollY > 500) {
+                scrollButton.classList.add('visible');
+            } else {
+                scrollButton.classList.remove('visible');
+            }
+        }
+
+        // Initialize
+        window.addEventListener('scroll', updateActiveNav);
+        updateActiveNav();
+        updateProgress();
+    </script>
+</body>
+</html>

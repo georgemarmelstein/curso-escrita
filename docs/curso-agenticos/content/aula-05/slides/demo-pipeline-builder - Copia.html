@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Builder - Montador de Pipelines Agênticos</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================
+           VARIÁVEIS - Paleta Pastel + SUPER
+           ========================================== */
+        :root {
+            /* Paleta Pastel (elementos principais) */
+            --bg-canvas: #F5F0E8;
+            --bg-library: #EDE8E0;
+            --folder-entrada: #FFF8E7;
+            --folder-entrada-border: #E8D9B8;
+            --folder-tarefa: #E3F2FD;
+            --folder-tarefa-border: #90CAF9;
+            --folder-docs: #E8F5E9;
+            --folder-docs-border: #A5D6A7;
+            --folder-saida: #FFF3E0;
+            --folder-saida-border: #FFCC80;
+
+            /* Paleta SUPER (acentos) */
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+
+            /* Cores semânticas */
+            --color-success: #4ade80;
+            --color-warning: #fbbf24;
+            --color-danger: #f87171;
+
+            /* Texto */
+            --text-primary: #2c2c2c;
+            --text-secondary: #666;
+            --text-muted: #999;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-canvas);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-primary);
+        }
+
+        /* ==========================================
+           HEADER / MENU SUPERIOR
+           ========================================== */
+        .header {
+            background: var(--super-bg-dark);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--super-gold);
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .patterns-menu {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pattern-btn {
+            background: rgba(190, 156, 109, 0.15);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            color: var(--super-cream);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pattern-btn:hover {
+            background: rgba(190, 156, 109, 0.3);
+            border-color: var(--super-gold);
+        }
+
+        .pattern-btn.active {
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: var(--super-gold);
+            border: none;
+            color: var(--super-bg-dark);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(190, 156, 109, 0.4);
+        }
+
+        .action-btn.reset {
+            background: transparent;
+            border: 1px solid rgba(190, 156, 109, 0.5);
+            color: var(--super-cream);
+        }
+
+        .action-btn.reset:hover {
+            background: rgba(190, 156, 109, 0.2);
+        }
+
+        /* ==========================================
+           MAIN LAYOUT
+           ========================================== */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ==========================================
+           BIBLIOTECA (sidebar esquerda)
+           ========================================== */
+        .library {
+            width: 260px;
+            background: var(--bg-library);
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .library-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            font-size: 1em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .library-folder {
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .library-folder:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .library-folder:active {
+            cursor: grabbing;
+        }
+
+        .library-folder.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .library-folder.entrada {
+            background: var(--folder-entrada);
+            border-color: var(--folder-entrada-border);
+        }
+
+        .library-folder.tarefa {
+            background: var(--folder-tarefa);
+            border-color: var(--folder-tarefa-border);
+        }
+
+        .library-folder.docs {
+            background: var(--folder-docs);
+            border-color: var(--folder-docs-border);
+        }
+
+        .library-folder.saida {
+            background: var(--folder-saida);
+            border-color: var(--folder-saida-border);
+        }
+
+        .folder-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .folder-icon {
+            font-size: 1.5em;
+        }
+
+        .folder-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.9em;
+            color: var(--text-primary);
+        }
+
+        .folder-desc {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            margin-left: 32px;
+        }
+
+        /* ==========================================
+           CANVAS (área principal)
+           ========================================== */
+        .canvas {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .canvas-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1em;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .canvas-hint.hidden {
+            opacity: 0;
+        }
+
+        .canvas-hint .icon {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .canvas.drag-over {
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        /* ==========================================
+           PASTA NO CANVAS (aberta, com conteúdo)
+           ========================================== */
+        .canvas-folder {
+            background: white;
+            border-radius: 12px;
+            min-width: 350px;
+            max-width: 450px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            animation: folder-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid;
+        }
+
+        @keyframes folder-enter {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .canvas-folder.entrada {
+            background: var(--folder-entrada);
+            border-color: var(--folder-entrada-border);
+        }
+
+        .canvas-folder.tarefa {
+            background: var(--folder-tarefa);
+            border-color: var(--folder-tarefa-border);
+        }
+
+        .canvas-folder.docs {
+            background: var(--folder-docs);
+            border-color: var(--folder-docs-border);
+        }
+
+        .canvas-folder.saida {
+            background: var(--folder-saida);
+            border-color: var(--folder-saida-border);
+        }
+
+        .canvas-folder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .canvas-folder-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .canvas-folder-title .icon {
+            font-size: 1.4em;
+        }
+
+        .canvas-folder-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .folder-action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .folder-action-btn.add {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .folder-action-btn.add:hover {
+            transform: scale(1.1);
+        }
+
+        .folder-action-btn.remove {
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .folder-action-btn.remove:hover {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        .canvas-folder-content {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* ==========================================
+           ITENS DENTRO DA PASTA
+           ========================================== */
+        .folder-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+        }
+
+        .folder-item:hover {
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .folder-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .folder-item-icon {
+            font-size: 1.2em;
+        }
+
+        .folder-item-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--text-primary);
+        }
+
+        .folder-item-remove {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+
+        .folder-item:hover .folder-item-remove {
+            opacity: 1;
+        }
+
+        .folder-item-remove:hover {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        /* ==========================================
+           MENU DE SELEÇÃO DE PROMPTS
+           ========================================== */
+        .prompt-selector {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 20px;
+            z-index: 1000;
+            min-width: 280px;
+            animation: popup-enter 0.3s ease;
+        }
+
+        @keyframes popup-enter {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .prompt-selector-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+        }
+
+        .prompt-selector-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            margin-bottom: 16px;
+            font-size: 1.1em;
+        }
+
+        .prompt-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .prompt-option:hover {
+            background: var(--folder-tarefa);
+            border-color: var(--folder-tarefa-border);
+        }
+
+        .prompt-option-icon {
+            font-size: 1.4em;
+        }
+
+        .prompt-option-info {
+            flex: 1;
+        }
+
+        .prompt-option-name {
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .prompt-option-desc {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+        }
+
+        /* ==========================================
+           CONEXÕES SVG
+           ========================================== */
+        .connections-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .connection-line {
+            stroke: var(--super-gold);
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        .connection-line.dashed {
+            stroke-dasharray: 8, 4;
+        }
+
+        .connection-arrow {
+            fill: var(--super-gold);
+        }
+
+        /* ==========================================
+           BADGE DE MODO
+           ========================================== */
+        .mode-badge {
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            padding: 12px 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            border: 2px solid var(--super-gold);
+            margin-top: auto;
+        }
+
+        .mode-badge-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--super-gold);
+            font-size: 0.9em;
+        }
+
+        .mode-badge-pattern {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .mode-badge-desc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold-light);
+        }
+
+        /* ==========================================
+           CONTROLE DE ARRANJO
+           ========================================== */
+        .arranjo-control {
+            background: var(--folder-tarefa);
+            border: 2px solid var(--folder-tarefa-border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-top: -10px;
+        }
+
+        .arranjo-title {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .arranjo-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .arranjo-option {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.8em;
+            transition: all 0.2s ease;
+        }
+
+        .arranjo-option:hover {
+            border-color: var(--folder-tarefa-border);
+        }
+
+        .arranjo-option.active {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.1);
+        }
+
+        .arranjo-option-icon {
+            font-size: 1.2em;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ==========================================
+           ANIMAÇÕES DE EXECUÇÃO
+           ========================================== */
+        .canvas-folder.pulse {
+            animation: pulse-folder 0.6s ease;
+        }
+
+        @keyframes pulse-folder {
+            0%, 100% {
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(190, 156, 109, 0.5);
+                transform: scale(1.02);
+            }
+        }
+
+        .flying-doc {
+            position: fixed;
+            font-size: 1.5em;
+            pointer-events: none;
+            z-index: 1001;
+            animation: fly-doc 0.8s ease-in-out forwards;
+        }
+
+        @keyframes fly-doc {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        /* ==========================================
+           FEEDBACK / MENSAGENS
+           ========================================== */
+        .feedback-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--super-bg-dark);
+            color: var(--super-cream);
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 1px solid var(--super-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            z-index: 1000;
+            animation: feedback-enter 0.3s ease;
+        }
+
+        @keyframes feedback-enter {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .feedback-message.success {
+            border-color: var(--color-success);
+        }
+
+        .feedback-message.error {
+            border-color: var(--color-danger);
+        }
+
+        /* ==========================================
+           EMBED MODE
+           ========================================== */
+        body.embed-mode .header {
+            padding: 8px 15px;
+        }
+
+        body.embed-mode .header-title {
+            font-size: 1em;
+        }
+
+        body.embed-mode .pattern-btn {
+            padding: 4px 8px;
+            font-size: 0.7em;
+        }
+
+        body.embed-mode .library {
+            width: 200px;
+            padding: 12px;
+        }
+
+        body.embed-mode .library-folder {
+            padding: 8px;
+        }
+
+        body.embed-mode .folder-name {
+            font-size: 0.8em;
+        }
+
+        body.embed-mode .folder-desc {
+            display: none;
+        }
+
+        body.embed-mode .canvas {
+            padding: 15px;
+        }
+
+        body.embed-mode .canvas-folder {
+            min-width: 280px;
+        }
+
+        /* ==========================================
+           RESPONSIVO
+           ========================================== */
+        @media (max-width: 800px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .library {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 10px;
+            }
+
+            .library-folder {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .patterns-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <h1 class="header-title">Pipeline Builder</h1>
+
+        <div class="patterns-menu">
+            <button class="pattern-btn" onclick="loadPattern('single-turn')">Tarefa Unitária</button>
+            <button class="pattern-btn" onclick="loadPattern('batch')">Escala</button>
+            <button class="pattern-btn" onclick="loadPattern('chaining')">Cadeia</button>
+            <button class="pattern-btn" onclick="loadPattern('parallel')">Paralelo</button>
+            <button class="pattern-btn" onclick="loadPattern('routing')">Roteamento</button>
+            <button class="pattern-btn" onclick="loadPattern('orchestrator')">Orquestrador</button>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn reset" onclick="resetPipeline()">
+                <span>🔄</span> Reset
+            </button>
+            <button class="action-btn" onclick="executePipeline()">
+                <span>▶️</span> Executar
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main-container">
+        <!-- BIBLIOTECA -->
+        <aside class="library">
+            <h2 class="library-title">📁 Biblioteca</h2>
+
+            <div class="library-folder entrada" draggable="true" data-type="entrada">
+                <div class="folder-header">
+                    <span class="folder-icon">📂</span>
+                    <span class="folder-name">ENTRADA</span>
+                </div>
+                <div class="folder-desc">Processos e documentos</div>
+            </div>
+
+            <div class="library-folder tarefa" draggable="true" data-type="tarefa">
+                <div class="folder-header">
+                    <span class="folder-icon">📂</span>
+                    <span class="folder-name">TAREFA</span>
+                </div>
+                <div class="folder-desc">Prompts e agentes</div>
+            </div>
+
+            <div class="library-folder docs" draggable="true" data-type="docs">
+                <div class="folder-header">
+                    <span class="folder-icon">📂</span>
+                    <span class="folder-name">DOCS</span>
+                </div>
+                <div class="folder-desc">Referências e modelos</div>
+            </div>
+
+            <div class="library-folder saida" draggable="true" data-type="saida">
+                <div class="folder-header">
+                    <span class="folder-icon">📂</span>
+                    <span class="folder-name">SAÍDA</span>
+                </div>
+                <div class="folder-desc">Resultados gerados</div>
+            </div>
+        </aside>
+
+        <!-- CANVAS -->
+        <section class="canvas" id="canvas">
+            <div class="canvas-hint" id="canvasHint">
+                <span class="icon">📁</span>
+                Arraste as pastas da biblioteca para montar seu pipeline
+            </div>
+        </section>
+    </main>
+
+    <!-- PROMPT SELECTOR (hidden by default) -->
+    <div class="prompt-selector-overlay" id="promptOverlay" style="display: none;"></div>
+    <div class="prompt-selector" id="promptSelector" style="display: none;">
+        <h3 class="prompt-selector-title">Escolha o tipo de tarefa:</h3>
+        <div class="prompt-option" onclick="selectPrompt('relator')">
+            <span class="prompt-option-icon">📝</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">Relator</div>
+                <div class="prompt-option-desc">Resume o processo judicial</div>
+            </div>
+        </div>
+        <div class="prompt-option" onclick="selectPrompt('analisador')">
+            <span class="prompt-option-icon">🔍</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">Analisador</div>
+                <div class="prompt-option-desc">Analisa questões jurídicas</div>
+            </div>
+        </div>
+        <div class="prompt-option" onclick="selectPrompt('pesquisador')">
+            <span class="prompt-option-icon">📚</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">Pesquisador</div>
+                <div class="prompt-option-desc">Busca jurisprudência e doutrina</div>
+            </div>
+        </div>
+        <div class="prompt-option" onclick="selectPrompt('revisor')">
+            <span class="prompt-option-icon">✅</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">Revisor</div>
+                <div class="prompt-option-desc">Revisa e valida documentos</div>
+            </div>
+        </div>
+        <div class="prompt-option" onclick="selectPrompt('minutador')">
+            <span class="prompt-option-icon">📋</span>
+            <div class="prompt-option-info">
+                <div class="prompt-option-name">Minutador</div>
+                <div class="prompt-option-desc">Elabora minuta de decisão</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // ESTADO DO PIPELINE
+        // ==========================================
+        const state = {
+            entrada: { items: [], visible: false },
+            tarefa: { items: [], arranjo: 'sequential', visible: false },
+            docs: { items: [], conexao: null, visible: false },
+            saida: { items: [], visible: false },
+            modoDetectado: null
+        };
+
+        // Mapeamento de prompts para outputs
+        const promptConfig = {
+            relator: { icon: '📝', name: 'Relator', output: 'RELATÓRIO' },
+            analisador: { icon: '🔍', name: 'Analisador', output: 'ANÁLISE' },
+            pesquisador: { icon: '📚', name: 'Pesquisador', output: 'PESQUISA' },
+            revisor: { icon: '✅', name: 'Revisor', output: 'REVISÃO' },
+            minutador: { icon: '📋', name: 'Minutador', output: 'MINUTA' }
+        };
+
+        // Modos e seus nomes
+        const modeNames = {
+            'single-turn': { pt: 'Tarefa Unitária', en: 'Single-turn' },
+            'batch': { pt: 'Escala Horizontal', en: 'Batch Processing' },
+            'prompt-chaining': { pt: 'Cadeia de Prompts', en: 'Prompt Chaining' },
+            'parallelization': { pt: 'Paralelização', en: 'Parallelization' },
+            'routing': { pt: 'Roteamento', en: 'Routing' },
+            'orchestrator': { pt: 'Orquestrador', en: 'Orchestrator-Workers' }
+        };
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Detectar modo embed
+            if (window.location.search.includes('embed=true') || window.self !== window.top) {
+                document.body.classList.add('embed-mode');
+            }
+
+            initDragAndDrop();
+        });
+
+        // ==========================================
+        // DRAG AND DROP
+        // ==========================================
+        function initDragAndDrop() {
+            const libraryFolders = document.querySelectorAll('.library-folder');
+            const canvas = document.getElementById('canvas');
+
+            libraryFolders.forEach(folder => {
+                folder.addEventListener('dragstart', handleDragStart);
+                folder.addEventListener('dragend', handleDragEnd);
+            });
+
+            canvas.addEventListener('dragover', handleDragOver);
+            canvas.addEventListener('dragleave', handleDragLeave);
+            canvas.addEventListener('drop', handleDrop);
+        }
+
+        function handleDragStart(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', e.target.dataset.type);
+            e.dataTransfer.effectAllowed = 'copy';
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            document.getElementById('canvas').classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            document.getElementById('canvas').classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('canvas').classList.remove('drag-over');
+
+            const type = e.dataTransfer.getData('text/plain');
+            if (type && !state[type].visible) {
+                addFolderToCanvas(type);
+            }
+        }
+
+        // ==========================================
+        // ADICIONAR PASTA AO CANVAS
+        // ==========================================
+        function addFolderToCanvas(type) {
+            state[type].visible = true;
+
+            // Adicionar item inicial
+            if (type === 'entrada' && state.entrada.items.length === 0) {
+                state.entrada.items.push('PROCESSO-001.PDF');
+            } else if (type === 'tarefa' && state.tarefa.items.length === 0) {
+                showPromptSelector();
+                return; // Espera seleção
+            } else if (type === 'docs' && state.docs.items.length === 0) {
+                state.docs.items.push('referencias.md');
+            }
+
+            renderCanvas();
+        }
+
+        // ==========================================
+        // RENDERIZAR CANVAS
+        // ==========================================
+        function renderCanvas() {
+            const canvas = document.getElementById('canvas');
+            const hint = document.getElementById('canvasHint');
+
+            // Verificar se há algo para mostrar
+            const hasContent = state.entrada.visible || state.tarefa.visible ||
+                               state.docs.visible || state.saida.visible;
+
+            hint.classList.toggle('hidden', hasContent);
+
+            // Limpar canvas (exceto hint)
+            Array.from(canvas.children).forEach(child => {
+                if (child.id !== 'canvasHint') {
+                    child.remove();
+                }
+            });
+
+            // Renderizar pastas na ordem
+            if (state.entrada.visible) {
+                canvas.appendChild(createCanvasFolder('entrada'));
+            }
+
+            if (state.docs.visible && state.docs.conexao === 'entrada') {
+                canvas.appendChild(createCanvasFolder('docs'));
+            }
+
+            if (state.tarefa.visible) {
+                canvas.appendChild(createCanvasFolder('tarefa'));
+
+                // Mostrar controle de arranjo se houver múltiplos prompts
+                if (state.tarefa.items.length > 1) {
+                    canvas.appendChild(createArranjoControl());
+                }
+            }
+
+            if (state.docs.visible && state.docs.conexao === 'tarefa') {
+                canvas.appendChild(createCanvasFolder('docs'));
+            }
+
+            // Calcular e mostrar saídas
+            recalculateOutputs();
+            if (state.saida.items.length > 0) {
+                canvas.appendChild(createCanvasFolder('saida'));
+            }
+
+            // Detectar e mostrar modo
+            detectMode();
+            if (state.modoDetectado) {
+                canvas.appendChild(createModeBadge());
+            }
+        }
+
+        // ==========================================
+        // CRIAR PASTA NO CANVAS
+        // ==========================================
+        function createCanvasFolder(type) {
+            const folder = document.createElement('div');
+            folder.className = `canvas-folder ${type}`;
+            folder.id = `folder-${type}`;
+
+            const icons = {
+                entrada: '📂',
+                tarefa: '📂',
+                docs: '📂',
+                saida: '📂'
+            };
+
+            const names = {
+                entrada: 'ENTRADA',
+                tarefa: 'TAREFA',
+                docs: 'DOCS',
+                saida: 'SAÍDA'
+            };
+
+            const isEditable = type !== 'saida';
+
+            folder.innerHTML = `
+                <div class="canvas-folder-header">
+                    <div class="canvas-folder-title">
+                        <span class="icon">${icons[type]}</span>
+                        <span>${names[type]}</span>
+                        ${type === 'saida' ? `<span style="font-size: 0.7em; color: var(--text-muted);">(auto: ${state.saida.items.length} docs)</span>` : ''}
+                    </div>
+                    <div class="canvas-folder-actions">
+                        ${isEditable ? `<button class="folder-action-btn add" onclick="addItem('${type}')">+</button>` : ''}
+                        <button class="folder-action-btn remove" onclick="removeFolder('${type}')">×</button>
+                    </div>
+                </div>
+                <div class="canvas-folder-content">
+                    ${renderFolderItems(type)}
+                </div>
+            `;
+
+            return folder;
+        }
+
+        // ==========================================
+        // RENDERIZAR ITENS DA PASTA
+        // ==========================================
+        function renderFolderItems(type) {
+            const items = state[type].items;
+
+            if (items.length === 0) {
+                return '<div style="color: var(--text-muted); font-size: 0.85em; padding: 8px;">Pasta vazia</div>';
+            }
+
+            return items.map((item, index) => {
+                let icon = '📄';
+                let displayName = item;
+
+                if (type === 'tarefa' && promptConfig[item]) {
+                    icon = promptConfig[item].icon;
+                    displayName = promptConfig[item].name;
+                } else if (type === 'docs') {
+                    icon = '📚';
+                }
+
+                const isEditable = type !== 'saida';
+
+                return `
+                    <div class="folder-item">
+                        <div class="folder-item-info">
+                            <span class="folder-item-icon">${icon}</span>
+                            <span class="folder-item-name">${displayName}</span>
+                        </div>
+                        ${isEditable ? `<button class="folder-item-remove" onclick="removeItem('${type}', ${index})">×</button>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================
+        // CONTROLE DE ARRANJO
+        // ==========================================
+        function createArranjoControl() {
+            const control = document.createElement('div');
+            control.className = 'arranjo-control';
+            control.innerHTML = `
+                <div class="arranjo-title">Arranjo dos prompts:</div>
+                <div class="arranjo-options">
+                    <div class="arranjo-option ${state.tarefa.arranjo === 'sequential' ? 'active' : ''}"
+                         onclick="setArranjo('sequential')">
+                        <span class="arranjo-option-icon">⛓️</span>
+                        Sequencial
+                    </div>
+                    <div class="arranjo-option ${state.tarefa.arranjo === 'parallel' ? 'active' : ''}"
+                         onclick="setArranjo('parallel')">
+                        <span class="arranjo-option-icon">⚡</span>
+                        Paralelo
+                    </div>
+                    <div class="arranjo-option ${state.tarefa.arranjo === 'conditional' ? 'active' : ''}"
+                         onclick="setArranjo('conditional')">
+                        <span class="arranjo-option-icon">🔀</span>
+                        Condicional
+                    </div>
+                </div>
+            `;
+            return control;
+        }
+
+        function setArranjo(arranjo) {
+            state.tarefa.arranjo = arranjo;
+            renderCanvas();
+        }
+
+        // ==========================================
+        // ADICIONAR / REMOVER ITENS
+        // ==========================================
+        function addItem(type) {
+            if (type === 'entrada') {
+                const num = state.entrada.items.length + 1;
+                state.entrada.items.push(`PROCESSO-${String(num).padStart(3, '0')}.PDF`);
+                renderCanvas();
+            } else if (type === 'tarefa') {
+                showPromptSelector();
+            } else if (type === 'docs') {
+                const num = state.docs.items.length + 1;
+                state.docs.items.push(`documento-${num}.md`);
+                renderCanvas();
+            }
+        }
+
+        function removeItem(type, index) {
+            state[type].items.splice(index, 1);
+            renderCanvas();
+        }
+
+        function removeFolder(type) {
+            state[type].visible = false;
+            state[type].items = [];
+            if (type === 'docs') {
+                state.docs.conexao = null;
+            }
+            renderCanvas();
+        }
+
+        // ==========================================
+        // SELETOR DE PROMPTS
+        // ==========================================
+        function showPromptSelector() {
+            document.getElementById('promptOverlay').style.display = 'block';
+            document.getElementById('promptSelector').style.display = 'block';
+        }
+
+        function hidePromptSelector() {
+            document.getElementById('promptOverlay').style.display = 'none';
+            document.getElementById('promptSelector').style.display = 'none';
+        }
+
+        function selectPrompt(prompt) {
+            state.tarefa.items.push(prompt);
+            state.tarefa.visible = true;
+            hidePromptSelector();
+            renderCanvas();
+        }
+
+        document.getElementById('promptOverlay').addEventListener('click', hidePromptSelector);
+
+        // ==========================================
+        // CALCULAR SAÍDAS
+        // ==========================================
+        function recalculateOutputs() {
+            if (!state.entrada.visible || !state.tarefa.visible ||
+                state.entrada.items.length === 0 || state.tarefa.items.length === 0) {
+                state.saida.items = [];
+                state.saida.visible = false;
+                return;
+            }
+
+            const numEntradas = state.entrada.items.length;
+            const prompts = state.tarefa.items;
+            const arranjo = state.tarefa.arranjo;
+
+            let outputs = [];
+
+            if (arranjo === 'sequential') {
+                // Cadeia: saída final é do último prompt
+                const lastPrompt = prompts[prompts.length - 1];
+                const outputType = promptConfig[lastPrompt]?.output || 'OUTPUT';
+
+                for (let i = 0; i < numEntradas; i++) {
+                    outputs.push(`${outputType}-${String(i + 1).padStart(3, '0')}.TXT`);
+                }
+            } else if (arranjo === 'parallel') {
+                // Paralelo: uma saída por prompt por entrada
+                for (let i = 0; i < numEntradas; i++) {
+                    prompts.forEach(prompt => {
+                        const outputType = promptConfig[prompt]?.output || 'OUTPUT';
+                        outputs.push(`${outputType}-${String(i + 1).padStart(3, '0')}.TXT`);
+                    });
+                }
+            } else if (arranjo === 'conditional') {
+                // Condicional: uma saída por entrada (roteada)
+                for (let i = 0; i < numEntradas; i++) {
+                    outputs.push(`OUTPUT-${String(i + 1).padStart(3, '0')}.TXT`);
+                }
+            }
+
+            state.saida.items = outputs;
+            state.saida.visible = outputs.length > 0;
+        }
+
+        // ==========================================
+        // DETECTAR MODO
+        // ==========================================
+        function detectMode() {
+            if (!state.entrada.visible || !state.tarefa.visible) {
+                state.modoDetectado = null;
+                return;
+            }
+
+            const n = state.entrada.items.length;
+            const p = state.tarefa.items.length;
+            const arranjo = state.tarefa.arranjo;
+
+            if (n === 1 && p === 1) {
+                state.modoDetectado = 'single-turn';
+            } else if (n > 1 && p === 1) {
+                state.modoDetectado = 'batch';
+            } else if (n === 1 && p > 1 && arranjo === 'sequential') {
+                state.modoDetectado = 'prompt-chaining';
+            } else if (n === 1 && p > 1 && arranjo === 'parallel') {
+                state.modoDetectado = 'parallelization';
+            } else if (n === 1 && p > 1 && arranjo === 'conditional') {
+                state.modoDetectado = 'routing';
+            } else if (n > 1 && p > 1) {
+                state.modoDetectado = 'orchestrator';
+            } else {
+                state.modoDetectado = null;
+            }
+        }
+
+        // ==========================================
+        // BADGE DE MODO
+        // ==========================================
+        function createModeBadge() {
+            const badge = document.createElement('div');
+            badge.className = 'mode-badge';
+
+            const mode = modeNames[state.modoDetectado];
+            const desc = generateModeDescription();
+
+            badge.innerHTML = `
+                <div class="mode-badge-title">🏷️ MODO DETECTADO</div>
+                <div class="mode-badge-pattern">${mode.pt} (${mode.en})</div>
+                <div class="mode-badge-desc">${desc}</div>
+            `;
+
+            return badge;
+        }
+
+        function generateModeDescription() {
+            const n = state.entrada.items.length;
+            const p = state.tarefa.items.length;
+            const s = state.saida.items.length;
+
+            const promptNames = state.tarefa.items.map(p => promptConfig[p]?.name || p).join(' → ');
+
+            return `${n} entrada${n > 1 ? 's' : ''} → ${promptNames} → ${s} saída${s > 1 ? 's' : ''}`;
+        }
+
+        // ==========================================
+        // PADRÕES PRÉ-CONFIGURADOS
+        // ==========================================
+        function loadPattern(pattern) {
+            resetPipeline();
+
+            switch (pattern) {
+                case 'single-turn':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator'];
+                    state.tarefa.arranjo = 'sequential';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'batch':
+                    state.entrada.items = ['PROCESSO-001.PDF', 'PROCESSO-002.PDF', 'PROCESSO-003.PDF', 'PROCESSO-004.PDF', 'PROCESSO-005.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator'];
+                    state.tarefa.arranjo = 'sequential';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'chaining':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator', 'analisador', 'minutador'];
+                    state.tarefa.arranjo = 'sequential';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'parallel':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator', 'analisador', 'pesquisador'];
+                    state.tarefa.arranjo = 'parallel';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'routing':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['analisador', 'pesquisador'];
+                    state.tarefa.arranjo = 'conditional';
+                    state.tarefa.visible = true;
+                    break;
+
+                case 'orchestrator':
+                    state.entrada.items = ['PROCESSO-001.PDF'];
+                    state.entrada.visible = true;
+                    state.tarefa.items = ['relator', 'pesquisador', 'analisador', 'minutador'];
+                    state.tarefa.arranjo = 'sequential';
+                    state.tarefa.visible = true;
+                    break;
+            }
+
+            renderCanvas();
+            showFeedback(`Padrão "${modeNames[state.modoDetectado]?.pt || pattern}" carregado`);
+        }
+
+        // ==========================================
+        // EXECUTAR PIPELINE
+        // ==========================================
+        async function executePipeline() {
+            if (!state.entrada.visible || !state.tarefa.visible) {
+                showFeedback('Monte o pipeline antes de executar!', 'error');
+                return;
+            }
+
+            const folders = document.querySelectorAll('.canvas-folder');
+
+            // Animar sequencialmente
+            for (let i = 0; i < folders.length; i++) {
+                folders[i].classList.add('pulse');
+                await sleep(400);
+                folders[i].classList.remove('pulse');
+            }
+
+            // Animar documentos voando
+            const entradaEl = document.getElementById('folder-entrada');
+            const saidaEl = document.getElementById('folder-saida');
+
+            if (entradaEl && saidaEl) {
+                const startRect = entradaEl.getBoundingClientRect();
+                const endRect = saidaEl.getBoundingClientRect();
+
+                for (let i = 0; i < Math.min(state.entrada.items.length, 3); i++) {
+                    await sleep(150);
+                    createFlyingDoc(startRect, endRect);
+                }
+            }
+
+            await sleep(500);
+            showFeedback(`Pipeline executado ✓ ${state.saida.items.length} documento(s) gerado(s)`, 'success');
+        }
+
+        function createFlyingDoc(startRect, endRect) {
+            const doc = document.createElement('div');
+            doc.className = 'flying-doc';
+            doc.textContent = '📄';
+            doc.style.left = `${startRect.left + startRect.width / 2}px`;
+            doc.style.top = `${startRect.top + startRect.height / 2}px`;
+            document.body.appendChild(doc);
+
+            // Animar para destino
+            requestAnimationFrame(() => {
+                doc.style.transition = 'all 0.8s ease-in-out';
+                doc.style.left = `${endRect.left + endRect.width / 2}px`;
+                doc.style.top = `${endRect.top + endRect.height / 2}px`;
+            });
+
+            setTimeout(() => doc.remove(), 1000);
+        }
+
+        // ==========================================
+        // RESET
+        // ==========================================
+        function resetPipeline() {
+            state.entrada = { items: [], visible: false };
+            state.tarefa = { items: [], arranjo: 'sequential', visible: false };
+            state.docs = { items: [], conexao: null, visible: false };
+            state.saida = { items: [], visible: false };
+            state.modoDetectado = null;
+
+            renderCanvas();
+        }
+
+        // ==========================================
+        // UTILITÁRIOS
+        // ==========================================
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function showFeedback(message, type = 'info') {
+            // Remover feedback anterior
+            const existing = document.querySelector('.feedback-message');
+            if (existing) existing.remove();
+
+            const feedback = document.createElement('div');
+            feedback.className = `feedback-message ${type}`;
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+
+            setTimeout(() => feedback.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

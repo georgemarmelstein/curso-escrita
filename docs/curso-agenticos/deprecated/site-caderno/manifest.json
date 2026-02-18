@@ -1,0 +1,19 @@
+{
+  "name": "Sistemas Agenticos - Caderno de Exercicios",
+  "short_name": "Agentes",
+  "description": "Caderno de exercicios interativo do curso de Sistemas Agenticos para Juristas",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0D1117",
+  "theme_color": "#194A68",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"]
+}

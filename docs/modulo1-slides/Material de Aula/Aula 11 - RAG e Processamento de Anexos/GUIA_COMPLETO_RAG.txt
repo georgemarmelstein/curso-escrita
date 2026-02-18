@@ -1,0 +1,2135 @@
+═══════════════════════════════════════════════════════════════════════════════
+        GUIA COMPLETO: RAG E PROCESSAMENTO DE DOCUMENTOS
+═══════════════════════════════════════════════════════════════════════════════
+
+📚 ÍNDICE:
+
+1. O QUE É RAG E POR QUE USAR
+2. EVOLUÇÃO DO RAG: NAIVE → ADVANCED → MODULAR
+3. PROCESSAMENTO DE DIFERENTES TIPOS DE DOCUMENTOS
+4. ESTRATÉGIAS DE CHUNKING DETALHADAS
+5. EMBEDDINGS E RETRIEVAL
+6. RERANKING E QUERY OPTIMIZATION
+7. MULTIMODAL RAG
+8. PIPELINE COMPLETO END-TO-END
+9. BEST PRACTICES E PITFALLS
+10. CASOS DE USO E EXEMPLOS PRÁTICOS
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 1. O QUE É RAG E POR QUE USAR
+
+### DEFINIÇÃO:
+
+RAG (Retrieval-Augmented Generation) é uma técnica que COMBINA:
+- **Retrieval**: Buscar informação relevante em documentos externos
+- **Generation**: Gerar resposta usando LLM
+
+```
+Pipeline básico:
+
+User Query
+    ↓
+[RETRIEVAL] → Busca em documentos anexados
+    ↓
+Retrieved Documents (top-k)
+    ↓
+[GENERATION] → LLM gera resposta baseado em query + docs
+    ↓
+Final Answer
+```
+
+### POR QUE RAG É NECESSÁRIO?
+
+**Problema 1: Conhecimento desatualizado**
+- LLMs param de aprender após training
+- Exemplo: GPT-4 trained até setembro 2023
+- Não sabe sobre eventos de 2024-2025
+
+**Solução RAG:**
+- Anexe documentos atualizados
+- LLM acessa informação recente via retrieval
+- Sem necessidade de retreinamento
+
+**Problema 2: Conhecimento privado/específico**
+- LLM não tem acesso a documentos internos da empresa
+- Dados médicos, legais, técnicos específicos
+
+**Solução RAG:**
+- Upload documentos privados
+- LLM responde baseado nesses documentos
+- Mantém confidencialidade (docs não vão para training)
+
+**Problema 3: Hallucination**
+- LLMs podem inventar fatos
+- Especialmente sobre tópicos raros/específicos
+
+**Solução RAG:**
+- LLM deve basear resposta em documentos recuperados
+- Pode citar fontes
+- Reduz hallucination significativamente
+
+### QUANDO USAR RAG?
+
+✅ USE RAG quando:
+- Precisa informação atualizada (notícias, preços, eventos)
+- Documentos privados/confidenciais
+- Domínios especializados (medicina, direito, engenharia)
+- Necessidade de citação de fontes
+- Conhecimento muda frequentemente
+
+❌ NÃO use RAG quando:
+- Conhecimento é estável e público (matemática básica, geografia)
+- Latência é crítica (RAG adiciona ~100-300ms)
+- Conhecimento já está nos parâmetros do LLM
+- Query não requer informação factual (criatividade, brainstorming)
+
+### TRADE-OFFS:
+
+| Aspecto | LLM Puro | RAG |
+|---------|----------|-----|
+| Latência | ~50ms | ~200-400ms |
+| Custo | Baixo | Médio (retrieval + LLM) |
+| Atualização | Requer retreinamento | Instantânea |
+| Precisão factual | Média | Alta |
+| Hallucination | Alta | Baixa |
+| Citação de fontes | Não | Sim |
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 2. EVOLUÇÃO DO RAG: NAIVE → ADVANCED → MODULAR
+
+### NAIVE RAG (2020-2022)
+
+Pipeline linear simples:
+
+```
+Query → [Embedding] → [Vector Search] → Top-k Docs → [LLM] → Answer
+```
+
+**Características:**
+- Pipeline fixo, não adaptável
+- Sempre recupera mesmo número de docs (k fixo)
+- Sem otimização de query
+- Sem reranking
+
+**Limitações:**
+- Retrieval pode trazer docs irrelevantes
+- Query original pode ser subótima
+- Não considera qualidade dos docs recuperados
+- Não adapta ao tipo de query
+
+**Exemplo:**
+
+```python
+# Naive RAG (pseudo-código)
+
+def naive_rag(query, documents, k=5):
+    # 1. Embed query
+    query_embedding = embed(query)
+
+    # 2. Retrieve top-k documents
+    doc_embeddings = [embed(doc) for doc in documents]
+    scores = [cosine_sim(query_embedding, doc_emb)
+              for doc_emb in doc_embeddings]
+    top_k_docs = get_top_k(documents, scores, k)
+
+    # 3. Generate answer
+    context = "\n".join(top_k_docs)
+    prompt = f"Context: {context}\n\nQuery: {query}\n\nAnswer:"
+    answer = llm.generate(prompt)
+
+    return answer
+```
+
+**Quando usar Naive RAG:**
+- Protótipos rápidos
+- Use cases simples (FAQ, documentação básica)
+- Quando latência não é crítica mas implementação precisa ser rápida
+
+---
+
+### ADVANCED RAG (2023)
+
+Adiciona otimizações PRÉ e PÓS retrieval:
+
+```
+Query → [PRE-RETRIEVAL OPTIMIZATION]
+         ↓
+    [Retrieval]
+         ↓
+    [POST-RETRIEVAL OPTIMIZATION]
+         ↓
+    [Generation]
+         ↓
+      Answer
+```
+
+**PRÉ-RETRIEVAL (Query Optimization):**
+
+1. **Query Rewriting:**
+   ```
+   Original: "What's the capital?"
+   Rewritten: "What is the capital of France?"
+   ```
+
+2. **Query Expansion:**
+   ```
+   Original: "diabetes treatment"
+   Expanded: "diabetes treatment, diabetes therapy,
+              diabetes medication, diabetes management"
+   ```
+
+3. **HyDE (Hypothetical Document Embeddings):**
+   ```
+   Query: "How does photosynthesis work?"
+
+   Step 1: LLM gera resposta hipotética (pode ter erros!)
+   Hypothetical Answer: "Photosynthesis is the process where
+                         plants convert light energy..."
+
+   Step 2: Embed resposta hipotética (não query)
+   Step 3: Busca documentos similares à resposta hipotética
+
+   Insight: Resposta hipotética é mais similar a documentos
+            reais do que query curta
+   ```
+
+**PÓS-RETRIEVAL (Document Optimization):**
+
+1. **Reranking:**
+   ```
+   Retrieval (bi-encoder) → Top-100 docs (rápido, ~100ms)
+       ↓
+   Reranking (cross-encoder) → Top-10 docs (preciso, ~50ms)
+       ↓
+   LLM Generation
+   ```
+
+2. **Context Compression:**
+   ```
+   Retrieved Doc (1000 tokens):
+   "... irrelevant text ... [RELEVANT SENTENCE] ...
+    irrelevant text ..."
+
+   Compressed (200 tokens):
+   "[RELEVANT SENTENCE only]"
+
+   Vantagens:
+   - Reduz custo de LLM
+   - Reduz "lost in middle" effect
+   - Mantém informação relevante
+   ```
+
+3. **Document Filtering:**
+   ```
+   Retrieved docs → [Relevance Filter] → Only relevant docs
+
+   Filter criteria:
+   - Semantic similarity > threshold
+   - Keyword match
+   - Temporal relevance (recent docs preferred)
+   ```
+
+**Exemplo Advanced RAG:**
+
+```python
+def advanced_rag(query, documents, k=5):
+    # PRE-RETRIEVAL
+    # 1. Query rewriting
+    rewritten_query = llm.generate(
+        f"Rewrite this query to be more specific: {query}"
+    )
+
+    # 2. Generate hypothetical answer (HyDE)
+    hyde_answer = llm.generate(
+        f"Generate a detailed answer to: {rewritten_query}"
+    )
+
+    # RETRIEVAL
+    # 3. Embed hypothetical answer (not original query)
+    hyde_embedding = embed(hyde_answer)
+
+    # 4. Retrieve top-100 (bi-encoder, fast)
+    doc_embeddings = [embed(doc) for doc in documents]
+    scores = [cosine_sim(hyde_embedding, doc_emb)
+              for doc_emb in doc_embeddings]
+    top_100_docs = get_top_k(documents, scores, 100)
+
+    # POST-RETRIEVAL
+    # 5. Rerank with cross-encoder (slow but accurate)
+    reranked_scores = [cross_encoder.score(rewritten_query, doc)
+                       for doc in top_100_docs]
+    top_k_docs = get_top_k(top_100_docs, reranked_scores, k)
+
+    # 6. Context compression
+    compressed_docs = [extract_relevant_sentences(doc, rewritten_query)
+                       for doc in top_k_docs]
+
+    # GENERATION
+    # 7. Generate final answer
+    context = "\n".join(compressed_docs)
+    prompt = f"Context: {context}\n\nQuery: {query}\n\nAnswer:"
+    answer = llm.generate(prompt)
+
+    return answer
+```
+
+**Quando usar Advanced RAG:**
+- Produção, quando qualidade é crítica
+- Queries complexas
+- Grandes corpora (milhões de documentos)
+- Quando pode pagar latência extra (~200-400ms)
+
+---
+
+### MODULAR RAG (2024)
+
+RAG como framework de componentes plugáveis:
+
+```
+                    ┌──────────────┐
+                    │   ROUTING    │ Decide qual módulo usar
+                    └──────┬───────┘
+                           ↓
+         ┌─────────────────┼─────────────────┐
+         ↓                 ↓                  ↓
+    [Retrieval 1]     [Retrieval 2]     [Retrieval 3]
+    (Dense)           (Sparse)          (Hybrid)
+         ↓                 ↓                  ↓
+    [Reranker 1]      [Reranker 2]      [No Rerank]
+    (Cross-enc)       (Graph-based)
+         ↓                 ↓                  ↓
+         └─────────────────┼─────────────────┘
+                           ↓
+                    ┌──────────────┐
+                    │   FUSION     │ Combina resultados
+                    └──────┬───────┘
+                           ↓
+                      [Generation]
+```
+
+**Características:**
+
+1. **Modular**: Cada componente é independente
+2. **Pluggable**: Troca componentes facilmente
+3. **Configurable**: Diferentes pipelines para diferentes queries
+4. **Extensible**: Adiciona novos módulos sem quebrar pipeline
+
+**Módulos principais:**
+
+- **Query Processors**: Rewriting, Expansion, HyDE
+- **Retrievers**: Dense, Sparse, Hybrid, Graph-based
+- **Rerankers**: Cross-encoder, Graph, LLM-based
+- **Context Processors**: Compression, Filtering, Summarization
+- **Generators**: Standard LLM, Retrieval-aware LLM
+
+**Routing strategies:**
+
+```python
+def route_query(query):
+    # Simple queries → Naive RAG (fast)
+    if is_simple(query):
+        return "naive_rag"
+
+    # Factual queries → Dense retrieval + Reranking
+    elif is_factual(query):
+        return "advanced_rag_dense"
+
+    # Multi-hop reasoning → Graph-based retrieval
+    elif requires_multi_hop(query):
+        return "graph_rag"
+
+    # Multimodal (text + images) → Multimodal RAG
+    elif has_visual_component(query):
+        return "multimodal_rag"
+
+    # Default
+    else:
+        return "advanced_rag"
+```
+
+**Exemplo Modular RAG:**
+
+```python
+class ModularRAG:
+    def __init__(self):
+        # Registry de módulos disponíveis
+        self.query_processors = {
+            "rewrite": QueryRewriter(),
+            "expand": QueryExpander(),
+            "hyde": HyDE()
+        }
+
+        self.retrievers = {
+            "dense": DenseRetriever(),
+            "sparse": BM25Retriever(),
+            "hybrid": HybridRetriever()
+        }
+
+        self.rerankers = {
+            "cross_encoder": CrossEncoderReranker(),
+            "graph": GraphReranker(),
+            "llm": LLMReranker()
+        }
+
+        self.generators = {
+            "standard": StandardLLM(),
+            "self_rag": SelfRAGLLM()
+        }
+
+    def run(self, query, config):
+        # 1. Query processing (configurável)
+        if config.get("query_processor"):
+            processor = self.query_processors[config["query_processor"]]
+            query = processor.process(query)
+
+        # 2. Retrieval (configurável)
+        retriever = self.retrievers[config["retriever"]]
+        docs = retriever.retrieve(query, k=config.get("k", 100))
+
+        # 3. Reranking (opcional)
+        if config.get("reranker"):
+            reranker = self.rerankers[config["reranker"]]
+            docs = reranker.rerank(query, docs, top_k=config.get("top_k", 10))
+
+        # 4. Generation (configurável)
+        generator = self.generators[config["generator"]]
+        answer = generator.generate(query, docs)
+
+        return answer
+
+# Uso:
+rag = ModularRAG()
+
+# Config 1: Simples e rápido
+answer1 = rag.run(query, config={
+    "retriever": "dense",
+    "generator": "standard"
+})
+
+# Config 2: Complexo e preciso
+answer2 = rag.run(query, config={
+    "query_processor": "hyde",
+    "retriever": "hybrid",
+    "reranker": "cross_encoder",
+    "generator": "self_rag",
+    "k": 100,
+    "top_k": 5
+})
+```
+
+**Quando usar Modular RAG:**
+- Sistemas complexos em produção
+- Múltiplos use cases diferentes
+- Necessidade de experimentação (A/B testing)
+- Equipe grande com especialistas em diferentes módulos
+
+---
+
+### AGENTIC RAG (2025)
+
+RAG com **agentes autônomos** que decidem dinamicamente:
+
+```
+Query → [AGENT]
+         ↓
+    ┌────┴────┐
+    ↓         ↓
+ Decision 1: Precisa retrieval?
+    ├─ Yes → [Retrieve]
+    └─ No  → [Generate directly]
+         ↓
+ Decision 2: Quantos docs?
+    ├─ Few → k=3
+    ├─ Many → k=10
+    └─ Unsure → Iterative retrieval
+         ↓
+ Decision 3: Docs suficientes?
+    ├─ Yes → [Generate]
+    └─ No  → [Retrieve more] → Loop
+         ↓
+ Decision 4: Resposta boa?
+    ├─ Yes → Return answer
+    └─ No  → [Refine] → Loop
+```
+
+**Características:**
+
+- **Adaptive**: Adapta ao query e contexto
+- **Self-reflective**: Avalia próprias decisões
+- **Iterative**: Pode fazer múltiplas rodadas
+- **Explainable**: Pode explicar decisões
+
+**Exemplo: Self-RAG**
+
+```python
+class SelfRAG:
+    def generate(self, query):
+        # Agent decide: precisa retrieval?
+        need_retrieval = self.decide_retrieval(query)
+
+        if not need_retrieval:
+            # Conhecimento paramétrico suficiente
+            return self.llm.generate(query)
+
+        # Retrieve documents
+        docs = self.retrieve(query)
+
+        # Agent decide: docs são relevantes?
+        relevant_docs = [doc for doc in docs
+                         if self.critique_relevance(query, doc)]
+
+        # Generate answer
+        answer = self.llm.generate(query, relevant_docs)
+
+        # Agent decide: answer é boa?
+        is_supported = self.critique_support(answer, relevant_docs)
+        is_useful = self.critique_usefulness(answer, query)
+
+        if not is_supported or not is_useful:
+            # Refine
+            answer = self.refine(query, relevant_docs, answer)
+
+        return answer
+```
+
+**Quando usar Agentic RAG:**
+- Use cases muito complexos
+- Quando necessidade de retrieval varia muito
+- Budget permite múltiplas LLM calls
+- Explicabilidade é importante
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 3. PROCESSAMENTO DE DIFERENTES TIPOS DE DOCUMENTOS
+
+### OVERVIEW:
+
+| Formato | Complexidade | Parsing | Desafios |
+|---------|--------------|---------|----------|
+| TXT | Baixa | Direto | Nenhum |
+| Markdown | Baixa | Direto | Preservar hierarquia |
+| JSON | Baixa-Média | json.loads() | Estrutura aninhada |
+| DOCX | Média | python-docx | Formatação, tabelas |
+| PDF | Alta | PyMuPDF, Docling | Layout, imagens, OCR |
+| HTML | Média | BeautifulSoup | Tags, JavaScript |
+| XLSX | Média | pandas | Múltiplas sheets, fórmulas |
+
+---
+
+### 3.1 TXT (Plain Text)
+
+**Mais simples**, parsing direto:
+
+```python
+def process_txt(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        text = f.read()
+
+    # Opcional: limpeza
+    text = text.strip()
+    text = re.sub(r'\n\n+', '\n\n', text)  # Múltiplas linhas vazias → 1
+
+    return text
+```
+
+**Vantagens:**
+- Zero overhead
+- Sem dependências
+- Sem perda de informação
+
+**Desvantagens:**
+- Sem estrutura (headings, listas)
+- Sem metadata
+- Sem formatação
+
+**Best practices:**
+- Use UTF-8 encoding
+- Normalize espaços em branco
+- Preserve line breaks (importantes para chunking)
+
+---
+
+### 3.2 MARKDOWN
+
+**Estruturado**, preserva hierarquia:
+
+```python
+def process_markdown(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        markdown_text = f.read()
+
+    # Opção 1: Keep as markdown (melhor para LLMs)
+    return markdown_text
+
+    # Opção 2: Convert to HTML (se precisar)
+    import markdown
+    html = markdown.markdown(markdown_text)
+
+    # Opção 3: Extract only text (perde estrutura)
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(html, 'html.parser')
+    text = soup.get_text()
+
+    return text
+```
+
+**Structured chunking (melhor abordagem):**
+
+```python
+def chunk_markdown_by_headers(markdown_text):
+    chunks = []
+    current_chunk = ""
+    current_header = ""
+
+    for line in markdown_text.split('\n'):
+        if line.startswith('#'):  # Header
+            if current_chunk:
+                chunks.append({
+                    "header": current_header,
+                    "content": current_chunk.strip()
+                })
+            current_header = line
+            current_chunk = ""
+        else:
+            current_chunk += line + "\n"
+
+    # Last chunk
+    if current_chunk:
+        chunks.append({
+            "header": current_header,
+            "content": current_chunk.strip()
+        })
+
+    return chunks
+```
+
+**Vantagens:**
+- Preserva estrutura (headings, listas, code blocks)
+- Fácil de parsear
+- LLMs entendem markdown nativamente
+
+**Best practices:**
+- NÃO converta para plain text (perde estrutura)
+- Chunk por headers (# ## ###)
+- Preserve code blocks intactos
+
+---
+
+### 3.3 PDF (Mais Complexo)
+
+**3 níveis de complexidade:**
+
+**Nível 1: PDF simples (text-based)**
+
+```python
+import pymupdf  # PyMuPDF
+
+def extract_text_simple_pdf(pdf_path):
+    doc = pymupdf.open(pdf_path)
+    text = ""
+
+    for page in doc:
+        text += page.get_text()
+
+    return text
+```
+
+**Limitações:**
+- Perde layout (colunas, tabelas)
+- Ordem de leitura pode estar errada
+- Ignora imagens
+
+**Nível 2: PDF com layout (multi-column, tabelas)**
+
+```python
+import pymupdf4llm  # PyMuPDF4LLM
+
+def extract_text_with_layout(pdf_path):
+    # PyMuPDF4LLM preserva layout em Markdown
+    markdown_text = pymupdf4llm.to_markdown(pdf_path)
+
+    return markdown_text
+```
+
+**Vantagens:**
+- Preserva multi-column layout
+- Extrai tabelas para Markdown tables
+- Mantém hierarquia de headings
+
+**Nível 3: PDF com imagens (multimodal)**
+
+```python
+from docling.document_converter import DocumentConverter
+
+def extract_multimodal_pdf(pdf_path):
+    converter = DocumentConverter()
+    result = converter.convert(pdf_path)
+
+    # result contém:
+    # - Texto extraído
+    # - Imagens extraídas
+    # - Tabelas estruturadas
+    # - Layout information
+
+    markdown = result.document.export_to_markdown()
+    images = result.document.images
+    tables = result.document.tables
+
+    return {
+        "markdown": markdown,
+        "images": images,
+        "tables": tables
+    }
+```
+
+**Ferramentas modernas (2024-2025):**
+
+1. **PyMuPDF4LLM**: PDF → Markdown otimizado para LLMs
+2. **Docling (IBM)**: PDF → Structured document
+3. **LlamaParse**: PDF parsing com LLMs
+4. **Unstructured.io**: Multi-format document parsing
+5. **MarkItDown (Microsoft)**: Universal document converter
+
+**Best practices PDF:**
+
+- **Text-based PDFs**: PyMuPDF4LLM (rápido, bom)
+- **Complex layout**: Docling ou LlamaParse (lento, melhor)
+- **Scanned PDFs**: OCR first (Tesseract, Azure Document Intelligence)
+- **Tables**: Extract separadamente e mantenha estrutura
+
+**OCR para PDFs digitalizados:**
+
+```python
+import pytesseract
+from pdf2image import convert_from_path
+
+def ocr_pdf(pdf_path):
+    # Convert PDF pages to images
+    images = convert_from_path(pdf_path)
+
+    text = ""
+    for page_num, image in enumerate(images):
+        # OCR each page
+        page_text = pytesseract.image_to_string(image)
+        text += f"\n--- Page {page_num+1} ---\n{page_text}"
+
+    return text
+```
+
+---
+
+### 3.4 DOC/DOCX (Microsoft Word)
+
+```python
+from docx import Document
+
+def extract_text_docx(docx_path):
+    doc = Document(docx_path)
+
+    text = ""
+    for paragraph in doc.paragraphs:
+        text += paragraph.text + "\n"
+
+    # Extrair tabelas
+    for table in doc.tables:
+        for row in table.rows:
+            row_text = " | ".join([cell.text for cell in row.cells])
+            text += row_text + "\n"
+
+    return text
+```
+
+**Preservar formatação:**
+
+```python
+def extract_structured_docx(docx_path):
+    doc = Document(docx_path)
+
+    sections = []
+    for paragraph in doc.paragraphs:
+        level = paragraph.style.name  # 'Heading 1', 'Heading 2', etc.
+
+        if 'Heading' in level:
+            sections.append({
+                "type": "header",
+                "level": int(level.split()[-1]),  # 1, 2, 3...
+                "text": paragraph.text
+            })
+        else:
+            sections.append({
+                "type": "paragraph",
+                "text": paragraph.text
+            })
+
+    return sections
+```
+
+---
+
+### 3.5 HTML
+
+```python
+from bs4 import BeautifulSoup
+import requests
+
+def extract_text_html(url_or_path):
+    # From URL
+    if url_or_path.startswith('http'):
+        response = requests.get(url_or_path)
+        html = response.text
+    # From file
+    else:
+        with open(url_or_path, 'r') as f:
+            html = f.read()
+
+    soup = BeautifulSoup(html, 'html.parser')
+
+    # Remove script e style tags
+    for script in soup(["script", "style"]):
+        script.decompose()
+
+    # Extrair texto
+    text = soup.get_text()
+
+    # Limpeza
+    lines = (line.strip() for line in text.splitlines())
+    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+    text = '\n'.join(chunk for chunk in chunks if chunk)
+
+    return text
+```
+
+**Preservar estrutura HTML:**
+
+```python
+def extract_structured_html(html_path):
+    soup = BeautifulSoup(html, 'html.parser')
+
+    sections = []
+
+    # Extrair headers
+    for header in soup.find_all(['h1', 'h2', 'h3', 'h4']):
+        level = int(header.name[1])  # h1 → 1, h2 → 2, etc.
+        sections.append({
+            "type": "header",
+            "level": level,
+            "text": header.get_text().strip()
+        })
+
+    # Extrair parágrafos
+    for p in soup.find_all('p'):
+        sections.append({
+            "type": "paragraph",
+            "text": p.get_text().strip()
+        })
+
+    return sections
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 4. ESTRATÉGIAS DE CHUNKING DETALHADAS
+
+### POR QUE CHUNKING É IMPORTANTE?
+
+Documentos são longos (milhares de tokens), mas:
+- Embeddings models têm limite (512-1024 tokens típico)
+- LLMs têm context window limit
+- Retrieval precisa de granularidade
+
+**Trade-offs:**
+
+```
+Chunks pequenos (100-200 tokens):
+✓ Retrieval preciso (granular)
+✓ Menos ruído
+✗ Perda de contexto
+✗ Mais chunks para embedar (custo)
+
+Chunks grandes (1000+ tokens):
+✓ Mais contexto preservado
+✓ Menos chunks (menor custo)
+✗ Retrieval impreciso
+✗ Mais ruído
+✗ Pode exceder context window
+
+Sweet spot: 512-1024 tokens com overlap de 10-20%
+```
+
+---
+
+### ESTRATÉGIA 1: FIXED-SIZE CHUNKING
+
+**Mais simples**: divide em chunks de tamanho fixo.
+
+```python
+def fixed_size_chunking(text, chunk_size=512, overlap=50):
+    words = text.split()
+    chunks = []
+
+    for i in range(0, len(words), chunk_size - overlap):
+        chunk = " ".join(words[i:i+chunk_size])
+        chunks.append(chunk)
+
+    return chunks
+```
+
+**Com contagem de tokens (melhor):**
+
+```python
+import tiktoken
+
+def fixed_size_chunking_tokens(text, chunk_size=512, overlap=50):
+    encoding = tiktoken.get_encoding("cl100k_base")  # GPT-4 encoding
+
+    tokens = encoding.encode(text)
+    chunks = []
+
+    for i in range(0, len(tokens), chunk_size - overlap):
+        chunk_tokens = tokens[i:i+chunk_size]
+        chunk_text = encoding.decode(chunk_tokens)
+        chunks.append(chunk_text)
+
+    return chunks
+```
+
+**Vantagens:**
+- Simples de implementar
+- Previsível (sabe quantos chunks terá)
+- Rápido
+
+**Desvantagens:**
+- Pode quebrar no meio de sentença/parágrafo
+- Ignora estrutura do documento
+- Overlap arbitrário
+
+**Quando usar:**
+- Documentos sem estrutura clara (emails, chat logs)
+- Prototipagem rápida
+- Baseline para comparação
+
+---
+
+### ESTRATÉGIA 2: SEMANTIC CHUNKING
+
+**Baseado em similaridade semântica**: quebra quando semântica muda.
+
+```python
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+def semantic_chunking(text, threshold=0.5):
+    # Split into sentences
+    sentences = text.split('. ')
+
+    # Embed sentences
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    embeddings = model.encode(sentences)
+
+    # Calculate cosine similarity between consecutive sentences
+    chunks = []
+    current_chunk = [sentences[0]]
+
+    for i in range(1, len(sentences)):
+        similarity = np.dot(embeddings[i-1], embeddings[i]) / (
+            np.linalg.norm(embeddings[i-1]) * np.linalg.norm(embeddings[i])
+        )
+
+        if similarity > threshold:
+            # High similarity → same chunk
+            current_chunk.append(sentences[i])
+        else:
+            # Low similarity → new chunk
+            chunks.append('. '.join(current_chunk))
+            current_chunk = [sentences[i]]
+
+    # Last chunk
+    chunks.append('. '.join(current_chunk))
+
+    return chunks
+```
+
+**Vantagens:**
+- Preserva coesão semântica
+- Chunks mais "naturais"
+- Melhor para retrieval
+
+**Desvantagens:**
+- Mais lento (precisa embedar sentenças)
+- Chunks têm tamanhos variáveis
+- Threshold precisa tuning
+
+**Quando usar:**
+- Documentos com múltiplos tópicos
+- Quando qualidade > velocidade
+- Budget permite custo computacional
+
+**Paper de referência:**
+"Is Semantic Chunking Worth the Computational Cost?" (2024)
+→ Resposta: **Nem sempre!** Fixed-size pode ser suficiente.
+
+---
+
+### ESTRATÉGIA 3: STRUCTURAL CHUNKING
+
+**Respeita estrutura do documento**: parágrafos, seções, headers.
+
+```python
+def structural_chunking_markdown(markdown_text):
+    chunks = []
+    current_section = ""
+    current_header = ""
+
+    for line in markdown_text.split('\n'):
+        if line.startswith('#'):  # Header
+            if current_section:
+                chunks.append({
+                    "header": current_header,
+                    "content": current_section.strip(),
+                    "type": "section"
+                })
+            current_header = line
+            current_section = ""
+        else:
+            current_section += line + "\n"
+
+    # Last section
+    if current_section:
+        chunks.append({
+            "header": current_header,
+            "content": current_section.strip(),
+            "type": "section"
+        })
+
+    return chunks
+```
+
+**Para PDFs com layout:**
+
+```python
+def structural_chunking_pdf(pdf_path):
+    import pymupdf
+
+    doc = pymupdf.open(pdf_path)
+    chunks = []
+
+    for page in doc:
+        blocks = page.get_text("blocks")  # Blocks de texto
+
+        for block in blocks:
+            x0, y0, x1, y1, text, block_no, block_type = block
+
+            chunks.append({
+                "text": text,
+                "page": page.number,
+                "bbox": (x0, y0, x1, y1),
+                "type": "block"
+            })
+
+    return chunks
+```
+
+**Vantagens:**
+- Preserva hierarquia lógica
+- Chunks semanticamente coesos
+- Bom para navegação (sabe qual seção)
+
+**Desvantagens:**
+- Depende de estrutura boa do documento
+- Chunks podem ser muito grandes ou pequenos
+- Mais complexo de implementar
+
+**Quando usar:**
+- Documentos bem estruturados (artigos, manuais, documentação)
+- Quando hierarquia é importante
+- RAG com citação de seções
+
+---
+
+### ESTRATÉGIA 4: LATE CHUNKING (2024)
+
+**Inovação recente**: encode documento INTEIRO, depois chunka embeddings.
+
+```
+Traditional:
+Document → [Chunk] → [Embed cada chunk] → Chunk embeddings
+
+Late Chunking:
+Document → [Embed documento inteiro] → [Chunk embeddings] → Chunk embeddings
+```
+
+**Por que é melhor?**
+- Cada token vê contexto COMPLETO do documento
+- Preserva long-range dependencies
+- Chunks mantêm informação contextual
+
+**Implementação:**
+
+```python
+from sentence_transformers import SentenceTransformer
+
+def late_chunking(document, chunk_size=512):
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+
+    # 1. Encode documento INTEIRO (não chunks!)
+    # model.encode retorna token embeddings (não sentence embedding)
+    token_embeddings = model.encode(
+        document,
+        output_value='token_embeddings',  # Token-level, não sentence-level
+        convert_to_numpy=True
+    )
+
+    # 2. Tokenize documento
+    tokens = model.tokenizer.encode(document)
+
+    # 3. Chunk os EMBEDDINGS (não o texto)
+    chunk_embeddings = []
+    for i in range(0, len(token_embeddings), chunk_size):
+        chunk_embedding = token_embeddings[i:i+chunk_size]
+        # Mean pooling
+        chunk_embedding_mean = np.mean(chunk_embedding, axis=0)
+        chunk_embeddings.append(chunk_embedding_mean)
+
+    # 4. Chunk o texto também (para retrieval)
+    text_chunks = []
+    for i in range(0, len(tokens), chunk_size):
+        chunk_tokens = tokens[i:i+chunk_size]
+        chunk_text = model.tokenizer.decode(chunk_tokens)
+        text_chunks.append(chunk_text)
+
+    return list(zip(text_chunks, chunk_embeddings))
+```
+
+**Vantagens:**
+- Melhor qualidade de embeddings
+- Preserva contexto global
+- Estado da arte em retrieval
+
+**Desvantagens:**
+- Mais lento (documento inteiro de uma vez)
+- Requer mais memória
+- Nem todos embedders suportam
+
+**Quando usar:**
+- Documentos onde contexto global é crítico
+- Quando qualidade > velocidade
+- Papers científicos, documentos legais
+
+**Paper de referência:**
+"Late Chunking: Contextual Chunk Embeddings" (2024)
+
+---
+
+### ESTRATÉGIA 5: HIERARCHICAL CHUNKING
+
+**Multi-level**: chunks grandes → chunks médios → chunks pequenos.
+
+```
+Document
+  ├─ Chapter 1 (large chunk)
+  │   ├─ Section 1.1 (medium chunk)
+  │   │   ├─ Paragraph 1 (small chunk)
+  │   │   └─ Paragraph 2 (small chunk)
+  │   └─ Section 1.2 (medium chunk)
+  └─ Chapter 2 (large chunk)
+```
+
+**Implementação:**
+
+```python
+def hierarchical_chunking(markdown_text):
+    hierarchy = {
+        "chapters": [],
+        "sections": [],
+        "paragraphs": []
+    }
+
+    current_chapter = ""
+    current_section = ""
+    current_paragraph = ""
+
+    for line in markdown_text.split('\n'):
+        if line.startswith('# '):  # Chapter (H1)
+            if current_chapter:
+                hierarchy["chapters"].append(current_chapter)
+            current_chapter = line + "\n"
+            current_section = ""
+            current_paragraph = ""
+
+        elif line.startswith('## '):  # Section (H2)
+            if current_section:
+                hierarchy["sections"].append(current_section)
+            current_section = current_chapter + line + "\n"
+            current_paragraph = ""
+
+        elif line.startswith('### '):  # Subsection (H3)
+            current_paragraph = current_section + line + "\n"
+
+        else:  # Regular text
+            current_paragraph += line + "\n"
+
+            # Paragraph ended (empty line)
+            if not line.strip():
+                if current_paragraph.strip():
+                    hierarchy["paragraphs"].append(current_paragraph)
+                current_paragraph = current_section
+
+    return hierarchy
+```
+
+**Uso em retrieval:**
+
+```python
+def hierarchical_retrieval(query, hierarchy):
+    # 1. Search at chapter level first
+    chapter_scores = [score(query, chapter) for chapter in hierarchy["chapters"]]
+    top_chapter = hierarchy["chapters"][np.argmax(chapter_scores)]
+
+    # 2. Search sections within best chapter
+    relevant_sections = [s for s in hierarchy["sections"] if top_chapter in s]
+    section_scores = [score(query, section) for section in relevant_sections]
+    top_section = relevant_sections[np.argmax(section_scores)]
+
+    # 3. Search paragraphs within best section
+    relevant_paras = [p for p in hierarchy["paragraphs"] if top_section in p]
+    para_scores = [score(query, para) for para in relevant_paras]
+
+    # Return top-k paragraphs
+    top_k_paras = sorted(zip(relevant_paras, para_scores),
+                          key=lambda x: x[1], reverse=True)[:3]
+
+    return [para for para, score in top_k_paras]
+```
+
+**Vantagens:**
+- Retrieval multi-granularidade
+- Pode subir/descer hierarquia conforme necessário
+- Melhor para documentos longos e complexos
+
+**Desvantagens:**
+- Mais complexo de implementar
+- Requer documento bem estruturado
+- Múltiplas buscas (mais lento)
+
+**Quando usar:**
+- Livros, manuais longos
+- Documentação técnica hierárquica
+- Quando usuário pode querer overview ou detalhes
+
+---
+
+### COMPARAÇÃO DAS ESTRATÉGIAS:
+
+| Estratégia | Velocidade | Qualidade | Complexidade | Best Use Case |
+|------------|-----------|-----------|--------------|---------------|
+| Fixed-size | ★★★★★ | ★★☆☆☆ | ★☆☆☆☆ | Prototipagem |
+| Semantic | ★★☆☆☆ | ★★★★☆ | ★★★☆☆ | Multi-tópico docs |
+| Structural | ★★★★☆ | ★★★★☆ | ★★☆☆☆ | Docs estruturados |
+| Late Chunking | ★★☆☆☆ | ★★★★★ | ★★★★☆ | Contexto crítico |
+| Hierarchical | ★★☆☆☆ | ★★★★☆ | ★★★★★ | Docs longos |
+
+**RECOMENDAÇÃO GERAL:**
+
+```python
+def choose_chunking_strategy(document_type, document_length, priority):
+    if priority == "speed":
+        return "fixed_size"
+
+    elif document_type == "markdown" and "well_structured":
+        return "structural"
+
+    elif document_length > 10000 and "hierarchical":
+        return "hierarchical"
+
+    elif priority == "quality":
+        return "late_chunking"
+
+    else:
+        # Default: Fixed-size é bom suficiente em 80% dos casos
+        return "fixed_size"
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 5. EMBEDDINGS E RETRIEVAL
+
+### TIPOS DE RETRIEVAL:
+
+1. **Sparse (Lexical)**: BM25, TF-IDF
+2. **Dense (Semantic)**: Sentence-BERT, DPR
+3. **Late Interaction**: ColBERT
+4. **Hybrid**: Sparse + Dense combined
+
+---
+
+### SPARSE RETRIEVAL (BM25)
+
+**Baseado em keywords**, não semântica.
+
+```python
+from rank_bm25 import BM25Okapi
+
+def bm25_retrieval(query, documents, k=5):
+    # Tokenize documents
+    tokenized_docs = [doc.lower().split() for doc in documents]
+
+    # Create BM25 index
+    bm25 = BM25Okapi(tokenized_docs)
+
+    # Tokenize query
+    tokenized_query = query.lower().split()
+
+    # Get scores
+    scores = bm25.get_scores(tokenized_query)
+
+    # Get top-k
+    top_k_indices = np.argsort(scores)[::-1][:k]
+    top_k_docs = [documents[i] for i in top_k_indices]
+
+    return top_k_docs
+```
+
+**Vantagens:**
+- Rápido
+- Não requer training
+- Bom para exact keyword match
+- Funciona para qualquer língua
+
+**Desvantagens:**
+- Não entende sinônimos ("car" ≠ "automobile")
+- Não entende semântica
+- Depende de overlap de palavras
+
+**Quando usar:**
+- Queries com keywords específicos
+- Domínios técnicos (códigos, IDs, nomes próprios)
+- Quando velocidade > precisão
+
+---
+
+### DENSE RETRIEVAL (Sentence-BERT)
+
+**Baseado em semântica**, entende significado.
+
+```python
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+def dense_retrieval(query, documents, k=5):
+    # Load model
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+
+    # Embed query
+    query_embedding = model.encode(query)
+
+    # Embed documents
+    doc_embeddings = model.encode(documents)
+
+    # Calculate cosine similarity
+    similarities = np.dot(doc_embeddings, query_embedding) / (
+        np.linalg.norm(doc_embeddings, axis=1) * np.linalg.norm(query_embedding)
+    )
+
+    # Get top-k
+    top_k_indices = np.argsort(similarities)[::-1][:k]
+    top_k_docs = [documents[i] for i in top_k_indices]
+
+    return top_k_docs
+```
+
+**Modelos populares (2024-2025):**
+- `all-MiniLM-L6-v2`: Rápido, bom para geral (384 dims)
+- `all-mpnet-base-v2`: Melhor qualidade (768 dims)
+- `e5-large-v2`: SOTA multilingual
+- `bge-large-en-v1.5`: SOTA inglês
+- `jina-embeddings-v2`: Otimizado para RAG
+
+**Vantagens:**
+- Entende semântica
+- Funciona com sinônimos
+- Não depende de keyword overlap
+
+**Desvantagens:**
+- Mais lento que sparse
+- Requer embeddings pré-computados
+- Pode perder exact matches
+
+**Quando usar:**
+- Queries semânticas (conceituais)
+- Quando sinônimos são comuns
+- Busca cross-lingual
+
+---
+
+### HYBRID RETRIEVAL (Best of Both)
+
+**Combina sparse + dense** para melhor recall.
+
+```python
+def hybrid_retrieval(query, documents, k=5, alpha=0.5):
+    # Sparse retrieval (BM25)
+    sparse_scores = bm25_get_scores(query, documents)  # 0-1 normalized
+
+    # Dense retrieval (Sentence-BERT)
+    dense_scores = dense_get_scores(query, documents)  # 0-1 normalized
+
+    # Combine scores
+    combined_scores = alpha * sparse_scores + (1 - alpha) * dense_scores
+
+    # Get top-k
+    top_k_indices = np.argsort(combined_scores)[::-1][:k]
+    top_k_docs = [documents[i] for i in top_k_indices]
+
+    return top_k_docs
+```
+
+**Tuning alpha:**
+- `alpha=1.0`: Only sparse (BM25)
+- `alpha=0.5`: Balanced
+- `alpha=0.0`: Only dense
+
+**Vantagens:**
+- Melhor recall (não perde nem keywords nem semântica)
+- Robust a diferentes tipos de queries
+
+**Desvantagens:**
+- 2× mais lento (sparse + dense)
+- Precisa tunar alpha
+
+**Quando usar:**
+- Produção (melhor qualidade geral)
+- Quando não sabe tipo de query beforehand
+- Budget permite latência extra
+
+---
+
+### LATE INTERACTION (ColBERT)
+
+**Token-level similarity**, mais preciso que bi-encoder.
+
+```
+Bi-encoder (Sentence-BERT):
+Query → [Encoder] → Single vector (768 dims)
+Doc → [Encoder] → Single vector (768 dims)
+Similarity: dot(query_vec, doc_vec)  # Single number
+
+Late Interaction (ColBERT):
+Query → [Encoder] → Token vectors (N × 768)
+Doc → [Encoder] → Token vectors (M × 768)
+Similarity: MaxSim over all token pairs  # More precise!
+```
+
+**MaxSim formula:**
+
+```
+MaxSim(Q, D) = Σ_q∈Q max_d∈D (q · d)
+
+For each query token q:
+  Find most similar document token d
+  Sum over all query tokens
+```
+
+**Vantagens:**
+- Mais preciso que bi-encoders
+- Captura nuances (specific phrases)
+- Ancora em keywords importantes
+
+**Desvantagens:**
+- Mais lento (token-level comparisons)
+- Requer mais storage (token vectors, não doc vector)
+
+**Quando usar:**
+- Quando precisão é crítica
+- Queries com specific phrases
+- Budget permite latência extra
+
+**Paper de referência:**
+"ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT" (2020)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 6. RERANKING E QUERY OPTIMIZATION
+
+### POR QUE RERANKING?
+
+Bi-encoders (Sentence-BERT) são **rápidos mas imprecisos**:
+- Encode query e doc separadamente
+- Similarity = dot product de 2 vectors
+- Sem interação entre query e doc
+
+Cross-encoders são **lentos mas precisos**:
+- Encode query + doc JUNTOS
+- Attention entre query e doc tokens
+- Muito mais expressivo
+
+**Solução: Two-stage retrieval**
+
+```
+Stage 1: Bi-encoder retrieval (fast, top-100)
+   ↓
+Stage 2: Cross-encoder reranking (slow, top-10)
+```
+
+---
+
+### IMPLEMENTAÇÃO:
+
+```python
+from sentence_transformers import SentenceTransformer, CrossEncoder
+
+def two_stage_retrieval(query, documents, k=5):
+    # Stage 1: Bi-encoder (fast, retrieve top-100)
+    bi_encoder = SentenceTransformer('all-MiniLM-L6-v2')
+
+    query_embedding = bi_encoder.encode(query)
+    doc_embeddings = bi_encoder.encode(documents)
+
+    similarities = np.dot(doc_embeddings, query_embedding)
+    top_100_indices = np.argsort(similarities)[::-1][:100]
+    top_100_docs = [documents[i] for i in top_100_indices]
+
+    # Stage 2: Cross-encoder (slow, rerank to top-k)
+    cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+
+    # Score each (query, doc) pair
+    pairs = [[query, doc] for doc in top_100_docs]
+    scores = cross_encoder.predict(pairs)
+
+    # Get top-k
+    top_k_indices = np.argsort(scores)[::-1][:k]
+    top_k_docs = [top_100_docs[i] for i in top_k_indices]
+
+    return top_k_docs
+```
+
+**Modelos de Cross-Encoder (2024):**
+- `cross-encoder/ms-marco-MiniLM-L-6-v2`: Rápido, bom
+- `cross-encoder/ms-marco-MiniLM-L-12-v2`: Melhor qualidade
+- `BAAI/bge-reranker-large`: SOTA inglês
+- `jina-reranker-v1-base-en`: Otimizado para RAG
+
+**Latência típica:**
+- Bi-encoder: ~10ms para 1000 docs
+- Cross-encoder: ~50ms para 100 docs
+- Total: ~60ms (aceitável)
+
+---
+
+### QUERY OPTIMIZATION:
+
+#### 1. QUERY REWRITING
+
+```python
+def rewrite_query(query, llm):
+    prompt = f"""Rewrite this query to be more specific and searchable.
+
+Original query: {query}
+Rewritten query:"""
+
+    rewritten = llm.generate(prompt)
+    return rewritten
+```
+
+**Exemplo:**
+```
+Original: "What's the capital?"
+Rewritten: "What is the capital city of France?"
+
+Original: "diabetes cure"
+Rewritten: "What are the current treatment options for Type 2 diabetes?"
+```
+
+#### 2. QUERY EXPANSION
+
+```python
+def expand_query(query):
+    # Add synonyms
+    synonyms = get_synonyms(query)  # From WordNet or LLM
+
+    expanded = query + " " + " ".join(synonyms)
+    return expanded
+```
+
+**Exemplo:**
+```
+Original: "car accident"
+Expanded: "car accident vehicle collision automobile crash"
+```
+
+#### 3. HYDE (Hypothetical Document Embeddings)
+
+```python
+def hyde_retrieval(query, documents, k=5):
+    # 1. Generate hypothetical answer
+    hypothetical_answer = llm.generate(
+        f"Generate a detailed answer to: {query}"
+    )
+
+    # 2. Embed hypothetical answer (not query!)
+    embedding = embed(hypothetical_answer)
+
+    # 3. Retrieve documents similar to hypothetical answer
+    doc_embeddings = embed(documents)
+    similarities = cosine_similarity(embedding, doc_embeddings)
+
+    top_k_indices = np.argsort(similarities)[::-1][:k]
+    return [documents[i] for i in top_k_indices]
+```
+
+**Por que funciona?**
+- Hypothetical answer é mais similar a docs reais que query curta
+- Query: "How does photosynthesis work?" (5 words)
+- Hypothetical answer: "Photosynthesis is the process..." (50+ words)
+- Answer tem mais overlap com docs científicos
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 7. MULTIMODAL RAG
+
+### TEXT + IMAGES EM PDFs
+
+Muitos documentos têm **texto + figuras/diagramas**:
+- Papers científicos (gráficos, diagramas)
+- Relatórios técnicos (tabelas, charts)
+- Manuais (ilustrações, screenshots)
+
+RAG tradicional (text-only) **ignora 30-50% da informação!**
+
+---
+
+### ABORDAGENS:
+
+#### 1. FIGURE-TO-TEXT (Extract text from images)
+
+```python
+def extract_figures_from_pdf(pdf_path):
+    import pymupdf
+
+    doc = pymupdf.open(pdf_path)
+    figures = []
+
+    for page in doc:
+        images = page.get_images()
+
+        for img_index, img in enumerate(images):
+            xref = img[0]
+            base_image = doc.extract_image(xref)
+            image_bytes = base_image["image"]
+
+            # OCR da imagem
+            text = ocr_image(image_bytes)  # Tesseract ou similar
+
+            figures.append({
+                "page": page.number,
+                "image": image_bytes,
+                "text": text
+            })
+
+    return figures
+```
+
+**Vantagens:**
+- Pode usar RAG text-only
+- Não precisa models multimodais
+
+**Desvantagens:**
+- OCR pode errar
+- Perde informação visual (gráficos não são texto)
+
+---
+
+#### 2. MULTIMODAL EMBEDDINGS (CLIP-style)
+
+```python
+from transformers import CLIPProcessor, CLIPModel
+
+def multimodal_retrieval(query, text_docs, images):
+    model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+
+    # Embed query (text)
+    query_inputs = processor(text=[query], return_tensors="pt")
+    query_embedding = model.get_text_features(**query_inputs)
+
+    # Embed text documents
+    text_inputs = processor(text=text_docs, return_tensors="pt", padding=True)
+    text_embeddings = model.get_text_features(**text_inputs)
+
+    # Embed images
+    image_inputs = processor(images=images, return_tensors="pt")
+    image_embeddings = model.get_image_features(**image_inputs)
+
+    # Combine embeddings (text + images)
+    all_embeddings = torch.cat([text_embeddings, image_embeddings])
+
+    # Similarity
+    similarities = torch.cosine_similarity(query_embedding, all_embeddings)
+
+    # Top-k (pode ser text ou image)
+    top_k_indices = torch.argsort(similarities, descending=True)[:k]
+
+    return top_k_indices
+```
+
+**Vantagens:**
+- Unified space (text e images no mesmo embedding space)
+- Query text pode recuperar images relevantes
+- Captura informação visual
+
+**Desvantagens:**
+- Requer model multimodal (CLIP, BLIP, etc.)
+- Mais lento
+- Embeddings maiores
+
+---
+
+#### 3. LAYOUT-AWARE MODELS (DocLLM, LayoutLMv3)
+
+**Problema:** PDFs têm **layout 2D**, não só texto linear.
+
+**Solução:** Models que entendem bounding boxes e posição espacial.
+
+```python
+from transformers import LayoutLMv3Processor, LayoutLMv3Model
+
+def extract_with_layout(pdf_path):
+    processor = LayoutLMv3Processor.from_pretrained("microsoft/layoutlmv3-base")
+    model = LayoutLMv3Model.from_pretrained("microsoft/layoutlmv3-base")
+
+    # Extract text + bounding boxes
+    text, boxes = extract_text_and_boxes(pdf_path)
+
+    # Process with layout
+    encoding = processor(
+        text=text,
+        boxes=boxes,
+        return_tensors="pt"
+    )
+
+    outputs = model(**encoding)
+    embeddings = outputs.last_hidden_state
+
+    return embeddings
+```
+
+**Vantagens:**
+- Entende estrutura 2D (columns, tables)
+- Sem OCR (usa bounding boxes)
+- State-of-the-art para Document AI
+
+**Desvantagens:**
+- Requer bounding box extraction
+- Modelos grandes e lentos
+- Mais complexo de implementar
+
+---
+
+### QUANDO USAR MULTIMODAL RAG?
+
+✅ USE quando:
+- PDFs com figuras/diagramas importantes
+- Relatórios técnicos com gráficos
+- Documentos científicos (papers)
+- Manuais com ilustrações
+
+❌ NÃO use quando:
+- Documentos text-only (emails, contratos)
+- Figuras são decorativas (não informativas)
+- Budget não permite latência/custo extra
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 8. PIPELINE COMPLETO END-TO-END
+
+### PRODUCTION-READY RAG SYSTEM:
+
+```python
+class ProductionRAG:
+    def __init__(self):
+        # Embeddings
+        self.embedder = SentenceTransformer('all-mpnet-base-v2')
+        self.cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-12-v2')
+
+        # Vector store
+        self.vector_store = FAISS(dimension=768)
+
+        # LLM
+        self.llm = OpenAI("gpt-4")
+
+        # Document processors
+        self.processors = {
+            ".txt": self.process_txt,
+            ".md": self.process_markdown,
+            ".pdf": self.process_pdf,
+            ".docx": self.process_docx
+        }
+
+    # ====================
+    # 1. INGESTION
+    # ====================
+
+    def ingest_document(self, file_path):
+        # 1.1 Process document
+        ext = os.path.splitext(file_path)[1]
+        processor = self.processors.get(ext)
+        text = processor(file_path)
+
+        # 1.2 Chunking
+        chunks = self.chunk_text(text, strategy="semantic")
+
+        # 1.3 Embed chunks
+        embeddings = self.embedder.encode(chunks)
+
+        # 1.4 Store in vector DB
+        for chunk, embedding in zip(chunks, embeddings):
+            self.vector_store.add(chunk, embedding, metadata={
+                "source": file_path,
+                "chunk_id": len(self.vector_store)
+            })
+
+    def chunk_text(self, text, strategy="semantic"):
+        if strategy == "fixed":
+            return fixed_size_chunking(text, chunk_size=512)
+        elif strategy == "semantic":
+            return semantic_chunking(text, threshold=0.5)
+        elif strategy == "structural":
+            return structural_chunking(text)
+        else:
+            raise ValueError(f"Unknown strategy: {strategy}")
+
+    # ====================
+    # 2. RETRIEVAL
+    # ====================
+
+    def retrieve(self, query, k=5):
+        # 2.1 Query optimization
+        rewritten_query = self.rewrite_query(query)
+
+        # 2.2 HyDE (optional)
+        hyde_answer = self.llm.generate(
+            f"Generate a detailed answer to: {rewritten_query}"
+        )
+
+        # 2.3 Embed query (or HyDE answer)
+        query_embedding = self.embedder.encode(hyde_answer)
+
+        # 2.4 Retrieve top-100 (bi-encoder)
+        top_100 = self.vector_store.search(query_embedding, k=100)
+
+        # 2.5 Rerank to top-k (cross-encoder)
+        pairs = [[rewritten_query, doc] for doc, _ in top_100]
+        scores = self.cross_encoder.predict(pairs)
+
+        top_k_indices = np.argsort(scores)[::-1][:k]
+        top_k_docs = [top_100[i][0] for i in top_k_indices]
+
+        return top_k_docs
+
+    def rewrite_query(self, query):
+        prompt = f"Rewrite this query to be more specific: {query}"
+        return self.llm.generate(prompt, max_tokens=50)
+
+    # ====================
+    # 3. GENERATION
+    # ====================
+
+    def generate(self, query, retrieved_docs):
+        # 3.1 Build context
+        context = "\n\n".join([
+            f"Document {i+1}:\n{doc}"
+            for i, doc in enumerate(retrieved_docs)
+        ])
+
+        # 3.2 Build prompt
+        prompt = f"""You are a helpful assistant. Answer the query based on the provided context.
+
+Context:
+{context}
+
+Query: {query}
+
+Instructions:
+- Base your answer ONLY on the provided context
+- If the context doesn't contain enough information, say so
+- Cite which document(s) you used (Document 1, Document 2, etc.)
+
+Answer:"""
+
+        # 3.3 Generate answer
+        answer = self.llm.generate(prompt, max_tokens=500)
+
+        return answer
+
+    # ====================
+    # 4. FULL PIPELINE
+    # ====================
+
+    def query(self, user_query, k=5):
+        # 4.1 Retrieve
+        retrieved_docs = self.retrieve(user_query, k=k)
+
+        # 4.2 Generate
+        answer = self.generate(user_query, retrieved_docs)
+
+        # 4.3 Return answer + sources
+        return {
+            "answer": answer,
+            "sources": retrieved_docs
+        }
+
+# Usage:
+rag = ProductionRAG()
+
+# Ingest documents
+rag.ingest_document("document1.pdf")
+rag.ingest_document("document2.md")
+
+# Query
+result = rag.query("What is photosynthesis?")
+print(result["answer"])
+print("\nSources used:", result["sources"])
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 9. BEST PRACTICES E PITFALLS
+
+### ✅ BEST PRACTICES:
+
+1. **Use hybrid retrieval (sparse + dense)**
+   - Melhor recall
+   - Robust a diferentes queries
+
+2. **Always rerank**
+   - Bi-encoder retrieval + Cross-encoder reranking
+   - Melhora precisão em 15-30%
+
+3. **Chunk size: 512-1024 tokens com 10-20% overlap**
+   - Sweet spot empiricamente validado
+   - Overlap previne perda de informação nas bordas
+
+4. **Cite sources**
+   - Prompt LLM para citar documentos
+   - Permite verificação (trust & safety)
+
+5. **Context compression**
+   - Remova texto irrelevante antes de LLM
+   - Reduz custo e "lost in middle"
+
+6. **Monitor retrieval quality**
+   - Track: Precision@k, Recall@k, MRR
+   - A/B test diferentes estratégias
+
+7. **Cache embeddings**
+   - Documents não mudam frequentemente
+   - Compute embeddings offline, não online
+
+### ❌ PITFALLS COMUNS:
+
+1. **Chunks muito pequenos**
+   - Perde contexto
+   - Retrieval impreciso
+
+2. **Chunks muito grandes**
+   - Muito ruído
+   - Caro para LLM
+   - "Lost in middle" effect
+
+3. **Ignorar document structure**
+   - Fixed-size chunking quebra parágrafos/sentenças
+   - Use structural chunking quando possível
+
+4. **Usar apenas dense retrieval**
+   - Perde exact keyword matches
+   - Use hybrid (dense + sparse)
+
+5. **Não rerankar**
+   - Bi-encoder sozinho é impreciso
+   - Cross-encoder reranking melhora muito
+
+6. **Query original não otimizada**
+   - Queries de usuários são vagas
+   - Use query rewriting ou HyDE
+
+7. **Esquecer de remover duplicates**
+   - Retrieval pode retornar chunks similares
+   - Deduplicate before LLM
+
+8. **Não filtrar low-quality docs**
+   - Retrieved docs podem ter low similarity
+   - Threshold: só use docs com score > 0.5
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## 10. CASOS DE USO E EXEMPLOS PRÁTICOS
+
+### CASO 1: CHATBOT DE DOCUMENTAÇÃO TÉCNICA
+
+**Requisitos:**
+- Responder perguntas sobre documentação (APIs, tutoriais)
+- Documentos: Markdown files
+- Latência: <1s
+- Qualidade: Alta (usuários pagantes)
+
+**Solução:**
+
+```python
+# Chunking: Structural (por headers)
+chunks = structural_chunking_markdown(docs)
+
+# Retrieval: Hybrid (dense + sparse)
+retrieved = hybrid_retrieval(query, chunks, alpha=0.6)
+
+# Reranking: Cross-encoder
+reranked = cross_encoder_rerank(query, retrieved, top_k=3)
+
+# Generation: GPT-4 com citação
+answer = gpt4_generate_with_citations(query, reranked)
+```
+
+**Latência:** ~800ms
+**Custo:** ~$0.005 per query
+**Qualidade:** 90% user satisfaction
+
+---
+
+### CASO 2: RAG SOBRE PAPERS CIENTÍFICOS
+
+**Requisitos:**
+- Responder perguntas técnicas
+- Documentos: PDFs científicos com figuras
+- Latência: <2s (aceitável para pesquisa)
+- Qualidade: Muito alta (accuracy crítica)
+
+**Solução:**
+
+```python
+# Processing: Multimodal (text + figures)
+text, figures = extract_multimodal_pdf(pdf)
+
+# Chunking: Late chunking (preserve context)
+chunks = late_chunking(text)
+
+# Retrieval: Dense + Multimodal
+text_retrieved = dense_retrieval(query, chunks)
+figures_retrieved = multimodal_retrieval(query, figures)
+
+# Reranking: Cross-encoder
+reranked = cross_encoder_rerank(query,
+                                  text_retrieved + figures_retrieved,
+                                  top_k=5)
+
+# Generation: GPT-4 com instruções científicas
+answer = gpt4_generate_scientific(query, reranked)
+```
+
+**Latência:** ~1.5s
+**Custo:** ~$0.02 per query
+**Qualidade:** 95% accuracy on benchmarks
+
+---
+
+### CASO 3: RAG EMPRESARIAL (DOCUMENTOS INTERNOS)
+
+**Requisitos:**
+- Milhares de documentos (emails, relatórios, contratos)
+- Formatos: PDF, DOCX, TXT, emails
+- Latência: <500ms (uso interativo)
+- Qualidade: Boa (não precisa perfeição)
+
+**Solução:**
+
+```python
+# Processing: Multi-format pipeline
+text = process_multi_format(doc, format=auto_detect(doc))
+
+# Chunking: Fixed-size (rápido, suficiente)
+chunks = fixed_size_chunking(text, chunk_size=512)
+
+# Retrieval: Dense only (velocidade)
+retrieved = dense_retrieval(query, chunks, k=10)
+
+# Reranking: Skip (economia de latência)
+# Neste caso, sacrifice um pouco de qualidade por velocidade
+
+# Generation: GPT-3.5-turbo (rápido, barato)
+answer = gpt35_generate(query, retrieved)
+```
+
+**Latência:** ~400ms
+**Custo:** ~$0.001 per query
+**Qualidade:** 80% satisfaction (bom suficiente)
+
+---
+
+### CASO 4: RAG EM TEMPO REAL (NOTÍCIAS)
+
+**Requisitos:**
+- Documentos atualizados constantemente
+- Latência: <200ms (critical)
+- Qualidade: Média (velocidade prioridade)
+
+**Solução:**
+
+```python
+# Chunking: Fixed-size (simplest)
+chunks = fixed_size_chunking(text, chunk_size=256)  # Smaller chunks
+
+# Retrieval: Sparse only (BM25, fastest)
+retrieved = bm25_retrieval(query, chunks, k=5)
+
+# Reranking: Skip
+
+# Generation: Llama 2 7B (self-hosted, fast)
+answer = llama2_generate(query, retrieved)
+```
+
+**Latência:** ~150ms
+**Custo:** ~$0.0001 per query (self-hosted)
+**Qualidade:** 70% satisfaction (acceptable for news)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+## CONCLUSÃO
+
+RAG é a tecnologia central que permite LLMs acessarem conhecimento externo.
+
+**Key Takeaways:**
+
+1. **RAG resolve 3 problemas:**
+   - Conhecimento desatualizado
+   - Conhecimento privado/específico
+   - Hallucination
+
+2. **Evolução: Naive → Advanced → Modular → Agentic**
+   - Naive: Baseline simples
+   - Advanced: Pre/post-retrieval optimization
+   - Modular: Componentes plugáveis
+   - Agentic: Decisões adaptativas
+
+3. **Processamento de documentos:**
+   - TXT/Markdown: Simples
+   - PDF: Complexo (layout, OCR, multimodal)
+   - Use ferramentas modernas: PyMuPDF4LLM, Docling
+
+4. **Chunking: 512-1024 tokens com overlap**
+   - Fixed-size suficiente em 80% dos casos
+   - Semantic/Late chunking para qualidade
+   - Structural para docs hierárquicos
+
+5. **Retrieval: Hybrid + Reranking**
+   - Bi-encoder (dense) para recall
+   - Cross-encoder para precision
+   - BM25 para keywords
+
+6. **Production: Monitor e iterate**
+   - A/B test diferentes estratégias
+   - Track metrics (Precision, Recall, Latency)
+   - Optimize para seu use case específico
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Compilado em: 02 de novembro de 2025
+Versão: 1.0

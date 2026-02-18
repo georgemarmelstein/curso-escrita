@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote B - O Fantasma na Máquina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--super-bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Canvas para efeito de terminal */
+        canvas#bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        /* Container principal - split layout */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 60px;
+            max-width: 1000px;
+            padding: 40px;
+            align-items: center;
+        }
+
+        /* Lado esquerdo - visual do fantasma */
+        .ghost-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ghost-container {
+            position: relative;
+            width: 180px;
+            height: 220px;
+        }
+
+        /* O fantasma (terminal flutuante) */
+        .ghost {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 160px;
+            background: rgba(15, 15, 25, 0.9);
+            border-radius: 70px 70px 40px 40px;
+            border: 2px solid rgba(190, 156, 109, 0.4);
+            box-shadow:
+                0 0 40px rgba(190, 156, 109, 0.2),
+                0 0 80px rgba(190, 156, 109, 0.1),
+                inset 0 0 20px rgba(190, 156, 109, 0.05);
+            animation: ghostFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes ghostFloat {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+            50% { transform: translate(-50%, -50%) translateY(-15px); }
+        }
+
+        /* Olhos do fantasma (prompts) */
+        .ghost-eyes {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 25px;
+        }
+
+        .ghost-eye {
+            width: 20px;
+            height: 25px;
+            background: var(--super-gold);
+            border-radius: 50%;
+            animation: eyeBlink 4s ease-in-out infinite;
+        }
+
+        .ghost-eye:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        @keyframes eyeBlink {
+            0%, 45%, 55%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.1); }
+        }
+
+        /* Boca do fantasma (cursor) */
+        .ghost-mouth {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2em;
+            color: var(--super-gold);
+        }
+
+        .ghost-mouth .cursor {
+            animation: cursorBlink 1s infinite;
+        }
+
+        @keyframes cursorBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Aura do fantasma */
+        .ghost-aura {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 240px;
+            border-radius: 100px 100px 60px 60px;
+            background: radial-gradient(ellipse at center,
+                rgba(190, 156, 109, 0.15) 0%,
+                transparent 70%);
+            animation: auraPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes auraPulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* Lado direito - citação */
+        .quote-section {
+            text-align: left;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .quote-text::before {
+            content: '"';
+            position: absolute;
+            left: -30px;
+            top: -10px;
+            font-size: 3em;
+            color: var(--super-gold);
+            opacity: 0.3;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .quote-translation {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            font-weight: 300;
+            color: rgba(255, 244, 228, 0.55);
+            line-height: 1.6;
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 2px solid rgba(190, 156, 109, 0.3);
+        }
+
+        /* Autor */
+        .author-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-photo {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            object-fit: cover;
+        }
+
+        .author-info {
+            text-align: left;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 3px;
+        }
+
+        .author-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            opacity: 0.7;
+        }
+
+        /* Badge decorativo */
+        .theme-badge {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 20px;
+            background: rgba(190, 156, 109, 0.1);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 20px;
+        }
+
+        .theme-badge span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--super-gold);
+            letter-spacing: 1px;
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { gap: 40px; padding: 30px; }
+        body.embed-mode .ghost-container { width: 140px; height: 170px; }
+        body.embed-mode .ghost { width: 110px; height: 130px; }
+        body.embed-mode .ghost-eyes { gap: 18px; }
+        body.embed-mode .ghost-eye { width: 15px; height: 18px; }
+        body.embed-mode .quote-text { font-size: 1.2em; }
+        body.embed-mode .quote-text::before { font-size: 2em; left: -20px; }
+        body.embed-mode .quote-translation { font-size: 0.8em; }
+        body.embed-mode .author-photo { width: 45px; height: 45px; }
+    </style>
+</head>
+<body>
+    <canvas id="bg"></canvas>
+
+    <div class="container">
+        <div class="ghost-visual">
+            <div class="ghost-container">
+                <div class="ghost-aura"></div>
+                <div class="ghost">
+                    <div class="ghost-eyes">
+                        <div class="ghost-eye"></div>
+                        <div class="ghost-eye"></div>
+                    </div>
+                    <div class="ghost-mouth">
+                        $_<span class="cursor">|</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quote-section">
+            <p class="quote-text">
+                "It's a <span class="highlight">ghost in your computer</span> that can do things for you."
+            </p>
+
+            <p class="quote-translation">
+                "É um fantasma no seu computador que pode fazer coisas por você."
+            </p>
+
+            <div class="author-section">
+                <img src="andrej-karpathy.jpg" alt="Andrej Karpathy" class="author-photo"
+                     onerror="this.style.display='none'">
+                <div class="author-info">
+                    <div class="author-name">Andrej Karpathy</div>
+                    <div class="author-title">2025 LLM Year in Review</div>
+                </div>
+            </div>
+
+            <div class="theme-badge">
+                <span>O FANTASMA ESTÁ AQUI</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas com código sutil
+        const canvas = document.getElementById('bg');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = document.documentElement.clientWidth || window.innerWidth;
+            canvas.height = document.documentElement.clientHeight || window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const chars = '$>_./ghostclaudeABCDEF0123456789'.split('');
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(10, 10, 18, 0.03)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px JetBrains Mono, monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillStyle = `rgba(190, 156, 109, ${0.1 + Math.random() * 0.15})`;
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.98) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 80);
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Iron Laws</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-red: #ef4444;
+            --iron-dark: #1a1a20;
+            --iron-mid: #2a2a35;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--iron-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bg-metal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 150px,
+                    rgba(255, 255, 255, 0.01) 150px,
+                    rgba(255, 255, 255, 0.01) 151px
+                ),
+                linear-gradient(180deg, var(--iron-dark) 0%, #12121a 50%, var(--iron-dark) 100%);
+            z-index: 0;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 30%,
+                rgba(10, 10, 18, 0.7) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            padding: 3vh 3vw;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3vh;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.9rem, 1.3vw, 1.2rem);
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            color: var(--super-cream);
+            letter-spacing: 2px;
+        }
+
+        .laws-container {
+            display: flex;
+            gap: 2.5vw;
+            flex: 1;
+            width: 100%;
+        }
+
+        .law-plate {
+            flex: 1;
+            background: linear-gradient(145deg, var(--iron-mid) 0%, var(--iron-dark) 50%, var(--iron-mid) 100%);
+            border: 3px solid #3a3a48;
+            border-radius: 12px;
+            padding: 3vh 2vw;
+            position: relative;
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            opacity: 0;
+            animation: plateAppear 0.5s ease forwards;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .law-plate:nth-child(1) { animation-delay: 0.2s; }
+        .law-plate:nth-child(2) { animation-delay: 0.4s; }
+        .law-plate:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes plateAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .screw {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #4a4a58 0%, #2a2a35 100%);
+            border-radius: 50%;
+            border: 2px solid #3a3a48;
+        }
+
+        .screw::after {
+            content: '+';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #1a1a20;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .screw.tl { top: 12px; left: 12px; }
+        .screw.tr { top: 12px; right: 12px; }
+        .screw.bl { bottom: 12px; left: 12px; }
+        .screw.br { bottom: 12px; right: 12px; }
+
+        .law-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.2vw, 1.1rem);
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2vh;
+        }
+
+        .law-icon {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            margin-bottom: 2vh;
+        }
+
+        .law-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.5rem, 2.2vw, 2rem);
+            font-weight: 700;
+            color: var(--super-cream);
+            margin-bottom: 2vh;
+            line-height: 1.2;
+        }
+
+        .law-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.4vw, 1.25rem);
+            color: rgba(255, 244, 228, 0.75);
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .law-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 3px 8px;
+            border-radius: 5px;
+            color: var(--super-gold);
+        }
+
+        .law-badge {
+            margin-top: 2.5vh;
+            padding: 1.5vh 1.5vw;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+
+        .badge-icon {
+            color: var(--super-red);
+            font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+        }
+
+        .badge-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            color: var(--super-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .master-rule {
+            margin-top: 3vh;
+            padding: 2.5vh 4vw;
+            background: rgba(190, 156, 109, 0.12);
+            border: 2px solid var(--super-gold);
+            border-radius: 12px;
+            text-align: center;
+            opacity: 0;
+            animation: ruleAppear 0.5s ease 1s forwards;
+        }
+
+        @keyframes ruleAppear {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .master-rule-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .master-rule-text strong {
+            color: var(--super-cream);
+        }
+
+        body.embed-mode .header-title { font-size: clamp(2rem, 4vw, 3.5rem); }
+        body.embed-mode .laws-container { gap: 2vw; }
+        body.embed-mode .law-plate { padding: 2.5vh 1.5vw; }
+        body.embed-mode .law-title { font-size: clamp(1.3rem, 1.9vw, 1.7rem); }
+        body.embed-mode .law-text { font-size: clamp(0.9rem, 1.2vw, 1.1rem); }
+        body.embed-mode .law-icon { font-size: clamp(2.5rem, 4vw, 3.5rem); }
+    </style>
+</head>
+<body>
+    <div class="bg-metal"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Superpowers Pack</div>
+            <h1 class="header-title">Iron Laws</h1>
+        </div>
+
+        <div class="laws-container">
+            <div class="law-plate">
+                <div class="screw tl"></div>
+                <div class="screw tr"></div>
+                <div class="screw bl"></div>
+                <div class="screw br"></div>
+
+                <div class="law-number">Iron Law #1</div>
+                <div class="law-icon">🧪</div>
+                <div class="law-title">Test-Driven Development</div>
+                <div class="law-text">
+                    Nenhum código de produção sem um <code>teste falhando primeiro</code>.
+                    <br><br>
+                    O teste prova que você entendeu o problema antes de tentar resolvê-lo.
+                </div>
+                <div class="law-badge">
+                    <span class="badge-icon">🔒</span>
+                    <span class="badge-text">Obrigatório</span>
+                </div>
+            </div>
+
+            <div class="law-plate">
+                <div class="screw tl"></div>
+                <div class="screw tr"></div>
+                <div class="screw bl"></div>
+                <div class="screw br"></div>
+
+                <div class="law-number">Iron Law #2</div>
+                <div class="law-icon">🔍</div>
+                <div class="law-title">Systematic Debugging</div>
+                <div class="law-text">
+                    Nenhuma correção sem <code>investigação de causa raiz</code>.
+                    <br><br>
+                    Nunca adivinhe. Entenda o problema completamente antes de propor soluções.
+                </div>
+                <div class="law-badge">
+                    <span class="badge-icon">🔒</span>
+                    <span class="badge-text">Obrigatório</span>
+                </div>
+            </div>
+
+            <div class="law-plate">
+                <div class="screw tl"></div>
+                <div class="screw tr"></div>
+                <div class="screw bl"></div>
+                <div class="screw br"></div>
+
+                <div class="law-number">Iron Law #3</div>
+                <div class="law-icon">✅</div>
+                <div class="law-title">Verification Before Completion</div>
+                <div class="law-text">
+                    Nenhuma declaração de "pronto" sem <code>verificação fresca</code>.
+                    <br><br>
+                    Execute os testes novamente. Não confie em resultados em cache.
+                </div>
+                <div class="law-badge">
+                    <span class="badge-icon">🔒</span>
+                    <span class="badge-text">Obrigatório</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="master-rule">
+            <div class="master-rule-text">
+                🔐 Regra Mestra: <strong>"IF A SKILL APPLIES, YOU MUST USE IT"</strong>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal - Fora da Caverna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* Imagem de fundo - Caverna com muita luz */
+        .bg-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('../../../site/assets/20260125_1105_Image Generation_simple_compose_01kftqh504f8hv46ba4smtz2c6.png');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6) saturate(1);
+            z-index: 1;
+        }
+
+        /* Overlay leve - luminoso */
+        .bg-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg,
+                rgba(10, 10, 18, 0.50) 0%,
+                rgba(40, 35, 30, 0.40) 50%,
+                rgba(80, 65, 45, 0.30) 100%);
+            z-index: 2;
+        }
+
+        /* Luz dourada intensa */
+        .golden-light {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(ellipse at center,
+                rgba(190, 156, 109, 0.25) 0%,
+                rgba(190, 156, 109, 0.10) 30%,
+                transparent 60%);
+            z-index: 3;
+            animation: lightBreath 4s ease-in-out infinite;
+        }
+
+        @keyframes lightBreath {
+            0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* Container principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            padding: 30px 40px;
+            max-width: 1200px;
+        }
+
+        /* Barra de progresso lateral */
+        .progress-bar {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 20;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .progress-line {
+            width: 2px;
+            height: 40px;
+            background: rgba(190, 156, 109, 0.5);
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.done {
+            background: rgba(100, 90, 110, 0.6);
+            border: 2px solid rgba(100, 90, 110, 0.8);
+        }
+
+        .progress-dot.active {
+            background: var(--super-gold);
+            border: 2px solid var(--super-gold-light);
+            box-shadow: 0 0 20px var(--super-gold), 0 0 40px rgba(190, 156, 109, 0.5);
+        }
+
+        .progress-label {
+            font-size: 0.65em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+        }
+
+        .progress-label.active {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .progress-label.done {
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Badge Recomendado */
+        .recommended-badge {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.5);
+            z-index: 20;
+            opacity: 0;
+            animation: badgeAppear 0.8s ease 0.3s forwards;
+        }
+
+        @keyframes badgeAppear {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Título com glow */
+        .title-section {
+            text-align: center;
+            opacity: 0;
+            animation: titleAppear 1s ease 0.2s forwards;
+        }
+
+        @keyframes titleAppear {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--super-gold);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            text-shadow:
+                0 0 30px rgba(190, 156, 109, 0.8),
+                0 0 60px rgba(190, 156, 109, 0.4);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.5em;
+            font-style: italic;
+            color: var(--super-cream);
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Terminal principal com glow */
+        .terminal-container {
+            position: relative;
+            opacity: 0;
+            animation: terminalAppear 1.2s ease 0.5s forwards;
+        }
+
+        @keyframes terminalAppear {
+            0% { opacity: 0; transform: scale(0.9); filter: blur(10px); }
+            50% { filter: blur(0); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .terminal-glow {
+            position: absolute;
+            top: -20px; left: -20px; right: -20px; bottom: -20px;
+            background: radial-gradient(ellipse at center,
+                rgba(190, 156, 109, 0.3) 0%,
+                transparent 70%);
+            border-radius: 20px;
+            z-index: -1;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .terminal {
+            width: 600px;
+            background: #0d0d0d;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid var(--super-gold);
+            box-shadow:
+                0 0 60px rgba(190, 156, 109, 0.4),
+                0 25px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .terminal-header {
+            background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(190, 156, 109, 0.3);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-gold);
+            font-weight: 500;
+        }
+
+        .terminal-body {
+            padding: 20px 25px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        .terminal-line {
+            margin-bottom: 6px;
+        }
+
+        .prompt { color: var(--super-gold); font-weight: 600; }
+        .command { color: var(--super-cream); }
+        .output { color: rgba(255,255,255,0.6); }
+        .success { color: var(--super-green); }
+        .highlight { color: var(--super-gold-light); font-weight: 500; }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--super-gold);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            box-shadow: 0 0 10px var(--super-gold);
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Multi-terminais nos cantos */
+        .multi-terminals {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeIn 1s ease 1.5s forwards;
+        }
+
+        .mini-terminal {
+            width: 120px;
+            background: rgba(13, 13, 13, 0.8);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 6px;
+            padding: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5em;
+        }
+
+        .mini-terminal .mini-header {
+            color: rgba(190, 156, 109, 0.7);
+            margin-bottom: 4px;
+            font-size: 0.9em;
+        }
+
+        .mini-terminal .mini-content {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Features - todas positivas */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 15px;
+            background: rgba(190, 156, 109, 0.08);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            background: rgba(190, 156, 109, 0.15);
+            border-color: var(--super-gold);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(190, 156, 109, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 1.8em;
+        }
+
+        .feature-text {
+            font-size: 0.8em;
+            color: var(--super-cream);
+            font-weight: 500;
+        }
+
+        /* Citação final */
+        .final-quote {
+            text-align: center;
+            max-width: 700px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.8s forwards;
+        }
+
+        .quote-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .quote-author {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        /* Asas decorativas */
+        .wings {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3em;
+            color: rgba(190, 156, 109, 0.3);
+            opacity: 0;
+            animation: wingsAppear 1s ease 2s forwards;
+        }
+
+        .wings.left { left: -80px; }
+        .wings.right { right: -80px; transform: translateY(-50%) scaleX(-1); }
+
+        @keyframes wingsAppear {
+            from { opacity: 0; }
+            to { opacity: 0.4; }
+        }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 20px 30px; gap: 20px; }
+        body.embed-mode .main-title { font-size: 2.5em; letter-spacing: 5px; }
+        body.embed-mode .subtitle { font-size: 1.2em; }
+        body.embed-mode .terminal { width: 500px; }
+        body.embed-mode .terminal-body { padding: 15px 20px; font-size: 0.8em; }
+        body.embed-mode .features { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        body.embed-mode .feature { padding: 10px; }
+        body.embed-mode .feature-icon { font-size: 1.4em; }
+        body.embed-mode .feature-text { font-size: 0.7em; }
+        body.embed-mode .final-quote { display: none; }
+        body.embed-mode .recommended-badge { top: 15px; right: 25px; font-size: 0.65em; padding: 6px 15px; }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="golden-light"></div>
+
+    <!-- Badge Recomendado -->
+    <div class="recommended-badge">Nossa Escolha</div>
+
+    <!-- Barra de progresso -->
+    <div class="progress-bar">
+        <div class="progress-step">
+            <div class="progress-dot done"></div>
+            <span class="progress-label done">Sombras</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            <div class="progress-dot done"></div>
+            <span class="progress-label done">Caminho</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            <div class="progress-dot active"></div>
+            <span class="progress-label active">Luz</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="title-section">
+            <h1 class="main-title">Terminal</h1>
+            <p class="subtitle">"Fora da caverna"</p>
+        </div>
+
+        <div class="terminal-container">
+            <div class="terminal-glow"></div>
+            <span class="wings left">🪽</span>
+            <span class="wings right">🪽</span>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="window-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <span class="terminal-title">claude-code</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="prompt">$</span> <span class="command">claude</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">Claude Code v1.0.0</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">> Olá! Como posso ajudar?</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="prompt">></span> <span class="highlight">analise todo o projeto e sugira melhorias</span><span class="cursor"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="multi-terminals">
+            <div class="mini-terminal">
+                <div class="mini-header">Terminal 2</div>
+                <div class="mini-content">$ claude "rode os testes"</div>
+            </div>
+            <div class="mini-terminal">
+                <div class="mini-header">Terminal 3</div>
+                <div class="mini-content">$ claude "documente"</div>
+            </div>
+            <div class="mini-terminal">
+                <div class="mini-header">Terminal 4</div>
+                <div class="mini-content">$ claude "refatore"</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">⚡</span>
+                <span class="feature-text">Ambiente nativo</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🪶</span>
+                <span class="feature-text">Leve — menos CPU</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔀</span>
+                <span class="feature-text">Multi-terminais</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🎯</span>
+                <span class="feature-text">Controle total</span>
+            </div>
+        </div>
+
+        <div class="final-quote">
+            <p class="quote-text">"É <span class="highlight">terminal-first</span> sem lock-in de IDE — funciona em qualquer lugar que seu shell funcione."</p>
+            <p class="quote-author">— Claude Code Documentation</p>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

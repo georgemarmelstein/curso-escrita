@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medidor de Contexto</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 100%);
+            color: var(--super-cream);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        body.embed-mode {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--super-gold);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            font-size: 1em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        body.embed-mode .title h1 {
+            font-size: 1.8em;
+        }
+
+        /* MEDIDOR */
+        .gauge-container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 45px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        body.embed-mode .gauge-container {
+            padding: 30px;
+        }
+
+        .gauge-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .label-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-gold);
+        }
+
+        .label-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--super-cream);
+        }
+
+        /* BARRA */
+        .gauge-bar {
+            height: 60px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 30px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        body.embed-mode .gauge-bar {
+            height: 45px;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .gauge-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255,255,255,0.2),
+                transparent);
+            animation: shimmer 2.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* ESTADOS */
+        .gauge-status {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .status-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .status-text {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .status-desc {
+            font-size: 0.9em;
+            color: rgba(255, 244, 228, 0.6);
+            line-height: 1.5;
+        }
+
+        body.embed-mode .status-icon {
+            font-size: 2em;
+        }
+
+        body.embed-mode .status-text {
+            font-size: 1em;
+        }
+
+        /* CONTROLES */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .control-btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--super-gold), var(--super-gold-light));
+            color: var(--super-bg-dark);
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--super-cream);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        body.embed-mode .controls {
+            gap: 12px;
+        }
+
+        body.embed-mode .control-btn {
+            padding: 12px 16px;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>Medidor de Contexto</h1>
+            <p>Simule o uso de tokens e veja os avisos</p>
+        </div>
+
+        <div class="gauge-container">
+            <div class="gauge-label">
+                <span class="label-title">Context Usage</span>
+                <span class="label-value" id="percentage">45%</span>
+            </div>
+
+            <div class="gauge-bar">
+                <div class="gauge-fill" id="gauge-fill" style="width: 45%; background: linear-gradient(90deg, var(--super-green), #22c55e);"></div>
+            </div>
+
+            <div class="gauge-status" id="status">
+                <div class="status-icon">✅</div>
+                <div class="status-text" style="color: var(--super-green);">Contexto Saudável</div>
+                <div class="status-desc">Você tem bastante espaço para continuar trabalhando.</div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn btn-add" id="btn-add">
+                    Adicionar Contexto (+15%)
+                </button>
+                <button class="control-btn btn-reset" id="btn-reset">
+                    Resetar (0%)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Detecção de embed mode
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Estado
+        let currentPercentage = 45;
+
+        const gaugeFill = document.getElementById('gauge-fill');
+        const percentageLabel = document.getElementById('percentage');
+        const statusEl = document.getElementById('status');
+
+        function updateGauge() {
+            // Atualiza barra
+            gaugeFill.style.width = currentPercentage + '%';
+            percentageLabel.textContent = currentPercentage + '%';
+
+            // Cores e mensagens por faixa
+            let color, icon, title, desc;
+
+            if (currentPercentage < 50) {
+                color = 'linear-gradient(90deg, var(--super-green), #22c55e)';
+                icon = '✅';
+                title = 'Contexto Saudável';
+                titleColor = 'var(--super-green)';
+                desc = 'Você tem bastante espaço para continuar trabalhando.';
+            } else if (currentPercentage < 80) {
+                color = 'linear-gradient(90deg, var(--super-amber), #fbbf24)';
+                icon = '⚠️';
+                title = 'Zona de Atenção';
+                titleColor = 'var(--super-amber)';
+                desc = 'Considere usar /compact em breve para otimizar o contexto.';
+            } else {
+                color = 'linear-gradient(90deg, var(--super-red), #dc2626)';
+                icon = '🔥';
+                title = 'Zona Crítica';
+                titleColor = 'var(--super-red)';
+                desc = 'Use /clear ou /compact AGORA. Respostas podem ficar lentas.';
+            }
+
+            gaugeFill.style.background = color;
+            statusEl.innerHTML = `
+                <div class="status-icon">${icon}</div>
+                <div class="status-text" style="color: ${titleColor};">${title}</div>
+                <div class="status-desc">${desc}</div>
+            `;
+        }
+
+        // Botões
+        document.getElementById('btn-add').addEventListener('click', function() {
+            currentPercentage = Math.min(100, currentPercentage + 15);
+            updateGauge();
+        });
+
+        document.getElementById('btn-reset').addEventListener('click', function() {
+            currentPercentage = 0;
+            updateGauge();
+        });
+
+        // Inicializa
+        updateGauge();
+    </script>
+</body>
+</html>

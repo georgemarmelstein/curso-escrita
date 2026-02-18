@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Capa Lego Manual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+
+            /* Manual page colors */
+            --page-bg: #f8f6f0;
+            --page-line: #e0ddd5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Dark background */
+        .bg-dark {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 50% 50%, rgba(26, 26, 38, 1) 0%, var(--super-bg-dark) 70%);
+            z-index: 0;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 30%,
+                rgba(10, 10, 18, 0.6) 80%,
+                rgba(10, 10, 18, 0.95) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 30px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           INSTRUCTION MANUAL PAGE
+           ═══════════════════════════════════════════════════════════ */
+        .manual-page {
+            width: 700px;
+            background: var(--page-bg);
+            border-radius: 8px;
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255,255,255,0.1),
+                inset 0 0 100px rgba(0,0,0,0.03);
+            overflow: hidden;
+            opacity: 0;
+            transform: perspective(1000px) rotateX(5deg) scale(0.95);
+            animation: pageAppear 1s ease 0.3s forwards;
+        }
+
+        @keyframes pageAppear {
+            to {
+                opacity: 1;
+                transform: perspective(1000px) rotateX(2deg) scale(1);
+            }
+        }
+
+        /* Page header */
+        .page-header {
+            background: linear-gradient(135deg, var(--super-gold) 0%, var(--super-gold-light) 100%);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-blocks {
+            display: flex;
+            gap: 3px;
+        }
+
+        .mini-block {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .mini-block.b1 { background: var(--super-red); }
+        .mini-block.b2 { background: var(--super-amber); }
+        .mini-block.b3 { background: var(--super-green); }
+
+        .header-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .header-info {
+            text-align: right;
+        }
+
+        .header-model {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .header-set {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.55em;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Page content */
+        .page-content {
+            padding: 25px 30px;
+        }
+
+        /* Step indicator */
+        .step-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: stepAppear 0.5s ease forwards;
+        }
+
+        .step-row:nth-child(1) { animation-delay: 0.8s; }
+        .step-row:nth-child(2) { animation-delay: 1s; }
+        .step-row:nth-child(3) { animation-delay: 1.2s; }
+        .step-row:nth-child(4) { animation-delay: 1.4s; }
+        .step-row:nth-child(5) { animation-delay: 1.6s; }
+        .step-row:nth-child(6) { animation-delay: 1.8s; }
+
+        @keyframes stepAppear {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: #333;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Block illustrations */
+        .step-block {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .block-icon {
+            width: 50px;
+            height: 28px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .block-icon::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 8px;
+            width: 8px;
+            height: 8px;
+            background: inherit;
+            filter: brightness(1.1);
+            border-radius: 50%;
+            box-shadow: 16px 0 0 currentColor;
+        }
+
+        .block-icon.workflow { background: var(--super-amber); }
+        .block-icon.agent { background: var(--super-gold); }
+        .block-icon.pipeline { background: var(--super-cyan); }
+        .block-icon.gate { background: var(--super-red); }
+        .block-icon.fanout { background: var(--super-purple); }
+        .block-icon.context { background: var(--super-green); }
+
+        .block-icon span {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.5em;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+        }
+
+        .step-arrow {
+            font-size: 1.2em;
+            color: #999;
+        }
+
+        .step-description {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        /* Assembly diagram */
+        .assembly-diagram {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--page-line);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: diagramAppear 0.8s ease 2s forwards;
+        }
+
+        @keyframes diagramAppear {
+            to { opacity: 1; }
+        }
+
+        .assembly-block {
+            padding: 10px 18px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            font-weight: 600;
+            color: white;
+            position: relative;
+        }
+
+        .assembly-block.workflow { background: var(--super-amber); }
+        .assembly-block.agent { background: var(--super-gold); }
+        .assembly-block.gate { background: var(--super-red); }
+        .assembly-block.result {
+            background: #333;
+            padding: 10px 25px;
+        }
+
+        .assembly-plus {
+            font-size: 1.2em;
+            color: #999;
+            font-weight: 300;
+        }
+
+        .assembly-equals {
+            font-size: 1.5em;
+            color: #666;
+            font-weight: 300;
+            margin: 0 5px;
+        }
+
+        /* Page footer */
+        .page-footer {
+            padding: 15px 30px;
+            background: #f0ede5;
+            border-top: 1px solid var(--page-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-page {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7em;
+            color: #888;
+        }
+
+        .footer-warning {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6em;
+            color: #888;
+        }
+
+        .warning-icon {
+            width: 16px;
+            height: 16px;
+            background: var(--super-amber);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            color: white;
+            font-weight: 700;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TITLE (below manual)
+           ═══════════════════════════════════════════════════════════ */
+        .title-container {
+            margin-top: 35px;
+            text-align: center;
+            opacity: 0;
+            animation: titleFade 1s ease 2.2s forwards;
+        }
+
+        @keyframes titleFade {
+            to { opacity: 1; }
+        }
+
+        .title-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .title-main {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 2px;
+            text-shadow: 0 0 40px rgba(190, 156, 109, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .manual-page { width: 600px; }
+        body.embed-mode .page-header { padding: 15px 25px; }
+        body.embed-mode .page-content { padding: 20px 25px; }
+        body.embed-mode .step-number { width: 28px; height: 28px; font-size: 0.75em; }
+        body.embed-mode .block-icon { width: 42px; height: 24px; }
+        body.embed-mode .title-main { font-size: 2em; }
+        body.embed-mode .title-container { margin-top: 25px; }
+    </style>
+</head>
+<body>
+    <div class="bg-dark"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="manual-page">
+            <div class="page-header">
+                <div class="header-logo">
+                    <div class="logo-blocks">
+                        <div class="mini-block b1"></div>
+                        <div class="mini-block b2"></div>
+                        <div class="mini-block b3"></div>
+                    </div>
+                    <span class="header-title">AGENT ARCHITECTURE</span>
+                </div>
+                <div class="header-info">
+                    <div class="header-model">SET #2026-03</div>
+                    <div class="header-set">Sistemas Agênticos</div>
+                </div>
+            </div>
+
+            <div class="page-content">
+                <div class="step-row">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-block">
+                            <div class="block-icon workflow"><span>WF</span></div>
+                        </div>
+                        <span class="step-description">Workflow: fluxo determinístico com etapas predefinidas</span>
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-block">
+                            <div class="block-icon agent"><span>AG</span></div>
+                        </div>
+                        <span class="step-description">Agent: loop autônomo que decide próximas ações</span>
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-block">
+                            <div class="block-icon pipeline"><span>PL</span></div>
+                        </div>
+                        <span class="step-description">Pipeline: sequência linear de transformações</span>
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-block">
+                            <div class="block-icon fanout"><span>FO</span></div>
+                        </div>
+                        <span class="step-description">Fan-Out: paralelização com convergência final</span>
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <div class="step-block">
+                            <div class="block-icon context"><span>CTX</span></div>
+                        </div>
+                        <span class="step-description">Context: gerenciamento de memória e estado</span>
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <div class="step-block">
+                            <div class="block-icon gate"><span>GT</span></div>
+                        </div>
+                        <span class="step-description">Gate: checkpoint de validação e controle</span>
+                    </div>
+                </div>
+
+                <div class="assembly-diagram">
+                    <div class="assembly-block workflow">WF</div>
+                    <span class="assembly-plus">+</span>
+                    <div class="assembly-block agent">AG</div>
+                    <span class="assembly-plus">+</span>
+                    <div class="assembly-block gate">GT</div>
+                    <span class="assembly-equals">=</span>
+                    <div class="assembly-block result">SISTEMA</div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <span class="footer-page">Aula 03 / 7 Blocos</span>
+                <div class="footer-warning">
+                    <div class="warning-icon">!</div>
+                    <span>Peças combináveis. Resultados podem variar.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="title-container">
+            <div class="title-label">Manual de Montagem</div>
+            <h1 class="title-main">Arquitetura de Agentes</h1>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

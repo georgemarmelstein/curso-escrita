@@ -1,0 +1,808 @@
+===================================================================================
+AULA 10 - MODOS DE USO DOS LLMs
+===================================================================================
+
+Data: 02 de novembro de 2025
+Total de PDFs: 20
+
+===================================================================================
+OS 3 MODOS DE USO DOS LLMs
+===================================================================================
+
+Esta aula explora uma taxonomia fundamental de como LLMs podem ser utilizados,
+baseada na FONTE DE CONHECIMENTO que alimenta as respostas:
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ MODO 1: RECALL (Conhecimento Paramétrico)                                 │
+│ ───────────────────────────────────────────────────────────────────────    │
+│ Fonte: Conhecimento armazenado nos PARÂMETROS do modelo                   │
+│ Quando: Informação foi vista durante pré-training ou fine-tuning          │
+│ Limitação: Conhecimento "congelado" no tempo do treinamento               │
+│ Exemplos: Fatos históricos, conhecimento geral, raciocínio matemático     │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ MODO 2: RAG/CONTEXTO (Conhecimento Não-Paramétrico)                       │
+│ ───────────────────────────────────────────────────────────────────────    │
+│ Fonte: Conhecimento ANEXADO ao contexto (RAG, docs, web search, APIs)     │
+│ Quando: Informação atual, específica do domínio, ou privada               │
+│ Limitação: Limitado pelo tamanho da janela de contexto                    │
+│ Exemplos: Docs corporativos, dados em tempo real, info proprietária       │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ MODO 3: INTERATIVO (Agentes e Tool Use)                                   │
+│ ───────────────────────────────────────────────────────────────────────    │
+│ Fonte: Interação DIRIGIDA pelo usuário com ferramentas externas           │
+│ Quando: Tarefas requerem ações, computação, ou dados dinâmicos            │
+│ Limitação: Complexidade de orquestração, confiabilidade de tools          │
+│ Exemplos: Agentes autônomos, calculadora, APIs, execução de código        │
+└────────────────────────────────────────────────────────────────────────────┘
+
+===================================================================================
+COMPARAÇÃO ENTRE OS 3 MODOS
+===================================================================================
+
+Dimensão          MODO 1: RECALL    MODO 2: RAG         MODO 3: INTERATIVO
+─────────────────────────────────────────────────────────────────────────────
+FONTE             Parâmetros        Contexto anexado    Ferramentas externas
+ATUALIZAÇÃO       Treino apenas     Em tempo real       Em tempo real
+LATÊNCIA          Baixa             Média (+retrieval)  Alta (+tool calls)
+ACURÁCIA FACTUAL  Baixa (outdated)  Alta (se docs bons) Variável (depende tool)
+CUSTO             Baixo             Médio               Alto (+ API calls)
+COMPLEXIDADE      Simples           Média               Alta (orquestração)
+ESCALABILIDADE    Alta              Média               Baixa
+USE CASE          Conhecimento      Docs específicos    Ações e computação
+                  geral             Dados atualizados   Workflow complexos
+
+===================================================================================
+MODO 1: RECALL - CONHECIMENTO PARAMÉTRICO
+===================================================================================
+
+DEFINIÇÃO:
+O modelo usa APENAS conhecimento armazenado em seus parâmetros durante o
+pré-training e fine-tuning. Não há acesso a informação externa.
+
+COMO FUNCIONA:
+┌──────────────┐
+│ User Query   │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────────────────────┐
+│ LLM Parameters (billions)    │
+│ • Facts learned in training  │
+│ • Patterns & reasoning       │
+│ • Linguistic knowledge       │
+└──────┬───────────────────────┘
+       │
+       ▼
+┌──────────────┐
+│ Response     │
+└──────────────┘
+
+VANTAGENS:
+✓ Latência mínima (sem retrieval ou API calls)
+✓ Simples de implementar
+✓ Custo baixo (apenas inference)
+✓ Funciona offline
+✓ Raciocínio e patterns bem estabelecidos
+
+LIMITAÇÕES:
+✗ Conhecimento congelado no tempo (cutoff date)
+✗ Hallucination quando incerto
+✗ Não sabe sobre eventos recentes
+✗ Informação proprietária não incluída
+✗ Difícil de atualizar (requer re-training)
+
+QUANDO USAR:
+- Conhecimento geral estável (história, matemática, línguas)
+- Raciocínio lógico e problem-solving
+- Tarefas que não requerem dados atuais
+- Aplicações com restrições de latência/custo
+
+PAPERS CHAVE:
+
+1. Knowledge Editing for LLMs: A Survey (2024)
+   → Como UPDATE conhecimento paramétrico sem re-training
+   → Métodos: locate-then-edit, meta-learning, memory-based
+
+2. From Human Memory to AI Memory (2025)
+   → Framework de 8 dimensões para memory em LLMs
+   → Parametric vs. non-parametric memory
+
+3. Knowledge Mechanisms in LLMs (2024)
+   → Como LLMs armazenam e recall conhecimento
+   → Layers específicas para different tipos de conhecimento
+
+4. WISE: Lifelong Model Editing (2024)
+   → Dual memory: main (pretrained) + side (edited)
+   → Router decide qual memória usar
+
+EXEMPLO PRÁTICO:
+
+User: "Qual é a capital da França?"
+LLM (recall): "A capital da França é Paris."
+              [Conhecimento paramétrico - learned during training]
+
+User: "Quem ganhou as eleições presidenciais francesas de 2024?"
+LLM (recall): "Não tenho informação sobre eleições de 2024..."
+              [Knowledge cutoff - requer Modo 2 ou 3]
+
+===================================================================================
+MODO 2: RAG/CONTEXTO - CONHECIMENTO NÃO-PARAMÉTRICO
+===================================================================================
+
+DEFINIÇÃO:
+O modelo recebe conhecimento EXTERNO anexado ao contexto via retrieval,
+documentos do usuário, web search, ou outras fontes.
+
+COMO FUNCIONA (RAG):
+┌──────────────┐
+│ User Query   │
+└──────┬───────┘
+       │
+       ▼
+┌────────────────────────────┐
+│ Retrieval System           │
+│ • Encode query            │
+│ • Search vector DB        │
+│ • Retrieve top-k docs     │
+└──────┬─────────────────────┘
+       │
+       ▼
+┌────────────────────────────┐
+│ Augmented Prompt           │
+│ Context: [Retrieved docs]  │
+│ Question: [User query]     │
+└──────┬─────────────────────┘
+       │
+       ▼
+┌────────────────────────────┐
+│ LLM Generation             │
+│ (using context + params)   │
+└──────┬─────────────────────┘
+       │
+       ▼
+┌──────────────┐
+│ Response     │
+└──────────────┘
+
+VANTAGENS:
+✓ Conhecimento atualizado (add new docs anytime)
+✓ Informação proprietária/específica do domínio
+✓ Reduz hallucination (grounded em docs)
+✓ Atribuição de fontes possível
+✓ Escalável (add more docs sem re-training)
+
+LIMITAÇÕES:
+✗ Latência maior (retrieval step)
+✗ Qualidade depende dos documentos
+✗ Context window limitation (quantos docs caber)
+✗ Retrieval failures (docs relevantes não encontrados)
+✗ Custo de manter vector DB
+
+QUANDO USAR:
+- Documentação corporativa (manuais, políticas)
+- Dados atualizados frequentemente (news, mercado)
+- Informação privada não no training data
+- Necessidade de citar fontes
+
+PAPERS CHAVE:
+
+1. RAG Original (Lewis et al., 2020)
+   → Primeiro paper a propor RAG formalmente
+   → Combina parametric (BART) + non-parametric (DPR retrieval)
+   → SOTA em knowledge-intensive tasks
+
+2. Systematic Review of RAG Systems (2025)
+   → Evolution de 2017-2025
+   → Mitigates hallucinations e outdated knowledge
+   → Taxonomy: retriever-centric, generator-centric, hybrid
+
+3. RAG Comprehensive Survey (2025)
+   → Architectures: retriever, generator, hybrid, robustness
+   → AU-RAG: agent decide parametric vs retrieved dinamicamente
+   → Addresses factual inconsistency & domain inflexibility
+
+4. Parametric RAG (2025)
+   → NOVO paradigma: update LLM parameters based on retrieved docs
+   → Temporarily integrate knowledge into parameters
+   → Hybrid: benefits of both modes
+
+5. RAG Evolution Survey (2024)
+   → Traces RAG evolution
+   → Combines retrieval + generation para accuracy
+
+VARIAÇÕES DE RAG:
+
+1. NAIVE RAG:
+   Query → Retrieve → Generate
+
+2. ADVANCED RAG:
+   Pre-retrieval optimization (query rewriting)
+   Post-retrieval refinement (re-ranking)
+
+3. MODULAR RAG:
+   Multiple retrievers
+   Routing logic
+   Iterative retrieval
+
+4. AGENTIC RAG:
+   Agent decide when to retrieve
+   Pode fazer múltiplos retrievals
+   Self-correction
+
+EXEMPLO PRÁTICO:
+
+User: "Qual foi a receita da empresa no Q3 2024?"
+
+Sem RAG (Modo 1 - Fail):
+LLM: "Não tenho acesso a dados financeiros de 2024..."
+
+Com RAG (Modo 2 - Success):
+[Retrieval: busca "Q3 2024 receita" em docs corporativos]
+[Found: "No Q3 2024, a receita foi $450M, +15% YoY"]
+LLM: "De acordo com o relatório financeiro do Q3 2024,
+      a receita foi de $450 milhões, representando um
+      crescimento de 15% em relação ao ano anterior."
+
+===================================================================================
+MODO 3: INTERATIVO - AGENTES E TOOL USE
+===================================================================================
+
+DEFINIÇÃO:
+O modelo pode CHAMAR FERRAMENTAS EXTERNAS (APIs, calculadora, código, web search)
+e REALIZAR AÇÕES dirigidas pelo usuário ou autonomamente.
+
+COMO FUNCIONA (ReAct Pattern):
+┌──────────────┐
+│ User Task    │
+└──────┬───────┘
+       │
+       ▼
+┌────────────────────────────┐
+│ Agent (LLM)                │
+│ • Understand task          │
+│ • Plan steps               │
+└──────┬─────────────────────┘
+       │
+       ▼
+    ╔═══════════════╗
+    ║ LOOP:         ║
+    ╚═══┬═══════════╝
+        │
+        ▼
+    ┌─────────────────────┐
+    │ Thought (Reasoning) │ ← LLM raciocina próximo passo
+    └─────┬───────────────┘
+          │
+          ▼
+    ┌─────────────────────┐
+    │ Action (Tool Call)  │ ← LLM chama ferramenta
+    └─────┬───────────────┘
+          │
+          ▼
+    ┌─────────────────────┐
+    │ Observation (Result)│ ← Ferramenta retorna resultado
+    └─────┬───────────────┘
+          │
+          ▼
+        [Repeat até task completo]
+        │
+        ▼
+    ┌─────────────────────┐
+    │ Final Answer        │
+    └─────────────────────┘
+
+VANTAGENS:
+✓ Pode executar ações (não apenas responder)
+✓ Access a computação exata (calculadora vs. aproximação)
+✓ Dados em tempo real (APIs de clima, mercado, etc.)
+✓ Workflow complexos multi-step
+✓ Autonomia (agentes podem decidir próximos passos)
+
+LIMITAÇÕES:
+✗ Latência alta (múltiplos API calls)
+✗ Custo (cada tool call = latência + $)
+✗ Confiabilidade (tools podem falhar)
+✗ Complexidade de orquestração
+✗ Safety concerns (unauthorized actions)
+
+QUANDO USAR:
+- Tarefas que requerem ações (booking, compras, envio de emails)
+- Computação exata (matemática complexa, programação)
+- Dados dinâmicos (preços atuais, clima, trânsito)
+- Workflows multi-step (research → summarize → report)
+
+PAPERS CHAVE:
+
+1. ReAct: Reasoning and Acting (2022)
+   → Seminal paper sobre tool use
+   → Interleaves REASONING traces + ACTIONS
+   → Synergy: reasoning guides actions, actions gather info
+   → Overcomes hallucination via Wikipedia API
+
+2. Toolformer (Meta, 2023)
+   → LLMs can TEACH THEMSELVES to use tools
+   → Self-supervised learning (few demos per API)
+   → Tools: calculator, QA, search, translation, calendar
+   → Decide: which API, when, what arguments
+
+3. ToolACE (2025)
+   → Self-evolution synthesis curates 26,507 APIs
+   → Multi-agent interplay generates dialogs
+   → Winning the points of function calling
+
+4. Survey on Autonomous Agents (2025)
+   → Systematic review of LLM-based agents
+   → Construction frameworks
+   → Applications: social science, natural science, engineering
+   → Evaluation strategies
+
+5. Agentic Workflows Survey (2024)
+   → Clarifies roles of LLMs in agent implementations
+   → Planning, memory, action components
+
+6. Agentic Reasoning Frameworks (2025)
+   → Interactive learning
+   → Autonomous goal updating
+   → Methods to scenarios
+
+7. Multi-Agent Collaboration (2025)
+   → Collaboration, competition
+   → Frameworks: MetaGPT, AgentVerse
+
+FERRAMENTAS COMUNS:
+
+CATEGORIA          EXEMPLOS                    USO
+─────────────────────────────────────────────────────────────────
+Computação         Calculator, Python REPL     Math, data analysis
+Busca              Google, Bing, Wikipedia     Information gathering
+APIs               Weather, Stocks, News       Real-time data
+Databases          SQL, vector DB              Data retrieval
+Automation         Email, Calendar, Booking    Actions & workflows
+Code Execution     Sandbox, Jupyter            Programming tasks
+
+EXEMPLO PRÁTICO (ReAct):
+
+User: "Quanto é 15% de gorjeta em uma conta de $127.50?"
+
+Modo 1 (Recall - Aproximado):
+LLM: "15% de $127.50 é aproximadamente $19.13"
+     [Pode ter small errors em mental math]
+
+Modo 3 (Tool Use - Exato):
+Thought: "Preciso calcular 127.50 × 0.15"
+Action: calculator("127.50 * 0.15")
+Observation: 19.125
+Thought: "Arredondar para 2 decimais para dinheiro"
+Answer: "15% de gorjeta em $127.50 é exatamente $19.13
+         (arredondado de $19.125)"
+
+EXEMPLO AVANÇADO (Multi-step Agent):
+
+User: "Pesquise papers sobre RAG publicados em 2024,
+       resuma os 3 principais, e crie um relatório."
+
+Agent Workflow:
+Step 1: Search("RAG papers 2024 arxiv")
+Step 2: [Retrieves list of papers]
+Step 3: Rank(papers, by="citations + relevance")
+Step 4: [Identifies top 3]
+Step 5: For each paper:
+          - Fetch(paper_pdf)
+          - Summarize(paper)
+Step 6: Compile(summaries, format="report")
+Step 7: Return(final_report)
+
+===================================================================================
+COMBINANDO OS 3 MODOS
+===================================================================================
+
+Na prática, sistemas sofisticados COMBINAM os três modos:
+
+EXEMPLO: Chatbot Corporativo Avançado
+
+User: "Quanto custa implementar a nova política de trabalho remoto?"
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 1: UNDERSTANDING (Modo 1 - Recall)                            │
+│ ─────────────────────────────────────────────────────────────────   │
+│ LLM usa conhecimento paramétrico para:                              │
+│ • Entender a pergunta                                               │
+│ • Identificar que precisa de dados específicos                      │
+│ • Planejar quais informações buscar                                 │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 2: RETRIEVAL (Modo 2 - RAG)                                   │
+│ ─────────────────────────────────────────────────────────────────   │
+│ Agent busca em documentos corporativos:                             │
+│ • Política de trabalho remoto (texto)                               │
+│ • Orçamento de TI (tabelas)                                         │
+│ • Custos anteriores de implementação (histórico)                    │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 3: COMPUTATION (Modo 3 - Tool Use)                            │
+│ ─────────────────────────────────────────────────────────────────   │
+│ Agent chama ferramentas:                                            │
+│ • SQL query para database de RH (número de funcionários)           │
+│ • Calculator (custo per capita × número)                            │
+│ • Spreadsheet API (projeções multi-year)                            │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 4: SYNTHESIS (Modo 1 + 2 + 3 Combined)                        │
+│ ─────────────────────────────────────────────────────────────────   │
+│ LLM integra:                                                        │
+│ • Conhecimento paramétrico (como escrever relatórios)               │
+│ • Informação retrieved (políticas, guidelines)                      │
+│ • Dados computados (custos exatos)                                  │
+│                                                                      │
+│ Final Answer:                                                        │
+│ "Baseado na política de trabalho remoto (anexada) e no número       │
+│  atual de 450 funcionários, o custo estimado de implementação é:    │
+│  - Setup inicial: $180,000 (equipamento + infraestrutura)           │
+│  - Custo anual recorrente: $67,500 (suporte técnico + licenças)     │
+│  - ROI esperado: 18 meses (considerando economia de espaço físico)" │
+└─────────────────────────────────────────────────────────────────────┘
+
+DECISION TREE: Qual Modo Usar?
+
+                        ┌───────────────┐
+                        │ User Question │
+                        └───────┬───────┘
+                                │
+                    ┌───────────┴────────────┐
+                    │ Requer dados recentes  │
+                    │ ou específicos?        │
+                    └───┬────────────────┬───┘
+                       NÃO              SIM
+                        │                │
+                        │                │
+                        ▼                ▼
+                ┌──────────────┐  ┌──────────────┐
+                │ Conhecimento │  │ Informação   │
+                │ geral/stable?│  │ em docs?     │
+                └───┬──────────┘  └───┬──────┬───┘
+                   SIM              SIM    NÃO
+                    │                │      │
+                    ▼                ▼      ▼
+            ┌──────────────┐  ┌────────┐ ┌─────────┐
+            │ MODO 1       │  │ MODO 2 │ │ Requer  │
+            │ RECALL       │  │ RAG    │ │ ações/  │
+            └──────────────┘  └────────┘ │compute? │
+                                          └────┬────┘
+                                              SIM
+                                               │
+                                               ▼
+                                          ┌─────────┐
+                                          │ MODO 3  │
+                                          │ AGENT   │
+                                          └─────────┘
+
+===================================================================================
+LIMITAÇÕES E TRADE-OFFS
+===================================================================================
+
+CONHECIMENTO PARAMÉTRICO (Modo 1):
+
+Limitação Fundamental:
+• Conhecimento "congelado" no tempo do último treinamento
+• GPT-4: cutoff em Abril 2023
+• Gemini: updates mais recentes mas ainda bounded
+• Impossível saber eventos after cutoff
+
+Trade-off:
+• Latência baixa ↔ Conhecimento desatualizado
+• Simples ↔ Limited to training data
+
+Soluções Parciais:
+• Continual pre-training (expensive)
+• Knowledge editing (WISE, etc.) - experimental
+• Hybrid models (parametric + non-parametric)
+
+─────────────────────────────────────────────────────────────────────────────
+
+CONHECIMENTO NÃO-PARAMÉTRICO (Modo 2 - RAG):
+
+Limitação Fundamental:
+• Context window size (mesmo long-context models têm limites)
+• GPT-4: 128K tokens (~300 páginas)
+• Claude: 200K tokens
+• Gemini 1.5: 1M tokens (exception)
+
+Trade-off:
+• Conhecimento atualizado ↔ Latência + custo
+• Specific domain docs ↔ Retrieval quality dependency
+
+Soluções Parciais:
+• Chunking strategies
+• Hierarchical retrieval
+• Reranking
+• Query rewriting
+
+Failure Modes:
+• Retrieval miss (documento relevante não encontrado)
+• Retrieval noise (documentos irrelevantes retrieved)
+• Contradictory docs (qual seguir?)
+
+─────────────────────────────────────────────────────────────────────────────
+
+MODO INTERATIVO (Modo 3 - Agents):
+
+Limitação Fundamental:
+• Orquestração complexa (múltiplos tools, estados, errors)
+• Reliability (cada tool call pode falhar)
+• Cost (cada action = API call = $$$)
+
+Trade-off:
+• Autonomia e poder ↔ Complexidade e custo
+• Ações reais ↔ Safety concerns
+
+Failure Modes:
+• Tool hallucination (inventa APIs que não existem)
+• Infinite loops (agent fica preso em ciclo)
+• Action errors (API call fails, wrong parameters)
+• Cost explosion (too many tool calls)
+
+Safety Concerns:
+• Unauthorized actions (deletar arquivos, enviar emails)
+• Privacy leaks (acessar dados sensíveis)
+• Malicious use (phishing, scams)
+
+Soluções:
+• Sandboxing (tools rodando em ambiente isolado)
+• Human-in-the-loop (approval antes de ações críticas)
+• Budget limits (max tool calls, max cost)
+• Action logging & audit trails
+
+===================================================================================
+IN-CONTEXT LEARNING: O ELO ENTRE OS MODOS
+===================================================================================
+
+In-Context Learning (ICL) é crucial para todos os 3 modos:
+
+DEFINIÇÃO:
+Capacidade do LLM de aprender de EXEMPLOS no contexto sem gradient updates.
+
+COMO FUNCIONA:
+
+Prompt:
+```
+Q: What is 2+2?
+A: 4
+
+Q: What is 5+3?
+A: 8
+
+Q: What is 7+6?
+A: [LLM completes] 13
+```
+
+LLM "aprende" o padrão (adição) apenas dos exemplos in-context!
+
+RELAÇÃO COM OS MODOS:
+
+┌─────────────────────────────────────────────────────────────┐
+│ MODO 1 (Recall) + ICL                                       │
+│ ───────────────────────────────────────────────────────────  │
+│ Parametric knowledge + few-shot examples = Better recall    │
+│                                                              │
+│ Example:                                                     │
+│ "Translate to French:                                        │
+│  English: Hello → French: Bonjour                            │
+│  English: Goodbye → French: Au revoir                        │
+│  English: Thank you → French: [Merci]"                       │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│ MODO 2 (RAG) = ICL com Retrieved Docs                       │
+│ ───────────────────────────────────────────────────────────  │
+│ Retrieved docs são "in-context examples"!                   │
+│                                                              │
+│ Prompt structure:                                            │
+│ Context: [Retrieved doc 1, doc 2, doc 3...]                 │
+│ Question: [User query]                                       │
+│ Answer: [LLM generates usando ICL]                           │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│ MODO 3 (Agents) usa ICL para Tool Use                       │
+│ ───────────────────────────────────────────────────────────  │
+│ Few-shot examples de como usar tools                         │
+│                                                              │
+│ Prompt:                                                       │
+│ "Example 1:                                                   │
+│  Thought: Need to calculate 15*20                            │
+│  Action: calculator('15*20')                                  │
+│  Observation: 300                                             │
+│                                                              │
+│  Example 2: [similar]                                         │
+│                                                              │
+│  Now you try: [User task]"                                    │
+└─────────────────────────────────────────────────────────────┘
+
+PAPERS CHAVE:
+
+1. Survey on In-Context Learning (2024)
+   → ICL emerged as NEW paradigm for NLP
+   → Training strategies, prompt design, challenges
+   → Optimizing conciseness of demonstrations
+
+2. Revisiting ICL with Long Context (2025)
+   → LCLMs shifted challenge from "selecting examples"
+     to "collecting sufficient examples"
+   → Previously limited by context window
+   → Now can use MANY examples (many-shot ICL)
+
+3. LongICLBench (2024)
+   → Longer prompts can actually DIMINISH performance
+   → LLMs struggle with long in-context learning
+   → Inadequate long-text understanding
+
+4. Distilling Many-Shot ICL (2025)
+   → Many-shot ICL now possible with extended context
+   → Can use 100s of examples (vs. few-shot 5-10)
+
+EVOLUTION OF ICL:
+
+2020-2022: FEW-SHOT ICL
+• Context window: 2K-4K tokens
+• Examples: 3-10 demonstrations
+• Challenge: Example selection crítico
+
+2023-2024: MANY-SHOT ICL
+• Context window: 32K-200K tokens
+• Examples: 50-200+ demonstrations
+• Challenge: Quality over quantity
+
+2025: LONG-CONTEXT ICL
+• Context window: 1M+ tokens (Gemini 1.5)
+• Examples: Potentially 1000s
+• Challenge: Lost in the middle, efficiency
+
+FINDINGS:
+
+✓ More examples generally better (até um ponto)
+✗ Long contexts podem degradar performance
+✓ Example order matters LESS em long-context
+✓ Retrieval benefits diminish com more examples
+✗ Computational cost increases
+
+===================================================================================
+ESTADO DA ARTE E FUTURO
+===================================================================================
+
+TENDÊNCIAS 2024-2025:
+
+1. HYBRID APPROACHES:
+   • Parametric RAG (2025): Update params temporariamente com docs
+   • AU-RAG: Agent decide dinamicamente parametric vs retrieved
+   • Best of both worlds
+
+2. AGENTIC RAG:
+   • RAG agents que decidem when/what to retrieve
+   • Iterative retrieval com self-correction
+   • Multi-hop reasoning
+
+3. LONG-CONTEXT ENABLES NEW PARADIGMS:
+   • Many-shot ICL (100s of examples)
+   • Entire codebases in context
+   • "RAG-less RAG" - just put everything in context?
+
+4. TOOL USE MATURITY:
+   • Function calling now standard (GPT-4, Claude, Gemini)
+   • Self-taught tool use (Toolformer paradigm)
+   • Multi-agent collaboration frameworks
+
+5. LIFELONG LEARNING:
+   • Knowledge editing without catastrophic forgetting
+   • Continual pre-training on new data
+   • Dynamic memory architectures
+
+OPEN QUESTIONS:
+
+❓ Parametric vs Non-parametric: What's optimal ratio?
+❓ Context window: How long is too long?
+❓ Tool use reliability: Como garantir safety?
+❓ Agent autonomy: Quanto controle dar aos agents?
+❓ Cost-performance: Where's the sweet spot?
+
+DIREÇÕES FUTURAS:
+
+→ Unified models: Parametric + Non-parametric seamlessly integrated
+→ Self-updating LLMs: Continual learning from interactions
+→ Robust agents: Reliable multi-step reasoning & action
+→ Efficient long-context: Better than linear cost
+→ Human-AI collaboration: Optimal division of labor
+
+===================================================================================
+APLICAÇÕES PRÁTICAS POR MODO
+===================================================================================
+
+┌───────────────────────────────────────────────────────────────┐
+│ MODO 1 (RECALL) - Aplicações                                 │
+├───────────────────────────────────────────────────────────────┤
+│ ✓ Chatbots de conhecimento geral                             │
+│ ✓ Tradução                                                    │
+│ ✓ Resumização de textos fornecidos                            │
+│ ✓ Coding assistance (patterns conhecidos)                     │
+│ ✓ Educação (conceitos estabelecidos)                          │
+│ ✓ Creative writing                                            │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ MODO 2 (RAG) - Aplicações                                    │
+├───────────────────────────────────────────────────────────────┤
+│ ✓ Customer support com docs corporativos                      │
+│ ✓ Legal research (leis e precedentes)                         │
+│ ✓ Medical diagnosis support (literatura médica)               │
+│ ✓ Code assistants com private codebase                        │
+│ ✓ News chatbots (artigos recentes)                            │
+│ ✓ Enterprise knowledge management                             │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ MODO 3 (AGENTS) - Aplicações                                 │
+├───────────────────────────────────────────────────────────────┤
+│ ✓ Personal assistants (calendário, email, booking)            │
+│ ✓ Data analysis agents (SQL queries, visualizations)          │
+│ ✓ Research assistants (search → read → summarize)             │
+│ ✓ Software engineering agents (plan → code → test → deploy)   │
+│ ✓ Customer service automation (actions + knowledge)           │
+│ ✓ Scientific discovery (hypothesis → experiment → analyze)    │
+└───────────────────────────────────────────────────────────────┘
+
+===================================================================================
+RESUMO EXECUTIVO
+===================================================================================
+
+Os 3 Modos de Uso dos LLMs representam FONTE DE CONHECIMENTO fundamental:
+
+1. MODO RECALL (Paramétrico):
+   → Conhecimento nos parâmetros
+   → Rápido, simples, mas desatualizado
+   → Bom para: conhecimento geral estável
+
+2. MODO RAG (Não-paramétrico):
+   → Conhecimento anexado ao contexto
+   → Atualizado, específico, mas com overhead
+   → Bom para: docs corporativos, dados recentes
+
+3. MODO INTERATIVO (Agents/Tools):
+   → Conhecimento via ferramentas externas
+   → Poderoso, flexível, mas complexo/caro
+   → Bom para: ações, computação, workflows
+
+INSIGHT CHAVE:
+Sistemas modernos COMBINAM os 3 modos:
+• Recall para understanding e reasoning
+• RAG para conhecimento específico/atualizado
+• Agents para ações e computação
+
+TENDÊNCIA:
+Convergência para sistemas híbridos que decidem DINAMICAMENTE qual modo usar
+para cada subtarefa (AU-RAG, agentic RAG, parametric RAG, etc.)
+
+LIMITAÇÃO FUNDAMENTAL:
+Cada modo tem trade-offs irredutíveis:
+• Parametric: Fast ↔ Outdated
+• Non-parametric: Updated ↔ Context-limited
+• Interactive: Powerful ↔ Complex/Expensive
+
+FUTURO:
+Modelos que aprendem a ORQUESTRAR os 3 modos optimally para cada tarefa,
+minimizando latency, cost e maximizando accuracy.
+
+===================================================================================
+FIM DO RESUMO
+===================================================================================
+
+Para detalhes completos de cada paper, consulte os PDFs organizados por pasta.
+Total de PDFs: 20
+Cobertura: 2020-2025
+
+Compilado em: 02 de novembro de 2025

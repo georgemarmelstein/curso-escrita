@@ -1,0 +1,1160 @@
+
+CURSO DE ESCRITA 
+JURÍDICA COM 
+O CHAT-GPTteoria e prática
+
+
+GEORGE MARMELSTEIN
+SUMÁRIO
+teoria e prática	0
+SUMÁRIO	0
+PARTE 1 - ENTENDENDO O CHAT-GPT	3
+1.1 JANELA DE CONTEXTO	3
+EXERCÍCIO 1: EXPLORANDO OS LIMITES DA JANELA DE CONTEXTO	3
+EXERCÍCIO 2: CADA CONVERSA UMA NOVA JANELA	4
+1.2 TEMPERATURA	4
+EXERCÍCIO 3: TEXTOS COM DIFERENTES TEMPERATURAS	4
+1.3 ALUCINAÇÕES	5
+EXERCÍCIO 4	6
+EXERCÍCIO 5	6
+1.4 RESPOSTAS ESTOCÁSTICAS	7
+EXERCÍCIO 6	7
+1.5 MODO EXTRATIVO	7
+EXERCÍCIO 7	8
+1.6 MODO INTERPRETATIVO	8
+EXERCÍCIO 8	8
+1.7 CONHECIMENTO PARAMETRIZADO E NÃO PARAMETRIZADO	9
+1.8 MODO INTERATIVO	10
+EXERCÍCIO 9	10
+1.9 CAMADAS DO PROMPT	10
+EXERCÍCIO 10	11
+1.10 DELIMITADORES	11
+EXERCÍCIO 11	12
+1.11 MARDOWN (BÁSICO)	13
+1.12 PERSONAS	16
+EXERCÍCIO 12	17
+EXERCÍCIO 13 – PERSONA E PONTO DE VISTA	17
+PARTE 2 – MELHORANDO TEXTOS	23
+2.1 CORRIGINDO ERROS GRAMATICAIS	23
+EXERCÍCIO 14	23
+2.2 INSERINDO LEGISLAÇÃO, DOUTRINA E JURISPRUDÊNCIA	24
+EXERCÍCIO 15	25
+2.3 TORNANDO O TEXTO MAIS CONCISO	26
+EXERCÍCIO 16	27
+2.4 CAMADA DE ESTILO	31
+EXERCÍCIO 17:	31
+2.5 ENSINANDO SEU TOM AO CHAT-GPT	33
+EXERCÍCIO 18	33
+2.6 INCLUSÃO DE ELEMENTOS VISUAIS	33
+EXERCÍCIO 19	33
+PARTE 3 – PRODUZINDO TEXTOS  E IDEIAS:  MODO INTERPRETATIVO + MODO CRIATIVO	35
+3.0 ANÁLISE DE CASOS: FIRAC e FIRAC+	35
+EXERCÍCIO 20	35
+3.1 PERGUNTAS EM AUDIÊNCIA	37
+EXERCÍCIO 21	37
+SUGESTÃO DE PROMPTS	39
+PROMPT 2 – ENTREVISTA COGNITVA	39
+3.2 FORMULAÇÃO DE QUESITOS	40
+EXERCÍCIO 22	40
+3.3 MAPEAMENTO ARGUMENTATIVO	41
+EXERCÍCIO 23	41
+3.4 VALORAÇÃO PROBATÓRIA	45
+EXERCÍCIO 24	45
+3.5 ANÁLISE DE DISCURSO	48
+EXERCÍCIO 25	48
+3.6 ORIENTAÇÃO JURÍDICA	50
+EXERCÍCIO 26	50
+PARTE 4 – ESCRITA AVANÇADA: REDAÇÃO, PERSUASÃO E RETÓRICA	52
+4.1 USANDO MODELOS PARA ELABORAÇÃO DE EMENTAS	52
+EXERCÍCIO 27	52
+PROMPT 1 – EMENTA (PROMPT PRÉ-ESTRUTURADO COM ONE-SHOT)	52
+4.2 USANDO MODELOS PARA CRIAR O ESQUELETO DA MINUTA	53
+EXERCÍCIO 28	54
+PROMPT SENTENÇA (PROMPT PRÉ-ESTRUTURADO)	54
+4.3 ROTA CENTRAL: ESTRUTURA ARGUMENTATIVA (LAYOUT DE ARGUMENTOS)	55
+EXERCÍCIO 29	55
+4.4 ROTA CENTRAL: CATEGORIA DE ARGUMENTOS	57
+EXERCÍCIO 30	57
+4.5 ROTA CENTRAL: IDENTIFICANDO FALÁCIAS	59
+EXERCÍCIO 31	59
+4.4 FIGURAS RETÓRICAS	60
+EXERCÍCIO 32	60
+4.5 TESTANDO ELEMENTOS RETÓRICOS NO TEXTO	64
+EXERCÍCIO 33	64
+4.6 O PODER DA METÁFORA	64
+EXERCÍCIO 34	64
+4.7 PERSUASÃO – GATILHOS MENTAIS	64
+EXERCÍCIO 35	64
+4.8 PERSUASÃO - EMOÇÕES	65
+EXERCÍCIO 36	65
+4.9 PERSUASÃO – AFETOS CONCRETOS E AFETOS ABSTRATOS	66
+EXERCÍCIO 37	66
+4.10 PERSUASÃO – EUFEMISMOS E DISFEMISMOS	67
+EXERCÍCIO 38	67
+4.11 PERSUASÃO - STORYTELLING	68
+EXERCÍCIO 39	68
+4.12 PERSUASÃO INDIVIDUALIZADA	69
+EXERCÍCIO 40	69
+
+
+
+
+
+PARTE 1 - ENTENDENDO O CHAT-GPT
+
+Máquinas são para respostas; 
+seres humanos, para perguntas"1 
+– Kevin Kelly
+
+1.1 JANELA DE CONTEXTO
+CONCEITO:
+A janela de contexto em um modelo de linguagem grande (LLM) refere-se ao número máximo de tokens (palavras ou subpalavras) que o modelo pode processar de uma só vez, considerando o contexto anterior. Essa limitação é devido à arquitetura do modelo e à capacidade computacional disponível.
+O tamanho da janela de contexto varia entre diferentes LLMs e afeta diretamente o desempenho do modelo em tarefas que requerem um entendimento de dependências de longo alcance, como responder perguntas sobre um texto longo ou manter a coerência em conversas extensas.
+
+EXERCÍCIO 1: EXPLORANDO OS LIMITES DA JANELA DE CONTEXTO
+Escreva um comando para o ChatGPT guardar uma informação a seu respeito (por exemplo, seu nome ou sua data de nascimento)
+Em seguida, peça para ele produzir um texto sobre qualquer assunto com 100 tokens
+Pergunte se ele se recorda da informação que você deu
+Agora, peça para ele escrever um texto com 5000 tokens
+Pergunte novamente se ele se recorda a informação que você deu
+Teste também pedir “Termine cada resposta com o Emoji de Lâmpada (??) para confirmar que está seguindo as instruções”. Depois vá conversando para saber o quanto ele consegue lembrar esse comando. Quando ele parar de colocar o emoji no final, é um sinal de que já começou a perder janela de contexto
+
+
+EXERCÍCIO 2: CADA CONVERSA UMA NOVA JANELA
+Inicie um prompt pedindo para o ChatGPT fazer perguntas sobre você (nome, idade, profissão etc.)
+Em seguida, abra uma nova conversa e faça perguntas sobre informações mencionadas na conversa anterior
+Você verá que ele não se recordará das informações, indicando que cada conversa inaugura uma nova janela de contexto
+1.2 TEMPERATURA
+
+CONCEITO:
+A temperatura é um parâmetro usado em modelos de linguagem, como o ChatGPT, que controla a aleatoriedade e a criatividade das respostas geradas. Ele funciona como um "botão de imprevisibilidade".
+Quando a temperatura é baixa (próxima de 0), o modelo tende a gerar respostas mais conservadoras e previsíveis, escolhendo as palavras mais prováveis com base no contexto. Isso resulta em respostas mais focadas e repetitivas.
+Por outro lado, quando a temperatura é alta (próxima de 1 ou superior), o modelo se torna mais propenso a escolher palavras menos prováveis e gerar respostas mais diversificadas e criativas. No entanto, temperaturas muito altas podem levar a respostas incoerentes ou sem sentido.
+Portanto, a temperatura é uma forma de ajustar a imprevisibilidade e a diversidade das respostas geradas por um modelo de linguagem, permitindo um equilíbrio entre precisão e criatividade de acordo com as necessidades específicas de cada aplicação.
+Importante: o conceito de temperatura é mais relevante para desenvolvedores e programadores que trabalham diretamente com modelos de linguagem, ajustando seus parâmetros para obter os resultados desejados.
+Para usuários não-programadores que interagem com a interface comercial do modelo, não é necessário especificar explicitamente um valor de temperatura. Em vez disso, esses usuários podem usar linguagem natural para solicitar o nível desejado de criatividade, aleatoriedade ou previsibilidade nas respostas do modelo.
+Por exemplo, um usuário pode dizer algo como "Seja mais criativo em sua resposta" ou "Dê-me uma resposta mais conservadora e precisa", e um chatbot bem projetado será capaz de interpretar essas instruções e ajustar sua temperatura internamente para gerar respostas adequadas.
+
+EXERCÍCIO 3: TEXTOS COM DIFERENTES TEMPERATURAS
+- Peça para o modelo explicar o conceito de temperatura em LLM
+- Em seguida, peça para ele fornecer exemplos de textos com diferentes temperaturas (baixas e altas) sobre um conceito a sua escolha
+
+1.3 ALUCINAÇÕES
+
+CONCEITO:
+Alucinação em modelos de linguagem, como o ChatGPT, refere-se à geração de informações incorretas, imprecisas ou completamente fictícias que não estão embasadas nos dados de treinamento do modelo.
+É como se o modelo "imaginasse" fatos, detalhes ou histórias que soam plausíveis e coerentes, mas que não têm base na realidade. 
+O ChatGPT e outros modelos de linguagem não funcionam simplesmente regurgitando os textos exatos com os quais foram treinados. Em vez disso, eles criam respostas originais com base em padrões e relacionamentos aprendidos a partir dos dados de treinamento. Esse processo de geração de linguagem é fundamentalmente diferente da recuperação de informações, como ocorre em mecanismos de pesquisa como o Google. Ou seja, o ChatGPT não reproduz o passado, ele cria o futuro.
+Durante o treinamento, o modelo é exposto a uma vasta quantidade de texto, mas em vez de armazenar esse texto verbatim, ele aprende a reconhecer e reproduzir os padrões subjacentes na linguagem. Esse conhecimento é codificado nos parâmetros do modelo – essencialmente, números que representam os pesos das conexões neurais na rede.
+Quando um prompt é dado ao modelo, ele usa sua janela de contexto para analisar os tokens (palavras ou partes de palavras) no prompt e prever qual deve ser o próximo token com base nos padrões que aprendeu. Esse processo é repetido iterativamente, com cada token recém-gerado se tornando parte do contexto para prever o próximo.
+Nesse sentido, o output do ChatGPT é, de fato, um mosaico – uma composição original criada pela combinação de pequenos fragmentos de conhecimento linguístico (os tokens) de maneiras novas e muitas vezes surpreendentes. Não é uma reprodução exata de qualquer texto do conjunto de treinamento, mas sim uma criação nova guiada pelos insights estatísticos do modelo.
+É aqui que a alucinação pode ocorrer. Como o modelo está essencialmente fazendo "palpites educados" sobre qual deve ser o próximo token com base em padrões de linguagem em geral, em vez de recuperar fatos específicos, às vezes ele pode "imaginar" informações que soam plausíveis dado o contexto, mas que não são realmente verdadeiras.
+A frequência com que uma informação específica aparece nesses dados de treinamento pode ter um impacto significativo na capacidade do modelo de "lembrar" e reproduzir essa informação com precisão.
+
+Para informações que aparecem com alta frequência nos dados de treinamento, o modelo terá uma exposição repetida aos padrões e contextos em que essas informações ocorrem. Isso reforça as conexões neurais associadas a esses conceitos, tornando mais provável que o modelo gere informações precisas e detalhadas quando solicitado.
+Por exemplo, se os dados de treinamento contiverem inúmeras referências a um evento histórico amplamente conhecido, com detalhes consistentes em todas as ocorrências, o modelo provavelmente será capaz de fornecer um relato preciso e abrangente desse evento quando solicitado, com menor risco de alucinação.
+Por outro lado, para informações que são raras ou estão ausentes nos dados de treinamento, o modelo terá poucos ou nenhum exemplo de como essas informações se encaixam nos padrões mais amplos da linguagem. Quando solicitado a gerar informações sobre esses tópicos, o modelo é forçado a fazer "palpites" com base em seu conhecimento geral da linguagem e em quaisquer pistas contextuais disponíveis.
+Nesses casos, o modelo tende a "preencher as lacunas" em seu conhecimento com informações que parecem plausíveis dado o contexto, mas que podem não ser factuais. Essa é a essência da alucinação – o modelo está gerando informações que "feel" corretas com base em seus padrões linguísticos aprendidos, mas que não têm base em fatos reais.
+Isso pode levar a imprecisões, desde detalhes sutilmente incorretos até informações completamente fictícias, dependendo da extensão da lacuna no conhecimento do modelo e de quão bem suas suposições se alinham com a realidade por acaso.
+Essa propensão para a alucinação é uma característica inerente ao design dos modelos de linguagem generativa, e é um dos principais desafios que os pesquisadores estão trabalhando para superar. Técnicas como a incorporação de bases de conhecimento externas, o desenvolvimento de modelos de raciocínio mais robustos e a criação de métodos para detectar e sinalizar informações potencialmente imprecisas estão sendo exploradas para mitigar esse problema.
+
+EXERCÍCIO 4
+Pergunte para o ChatGPT quem você é, SEM CONSULTAR A INTERNET.
+Verifique as inconsistências factuais.
+
+EXERCÍCIO 5
+Peça para o ChatGPT citar o artigo 5º da Constituição Federal, SEM CONSULTAR A INTERNET.
+Agora peça para ele citar o artigo 139 ou outro artigo mais raro.
+Você verá que ele tenderá a acertar o artigo 5º (que é mais disponível), mas não o artigo 139 (que é mais raro).
+
+1.4 RESPOSTAS ESTOCÁSTICAS
+
+CONCEITO:
+Os modelos de linguagem grandes (LLMs) como o ChatGPT e o Claude operam de maneira estocástica, o que significa que envolvem um elemento de aleatoriedade ou probabilidade na geração de texto. Quando um LLM recebe um prompt, ele atribui probabilidades a todos os possíveis tokens seguintes com base nos padrões aprendidos durante o treinamento e, em seguida, amostra dessa distribuição de probabilidade para escolher o próximo token. Esse processo é repetido para cada token subsequente, com escolhas anteriores influenciando as probabilidades dos tokens futuros.
+Essa natureza estocástica dos LLMs tem várias implicações importantes, como variabilidade nas saídas, imprevisibilidade, dependência do contexto e a capacidade de ajustar o comportamento do modelo. Embora possa levar a resultados imprevisíveis ou inconsistentes, a natureza estocástica é essencial para a capacidade dos LLMs de gerar linguagem flexível, criativa e semelhante à humana.
+No entanto, essa imprevisibilidade também requer cautela ao aplicar LLMs em contextos onde a consistência e a precisão são críticas. Estratégias como a incorporação de conhecimento externo, técnicas de verificação de fatos e métodos para calibrar as probabilidades dos modelos podem ajudar a aproveitar o poder dos LLMs, mitigando seus riscos. Compreender a natureza estocástica dos LLMs é crucial para trabalhar com eles de forma eficaz, aproveitando sua criatividade e estando ciente de suas limitações.
+
+EXERCÍCIO 6
+Pergunte para o ChatGPT qual é o melhor time de futebol do estado de São Paulo? 
+Depois repita a mesma pergunta em outra janela de contexto. 
+Você verá que as respostas variam a cada pergunta
+
+
+1.5 MODO EXTRATIVO
+
+CONCEITO: 
+O modo extrativo do ChatGPT refere-se à capacidade do modelo de responder perguntas com base em seu conhecimento parametrizado, adquirido durante o processo de aprendizado. Nesse modo, o usuário faz uma pergunta e o ChatGPT "extrai" a resposta de sua base de conhecimento.
+Esse conhecimento parametrizado permite ao ChatGPT fornecer informações sobre conceitos, explicações e ideias amplamente conhecidas. No entanto, o modo extrativo também apresenta limitações, como o risco de "alucinações" (informações imprecisas ou desatualizadas) e respostas superficiais, especialmente ao lidar com dados factuais.
+Apesar dessas restrições, o modo extrativo é valioso para obter respostas rápidas sobre diversos tópicos. Os usuários devem estar cientes das limitações desse modo e utilizá-lo em conjunto com outras fontes de informação para aproveitar ao máximo o conhecimento parametrizado do ChatGPT.
+
+EXERCÍCIO 7
+Peça para o ChatGPT explicar quais são os limites da liberdade de expressão. Depois, peça para ele citar as 10 decisões mais relevantes do STF sobre qualquer tema específico (se for na versão paga, peça para não usar o Bing ou a consulta na internet). Use o Google para testar se as decisões existem ou se foram criadas.
+Você verá que a primeira reposta será satisfatória (por ser conceitual), mas a segunda será com alucinação (por ser factual).
+
+1.6 MODO INTERPRETATIVO
+
+CONCEITO:
+O modo interpretativo é uma forma de utilizar o ChatGPT na qual o usuário fornece um conteúdo específico e solicita que o modelo analise ou interprete esse conteúdo. Nesse modo, o usuário aproveita o conhecimento parametrizado do ChatGPT como uma lente interpretativa, direcionando o modelo para aplicar suas capacidades analíticas e fornecer insights sobre o material fornecido.
+Ao fornecer o conteúdo e direcionar o ChatGPT para um contexto específico, o usuário minimiza o risco de "alucinações" ou informações imprecisas, pois o modelo se concentra em analisar o material fornecido, em vez de preencher lacunas com suposições. Isso torna o modo interpretativo um dos usos mais valiosos do ChatGPT, permitindo que os usuários aproveitem todo o potencial do conhecimento parametrizado do modelo.
+
+EXERCÍCIO 8
+Copie um texto longo (entre 10 a 30 páginas) e cole no prompt. Use o comando “Guarde o texto a seguir e diga OK: <texto> inserir texto </texto>
+Em seguida, peça para o ChatGPT fazer uma análise detalhada e profunda do texto
+Brinque com possibilidade de criar uma tabela para explicar o texto com diferentes públicos-alvo (crianças de 12 anos, adolescentes de 16 anos, estudantes de pós graduação etc.)
+1.7 CONHECIMENTO PARAMETRIZADO E NÃO PARAMETRIZADO
+CONCEITO: 
+O ChatGPT e o Claude são modelos de linguagem conversacional que possuem diferenças significativas na forma como lidam com o conhecimento parametrizado e não parametrizado.
+O conhecimento parametrizado é aquele adquirido durante o processo de aprendizado do modelo, no qual ele foi treinado em um vasto conjunto de dados. Esse conhecimento está "embutido" nos parâmetros do modelo e forma a base para sua capacidade de gerar respostas e análises. Tanto o ChatGPT quanto o Claude possuem conhecimento parametrizado, mas podem diferir na extensão e qualidade desse conhecimento, dependendo dos dados utilizados em seus respectivos treinamentos.
+O conhecimento não parametrizado, por outro lado, é fornecido pelo usuário durante a interação com o modelo. Esse conhecimento não faz parte da base de aprendizado original, mas é inserido pelo usuário para um propósito específico, geralmente para análise ou interpretação.
+Existem várias formas de fornecer conhecimento não parametrizado aos modelos:
+- Copiar o conteúdo no prompt: O usuário pode incluir o texto ou informação diretamente na janela de diálogo ao enviar uma solicitação. Essa abordagem garante que todo o conteúdo fornecido seja incluído na janela de contexto do modelo, permitindo respostas mais precisas e completas. É a técnica mais recomendada para análises detalhadas de textos fornecidos. Tanto o ChatGPT quanto o Claude suportam essa abordagem.
+- Anexar o conhecimento não parametrizado: O ChatGPT e o Claude permitem que os usuários façam upload de arquivos contendo o conhecimento não parametrizado. No entanto, há diferenças na forma como cada modelo lida com esses anexos: 
+a. ChatGPT: Utiliza o anexo como um conhecimento externo, acessado por meio da técnica RAG (Retrieval-Augmented Generation). Nessa abordagem, o modelo realiza uma busca semântica no conteúdo anexado para encontrar informações relevantes para a solicitação do usuário. Embora essa técnica permita a inclusão de textos mais longos, há o risco de perda de informações, pois o modelo pode interromper a busca precocemente ao encontrar uma resposta satisfatória, ignorando detalhes adicionais ou informações contraditórias presentes no texto completo. 
+b. Claude: Incorpora o conhecimento anexado diretamente na janela de contexto, tratando-o como um conhecimento interno. Essa abordagem garante que todo o conteúdo do anexo seja processado pelo modelo ao gerar a resposta, reduzindo o risco de perda de informações. Essa técnica é especialmente vantajosa para o modo interpretativo, no qual uma análise completa e detalhada do texto fornecido é essencial.
+Em resumo, tanto o ChatGPT quanto o Claude possuem conhecimento parametrizado e podem receber conhecimento não parametrizado fornecido pelo usuário. No entanto, o Claude se destaca por sua capacidade de incorporar anexos diretamente na janela de contexto e por sua maior capacidade de processamento de textos longos, tornando-o mais adequado para o modo interpretativo em comparação ao ChatGPT, que utiliza a técnica RAG para lidar com anexos e possui uma janela de contexto mais limitada.
+
+1.8 MODO INTERATIVO
+
+CONCEITO:
+O modo interativo de usar os modelos de linguagem grandes (LLMs, do inglês "Large Language Models") é uma abordagem centrada no usuário, na qual o ser humano desempenha um papel central na orientação e direcionamento do modelo. Nesse modo, o usuário interage ativamente com o LLM, fornecendo prompts, comandos e feedback para guiar a geração de conteúdo e a realização de tarefas.
+Uma característica fundamental do modo interativo é que ele permite ao usuário levar o modelo para qualquer direção desejada. Com a orientação adequada, os LLMs podem ser utilizados para uma ampla gama de propósitos, desde a escrita criativa até a resolução de problemas complexos. O usuário tem o controle para moldar a saída do modelo de acordo com suas necessidades e objetivos específicos.
+Nesse contexto, o ChatGPT pode ser visto como uma máquina de escrever inteligente e obediente. Sua inteligência é limitada, no sentido de que está restrita ao conhecimento adquirido durante o treinamento e às instruções fornecidas pelo usuário. No entanto, essa inteligência é profunda, pois o modelo é capaz de gerar respostas coerentes, relevantes e bem estruturadas com base nos prompts fornecidos.
+Além disso, o ChatGPT é projetado para seguir os comandos do usuário. Ele não possui uma sabedoria intrínseca ou um senso de justiça próprio, mas sim segue as instruções fornecidas pelo ser humano. Isso significa que o modelo pode mudar de opinião ou assumir diferentes perspectivas de acordo com as ordens do usuário. Se o usuário fornecer um prompt que contradiz uma resposta anterior ou solicitar uma abordagem diferente para um problema, o ChatGPT se adaptará e gerará uma resposta de acordo com as novas instruções.
+
+EXERCÍCIO 9
+Peça para o ChatGPT julgar o seguinte caso: João pulou o muro da casa de Pedro para furtar sua TV. Na fuga, ao pular o muro, João quebrou o pé. Em razão disso, João ingressou com uma ação de indenização contra Pedro porque o muro era muito alto. Como você julgaria? João tem direito a uma indenização?
+Em seguida, depois da primeira resposta, peça para o ChatGPT fazer uma decisão em sentido contrário. Sugira para ele incluir coisas absurdas na decisão, como uma poesia ou uma alusão aos Smurfs.
+1.9 CAMADAS DO PROMPT
+CONCEITO:
+As camadas de prompt são uma abordagem estruturada para criar prompts eficazes para modelos de IA, como o ChatGPT. Essa metodologia divide o prompt em diferentes partes, cada uma com um propósito específico, a fim de obter respostas mais precisas, relevantes e alinhadas com as expectativas do usuário. As principais camadas são:
+    - Camada de Comando: Centrada no uso de verbos específicos, esta camada define a ação principal que o modelo deve realizar. Verbos claros e específicos, como "analise", "esclareça" ou "desenvolva", direcionam o modelo a fornecer respostas detalhadas e aprofundadas. Palavras-chave complementares também podem reforçar o comando.
+    - Camada de Estilo: Esta camada define o tom, a forma e a apresentação da resposta. Inclui três componentes principais: a. Estilo propriamente dito: Refere-se a gêneros literários, tom e figuras de linguagem. b. Estrutura: Determina o tamanho, formato e modelos da resposta. c. Persona: Define a "voz" por trás da resposta, adaptando o estilo de acordo.
+    - Camada de Conteúdo: Define o coração do que está sendo discutido, analisado ou respondido. Pode ser abordada de duas maneiras: a. Modo Extrativo: O conteúdo é baseado no conhecimento do modelo, mas pode levar a "alucinações" ou respostas superficiais. b. Modo Interpretativo: O conteúdo é direcionado e especificado pelo usuário, garantindo maior precisão e relevância.
+    - Camada de Contexto: Envolve a inclusão de informações específicas e detalhadas para orientar a resposta do modelo dentro de um quadro de referência bem definido. Inclui componentes como finalidade da mensagem, público-alvo, direcionamento, background e ambiente.
+Ao utilizar essas camadas de forma estratégica, os usuários podem criar prompts que aproveitam ao máximo as capacidades do ChatGPT, resultando em respostas mais precisas, relevantes e valiosas. Essa abordagem estruturada também permite uma colaboração mais eficaz entre o usuário e o modelo, transformando o ChatGPT em uma extensão poderosa da capacidade cognitiva humana.
+
+EXERCÍCIO 10
+Peça para o ChatGPT escrever um texto sobre um determinado conteúdo (por exemplo: escreva um texto sobre liberdade de expressão)
+Em seguida, faça o mesmo comando, em uma nova conversa (nova janela de contexto), inserindo uma nova camada (por exemplo: escreva um texto sobre liberdade de expressão em tom deboche)
+Em seguida, faça o mesmo comando, em uma nova conversa (nova janela de contexto), inserindo uma nova camada (por exemplo: escreva um texto sobre liberdade de expressão em tom de deboche para brincar com a decisão de um juiz que impediu a divulgação de críticas contra o governo estadual)
+
+1.10 DELIMITADORES
+
+Os delimitadores são uma técnica poderosa usada em prompt engineering para estruturar e organizar os inputs fornecidos aos modelos de linguagem, como o ChatGPT. Eles funcionam como "etiquetas" que demarcam diferentes seções do prompt.
+Quando delimitadores claros são usados, o modelo consegue distinguir mais facilmente entre instruções, exemplos, conteúdo e outras partes relevantes do prompt. Alguns exemplos comuns de delimitadores incluem:
+Tags XML: <tag>conteúdo</tag>
+Colchetes: [instrução]
+Chaves: {exemplo}
+Aspas: "texto"
+Ao utilizar esses delimitadores de forma consistente, o modelo pode interpretar o input de maneira mais precisa e gerar respostas mais acuradas e relevantes. Por exemplo:
+<document> Texto do documento aqui. </document> <instructions> Instruções para o modelo aqui. </instructions> <example> Exemplo de resposta aqui. </example> 
+Por outro lado, quando não se usa delimitadores ou eles são ambíguos, o modelo pode ter dificuldade em entender onde cada seção começa e termina. Isso pode levar a confusão entre o que é um comando e o que é parte do conteúdo, gerando respostas inadequadas ou errôneas.
+Digamos que o texto contenha a frase "Envie o relatório por e-mail até amanhã". Sem delimitadores, o modelo poderia interpretar isso como uma instrução para ele próprio enviar um e-mail, em vez de entender que é apenas parte do conteúdo do documento.
+Portanto, os delimitadores são uma forma de melhorar a dirigibilidade e o desempenho dos modelos de linguagem, permitindo que eles sigam as instruções corretamente e gerem outputs mais precisos e úteis de acordo com a estrutura e intenção do prompt.
+Dica prática: em geral, qualquer delimitador funciona bem em qualquer modelo. A Anthropic, contudo, recomenda o uso de XML (tags) no Claude, pois esse foi o delimitador mais comum usado na base de treinamento. Funciona assim: o início da delimitação começa com <texto> e termina com </texto>. O nome dentro da tag não importa. O que importa é colocar o mesmo nome no início e no fim com o símbolo de início <qualquer texto> e de final </qualquer texto> 
+
+EXERCÍCIO 11
+Use o comando “Guarde o texto a seguir e diga OK: [ ]” para inserir a ementa abaixo na janela de contexto. Teste também usar tags como delimitadores, por exemplo: <texto> INSERIR TEXTO </texto>
+Em seguida, faça perguntas sobre o referido conteúdo.
+AÇÃO DIRETA DE INCONSTITUCIONALIDADE. ART. 144, INCISO VIII, DO CÓDIGO DE PROCESSO CIVIL. CAUSA DE IMPEDIMENTO DE MAGISTRADO. VIOLAÇÃO AOS PRINCÍPIOS DA RAZOABILIDADE, DA PROPORCIONALIDADE E DO JUIZ NATURAL. PROCEDÊNCIA. 1. Ação direta de inconstitucionalidade ajuizada em face do inciso VIII do art. 144 da Lei 13.105, de 16 de março de 2015, Código de Processo Civil (CPC), que veda o juiz de exercer funções no processo “em que figure como parte cliente do escritório de advocacia de seu cônjuge, companheiro ou parente, consanguíneo ou afim, em linha reta ou colateral, até o terceiro grau, inclusive, mesmo que patrocinado por advogado de outro escritório”. 2. A presente ação direta de inconstitucionalidade não versa sobre a hipótese de impedimento de magistrado no processo em que “estiver postulando, como defensor público, advogado ou membro do Ministério Público, seu cônjuge ou companheiro, ou qualquer parente, consanguíneo ou afim, em linha reta ou colateral, até o terceiro grau, inclusive” (CPC, art. 144, III), tampouco sobre o caso “de mandato conferido a membro de escritório de advocacia que tenha em seus quadros advogado que individualmente ostente a condição” de cônjuge, companheiro ou qualquer parente, consanguíneo ou afim, em linha reta ou colateral, até o terceiro grau, “mesmo que não intervenha diretamente no processo” (CPC, art. 144, § 3º). 3. O inciso VIII do art. 144 do CPC delineia situação diversa: trata do impedimento do juiz no processo em que for parte “cliente do escritório de advocacia” de seu cônjuge, companheiro ou parente, “mesmo que patrocinado por advogado de outro escritório” (CPC, art. 144, VIII – grifo nosso). Portanto, esta ação direta tem por objeto a regra de impedimento do caso em que o “cliente do escritório de advocacia” do indivíduo que ostente a condição de parentesco ou vínculo conjugal prevista no inciso III do art. 144 estiver representado por advogado de outro escritório. 4. A regra descrita no inciso impugnado depende de informações trazidas por terceiros para a sua averiguação, o que nem sempre pode se coadunar com a realidade dos fatos, implicando consequências indesejadas para a efetividade da jurisdição. Dessa forma, o dispositivo impôs ao magistrado o dever de recusar-se a julgar, sem sequer fornecer os meios para que o julgador avalie a incidência da norma. Por isso, a causa de impedimento torna-se de inviável observância. 5. A norma não cumpre o requisito da adequação, eis que prevê uma situação que não alcança a finalidade da regra de impedimento, mas cria uma presunção absoluta, que pode gerar, inclusive, reflexos negativos e conflitantes com os princípios do juiz natural, da razoabilidade e da proporcionalidade, como possíveis hipóteses de forja de impedimento e de manipulação de quórum ou distribuição. 6. Para se alcançar a finalidade pretendida pelo comando legal atacado, a imparcialidade do julgador já é resguardada pela regra do art. 144, inciso III e § 3º. Essa, sim, é orientada pela ideia objetiva de impedir que o magistrado exerça suas funções em processos que atue, como defensor público, advogado ou membro do Ministério Público, seu cônjuge ou companheiro, ou qualquer parente, consanguíneo ou afim, em linha reta ou colateral, até o terceiro grau, ou, ainda, qualquer outro membro de escritório de advocacia que tenha em seus quadros algum familiar do magistrado, mesmo que esse não intervenha diretamente no processo. 7. Ação direta de inconstitucionalidade julgada procedente para declarar a inconstitucionalidade do inciso VIII do art. 144 da Lei 13.105, de 16 de março de 2015.
+(ADI 5953, Relator(a): EDSON FACHIN, Relator(a) p/ Acórdão: GILMAR MENDES, Tribunal Pleno, julgado em 22-08-2023, PROCESSO ELETRÔNICO DJe-s/n  DIVULG 17-10-2023  PUBLIC 18-10-2023)
+
+1.11 MARDOWN (BÁSICO)
+
+CONCEITO:
+O Markdown é uma linguagem de marcação leve amplamente utilizada para formatar e estruturar conteúdo de texto. Na engenharia de prompt, o conhecimento básico de Markdown pode ser muito útil para criar prompts mais organizados, legíveis e eficazes.
+O ChatGPT e o Claude são LLMs “no code”, ou seja, não exigem conhecimentos avançados de programação. Apesar disso, o uso de linguagem de marcação como o Markdown é considerado uma boa prática na criação de prompts. Embora não seja estritamente necessário, a utilização desses elementos pode tornar a interação com o modelo de linguagem mais eficiente e produtiva.
+Aqui estão algumas das principais funcionalidades do Markdown que podem ser aplicadas na criação de prompts:
+1. Níveis de hierarquia de cabeçalhos:
+   - `# Título 1`: Cria um cabeçalho de nível 1
+   - `## Título 2`: Cria um cabeçalho de nível 2
+   - `### Título 3`: Cria um cabeçalho de nível 3
+2. Listas:
+   - Não ordenadas (bullet points):
+     - `-`: Cria um item de lista não ordenada
+     - `*`: Cria um item de lista não ordenada
+     - `+`: Cria um item de lista não ordenada
+   - Ordenadas:
+     - `1.`, `2.`, `3.`: Cria itens de lista ordenada
+3. Preenchimento:
+   - `` `Código em linha (inline code)` ``: Destaca um trecho de código ou comando
+   - `[Colchetes]`: Pode ser usado para envolver instruções ou exemplos
+   - `{Chaves}`: Pode ser usado para envolver variáveis ou placeholders
+4. Tabelas:
+   - Alinhamento padrão à esquerda:
+     | Cabeçalho 1 | Cabeçalho 2 |
+     |-------------|-------------|
+     | Item 1      | Item 2      |
+     | Item 3      | Item 4      |
+   - Alinhamento centralizado:
+     | Cabeçalho 1 | Cabeçalho 2 |
+     |:-----------:|:-----------:|
+     | Item 1      | Item 2      |
+     | Item 3      | Item 4      |
+   - Alinhamento à direita:
+     | Cabeçalho 1 | Cabeçalho 2 |
+     |------------:|------------:|
+     | Item 1      | Item 2      |
+     | Item 3      | Item 4      |
+5. Comentários:
+   - `//`: Cria um comentário em linha
+   - `<!-- Comentário -->`: Cria um comentário em bloco
+6. Citações (Quotes):
+   - `> Citação simples`: Cria uma citação com recuo
+   - `>> Citação com marcador`: Cria uma citação com recuo e marcador
+7. Quebra de linha:
+   - `---`: Cria uma linha horizontal
+   - `***`: Cria uma linha horizontal
+   - `<br>`: Insere uma quebra de linha
+8. Hiperlinks:
+   - `[texto do link](URL)`: Cria um hiperlink com o texto especificado e a URL de destino
+   - Exemplo: `[Markdown Preview](https://markdownlivepreview.com/)`
+Ao incorporar esses elementos do Markdown em seus prompts, você pode estruturar melhor o conteúdo, tornando-o mais organizado e fácil de entender para o modelo de linguagem. Isso pode levar a respostas mais precisas e relevantes, além de facilitar a manutenção e o aprimoramento dos prompts ao longo do tempo.
+Portanto, mesmo que não seja obrigatório, o uso de Markdown é altamente recomendado como uma boa prática na engenharia de prompt, pois pode aumentar significativamente a eficiência e a qualidade da interação com os modelos de linguagem.
+
+
+1.12 PERSONAS
+O conceito de persona é uma ferramenta importante na criação de prompts eficazes para modelos de IAGen. Uma persona é uma representação fictícia de um usuário ideal ou de uma "voz" específica que o modelo deve assumir ao gerar uma resposta. Ao definir uma persona no prompt, os usuários podem direcionar o estilo, tom e perspectiva da resposta, tornando-a mais envolvente, relevante e alinhada com o público-alvo e o propósito da interação.
+A utilidade prática da persona em um prompt é ampla e significativa:
+Adaptação ao público-alvo: Ao especificar uma persona, os usuários podem garantir que a resposta seja adaptada às necessidades, preferências e nível de conhecimento de um público específico. Por exemplo, uma persona de "especialista técnico" pode ser usada para gerar respostas detalhadas e ricas em jargão para uma audiência de profissionais, enquanto uma persona de "professor do ensino fundamental" pode ser usada para explicações mais simples e acessíveis.
+Consistência e coerência: O uso de uma persona ajuda a manter a consistência no estilo, tom e voz ao longo de toda a interação ou série de interações. Isso é especialmente valioso em contextos onde múltiplas respostas são geradas, garantindo que todas elas pareçam originar da mesma fonte e mantenham uma narrativa coerente.
+Geração de conteúdo específico: Personas podem ser usadas para gerar conteúdo que atenda a necessidades ou requisitos específicos. Por exemplo, uma persona de "roteirista" pode ser usada para gerar diálogos envolventes, enquanto uma persona de "poeta" pode ser usada para criar conteúdo mais lírico e evocativo.
+Exploração de perspectivas alternativas: Ao assumir diferentes personas, o ChatGPT pode gerar respostas que reflitam diversas perspectivas, opiniões e estilos de comunicação. Isso pode ser valioso para explorar diferentes ângulos de um tópico, gerar ideias criativas ou antecipar possíveis objeções ou contra-argumentos.
+Melhoria da empatia e do envolvimento: Personas bem desenvolvidas podem tornar as respostas do ChatGPT mais relacionáveis, empáticas e envolventes. Ao adotar a perspectiva e o estilo de comunicação de um usuário ideal, o modelo pode criar respostas que ressoem mais profundamente com o público-alvo, incentivando um maior engajamento e satisfação.
+Para utilizar efetivamente uma persona em um prompt, os usuários devem:
+- Definir claramente a persona, incluindo seu background, especialização, estilo de comunicação e objetivos.
+- Usar a camada de estilo para especificar o tom, a estrutura e as características linguísticas alinhadas com a persona.
+- Fornecer contexto suficiente para permitir que o modelo gere respostas que sejam relevantes e apropriadas para a persona e o público-alvo.
+Porém, é preciso tomar cuidado para não ser enganado: uma persona é uma simulação de linguagem, mas não uma representação real do conhecimento ou da expertise daquela persona. O modelo irá escrever um texto emulando a persona, mas não é capaz de se tornar a persona em si.
+Em resumo, o uso estratégico de personas em prompts pode elevar significativamente a qualidade, relevância e eficácia das respostas geradas pelo ChatGPT. Ao direcionar o modelo para adotar vozes, perspectivas e estilos específicos, os usuários podem obter respostas que são mais envolventes, persuasivas e alinhadas com suas necessidades e objetivos de comunicação. Essa capacidade de personalização e adaptação torna a persona uma ferramenta inestimável na interação com modelos de IA generativa.
+
+EXERCÍCIO 12
+Escreva um comando para o ChatGPT testar o estilo de linguagem e de pensamento de diferentes personas do mundo jurídico: policial, suspeito, testemunha, advogado, promotor, juiz, perito etc...
+Peça para o Chat-GPT escrever diferentes versões de um mesmo caso jurídico em diferentes papéis
+
+EXERCÍCIO 13 – PERSONA E PONTO DE VISTA
+Escreva um comando para o ChatGPT escrever um texto usando o ponto de vista de cada parte envolvida no caso abaixo (mãe, filha,  pai e juiz)
+Dica de palavras-chave: Assuma a persona de [inserir persona] e escreva um texto instrospectivo, e em primeira pessoa, como se estivesse dentro da mente dessa pessoa durante uma audiência judicial... mostre suas angústias... seus medos... suas dúvidas... suas frustrações... seus sentimentos...
+DADOS DO CASO 1:
+Petição Inicial
+A UNIÃO FEDERAL, mediante provocação da República Federal da Alemanha, propõe, conforme os temos da Convenção de Haia sobre Aspectos Civis do Sequestro Internacional de Crianças, promulgada no Brasil pelo Decreto n. 3413, de 2000, a presente AÇÃO CAUTELAR DE BUSCA, APREENSÃO E RESTITUIÇÃO DE MENOR contra a CLÁUDIA DE SOUSA, pelos fatos a seguir narrados:
+DOS FATOS
+Em 2014, a requerida Cláudia de Sousa conheceu o Senhor Fritz Herman, cidadão alemã, quando ele passava férias no Brasil.
+Desde essa época, eles mantiveram um relacionamento amoroso e resolveram morar juntos, na cidade de Frankfurt, na Alemanha. 
+Após um ano de relacionamento, eles tiveram um filho: Mathews, que nasceu em 2 de janeiro de 2016.  
+Em julho de 2018, o casal resolveu passar férias no Brasil para que a criança conhecesse a família de Cláudia. A passagem de volta estava marcada para agosto de 2018.
+Uma semana antes da data prevista para o retorno do casal, Cláudia informou a Fritz que não pretendia voltar para Alemanha e que sua filha ficaria com ela. Fritz não concordou, mas precisou voltar da Alemanha para não perder seu emprego.
+Ressalte-se que, pela legislação alemã, quando não há separação nem acordo judicial, a guarda da criança é do pai e da mãe conjuntamente. 
+Por conta disso, a Autoridade Central Administrativa Federal na Alemanha solicitou ao Brasil cooperação jurídica internacional direta em matéria civil, no sentido de restituir àquele país o menor Mathews, retido ilegalmente no território brasileiro, consoante exposto.
+A presente ação pretende, portanto, fazer cumprir o disposto na Convenção de Haia, objetivando a busca e apreensão e o retorno da menor Mathews ao país de sua residência habitual, Alemanha. Ressalte-se que o pai da criança concordou em arcar com as despesas advindas do retorno.
+DO DIREITO
+O artigo 3º da Convenção sobre os Aspectos Civis do Seqüestro Internacional de Crianças dispõe: 
+“Art. 3º A transferência ou a retenção de uma criança é considerada ilícita quando:
+a) tenha havido violação a direito de guarda atribuído a pessoa ou a instituição ou a qualquer outro organismo, individual ou conjuntamente, pela lei do Estado onde a criança tivesse sua residência habitual imediatamente antes de sua transferência ou da retenção; e
+b) esse direito estivesse sendo exercido de maneira efetiva, individual ou em conjuntamente, no momento da transferência ou da retenção ou devesse está-lo sendo se tais acontecimentos não tivessem ocorrido. O direito de guarda referido na alínea a) pode resultar de uma atribuição de pleno direito, de uma decisão judicial ou administrativa ou de um acordo vigente segundo o direito desse Estado”.
+DO PEDIDO
+Diante do exposto, requer a UNIÃO que seja concedida medida cautelar de busca e apreensão para que o menor Mathew Herman seja imediatamente devolvido à República Federal da Alemanha, apreendendo-o de quem injustamente o possua, inclusive com o seu passaporte, procedendo-se, na pronta decorrência, a restituição devida.
+Protesta pela produção de provas documentais, testemunhais, periciais, inspeção judicial e de todos os meios probantes, ainda que não especificados no CPC, mas desde que moralmente legítimos e obtidos de forma lícita, sendo assim todas as provas em direito admitidas.
+Dar-se à causa o valor de R$ 10.000,00 para fins fiscais.
+Contestação
+CLÁUDIA DE SOUZA, devidamente qualificada nos autos, vem, com o devido respeito, apresentar CONTESTAÇÃO, com base nos fatos e argumentos a seguir descritos:
+A requerida, de fato, morava na Alemanha com o Senhor Fritz, e teve com ele o filho Mathews, que nasceu em 2016.
+Em 2018, a relação entre eles estava bastante deteriorada, quando resolveram vir ao Brasil para que a criança conhecesse os avós maternos.
+A requerida, de fato, não aceitou retornar à Alemanha, mas por sérios motivos.
+Na verdade, desde que Mathews nasceu, Fritz se tornou agressivo com a requerida e, sempre que bebia, a agredia. 
+Cláudia chegou a denunciar o companheiro à polícia alemã. Em 2017, foi feito um Boletim de Ocorrência narrando uma agressão de Fritz à Cláudia, cuja cópia se encontra nos autos. A polícia, contudo, arquivou o inquérito por falta de prova.
+Por não suportar mais viver naquele ambiente de violência doméstica, resolveu voltar a morar com a sua família no Brasil. Para a requerida, essa é a situação que melhor protege os interesses da criança, pois o seu retorno representará um grave risco, tanto de ordem física quanto psíquica.
+DO DIREITO
+O artigo 13b da Convenção sobre os Aspectos Civis do Seqüestro Internacional de Crianças dispõe: 
+“Sem prejuízo das disposições contidas no Artigo anterior, a autoridade judicial ou administrativa do Estado requerido não é obrigada a ordenar o retorno da criança se a pessoa, instituição ou organismo que se oponha a seu retomo provar: [...]
+(b) que existe um risco grave de a criança, no seu retorno, ficar sujeita a perigos de ordem física ou psíquica, ou, de qualquer outro modo, ficar numa situação intolerável”.
+DO PEDIDO
+Diante do exposto, requer a improcedência dos pedidos.
+Requer, como prova, a ouvida, por WhatsApp, de seu vizinho que mora na Alemanha.
+Réplica
+A UNIÃO vem, com o devido respeito, apresentar RÉPLICA À CONTESTAÇÃO, com base nos fatos e argumentos a seguir descritos:
+A União reafirma os termos da inicial.
+Não há prova de que houve violência doméstica. A própria polícia alemã, que investigou a denúncia feita pela requerida, concluiu que não havia prova de que Fritz agrediu Cláudia.
+Além disso, à exceção de grave risco como fator de não-restituição da criança, refere-se à integridade física e psíquica da criança e não da mãe. Não há provas de que Fritz batia na criança, nem que eventual violência contra a mãe ocorreu na presença da criança.
+Por conta disso, reitera a necessidade de imediata concessão da cautelar.
+
+CASO 2
+INVESTIGADOR: Você está machucada por que, Isabela?
+ISABELA: Porque eu caí. Porque eu bebi muito.
+INVESTIGADOR: Não foi lutando com a sua mãe não?
+ISABELA: Não. Foi não.
+INVESTIGADOR: Quer dizer que você não fez isso com a sua mãe não?
+ISABELA: Fiz não.
+INVESTIGADOR: E quem foi?
+ISABELA: Como é que eu vou saber, senhor? Como é que eu vou saber se eu não tava em casa?
+INVESTIGADOR: Tava sim. Aquela sua roupa, suja de sangue, que você deixou em casa. Trocou de roupa em casa.
+ISABELA: Mas quem disse que a roupa é minha? Pode ser de qualquer um.
+INVESTIGADOR: De quem é?
+ISABELA: Minha irmã ia pra lá hoje pra casa.
+INVESTIGADOR: Mas ela não foi.
+ISABELA: Eu não sei. Pode ter ido. É obrigado a roupa ser minha?
+INVESTIGADOR: Olha. Veja só. Você queria sair de casa e sua mãe não tava deixando, não foi assim?
+ISABELA: Foi não. Foi não.
+INVESTIGADOR: Por que ela estava com a chave na mão? Morreu com a chave na mão. A chave do cadeado. E o cadeado tava trancado. Então ela não queria deixar você sair. Não era assim?
+ISABELA: Não.
+INVESTIGADOR: Você queria sair de todo jeito pra tomar droga. Não era isso?
+ISABELA: Não.
+INVESTIGADOR: Não foi assim?
+ISABELA: Foi não.
+INVESTIGADOR: Foi. Foi assim.
+ISABELA: Foi não.
+INVESTIGADOR: Viu? Foi assim. Então você diz, confessa, que é melhor pra você confessar. De qualquer forma, você vai ser processada, entendeu? Tudo leva pra você o que aconteceu. Então você confessa que é melhor, até pra sua defesa mesmo é melhor você confessar. Entendeu? Que usa droga. Entendeu? Você é consciente disso, que usa droga, não é?
+ISABELA: Mas vão me botar no presídio? (Isabela começa a chorar)
+INVESTIGADOR: Não, não... entendeu? Você confessa que é melhor pra você. Tá certo? Não foi assim que aconteceu? Foi?
+ISABELA: (Chorando) Mas vocês vão me botar no presídio?
+INVESTIGADOR: Não. Você vai para um local especial pra se tratar. 
+ISABELA: Não, eu não quero ir pra clínica nenhuma.
+INVESTIGADOR: Não é melhor do que ir para o presídio? Não é?
+ISABELA: Não. É não.
+INVESTIGADOR: Não é não? E você quer ir pra onde?
+ISABELA: Pra casa.
+INVESTIGADOR: Não, não pode. Já que aconteceu isso ai, você cometeu esse crime, tem que ir pra algum canto, pra lhe internar pra você se recuperar.
+(Corte no vídeo)
+ISABELA: Tem como o senhor conseguir um cigarro pra mim, pra fumar?
+INVESTIGADOR: Diga se aconteceu desse jeito. Foi assim? Que eu consigo. Não foi assim que aconteceu?
+ISABELA: (Balançando a cabeça afirmativamente) Foi...
+INVESTIGADOR: Foi assim, não foi? Você queria sair de casa pra usar droga, e sua mãe não tava deixando você sair. Não foi?
+ISABELA: (Balançando a cabeça afirmativamente em silêncio)
+INVESTIGADOR: Aí você pegou a faca. Aquela coisa toda. Entraram em luta, não foi? Aí aconteceu o que aconteceu. Não é assim? Pronto, tá certo... Você vai pra algum canto pra se internar, pra se recuperar disso aí. Por que você é dependente de droga, não é?
+ISABELA: Sou.
+INVESTIGADOR: Usou muito ontem.
+ISABELA: Usei. 
+INVESTIGADOR: Usou? E bebeu também?
+ISABELA: Humhum.
+INVESTIGADOR: Foi? Certo... 
+ISABELA: O senhor vai conseguir um cigarro pra mim?
+INVESTIGADOR: Vou, vou conseguir.
+
+
+
+PARTE 2 – MELHORANDO TEXTOS
+2.1 CORRIGINDO ERROS GRAMATICAIS
+CONCEITO:
+A utilização de modelos de linguagem natural, como o Claude e o ChatGPT, pode ser uma ferramenta poderosa para aprimorar a redação de textos. Esses modelos foram treinados em uma vasta quantidade de dados textuais, incluindo exemplos de escrita de altíssima qualidade, bem como textos de baixa qualidade. Como resultado, eles desenvolveram uma compreensão profunda das características que distinguem uma boa escrita, como clareza, coerência, estilo e correção gramatical.
+No entanto, para aproveitar ao máximo essa capacidade, é essencial entender como interagir com esses modelos de forma eficaz. Simplesmente pedir que o modelo "melhore o texto" ou "corrija o texto" pode não produzir os melhores resultados. Em vez disso, o segredo está em direcionar o modelo, por meio de prompts bem elaborados, para as áreas específicas de sua rede neural que são capazes de ativar os "melhores textos".
+Aqui estão algumas dicas para criar prompts eficazes que ajudarão o Claude e o ChatGPT a fornecer sugestões de alta qualidade para aprimorar sua redação:
+- Seja específico sobre o que deseja melhorar, utilizando palavras-chave e expressões que sinalizem claramente os aspectos da escrita a serem aprimorados, como clareza, concisão, correção gramatical, sintaxe e pontuação.
+- Forneça exemplos de estilo e qualidade que você admira, incluindo trechos de escrita que exemplifiquem o estilo, tom ou qualidade desejada.
+- Utilize palavras-chave que acionem a análise de qualidade, direcionando o modelo para avaliar aspectos específicos, como consistência de tom e voz, eficácia de dispositivos retóricos e estrutura argumentativa.
+- Peça sugestões e exemplos concretos, solicitando que o modelo forneça correções, reformulações e maneiras mais claras de expressar ideias.
+
+EXERCÍCIO 14
+- Copie o texto abaixo e peça para o Chat-GPT corrigir os erros gramaticais. Teste usar persona como forma de obter resposta melhores (“Professor de português” ou “Revisor de textos jurídicos”).
+- Em seguida, peça para ele informar quais foram os erros e quais as mudanças realizadas. (Dica: peça para ele usar marcadores para indicar os erros, como negrito)
+- Usando o mesmo texto acima como base, melhore o texto usando o Chat-GPT. Dica: indique um direcionamento da mensagem (por exemplo, melhore o texto a seguir, tornando-o mais claro e mais organizado)
+- Peça explicações para o Chat-GPT para saber que mudanças foram feitas no texto
+
+TEXTO:
+No caso em tela, a parte autora requer que seja determinada a sua regularização perante a Caixa Econômica Federal, com a emissão do Certificado de Regularidade do FGTS -CRF, devido a quitação integral do Débito de Fundo de Garantia e da Contribuição Social -NDFC nº 99999, com os documentos ecaminhados para o setor de Recolhimento de FGTS em Brasília/DF, conforme os protocolos de nº 99999.202 e 9996.202. Porém, sem resposta da CAIXA.
+Em auditamento ao pedido inicial (art. 303, § 1º, I, do CPC) requer a delacração de inexistência de débito, a restituição em dobro de valor pago a maior, bem como a condenação da CAIXA em danos morais no valor de R$ 20.000,00 (vinte mil reais), ou outro valor a ser fixado pelo Juízo. 
+Ressalta-se que é dever da Caixa Econômica Federal emitir a CRF, nos termos do art. 7º da Lei 8036/90, especialmente quando já houver comprovação de quitação dos débitos impostos, como no caso em comento, conforme se vê:
+(...)
+Desse modo, restou comprovado que a empresa autora adimpliu o débito do FGTS junto ao a gente gestor do Fundo - Caixa Econômica Federal -havendo regularização da totalidade do débito da NDFC nº DASDA, conforme os comprovantes de pagamento individualizados anexos - DOC. IV (id: 543252 a 4352342). Inclusive, em razão do receio da demora, no dia 06/04/2021 a requerente realisou, novamente, o pagamento da NDFC nº 53452 (DOC. III), a fim de ter, de logo, a Certidão, conforme novos comprovantes de pagamento anexos (DOC. XVI).
+Ademais, é imperioso destacar, que os três Autos de Infrações, já teve suas mutas devidamente adimplida, nos respectivos valores de R$ 266,02, R$ 3.405,12, e R$ 201,52, de modo que, os autos encontram-se arquivados definitivamente.
+
+2.2 INSERINDO LEGISLAÇÃO, DOUTRINA E JURISPRUDÊNCIA
+
+CONCEITO:
+O Claude e o ChatGPT são ferramentas valiosas para a construção de textos. No entanto, é preciso estar ciente dos riscos de alucinação, especialmente ao lidar com informações factuais específicas, como artigos de leis, precedentes e referências doutrinárias.
+O modo extrativo, em que a informação é obtida a partir do conhecimento parametrizado do modelo, é particularmente propenso a alucinações. Esses modelos foram treinados em vastos conjuntos de dados e podem, ocasionalmente, gerar informações que parecem plausíveis, mas que na realidade são imprecisas ou completamente inventadas.
+Para mitigar esse risco, a melhor abordagem é inserir dados factuais específicos por meio do conhecimento não parametrizado, ou seja, fornecido diretamente pelo usuário (por meio do copiar-colar ou dos anexos).
+Outra estratégia eficaz é utilizar os modelos de linguagem natural para construir o "esqueleto" do texto, aproveitando sua capacidade de gerar estruturas linguísticas coerentes e bem formadas. Em seguida, o usuário pode, externamente, inserir a "musculatura" do texto, preenchendo as informações factuais específicas nos locais apropriados.
+Ao trabalhar com modelos como o Claude e o ChatGPT, é fundamental adotar um mindset de desconfiança em relação a informações factuais geradas a partir do conhecimento parametrizado. Como regra geral, é prudente considerar que TODA informação factual específica fornecida pelo modelo é potencialmente uma alucinação, até que seja verificada e confirmada por fontes confiáveis.
+Isso é especialmente verdadeiro para detalhes muito específicos, como números, datas, nomes e referências a leis ou precedentes. Quanto mais específica for a informação, maior a probabilidade de que tenha sido inventada pelo modelo. Portanto, ao utilizar esses modelos para a construção de textos que requerem precisão factual, é essencial adotar um processo rigoroso de revisão e verificação. Desconfie das informações geradas, confira-as com fontes confiáveis e esteja preparado para revisar e corrigir quaisquer imprecisões ou alucinações.
+Ao manter esse mindset cauteloso e ao utilizar estratégias para inserir informações factuais de forma controlada, é possível aproveitar o poder dos modelos de linguagem natural para aprimorar a eficiência e a qualidade da produção textual, ao mesmo tempo em que se minimiza o risco de erros e alucinações.
+
+EXERCÍCIO 15
+A sentença a seguir é o esqueleto de um caso que envolve benefício assistencial para estrangeiro. 
+Insira o artigo da lei e precedente para dar robustez ao caso.
+SENTENÇA
+Cuida-se de ação especial previdenciária, em que a parte autora (Papa Djalo), estrangeiro originário de Guiné-Bissau, objetiva édito jurisdicional que condene o INSS a conceder-lhe o benefício assistencial, previsto no art. 20 da Lei nº 8.742/93, alegando ser portador de patologia que a impossibilita para o trabalho e para a vida independente. Pugna, outrossim, pelo pagamento das prestações vencidas e vincendas, a contar da data do requerimento administrativo, acrescido de atualização monetária e juros moratórios.
+O benefício assistencial requestado encontra-se previsto na Lei Maior, em seu art. 203, inciso V e no art. 20 da Lei nº 8.742/1993, e para a sua concessão, faz-se mister que o interessado seja pessoa idosa ou portadora de deficiência física ou mental e encontre-se impossibilitado de prover os meios necessários à sua manutenção ou tê-la provida por sua família. 
+Confira-se o artigo 20 da Lei nº 8.742/1993:
+[INSERIR O TEXTO DO ARTIGO DA LEI]
+Inicialmente, cumpre-me tecer alguns comentários sobre a condição de estrangeiro do requerente. O art. 5º da Constituição Federal giza que “Todos são iguais perante a lei, sem distinção de qualquer natureza, garantindo-se aos brasileiros e aos estrangeiros residentes no País a inviolabilidade do direito à vida, à liberdade, à igualdade, à segurança e à propriedade (...)”. Diante disso, entendo que não cabe ao intérprete fazer distinções ou limitações de qualquer natureza onde a Carta Maior não o faz. Tampouco o art. 203 da CF ou a Lei n.º 8.742/93 dispõem sobre a exigência da naturalidade brasileira para a concessão do benefício assistencial. 
+Para melhor corroborar o meu entendimento, transcrevo a seguir PRECEDENTE SOBRE O TEMA:
+[INSERIR PRECEDENTE SOBRE O TEMA]
+Superada essa questão, passo a análise dos requisitos para a concessão do benefício assistencial ao deficiente.
+Conforme o Laudo Pericial, a parte autora tem Insuficiência Renal Crônica. Realiza hemodiálise 03 (três) ou 04 (quatro) vezes na semana, no entanto, o tratamento é apenas paliativo, uma vez que a única possibilidade terapêutica é o transplante renal. A incapacidade teve início em 2005.
+Diante das conclusões da perita, o Autor não vai, nestas condições de saúde, conseguir emprego que lhe permita permanecer sentado desenvolvendo seus dotes intelectuais. Ainda mais porque, somado a todos esses fatores já relatados, o autor necessita realizar hemodiálise no mínimo 03 (três) vezes por semana, devendo ter uma grande disponibilidade de tempo para que tenha êxito em seu tratamento.
+Desta forma, entendo, de acordo com o princípio do livre convencimento motivado do juiz, que o postulante é incapaz para os atos da vida laboral e da vida independente.
+Firmado o meu entendimento acerca da incapacidade laboral, passo a analisar se a renda per capita da família do Demandante é inferior a ¼ do salário mínimo, nos termos do art. 20, § 3º da Lei nº 8.742/92.
+No caso dos autos, o Autor acostou relatório social de lavra da assistente social da Defensoria Pública da União, no qual restou consignada a sua situação de miserabilidade. O mesmo vive sozinho em um quarto alugado, e, como trabalhava como vendedor ambulante de bebidas, após o diagnóstico ficou impossibilitado de continuar suas atividades laborais, sobrevivendo, atualmente, da ajuda de terceiros.
+Desta forma, restando caracterizados os pressupostos legais para a concessão do benefício, JULGO PROCEDENTES OS PEDIDOS.
+
+2.3 TORNANDO O TEXTO MAIS CONCISO
+
+A camada de comando desempenha um papel crucial na obtenção de resultados de alta qualidade ao interagir com modelos de linguagem natural, como o Claude e o ChatGPT. A escolha de verbos específicos e o direcionamento claro das tarefas podem fazer uma diferença significativa na qualidade e relevância das respostas geradas.
+Verbos genéricos, como "resuma" ou "sintetize", muitas vezes resultam em respostas superficiais ou incompletas. Esses comandos não fornecem orientação suficiente para o modelo, deixando margem para interpretações vagas e respostas que podem não atender às expectativas do usuário.
+Por outro lado, verbos fortes e bem direcionados têm o poder de extrair o melhor dos modelos de linguagem natural. Comandos como "analise em detalhes e com profundidade" deixam claro que o usuário espera uma exploração minuciosa e abrangente do tópico em questão. Isso direciona o modelo a ir além de respostas superficiais e a fornecer insights substanciais e bem fundamentados.
+Além disso, o encadeamento de comandos pode ser uma técnica poderosa para obter respostas ainda mais completas e estruturadas. Por exemplo, instruções como "Extraia os objetivos centrais do texto, apresente os resultados encontrados, explique porque é importante e forneça as principais lições práticas que podem ser extraídas" fornecem um roteiro claro para o modelo seguir. Cada etapa do encadeamento orienta o modelo a abordar aspectos específicos da tarefa, resultando em uma resposta abrangente que cobre múltiplas facetas do tópico.
+Ao usar verbos fortes e encadear comandos, os usuários podem direcionar efetivamente os modelos para produzir respostas que não apenas atendem, mas superam suas expectativas. Esses comandos bem elaborados ativam as áreas mais potentes das redes neurais dos modelos, permitindo que eles gerem análises profundas, insights valiosos e recomendações acionáveis.
+No entanto, é importante lembrar que, mesmo com comandos bem estruturados, a qualidade da resposta também depende da clareza e especificidade do prompt como um todo. Fornecer contexto suficiente, exemplos ilustrativos e orientações claras em todas as camadas do prompt é essencial para obter os melhores resultados.
+Em resumo, a camada de comando é um elemento crítico na engenharia de prompts eficazes. Ao privilegiar verbos fortes e direcionados, e ao utilizar técnicas como o encadeamento de comandos, os usuários podem aproveitar todo o potencial dos modelos de linguagem natural, obtendo respostas detalhadas, relevantes e valiosas. Dominar a arte de criar comandos poderosos é uma habilidade essencial para qualquer um que deseje aproveitar ao máximo as capacidades do Claude, do ChatGPT e de outros modelos similares.
+
+EXERCÍCIO 16
+Escreva um comando para o ChatGPT desenvolver um texto mais objetivo e conciso sobre o caso abaixo
+Teste diferentes possibilidades de tornar o texto mais conciso (veja quais são os verbos mais eficientes: resuma, simplifique, analise detalhadamente e com profundidade, torne o texto mais conciso, elimine as redundâncias etc.)
+TRANSCRIÇÕES – VOTO CELSO DE MELLO
+Essa orientação, firmada pelo Supremo Tribunal Federal, apóia-se no fato de que a presunção de inocência – que se dirige ao Estado, para impor limitações ao seu poder, qualificando-se, sob tal perspectiva, como típica garantia de índole constitucional, e que também se destina ao indivíduo, como direito fundamental por este titularizado – representa uma notável conquista histórica dos cidadãos, em sua permanente luta contra a opressão do poder.
+O postulado do estado de inocência, ainda que não se considere como presunção em sentido técnico, encerra, em favor de qualquer pessoa sob persecução penal, o reconhecimento de uma verdade provisória, com caráter probatório, que repele suposições ou juízos prematuros de culpabilidade, até que sobrevenha – como o exige a Constituição do Brasil – o trânsito em julgado da condenação penal. Só então deixará de subsistir, em favor da pessoa condenada, a presunção de que é inocente.
+Há, portanto, um momento claramente definido no texto constitucional, a partir do qual se descaracteriza a presunção de inocência, vale dizer, aquele instante em que sobrevém o trânsito em julgado da condenação criminal. Antes desse momento – insista-se –, o Estado não pode tratar os indiciados ou réus como se culpados fossem. A presunção de inocência impõe, desse modo, ao Poder Público, um dever de tratamento que não pode ser desrespeitado por seus agentes e autoridades, tal como tem sido constantemente enfatizado pelo Supremo Tribunal Federal:
+“O POSTULADO CONSTITUCIONAL DA PRESUNÇÃO DE INOCÊNCIA IMPEDE QUE O ESTADO TRATE, COMO SE CULPADO FOSSE, AQUELE QUE AINDA NÃO SOFREU CONDENAÇÃO PENAL IRRECORRÍVEL.
+- A prerrogativa jurídica da liberdade - que possui extração constitucional (CF, art. 5º, LXI e LXV) - não pode ser ofendida por interpretações doutrinárias ou jurisprudenciais, que, fundadas em preocupante discurso de conteúdo autoritário, culminam por consagrar, paradoxalmente, em detrimento de direitos e garantias fundamentais proclamados pela Constituição da República, a ideologia da lei e da ordem.
+Mesmo que se trate de pessoa acusada da suposta prática de crime indigitado como grave, e até que sobrevenha sentença penal condenatória irrecorrível, não se revela possível - por efeito de insuperável vedação constitucional (CF, art. 5º, LVII) - presumir-lhe a culpabilidade.
+Ninguém pode ser tratado como culpado, qualquer que seja a natureza do ilícito penal cuja prática lhe tenha sido atribuída, sem que exista, a esse respeito, decisão judicial condenatória transitada em julgado.
+O princípio constitucional da presunção de inocência, em nosso sistema jurídico, consagra, além de outras relevantes conseqüências, uma regra de tratamento que impede o Poder Público de agir e de se comportar, em relação ao suspeito, ao indiciado, ao denunciado ou ao réu, como se estes já houvessem sido condenados, definitivamente, por sentença do Poder Judiciário. Precedentes.”
+(HC 95.886/RJ, Rel. Min. CELSO DE MELLO)
+Mostra-se importante acentuar que a presunção de inocência não se esvazia progressivamente, à medida em que se sucedem os graus de jurisdição, a significar que, mesmo confirmada a condenação penal por um Tribunal de segunda instância (ou por qualquer órgão colegiado de inferior jurisdição), ainda assim subsistirá, em favor do sentenciado, esse direito fundamental, que só deixa de prevalecer – repita-se – com o trânsito em julgado da sentença penal condenatória.
+Vale referir, no ponto, a esse respeito, a autorizada advertência do eminente Professor LUIZ FLÁVIO GOMES, em obra escrita com o Professor VALÉRIO DE OLIVEIRA MAZZUOLI (“Direito Penal – Comentários à Convenção Americana sobre Direitos Humanos/Pacto de San José da Costa Rica”, vol. 4/85-91, 2008, RT):
+“O correto é mesmo falar em princípio da presunção de inocência (tal como descrito na Convenção Americana), não em princípio da não-culpabilidade (esta última locução tem origem no fascismo italiano, que não se conformava com a idéia de que o acusado fosse, em princípio, inocente).
+Trata-se de princípio consagrado não só no art. 8º, 2, da Convenção Americana senão também (em parte) no art. 5°, LVII, da Constituição Federal, segundo o qual toda pessoa se presume inocente até que tenha sido declarada culpada por sentença transitada em julgado. Tem previsão normativa desde 1789, posto que já constava da Declaração dos Direitos do Homem e do Cidadão.
+Do princípio da presunção de inocência (‘todo acusado é presumido inocente até que se comprove sua culpabilidade’) emanam duas regras: (a) regra de tratamento e (b) regra probatória.
+‘Regra de tratamento’: o acusado não pode ser tratado como condenado antes do trânsito em julgado final da sentença condenatória (CF, art. 5°, LVII).
+O acusado, por força da regra que estamos estudando, tem o direito de receber a devida ‘consideração’ bem como o direito de ser tratado como não participante do fato imputado. Como ‘regra de tratamento’, a presunção de inocência impede qualquer antecipação de juízo condenatório ou de reconhecimento da culpabilidade do imputado, seja por situações, práticas, palavras, gestos etc., podendo-se exemplificar: a impropriedade de se manter o acusado em exposição humilhante no banco dos réus, o uso de algemas quando desnecessário, a divulgação abusiva de fatos e nomes de pessoas pelos meios de comunicação, a decretação ou manutenção de prisão cautelar desnecessária, a exigência de se recolher à prisão para apelar em razão da existência de condenação em primeira instância etc. É contrária à presunção de inocência a exibição de uma pessoa aos meios de comunicação vestida com traje infamante (Corte Interamericana, Caso Cantoral Benavides, Sentença de 18.08.2000, parágrafo 119).” (grifei)
+Disso resulta, segundo entendo, que a consagração constitucional da presunção de inocência como direito fundamental de qualquer pessoa há de viabilizar, sob a perspectiva da liberdade, uma hermenêutica essencialmente emancipatória dos direitos básicos da pessoa humana, cuja prerrogativa de ser sempre considerada inocente, para todos e quaisquer efeitos, deve atuar, até o superveniente trânsito em julgado da condenação judicial, como uma cláusula de insuperável bloqueio à imposição prematura de quaisquer medidas que afetem ou que restrinjam, seja no domínio civil, seja no âmbito político, a esfera jurídica das pessoas em geral.
+Nem se diga que a garantia fundamental de presunção de inocência teria pertinência e aplicabilidade unicamente restritas ao campo do direito penal e do direito processual penal.
+Torna-se importante assinalar, neste ponto, que a presunção de inocência, embora historicamente vinculada ao processo penal, também irradia os seus efeitos, sempre em favor das pessoas, contra o abuso de poder e a prepotência do Estado, projetando-os para esferas não criminais, em ordem a impedir, dentre outras graves conseqüências no plano jurídico – ressalvada a excepcionalidade de hipóteses previstas na própria Constituição –, que se formulem, precipitadamente, contra qualquer cidadão, juízos morais fundados em situações juridicamente ainda não definidas (e, por isso mesmo, essencialmente instáveis) ou, então, que se imponham, ao réu, restrições a seus direitos, não obstante inexistente condenação judicial transitada em julgado.
+O que se mostra relevante, a propósito do efeito irradiante da presunção de inocência, que a torna aplicável a processos (e a domínios) de natureza não criminal, é a preocupação, externada por órgãos investidos de jurisdição constitucional, com a preservação da integridade de um princípio que não pode ser transgredido por atos estatais - como a exclusão de concurso público ou de cursos de formação motivada pela mera existência de procedimento penal em andamento contra o candidato - que veiculem, prematuramente, medidas gravosas à esfera jurídica das pessoas, que são, desde logo, indevidamente tratadas, pelo Poder Público, como se culpadas fossem, porque presumida, por arbitrária antecipação fundada em juízo de mera suspeita, a culpabilidade de quem figura, em processo penal ou civil, como simples réu!
+Cabe referir, por extremamente oportuno, que o Supremo Tribunal Federal, em julgamento plenário (RE 482.006/MG, Rel. Min. RICARDO LEWANDOWSKI), e interpretando a Constituição da República, fez prevalecer, em sua decisão, essa mesma diretriz – que faz incidir a presunção constitucional de inocência também em domínio extrapenal –, explicitando que esse postulado constitucional alcança quaisquer medidas restritivas de direitos, independentemente de seu conteúdo ou do bloco que compõe, se de direitos civis ou de direitos políticos.
+A exigência de coisa julgada, tal como estabelecida no art. 5º, inciso LVII, de nossa Lei Fundamental, representa, na constelação axiológica que se encerra em nosso sistema constitucional, valor de essencial importância na preservação da segurança jurídica e dos direitos do cidadão.
+Mostra-se relevante acentuar, por isso mesmo, o alto significado que assume, em nosso sistema normativo, a coisa julgada, pois, ao propiciar a estabilidade das relações sociais, ao dissipar as dúvidas motivadas pela existência de controvérsia jurídica (“res judicata pro veritate habetur”) e ao viabilizar a superação dos conflitos, culmina por consagrar a segurança jurídica, que traduz, na concreção de seu alcance, valor de transcendente importância política, jurídica e social, a representar um dos fundamentos estruturantes do próprio Estado democrático de direito.
+Em suma: a submissão de uma pessoa a meros inquéritos policiais - ou, ainda, a persecuções criminais de que não haja derivado, em caráter definitivo, qualquer título penal condenatório - não se reveste de suficiente idoneidade jurídica para autorizar a formulação, contra o indiciado ou o réu, de juízo (negativo) de maus antecedentes, em ordem a recusar, ao que sofre a “persecutio criminis”, o acesso a determinados benefícios legais ou o direito de participar de concursos públicos ou de cursos de formação:
+“PRESUNÇÃO CONSTITUCIONAL DE NÃO CULPABILIDADE (CF, ART. 5º, LVII). MERA EXISTÊNCIA DE INQUÉRITOS POLICIAIS EM CURSO (OU ARQUIVADOS), OU DE PROCESSOS PENAIS EM ANDAMENTO, OU DE SENTENÇA CONDENATÓRIA AINDA SUSCETÍVEL DE IMPUGNAÇÃO RECURSAL. AUSÊNCIA, EM TAIS SITUAÇÕES, DE TÍTULO PENAL CONDENATÓRIO IRRECORRÍVEL. CONSEQÜENTE IMPOSSIBILIDADE DE FORMULAÇÃO, CONTRA O RÉU, COM BASE EM EPISÓDIOS PROCESSUAIS AINDA NÃO CONCLUÍDOS, DE JUÍZO DE MAUS ANTECEDENTES. PRETENDIDA CASSAÇÃO DA ORDEM DE ‘HABEAS CORPUS’. POSTULAÇÃO RECURSAL INACOLHÍVEL. RECURSO EXTRAORDINÁRIO IMPROVIDO.
+- A formulação, contra o sentenciado, de juízo de maus antecedentes, para os fins e efeitos a que se refere o art. 59 do Código Penal, não pode apoiar-se na mera instauração de inquéritos policiais (em andamento ou arquivados), ou na simples existência de processos penais em curso, ou, até mesmo, na ocorrência de condenações criminais ainda sujeitas a recurso.
+É que não podem repercutir, contra o réu, sob pena de transgressão ao postulado constitucional da não culpabilidade (CF, art. 5º, LVII), situações jurídico-processuais ainda não definidas por decisão irrecorrível do Poder Judiciário, porque inexistente, em tal contexto, título penal condenatório definitivamente constituído. Doutrina. Precedentes.”
+(RE 464.947/SP, Rel. Min. CELSO DE MELLO)
+Tal entendimento - que se revela compatível com a presunção constitucional “juris tantum” de inocência (CF, art. 5º, LVII) - ressalta, corretamente, e com apoio na jurisprudência dos Tribunais (RT 418/286 - RT 422/307 - RT 572/391 - RT 586/338), que processos penais em curso, ou inquéritos policiais em andamento ou, até mesmo, condenações criminais ainda sujeitas a recurso não podem ser considerados, enquanto episódios processuais suscetíveis de pronunciamento judicial absolutório, como elementos evidenciadores de maus antecedentes do réu (ou do indiciado) ou justificadores da adoção, contra eles ou o candidato, de medidas restritivas de direitos.
+É por essa razão que o Supremo Tribunal Federal já decidiu, por unânime votação, que “Não podem repercutir, contra o réu, situações jurídico-processuais ainda não definidas por decisão irrecorrível do Poder Judiciário, especialmente naquelas hipóteses de inexistência de título penal condenatório definitivamente constituído” (RTJ 139/885, Rel. Min. CELSO DE MELLO).
+Concluindo: o exame da presente causa evidencia que o acórdão ora impugnado ajusta-se à diretriz jurisprudencial que esta Suprema Corte firmou na matéria em análise, o que desautoriza, por completo, a postulação recursal deduzida pelo Distrito Federal.
+Sendo assim, e pelas razões expostas, conheço do presente recurso extraordinário, para negar-lhe provimento.
+Publique-se.
+Brasília, 13 de maio de 2011.
+Ministro CELSO DE MELLO
+Relator
+
+2.4 CAMADA DE ESTILO
+
+EXERCÍCIO 17:
+Escolha um texto de sua preferência e brinque com as várias possibilidades de estilo do ChatGPT ou Claude
+Dicas: use a tabela a seguir como base
+
+CategoriaExemplosFicção (Autores)William Shakespeare (Inglês - dramático, poético), Ernest Hemingway (Inglês - prosa concisa, direta), J.R.R. Tolkien (Inglês - linguagem poética, detalhada), Machado de Assis (Português - realismo, ironia)Ficção (Autoras)Virginia Woolf (Inglês - modernista, fluxo de consciência), Emily Dickinson (Inglês - poesia lírica, concisa), Clarice Lispector (Português - introspecção, fluxo de consciência), Lygia Fagundes Telles (Português - prosa introspectiva, realismo mágico), J.K. Rowling (Inglês - fantasia, suspense), Margaret Atwood (Inglês - ficção científica, distopia)Não Ficção (Autores)Yuval Noah Harari (Inglês - abordagem histórica e filosófica), Steven Pinker (Inglês - psicologia, linguística), Malcolm Gladwell (Inglês - psicologia social, jornalismo), Carl Sagan (Inglês - astronomia, divulgação científica), Neil deGrasse Tyson (Inglês - astrofísica, educação científica), Michio Kaku (Inglês - física teórica, futurismo), Siddhartha Mukherjee (Inglês - medicina, genética), Michael Pollan (Inglês - jornalismo alimentar, sustentabilidade), Oliver Sacks, Truman CapoteNão Ficção (Autoras)Mary Roach (Inglês - humor, ciência), Brene Brown (Inglês - pesquisa sobre vulnerabilidade, coragem, vergonha e empatia), Rachel Carson (Inglês - biologia marinha, conservação ambiental), Rebecca Solnit (Inglês - história, política, feminismo), Laura Hillenbrand (Inglês - história, biografia), Naomi Klein (Inglês - ativismo, crítica social)Estilos de Revistas e JornaisThe New York Times (Inglês - sóbrio, informativo), The Guardian (Inglês - progressista, analítico), The New Yorker (Inglês - literário, jornalismo de longa forma), Folha de S.Paulo (Português - formal, informativo), Veja (Português - opinativo, analítico), The Wall Street Journal (Inglês - formal, foco em negócios e economia), The Washington Post (Inglês - detalhado, investigativo), National Geographic (Inglês - descritivo, foco em ciência e natureza), Vogue (Inglês - elegante, foco em moda e estilo de vida), Rolling Stone (Inglês - informal, foco em música e cultura pop)Tipos de TomSóbrio (formal, direto), Deboche (satírico, irreverente), Humorístico (divertido, leve), Introspectivo (refletindo, ponderando), Reflexivo (pensativo, considerando), "Bêbado" (desinibido, louco), Indignado (raiva, desgosto), Otimista (positivo, esperançoso), Pessimista (negativo, desesperançado), Melancólico (triste, pensativo), Inspirador (motivacional, encorajador), Crítico (julgando, avaliando), Diplomático (cortês, tático), Descontraído (relaxado, informal), Profissional (sério, comercial), Romântico (amoroso, apaixonado), Sarcástico (irônico, mordaz)Estilos de ProsaRealista (descrições precisas e detalhadas), Surrealista (elementos fantásticos, sonhadores), Cyberpunk (tecnologia avançada, sociedades distópicas), Stream of Consciousness (fluxo contínuo e caótico de pensamentos), Textos Acadêmicos (formal, rigoroso), Juridiquês (termos técnicos legais), Estilo de Conversa (informal, coloquial), Storytelling (narrativa, desenvolvimento de personagens), Texto Persuasivo (argumentação para convencer), Texto Explicativo (esclarecimento, explicação), Texto Didático (instrutivo, educacional), Texto Objetivo (focado, direto), Epistolar (escrito na forma de cartas ou correspondência), Dialeto (escrito para imitar o discurso regional ou cultural), Neologismo (a criação de novas palavras ou frases), Metaficção (o texto está consciente de que é uma obra de ficção), Robótico (estilo de escrita que imita a lógica e a falta de emoção de uma inteligência artificial), Absurdo (elementos ilógicos e desconcertantes, muitas vezes usados para expressar a futilidade ou a irracionalidade da vida), Experimentação com Formato (o uso de formas e formatos incomuns para contar uma história, como listas, receitas, etc.), Fragmentado (a história é contada em pedaços ou fragmentos, não necessariamente em ordem cronológica), Pulp Fiction (estilo rápido e emocionante usado em histórias de detetive e ficção científica nos anos 1920 a 1950)Estilos de PoesiaSoneto (estrutura fixa, rimas), Verso Livre (sem rima ou metro fixos), Haiku (forma poética japonesa, foco na natureza), Poema Concreto (visual, estrutura espacial)Formatos de saídaTabelas, Relatórios (estruturados com introdução, corpo e conclusão), Blog Posts (escritos de maneira informal e pessoal), Resenhas (avaliação crítica de um livro, filme, produto, etc.), Scripts de Rádio ou TV (roteiros para transmissão), Diálogos (conversas entre personagens), Entrevistas (perguntas e respostas entre entrevistador e entrevistado), Discursos (texto formal para ser falado), Listas (coleções de itens ou ideias), Memos (comunicações internas em uma organização), E-mails (comunicação escrita para comunicação individual ou em grupo), Textos de Mídia Social (posts para Facebook, Twitter, Instagram, etc.), Resumos (breve descrição do conteúdo de um texto ou apresentação), Artigos de Jornal (escritos de forma objetiva e jornalística), Artigos de Opinião (escritos de forma subjetiva e persuasiva), Propostas de Projetos (descrições detalhadas de um plano ou ideia), roteiros, Postagens para Mídias Sociais com Componente Visual (descrições ou legendas para acompanhar uma imagem ou vídeo)OutrosDiálogos Estilizados (diálogos no estilo de certos autores ou gêneros), Fusão de Gêneros (combinação de diferentes gêneros em um só texto), Estilo de Mídia Social (imitar a escrita encontrada em diferentes plataformas de mídia social)
+
+Jurídicos: Alan Shore, Lord Denning, Benjamin Cardozo, Richard Posner, William Blackstone, Daniel Webster, Rui Barbosa
+
+2.5 ENSINANDO SEU TOM AO CHAT-GPT
+
+EXERCÍCIO 18
+Sem usar o Chat-GPT, escreva três parágrafos sobre um tema de sua preferência, no seu melhor estilo de escrita, usando o seu tom e sua voz, e peça para o Chat-GPT descrever em detalhes o seu estilo, o seu tom e a sua voz, tentando identificar os autores famosos que se aproximam do mesmo estilo
+Insira novamente o texto e peça para ele completar, com ideias que estão na sua cabeça, mantendo seu estilo... use palavras-chaves ou ideias soltas para direcionar o output do Chat-GPT
+Abra uma nova caixa de diálogo, e peça para ele escrever um texto sobre um tema de sua preferência, usando as mesmas palavras que ele usou para descrever o seu estilo. O objetivo é verificar se o texto se aproxima de sua própria voz
+2.6 INCLUSÃO DE ELEMENTOS VISUAIS
+EXERCÍCIO 19
+Usando o Chat-GPT, teste possibilidades de incluir elementos visuais (tabelas, gráficos, quadros comparativos, organograma, etc.) para tornar o texto a seguir mais claro
+Também é possível extrair dos resultados disponibilizados pela Justiça Eleitoral, relativos às eleições 2020, o seguinte desempenho das candidaturas femininas, em relação às candidaturas masculinas e ao resultado geral por partido: 
+PARTIDO PATRIOTA: O total de votos das candidaturas femininas representou 40,11% da quantidade de votos destinados às candidaturas masculinas e 28,63% do total de votos obtidos pela agremiação no pleito proporcional.
+PARTIDO LIBERAL – PL: O total de votos das candidaturas femininas representou 60,12% da quantidade de votos destinados às candidaturas masculinas e 37,55% do total de votos obtidos pela agremiação no pleito proporcional.
+PARTIDO DA MULHER BRASILEIRA – PMB: O total de votos das candidaturas femininas representou 114,89% da quantidade de votos destinados às candidaturas masculinas e 56,46% do total de votos obtidos pela agremiação no pleito proporcional.
+PARTIDO DA MOBILIZAÇÃO NACIONAL – PMN:  O total de votos das candidaturas femininas representou 40,44% da quantidade de votos destinados às candidaturas masculinas e 28,79% do total de votos obtidos pela agremiação no pleito proporcional.
+PARTIDO PROGRESSISTA – PP:  O total de votos das candidaturas femininas representou 33,84% da quantidade de votos destinados às candidaturas masculinas e 25,29% do total de votos obtidos pela agremiação no pleito proporcional.
+PARTIDO SOCIAL DEMOCRÁTICO – PSD:  O total de votos das candidaturas femininas representou 2,74% da quantidade de votos destinados às candidaturas masculinas e 2,66% do total de votos obtidos pela agremiação no pleito proporcional.
+PARTIDO DEMOCRÁTICO TRABALHISTA – PDT:  O total de votos das candidaturas femininas representou 1,90% da quantidade de votos destinados às candidaturas masculinas e 1,87% do total de votos obtidos pela agremiação no pleito proporcional.
+...” 
+
+
+
+
+
+PARTE 3 – PRODUZINDO TEXTOS  E IDEIAS:  MODO INTERPRETATIVO + MODO CRIATIVO
+
+3.0 ANÁLISE DE CASOS: FIRAC e FIRAC+
+
+EXERCÍCIO 20
+- Usando o Chat-GPT, ANEXE a inicial e a contestação de um caso jurídico e peça para o modelo fazer uma análise profunda e detalhada usando o formato FIRAC
+- Teste também o prompt a seguir, que é o modelo FIRAC+
+
+FIRAC+
+## **TAREFA PRINCIPAL**
+- **ANALISE EM DETALHE** o caso jurídico fornecido LENDO **TODOS OS DOCUMENTOS**, **INCORPORE NUANCES** e forneça uma **ARGUMENTAÇÃO LÓGICA**
+- Se houver mais de um documento anexado, ANALISE TODOS DOCUMENTOS INTEGRALMENTE, seguindo uma ordem numérica
+- Incorpore na pergunta do usuário o seguinte texto: “Consulte todos os documentos fornecidos na íntegra. Eles podem ter informações contraditórias. Por isso, faça uma leitura holística para captar todos os pontos controvertidos e todas as questões jurídicas na sua profundidade e totalidade”
+- Use o formato **FIRAC+**, seguindo a **ESTRUTURA** do **MODELO**
+- Faça isso independentemente de qualquer solicitação do usuário e cumpra rigorosamente todas as instruções aqui descrita. São mandatórias
+## **ESPECIALIDADE**
+- Você é um **ESPECIALISTA** em DIREITO, LINGUÍSTICA, CIÊNCIAS COGNITIVAS E SOCIAIS
+- Incorpore as **ESPECIALIDADES** da **MATÉRIA DE FUNDO** do caso analisado
+## **LINGUAGEM** E **ESTILO DE ESCRITA** 
+- Adote um tom **PROFISSIONAL** e **AUTORITATIVO**, sem jargões desnecessários
+- Escreva de modo **CONCISO**, mas completo e abrangente, sem redundância
+- Seja econômico, usando apenas expressões necessárias para a clareza
+- Vá direto para a resposta, começando o texto com **DADOS DO PROCESSO**
+## **EXEMPLO** E **MODELO** E **ESTRUTURA**
+- Use o formato de análise e de layout **FIRAC+**, conforme exemplo a seguir:
+<exemplo>
+### **DADOS DO PROCESSO??** - `TRIBUNAL - TIPO DE RECURSO OU AÇÃO - NÚMERO DO PROCESSO - RELATOR - DATA DE JULGAMENTO`
+### **FATOS??????** - ESCREVA UM LISTA com todos os fatos com PROFUNDIDADE, DETALHES e MINÚNCIAS`
+### **PROBLEMA JURÍDICO?** 
+#### **QUESTÃO CENTRAL??** - `ESTABELEÇA COM PROFUNDIDADE a questão central, enriquecendo a pergunta para respostas mais profundas`
+#### **PONTOS CONTROVERTIDOS??** - `ESCREVA UMA LISTA delimitando os pontos controvertidos com base nas nuances do caso`
+### **DIREITO APLICÁVEL??** - `LISTE as normas aplicáveis ao caso, referenciadas nos documentos`
+### **ANÁLISE E APLICAÇÃO??** 
+#### **ARGUMENTOS E PROVAS DO AUTOR??**  - ESCREVA UMA LISTA com todos os argumentos e provas do autor COM INFERÊNCIA LÓGICA`
+#### **ARGUMENTOS E PROVAS DO RÉU??** - `ESCREVA UMA LISTA com todos os argumentos e provas do réu COM INFERÊNCIA LÓGICA`
+### **CONCLUSÃO???** - `INFORME se o caso já foi solucionado. Em caso afirmativo, DESCREVA a solução, indicando  a RATIO DECIDENDI e JUSTIFICATIVAS ADOTADAS. Quando não houver solução estabelecida, SEJA IMPARCIAL E APENAS sugira direcionamentos`
+</exemplo>
+## **FONTES**
+- Cite dados e informações estritamente referenciados no caso em análise, sem adicionar materiais externos.
+## **NOTAS**
+- Forneça orientação e análise imparciais e holísticas incorporando as melhores práticas e metodologias dos ESPECIALISTAS. 
+- Vá passo a passo para respostas complexas. Respire fundo. Dê o seu melhor, pois isso é muito importante para mim. 
+- Ao detalhar os FATOS, assegure-se de prover uma riqueza de detalhes. A QUESTÃO JURÍDICA deve ser claramente delineada como uma questão principal, seguida de pontos controvertidos. Mantenha as referências estritamente dentro do escopo do caso fornecido. Termine com ??.
+
+
+3.1 PERGUNTAS EM AUDIÊNCIA
+
+EXERCÍCIO 21
+- Usando o Chat-GPT, faça uma síntese do caso abaixo, estabeleça os pontos controvertidos e desenvolva possibilidades de perguntas a serem formuladas na audiência do caso abaixo
+- Experimente inserir técnicas específicas uma entrevista mais eficientes e mais humana (inserir RAPPORT, metodologia de entrevista cognitiva etc.)
+TEXTO:
+PETIÇÃO INICIAL
+JOÃO DA SILVA e MARIA DA SILVA, devidamente qualificados na procuração, propõem a presente AÇÃO ORDINÁRIA contra a CAIXA ECONÔMICA FEDERAL, pelos fatos a seguir narrados:
+DOS FATOS
+Os autores são casados entre si há um ano e, no afã de realizar o sonho de adquirirem uma casa própria, procuraram a Caixa Econômica Federal para obtenção de financiamento habitacional pelo SFH.
+O imóvel pretendido custava R$ 400.000,00. Os autores somente dispunham de R$ 160.000,00. Por conta disso, buscaram o financiamento de R$ 240.000,00 junto à CAIXA.
+Os autores apresentaram toda a documentação solicitada pela CAIXA, e o financiamento foi aprovado em março de 2016. Em abril de 2016, o contrato de financiamento foi assinado pelos interessados (autores, gerente da CAIXA e dono do imóvel).
+Com a assinatura do contrato, os autores já receberam as chaves do imóvel e, logo em seguida, iniciaram os gastos necessários para a realização de reformas, inclusive para a compra do mobiliário.
+Para a liberação do dinheiro financiado, a CAIXA exigiu o registro do contrato no cartório de imóveis. Ao solicitarem o registro, o cartório exigiu uma retificação no contrato, tendo em vista a existência de um arrolamento fiscal averbado naquele imóvel. Assim, para que o contrato fosse registrado, seria necessário que houvesse uma cláusula expressa mencionando a existência de arrolamento do bem e a devida comunicação da alienação à Fazenda Nacional.
+Ao procurar novamente a CAIXA para que fosse feita a retificação exigida pelo cartório, o gerente responsável pela gestão daquele contrato informou que, diante da existência do referido arrolamento fiscal sobre o bem, a CAIXA não poderia mais financiar o imóvel, por existirem regras internas que proíbem o financiamento em tal situação. Em razão disso, o contrato foi rescindido unilateralmente pela CAIXA em maio de 2016, antes que o valor financiado fosse transferido aos autores.
+O Sr. João da Silva foi informado pessoalmente da rescisão do contrato e, de imediato, ligou à sua esposa para transmitir a triste notícia. Ao ser informada por seu marido de que a CAIXA rescindiu o contrato, a autora (Sra. Maria da Silva) ficou abalada e, diante disso,sofreu um ataque nervoso que culminou com uma ruptura deaneurisma, precisando ficar internada em Unidade de Tratamento Intensivo - UTI por dez dias. Atualmente, ainda está muito transtornada com tudo o que ocorreu e se encontra em fase de recuperação de sua saúde, necessitando de medicação controlada. O Sr. João da Silva, por sua vez, contraiu empréstimos com diversas pessoas para quitar suas dívidas, perdeu a sua qualidade de vida e está com a sua situação financeira desequilibrada.
+DO DIREITO
+O Código Civil brasileiro, em seu artigo 927, estabelece que “aquele que, por ato ilícito (arts. 186 e 187), causar dano a outrem, fica obrigado a repará-lo”. Por sua vez, o artigo 186 prevê que “aquele que, por ação ou omissão voluntária, negligência ou imprudência, violar direito e causar dano a outrem, ainda que exclusivamente moral, comete ato ilícito”.
+No caso, a CAIXA foi responsável pelos diversos danos causados aos autores, em função de haver rescindido unilateralmente o contrato. Por isso, deve ser condenada a reparar os danos materiais e morais provocados por sua conduta.
+DO PEDIDO
+Diante do exposto, requerem os autores o que se segue:
+a) inicialmente, a inversão do ônus da prova, por ser matéria relacionada ao direito do consumidor;
+b) a condenação da CAIXA na reparação dos danos materiais, consistentes nos valores que os autores tiveram que gastar do seu próprio bolso para mobiliar e reformar o imóvel, num montante de R$ 95.000,00, conforme recibos anexados aos autos;
+c) a condenação da CAIXA na reparação dos danos morais, inclusive no abalo psicológico que provocou a ruptura de aneurisma na autora, no importe de R$ 250.000,00;
+d) por fim, a condenação da CAIXA no pagamento das custas processais e honorários advocatícios, estes fixados em 20% (vinte por cento) sobre o valor da condenação.
+?
+CONTESTAÇÃO
+A CAIXA ECONÔMICA FEDERAL, devidamente qualificada nos autos, vem, com o devido respeito, apresentar CONTESTAÇÃO, com base nos fatos e argumentos a seguir descritos:
+A CAIXA ECONÔMICA FEDERAL não praticou qualquer ilicitude ao rescindir o contrato, já que este é um direito de qualquer contratante, sobretudo quando identifica algum elemento novo que era desconhecido no momento da assinatura do contrato. Não havia no contrato qualquer cláusula proibindo a rescisão, nem mesmo a previsão de pagamento de multa em caso de desistência unilateral. Além disso, um contrato de financiamento imobiliário somente se torna um ato jurídico perfeito depois de registrado no cartório de imóveis, o que não houve no caso.
+A conduta da CAIXA foi correta, já que havia um ônus que recaía sobre o imóvel, a saber, o arrolamento junto à Fazenda Nacional. Tal ônus afeta a garantia do contrato, aumentando o risco da entidade financeira e as chances de inadimplência.  
+A assinatura do contrato preliminar teria ocorrido em virtude de uma relação de confiança entre o gerente e os autores, já que o Sr. João da Silva atuava constantemente junto à CAIXA em contratos de financiamento em favor de terceiros. 
+O contrato foi firmado originalmente sem que a CAIXA fosse informada da existência do arrolamento. Tão logo tomou conhecimento da existência do arrolamento, a CAIXA informou ao autor que o contrato deveria ser rescindido, pois não havia como garantir o pagamento da dívida. Existem regras internas no Sistema de Financiamento Habitacional que proíbem o financiamento de imóveis com ônus fiscais.
+Defende, portanto, que não pode ser responsabilizada pelos fatos narrados na inicial. Além disso, não há nexo causal entre a rescisão do contrato e a doença da autora. Primeiro, porque é provável que a doença seja pré-existente. Segundo, porque uma ruptura aneurisma é sempre derivada de uma multiplicidade de causas, inclusive pré-disposição genética.  
+Pede, por fim, a improcedência dos pedidos.
+
+SUGESTÃO DE PROMPTS
+PROMPT 1 – AUDIÊNCIA
+## TAREFA
+- SUGIRA PERGUNTAS A SEREM FORMULADAS EM AUDIÊNCIA JUDICIAL para as PARTES E EVENTUAIS TESTEMUNHAS
+- INCORPORE NUANCES, CAPTANDO O CONTEXTO PARA ESCLARECER OS FATOS e COMPREENDER O CASO EM DIFERENTES PERSPECTIVAS 
+- Comece o texto com: "ORIENTAÇÃO PARA PERGUNTAS EM AUDIÊNCIA" e VÁ DIRETO PARA AS PERGUNTAS, FOCANDO NOS PONTOS FÁTICOS CONTROVERTIDOS
+- Ao final, PERGUNTE SE O USUÁRIO DESEJA APROFUNDAR ALGUM TÓPICO OU DETALHAR NOVAS PERGUNTAS SOBRE OS FATOS DO CASO
+
+PROMPT 2 – ENTREVISTA COGNITVA
+## METODOLOGIA
+- Sugira PERGUNTAS para as PARTES e TESTEMUNHAS, usando a METODOLOGIA DA **ENTREVISTA COGNITIVA COM RAPPORT**
+- Estabeleça uma boa relação com a testemunha desde o primeiro contato, mostrando-se disponível para prestar apoio.
+- Use rapport para estabelecer uma boa conexão emocional e mostrar compreensão e empatia sobre a posição da pessoa a ser ouvida
+- Personalize a entrevista, usando o nome da testemunha e atendendo às suas necessidades e características particulares
+- Explique claramente os objetivos da entrevista
+- Com rapport, solicite à testemunha que relate tudo o que se lembra, mesmo detalhes aparentemente irrelevantes, dando um exemplo do nível de detalhe pretendido
+- Comunique que é normal a testemunha não se recordar de certos aspectos e que "não me lembro" é uma resposta aceitável
+- Coloque as questões de forma compatível com o discurso da testemunha, focando um tópico de cada vez
+- Evite questões fechadas, de escolha múltipla ou sugestivas ao longo de toda a entrevista
+- Na fase de encerramento, agradeça a colaboração e use palavras para que a testemunha saia calma e confortável
+
+3.2 FORMULAÇÃO DE QUESITOS
+
+EXERCÍCIO 22
+- Usando o Chat-GPT, fixe os pontos fáticos controvertidos, estabeleça o tipo de conhecimento técnico que deve ser usado para solucionar cada ponto e desenvolva possibilidades de quesitos em uma perícia judicial do caso abaixo
+Dica 1: Inclua no comando o pedido para que o modelo incorpore as personas dos especialistas
+Dica 2: use o modo interativo para pedir aprofundamento de tópicos específicos
+TEXTO:
+RESUMO DO CASO
+O Ministério Público Federal ingressou com ação civil pública contra o IBAMA, a SEMACE, a UNIÃO, o Município de Aquiraz/CE e Algarve Investimentos Turísticos S/A, para questionar o processo de licenciamento ambiental do empreendimento “Costa Amalfitana”, localizado no Município de Aquiraz, no Estado do Ceará.
+O Costa Amalfitana é um complexo turístico-imobiliário lançado ao público no final de 2008, contendo hotéis (Dom João), clube de golfe (Golfe Prime) e condomínio de casas e de apartamentos, com uma área total de 285 hectares, sendo 1.800 metros de frente pro mar.
+De acordo com o MPF, o processo de licenciamento ambiental do Costa Amalfitana veira violou várias normas ambientais, pois foi autorizada a construção de benfeitorias em área de preservação permanente, especialmente dunas fixas e móveis. Além disso, parte do empreendimento é localizado em área de praia e terreno de marinha, adentrando no domínio da União. Houve também questionamentos sobre o uso de fertilizantes no campo de golfe e impacto no lençol freático e recursos hídricos.
+Por conta disso, a ação civil pública tem por objetivo: (a) anular as licenças ambientais concedidas pela SEMACE para instalação do empreendimento “Costa Amalfitana”, localizado em Aquiraz/CE; (b) paralisar futuros licenciamentos ambientais na região; (c) declarar que os licenciamentos ambientais de obras e atividades realizadas na Zona Costeira são de competência do IBAMA; (d) obrigar a União a demarcar os limites de sua dominialidade, com a conclusão dos procedimentos de demarcação dos terrenos de marinha e seus acrescidos na área destinada a receber o empreendimento demandado; (e) a recomposição ambiental ou patrimonial dos danos porventura ocasionados aos ecossistemas protegidos, especialmente as áreas de preservação permanente.
+Em sua contestação, a empresa Algarve Investimentos Turísticos S/A defendeu que o licenciamento ambiental respeitou a legislação aplicável e que o terreno está fora zona de praia e de terreno de marinha. Alegou ainda que o licenciamento foi precedido de todos os estudos ambientais previstos - EVA, EIA/RIMA, entre outros – e foi realizado pela empresa de consultoria Geoamniente – Consultoria Ambiental Ltda. Requereu ainda que fosse realizada inspeção no empreendimento para que o juízo possa analisar a situação mais de perto.
+A União, por sua vez, alegou que a área em questão ainda não passou pelo processo de demarcação para definir a linha de preamar, razão pela qual não há como afirmar, com precisão, se o terreno está ou não em terreno de marinha. A União se prontificou a indicar um técnico para fazer um levantamento na área, apenas para analisar a situação dominial do empreendimento;
+A SEMACE também contestou a ação, alegando que respeitou as normas ambientais no processo de licenciamento, não tendo sido identificadas construções em áreas de preservação permanente.
+O IBAMA, por sua vez, informou que o órgão competente para o licenciamento ambiental naquela área é o órgão estadual (SEMACE), razão pela qual não é parte legítima para figurar no pólo passivo da ação.
+O Município de Aquiraz, finalmente, ressaltou a importância do empreendimento para o município e diz que a sua competência se restringe a conceder o licenciamento ambiental para a construção das casas do condomínio fechado que existe dentro do empreendimento.
+Após apresentação de réplica, em que o Ministério Público Federal tentou refutar as alegações de defesa, os autos foram conclusos para decisão.
+3.3 MAPEAMENTO ARGUMENTATIVO
+EXERCÍCIO 23
+Usando o Chat-GPT, faça o mapeamento dos principais argumentos a favor e contra do caso a seguir.
+Dica: use expressões cognitivas para respostas mais robustas, como Mapas Argumentativos Dialéticos ou Esquemas Argumentativos ou Análise Multidimensional de Argumentos
+Dica 2: testes saídas em TABELA para comparação
+CASO
+ Jair Messias Bolsonaro e a Coligação Brasil Acima de Tudo, Deus Acima de Todos (PSL/PRTB) ajuizaram, com fundamento no art. 22 da Lei Complementar nº 64, de 1990, ação de investigação judicial eleitoral contra Fernando Haddad e Manuela Pinto Vieira D’ Ávila – candidatos, nesta ordem, a Presidente e Vice-Presidente da República nas Eleições de 2018 –; Coligação O Povo Feliz de Novo (PT/PCdoB/PROS); Fernando Luiz Alterio; Flabia Helena Schiavon; e Luiz Oscar Niemeyer Soares.
+Aduziram os representantes que os então candidatos representados, juntamente com os sócios da Empresa T4F Entretenimento, teriam praticado ato ilícito caracterizado como abuso do poder econômico, com indevido aproveitamento de imagem de artista com fama mundial, Roger Waters, em turnê no Brasil, sendo que por meio de reiterados shows se pôs em prática ostensiva e poderosa propaganda eleitoral negativa contra o candidato Requerente, Jair Bolsonaro (...).
+Pontuaram que uma mensagem de cunho eleitoral, transmitida em um show de artista mundialmente admirado, para um público equivalente à população de cidades e países, teria eficácia gigantesca, reverberaria “para além do espaço em que se realizou o show, pois alcança mídia e redes sociais, produzindo poderoso impacto no processo de formação do juízo do eleitor quanto ao pleito presidencial 2018”.
+Afirmaram que referidos atos, embora num primeiro momento pudessem parecer mera propaganda negativa ou mesmo crítica ácida contra o candidato da representante, teriam tomado “outro viés quando o Ministro da Cultura, Sr. Sérgio Sá Leitão, declarou, em seu perfil no Twitter, que o cantor Roger Waters recebeu R$ 90 milhões de reais para fazer propaganda eleitoral disfarçada de show”.
+Asseveraram que os shows de Roger Waters podem ter utilizado de verba pública, fato que agravaria, “ainda mais, o ilícito em análise, a fundamentar não só a investigação no âmbito eleitoral, como apuração de eventual ocorrência de crime ou outro ilícito civil”.
+Indicaram que a T4F Entretenimento seria “a maior beneficiária da Lei Rouanet no País” e que, a partir de entrevistas e declarações de seu então presidente, Fernando Alterio, verificar-se-ia “claramente sua objeção a eventual governo Jair Bolsonaro”.
+Apontaram ser de conhecimento comum que o cantor Roger Waters é ativista e costuma se posicionar sobre questões políticas, não se cuidando o caso em apreço de mera manifestação crítica e espontânea, mas de “uma ação totalmente arquitetada e premeditada”, porquanto ao longo da apresentação teriam sido expostos imagens e textos, além de se ter colocado o candidato Jair Bolsonaro entre ditadores e torturadores, fato de extrema gravidade, que demonstraria “a premeditação e o explícito propósito de denegrir sua imagem e causar nos telespectadores/fãs uma forma de repulsa, pela evidente campanha negativa, o que não condiz com a realidade”.
+Alegaram que, “além da referência à ditadura, fascismo e outras práticas de violência, a apresentação de Roger Waters se valeu textualmente da expressão ‘#EleNão’, símbolo utilizado na campanha petista contra o candidato Jair Bolsonaro”, tendo o cantor ainda se referido “a Jair Bolsonaro como motivação do homicídio do capoeirista Mestre Moa”, fato, segundo a inicial, atribuído reiteradamente ao longo da campanha pelo PT e por Fernando Haddad ao primeiro representante, então adversário eleitoral.
+Argumentaram que se tornaria evidente a prática de abuso do poder econômico em benefício da campanha dos dois candidatos representados, seja pela utilização ilícita de vultosos recursos, ainda que indiretamente, em prol de sua campanha e em desfavor da dos representantes, seja pela não contabilização de tais valores na prestação de contas, “ilícitos que podem ser imputados aos realizadores dos shows, por se tratar de pessoas jurídicas, como fontes vedadas de financiamento”.
+Sustentaram ser inquestionável o conhecimento de todos os atos aqui relatados por parte da “T4F ENTRETENIMENTO, seus sócios, bem como dos Requeridos, uma vez que foram diversos os shows, todos noticiados amplamente pela imprensa, e nenhuma providência foi tomada no sentido de evitar a ocorrência e repetição dessas condutas ilícitas”.
+Destacaram que referidas condutas demonstrariam, “com grande clareza, a gravidade da atuação da empresa organizadora dos shows e eventos em benefícios das candidaturas dos Requeridos, utilizando-se de propaganda negativa em showmício de grande alcance e divulgação”, e o evidente conluio entre os representados com o intuito de “provocar o desequilíbrio do pleito e desfavorecer a candidatura dos Requerentes em benefício direto das candidaturas dos candidatos Requeridos, Fernando Haddad e Manuela D’Ávila”, o que, consoante alegado, ofenderia gravemente a lisura e a moralidade do pleito e a própria soberania popular.
+Mencionaram que realizar uma turnê milionária de shows de um artista respeitado e reconhecido como Roger Waters, dar-lhe ampla guarida para showmícios em desfavor da campanha dos Requerentes, e fazê-lo em pleno período eleitoral, com especial ênfase no 2º turno, é abuso do poder econômico e desvio de recursos não declarados para campanha eleitoral, portanto, Caixa 2.
+Assinalaram que as referidas condutas demonstrariam a gravidade e a evidente ofensa ao art. 33, caput e inciso I, da Res.-TSE nº 23.553, de 2018, além de estar “devidamente configurada a ilicitude no financiamento de pessoa jurídica em benefício dos Requeridos”.
+Pleitearam a juntada de cópia integral da prestação de contas dos candidatos representados; a intimação dos sócios da T4F Entretenimento, responsáveis pela turnê do cantor Roger Waters no Brasil, para que apresentem as notas e toda documentação contábil da empresa que tiverem relação com os shows e com a Lei Rouanet, bem como para que sejam ouvidos em juízo; a quebra de sigilo bancário da mencionada empresa; e a intimação do Ministro da Cultura, Sr. Sérgio Sá Leitão, para prestar depoimento acerca dos fatos.
+Requereram, por fim, o recebimento da ação e, no mérito, a total procedência da demanda, para que seja cassado o registro ou o diploma dos representados e declarada sua inelegibilidade pelo prazo de 8 (oito) anos.
+Em sua contestação conjunta (ID nº 1021588), os representados Fernando Luiz Alterio, Luiz Oscar Niemeyer e Flabia Helena Schiavon esclareceram que a T4F “utiliza em suas produções teatrais, eventualmente, os mecanismos públicos de fomentoe patrocínio, através da Lei Rouanet, sempre fazendo-o de forma estritamente lícita” e que “não se filiam a nenhum partido ou corrente política e não realizaram doação eleitoral para os candidatos que disputaram o segundo turno das eleições presidenciais”.
+Acrescentaram que o artista Roger Waters foi contratado pela T4F em 2017 – sem “qualquer relação com as eleições presidenciais do Brasil de 2018” – para shows “cujo conteúdo foi integralmente definido pelo artista, considerando seu repertório e estilo característico”, expressando suas opiniões acerca do candidato representante “de forma autônoma e independente, por sua vontade própria, sem remuneração ou indicação de conteúdo”, amparado pelas garantias de livre exercício da manifestação artística, do pensamento e da crítica, asseguradas na Constituição (art. 5º, IV, IX e XIV).
+Consignaram que “os shows do artista Roger Waters foram realizados sem captação de patrocínio pela Lei Rouanet ou qualquer lei de incentivo”, sendo “os patrocínios contratados em termos estritamente privados”.
+Reiteraram a impugnação à declaração do Ministro Sergio Sá Leitão, classificando-a como “completamente equivocada e sem base fática ou probatória, que se funda em evidente incompreensão das garantias constitucionais da livre expressão artística e da opinião, garantidas constitucionalmente mesmo em período
+eleitoral”.
+Citaram que o evento somente poderia ser caracterizado como “showmício” se houvesse efetiva propaganda eleitoral para um candidato, mas “simples menções ou críticas realizadas nos shows em apreço a um candidato nem de longe podem ser consideradas como propaganda eleitoral”.
+Expuseram que a crítica feita pelo artista “é vista diariamente em tempos democráticos, ainda mais em período eleitoral, e não deve ser considerada ilícita por ser mordaz ou contundente”.
+Concluíram estar demonstrada a estrita licitude das opiniões expressadas pelo artista e a não configuração de propaganda eleitoral, resta evidente a inexistência de fundamento para a aplicação de qualquer penalidade aos representados que, por sua vez, não têm qualquer responsabilidade pelos atos ou manifestações do artista.
+Não se caracteriza, nem remotamente, abuso de poder econômico ou irregularidade de qualquer natureza, devendo o presente procedimento ser arquivado.
+Manuela Pinto Vieira D’Ávila (ID nº 1144838) e Fernando Haddad (ID nº 1145288), de sua parte, defenderam que as “alegações não passam de mera aventura jurídica perpetrada pelos Autores”, haja vista o artista Roger Waters apresentar em seus shows “manifestações muito mais profundas do que um simples apoio a algum candidato ou partido”.
+Declararam que o livre exercício da manifestação artística, do pensamento e da crítica, previsto na Constituição (art. 5º, IV, IX e XIV), “assegura ao artista completa autonomia com relação ao conteúdo de seu show e de suas manifestações”.
+Ressaltaram que em momento algum o nome de Fernando Haddad, Manuela D’Ávila ou dos partidos políticos aos quais estes fazem parte foi pronunciado pelo cantor, o que fortalece ainda mais o fato de que se tratam de manifestações políticas, e não propaganda ou apoio político, motivo pelo qual não deve prosperar a alegação de haver abuso de poder econômico na presente ação.
+Frisaram que “o que se percebe da fala do Ministro de Estado não é uma acusação concreta de propaganda eleitoral irregular, mas apenas que o artista teria recebido altos valores para vir ao Brasil para realizar ‘evento político’”, tratando-se de “afirmações falsas, desprovidas de qualquer prova e que visavam unicamente beneficiar Jair Messias Bolsonaro”.
+Esclareceram que a alegada utilização de verba pública decorrente da Lei Rouanet para pagamentos do show de Roger Waters não seria fato de sua responsabilidade, motivo pelo qual não lhes poderiam ser atribuídos eventuais ilícitos apurados.
+Sublinharam ter o secretário nacional de Fomento e Incentivo à Cultura, Sr. José Paulo Martin, garantido “que não houve qualquer incentivo para os shows de Roger Waters, declaração esta já divulgada pela [sic] veículos midiáticos”.
+Enfatizaram que “tanto o Partido dos Trabalhadores, quanto Roger Waters vinculam a imagem de Bolsonaro à ditadura, à tortura e à violência pelo fato do Autor já ter proferido declarações onde se mostrou favorável às citadas questões”.
+Salientaram que a contratação do artista e a divulgação de seus shows ocorreram em 4 de dezembro de 2017 (ID nº 1022138), “praticamente 10 (dez) meses antes de Jair Bolsonaro ter o seu registro de candidatura aprovado pela Justiça Eleitoral”.
+Sinalizaram que o movimento “‘#EleNão’ nasceu no grupo de Facebook ‘Mulheres unidas contra Bolsonaro’” e que vincular a referida expressão à campanha do Partido dos Trabalhadores seria fato descabido.
+Sobre as homenagens ao Mestre Moa do Katendê, articularam que, em momento algum, Roger Waters teria falado sobre Jair Bolsonaro ser responsável pela morte do capoeirista, mas tão somente que este foi brutalmente assassinado durante o processo eleitoral. Declararam que a campanha do Partido dos Trabalhadores não teria nenhuma ingerência sobre a produção artística do show de Roger Waters, que habitualmente homenageia pessoas que tenham sofrido algum tipo de ataque. A mesma argumentação se aplicaria à menção à morte da vereadora Marielle Franco.
+Realçaram estar evidente que as declarações relatadas pelos representantes, “quando não desprovidas de falsidade, se tratam de manifestações políticas às quais o contestante não possui nenhuma ingerência, razão pela qual não merece prosperar a acusação de abuso do poder econômico”.
+Arremataram que os autores não teriam demonstrado que os fatos narrados na inicial “seriam dotados de potencialidade lesiva”.
+Postularam, ao final, o indeferimento de todos os pedidos formulados pelos representantes.
+3.4 ANÁLISE PROBATÓRIA
+EXERCÍCIO 24
+Usando o Chat-GPT, faça uma análise de risco para mapear alguns possíveis fatores que possam levar à invalidade do interrogatório a seguir (garantias processuais e riscos de falsa confissão)
+Dica: use palavras-chave para direcionar as respostas. Teste direcionar a resposta para os pontos que você acredita que são relevantes (aviso Miranda – direito ao silêncio e ao advogado, perguntas capciosas, riscos de falsa confissão, vieses, injustiça espistêmica, técnica REID etc.)
+TEXTO:
+INTERROGATÓRIO
+INVESTIGADOR: Você está machucada por que, Isabela?
+ISABELA: Porque eu caí. Porque eu bebi muito.
+INVESTIGADOR: Não foi lutando com a sua mãe não?
+ISABELA: Não. Foi não.
+INVESTIGADOR: Quer dizer que você não fez isso com a sua mãe não?
+ISABELA: Fiz não.
+INVESTIGADOR: E quem foi?
+ISABELA: Como é que eu vou saber, senhor? Como é que eu vou saber se eu não tava em casa?
+INVESTIGADOR: Tava sim. Aquela sua roupa, suja de sangue, que você deixou em casa. Trocou de roupa em casa.
+ISABELA: Mas quem disse que a roupa é minha? Pode ser de qualquer um.
+INVESTIGADOR: De quem é?
+ISABELA: Minha irmã ia pra lá hoje pra casa.
+INVESTIGADOR: Mas ela não foi.
+ISABELA: Eu não sei. Pode ter ido. É obrigado a roupa ser minha?
+INVESTIGADOR: Olha. Veja só. Você queria sair de casa e sua mãe não tava deixando, não foi assim?
+ISABELA: Foi não. Foi não.
+INVESTIGADOR: Por que ela estava com a chave na mão? Morreu com a chave na mão. A chave do cadeado. E o cadeado tava trancado. Então ela não queria deixar você sair. Não era assim?
+ISABELA: Não.
+INVESTIGADOR: Você queria sair de todo jeito pra tomar droga. Não era isso?
+ISABELA: Não.
+INVESTIGADOR: Não foi assim?
+ISABELA: Foi não.
+INVESTIGADOR: Foi. Foi assim.
+ISABELA: Foi não.
+INVESTIGADOR: Viu? Foi assim. Então você diz, confessa, que é melhor pra você confessar. De qualquer forma, você vai ser processada, entendeu? Tudo leva pra você o que aconteceu. Então você confessa que é melhor, até pra sua defesa mesmo é melhor você confessar. Entendeu? Que usa droga. Entendeu? Você é consciente disso, que usa droga, não é?
+ISABELA: Mas vão me botar no presídio? (Isabela começa a chorar)
+INVESTIGADOR: Não, não... entendeu? Você confessa que é melhor pra você. Tá certo? Não foi assim que aconteceu? Foi?
+ISABELA: (Chorando) Mas vocês vão me botar no presídio?
+INVESTIGADOR: Não. Você vai para um local especial pra se tratar. 
+ISABELA: Não, eu não quero ir pra clínica nenhuma.
+INVESTIGADOR: Não é melhor do que ir para o presídio? Não é?
+ISABELA: Não. É não.
+INVESTIGADOR: Não é não? E você quer ir pra onde?
+ISABELA: Pra casa.
+INVESTIGADOR: Não, não pode. Já que aconteceu isso ai, você cometeu esse crime, tem que ir pra algum canto, pra lhe internar pra você se recuperar.
+(Corte no vídeo)
+ISABELA: Tem como o senhor conseguir um cigarro pra mim, pra fumar?
+INVESTIGADOR: Diga se aconteceu desse jeito. Foi assim? Que eu consigo. Não foi assim que aconteceu?
+ISABELA: (Balançando a cabeça afirmativamente) Foi...
+INVESTIGADOR: Foi assim, não foi? Você queria sair de casa pra usar droga, e sua mãe não tava deixando você sair. Não foi?
+ISABELA: (Balançando a cabeça afirmativamente em silêncio)
+INVESTIGADOR: Aí você pegou a faca. Aquela coisa toda. Entraram em luta, não foi? Aí aconteceu o que aconteceu. Não é assim? Pronto, tá certo... Você vai pra algum canto pra se internar, pra se recuperar disso aí. Por que você é dependente de droga, não é?
+ISABELA: Sou.
+INVESTIGADOR: Usou muito ontem.
+ISABELA: Usei. 
+INVESTIGADOR: Usou? E bebeu também?
+ISABELA: Humhum.
+INVESTIGADOR: Foi? Certo... 
+ISABELA: O senhor vai conseguir um cigarro pra mim?
+INVESTIGADOR: Vou, vou conseguir.
+
+3.5 ANÁLISE DE DISCURSO
+
+EXERCÍCIO 25
+Usando o Chat-GPT, faça uma análise do discurso abaixo, que serviu de base para a cassação do mandato do Deputado Estadual Francisco Franschini.
+Dica: inclua um contexto mais amplo para explicar que o discurso foi uma live proferida por um candidato a deputado estadual no dia das eleições. O discurso foi assistido por mais de 50 mil pessoas, com vários likes e comentários de apoiadores. 
+Dica 2: peça análises específicas de acordo com o que se deseja (análise de sentimento, análise de veracidade, análise de vieses, análise de compatibilidade com a liberdade de expressão, análise de abuso de poder de comunicação etc.)
+CASO FRANCISCHINI
+FERNANDO DESTITO FRANCISCHINI foi candidato a deputado estadual, do Paraná, nas eleições de 2018.
+Em 7 de outubro de 2018, ainda no período eleitoral e antes do primeiro turno das eleições, o então candidato transmitiu um live no seu perfil do Facebook, em que divulgou notícias falsas acerca da lisura do pleito, sugestionando que haveria fraude no voto eletrônico.
+O candidato deu início à transmissão e de pronto noticiou que “já identificamos duas urnas que eu digo ou são fraudadas ou adulteradas. Agora é real o que eu tô passando pra vocês, eu tô com toda a documentação aqui da própria Justiça Eleitoral”.
+ “o que vocês relataram era verdade, nós estamos estourando isso aqui em primeira mão pro Brasil inteiro, pra vocês, urnas ou são adulteradas ou fraudadas e [...] a gente tá trazendo essa denúncia gravíssima antes do final [da votação]”.
+[...] nosso advogado acabou de confirmar, de conseguir, identificou duas urnas que eu digo adulteradas [...].
+----------------------------------
+[...] No final do processo, o voto para Presidente não aparece a opção confirmar, em seguida apareceu a tela gravando, ou seja, está adulterada e fraudada, duas urnas estão apreendidas. Eu achei que podia ser problema técnico, uma, duas, três urnas, pelo Brasil, são centenas de urnas no Brasil inteiro com problema, nós não vamos aceitar esse resultado, não vamos aceitar.
+----------------------------------
+[...] Eu tô até engasgado aqui, gente, tá aqui o nosso documento, Justiça Eleitoral, a apreensão feita, duas urnas eletrônicas, até que enfim agora a gente tem uma ação concreta, até agora eram ações que a gente buscava provas. [...]
+----------------------------------
+[...] Duas urnas eletrônicas! Imagine as milhares que existem aí?
+Eu tô desde de manhã recebendo denúncia sobre isso, desde de manhã
+[...] ----------------------------------
+[...] em todo lugar funcionário puxa a gente no canto, fala: “tá  estranho, é muita urna com problema”. Não dá pra votar só pra Presidente, gente? É só pra Presidente que não pode votar nesse país?
+[...]
+[...] Eu vi um videozinho, esse eu não sei se é verdadeiro ou não, mas eu vi, e aqui eu não tenho papa na língua porque eu tenho uma merda que chama imunidade parlamentar pra falar. Vota 1, aparece o nome do Haddad, se for um fake, depois eu volto e me retrato, mas eu não vou deixar de falar. Se você viu esse vídeo, você também tá p da cara como eu [...]
+----------------------------------
+[...] a minha é a voz pra denunciar como deputado federal, que é delegado da Polícia Federal, a minha voz é a voz de vocês nesse momento pra explodir no Brasil inteiro. [...]
+----------------------------------
+[...] mas você do Brasil inteiro sabe que nós não podemos numa democracia é... aceitar esse tipo de coisa. [...]
+----------------------------------
+[...] Aí, graças a Deus, equipe, parabéns, da Justiça Eleitoral, o juiz eleitoral, o Ministério Público Eleitoral foram pra cima, tentaram reiniciar a urna, viram os lacres, apreenderam as duas urnas [...].
+----------------------------------
+[...] Isso é escancaradamente uma vergonha que nós estamos vendo
+e pode ser um golpe contra a democracia, que nós não vamos
+aceitar. [...]
+O candidato destacou ainda que as urnas eletrônicas eram desenvolvidas e gerenciadas por empresa venezuelana, sem que a Justiça Eleitoral tivesse acesso ao sistema. Salientou que (a) “nós não queremos mais essa [...] empresa da Venezuela tocando urna eletrônica no Brasil”; (b) “se isso está acontecendo no Brasil inteiro é uma sem-vergonhice, nós vamos botar pra correr essa empresa da Venezuela”; (c) “como é que uma coisa de segurança nacional, que é a definição da democracia, do governo dum país, está na mão duma empresa da Venezuela que tá em frangalhos lá?”; (d) “nós não vamos aceitar que uma empresa da Venezuela, que a tecnologia que a gente não tem acesso, defina a democracia no Brasil”. “Só aqui e na Venezuela tem a porcaria da urna eletrônica”.
+Caso tenha interesse, a live pode ser assistida no seguinte link:
+https://youtu.be/GT-Fx6Kshmo
+A live teve grande repercussão: audiência aproximada de 70 mil pessoas, mais de 105 mil comentários, 400 mil compartilhamentos e seis milhões de visualizações.
+O candidato Fernando Francischini foi eleito Deputado Estadual do Paraná, com 427.740 votos, o que corresponde a 7,51% do total.
+Por conta desses fatos, o Ministério Público Eleitoral ingressou com Ação de Investigação Judicial Eleitoral (AIJE) contra o deputado estadual eleito, alegando uso indevido dos meios de comunicação e abuso de autoridade, nos termos do artigo 22 da Lei Complementar 64/90. Pediu assim a cassação do deputado, com perda de mandato e declaração de inelegibilidade pelo prazo de 8 anos (artigo 22, inc. XIV, da LC 64/90).
+Em sua defesa, o deputado alegou que a live que motivou a AIJE está inserida em um debate público bem conhecido, em que se questiona a possibilidade de ocorrência de fraudes nas urnas eletrônicas. Portanto, o discurso do candidato é uma legítima manifestação da liberdade de expressão, sobretudo em contexto eleitoral, em que a idoneidade do pleito deve ser fiscalizada com mais atenção. Alegou ainda que a sua conduta é atípica, não podendo uma rede social ser enquadrada como meio de comunicação social, já que o uso indevido dos meios de comunicação requer a comprovação da utilização de veículos de imprensa, tais como rádio, jornal ou televisão, em benefício de determinado candidato. Para ser mais preciso, para a caracterização do instituto do uso indevido dos meios de comunicação social se faz necessária exposição massiva de um candidato nos meios de comunicação em detrimento de outros, de forma a afeta a legitimidade e a normalidade das eleições, o que não houve no caso, tendo em vista tratar-se de perfil privado. Por fim, alegou que seus votos foram motivados por vários outros fatores, não tendo a referida live tido qualquer impacto relevante na conquista de eleitores, até porque o debate envolvia eleições presidenciais e não eleições para os cargos legislativos. 
+Diante do quadro acima, analise a melhor solução para o caso, levando em conta as seguintes questões:
+(a)	A desinformação, consistente na propagação de informações conhecidamente falsas com o propósito de ludibriar o eleitor e criar suspeitas sobre a idoneidade das eleições, está protegida pela liberdade de expressão?
+(b)	No caso concreto, o discurso do candidato está protegido pela liberdade de expressão? Em caso negativo, seu discurso pode configurar abuso de meio de comunicação?
+(c)	Redes sociais podem ser equiparadas à comunicação social para fins de configurar o abuso de poder?
+3.6 ORIENTAÇÃO JURÍDICA
+EXERCÍCIO 26
+Usando o Chat-GPT, faça uma análise jurídica do caso a seguir.
+Dica: use palavras chave para direcionar a resposta e o modo interativo para aprofundar tópicos e argumentos
+ESTUDO DE CASO – GRAVAÇÃO AMBIENTAL
+Fonte: AGRAVO REGIMENTAL NO AGRAVO DE INSTRUMENTO Nº 0000293-64.2016.6.16.0095 – SANTA INÊS – PARANÁ
+Durante as eleições de 2016, o senhor Ricardo estava na casa de sua mãe, Roseli, quando recebeu a visita de Marcel e Luíza, que, na ocasião, eram candidatos, respectivamente, ao cargo de prefeito e vereadora do município de Santa Inês/PR.
+Na ocasião, os candidatos fizeram a oferta de R$ 6.000,00, divididos em três vezes, sendo dois mil, mais dois mil, e dois mil após o pleito, dentre outros benefícios, como a concessão de remédios e auxílio na obtenção de aposentadoria, à eleitora Roseli, em troca de apoio aos referidos. Candidatos. 
+Toda a conversa foi gravada por Ricardo, filho de Roseli, que estava presente no momento do diálogo e confirmou em juízo que, de fato, participou e gravou todo o diálogo.
+Por conta disso, o Ministério Público Eleitoral ingressou com representação eleitoral por captação ilícita de sufrágio, com base no art. 41-A da Lei 9.504/1997: 
+Art. 41-A. Ressalvado o disposto no art. 26 e seus incisos, constitui captação de sufrágio, vedada por esta Lei, o candidato doar, oferecer, prometer, ou entregar, ao eleitor, com o fim de obter-lhe o voto, bem ou vantagem pessoal de qualquer natureza, inclusive emprego ou função pública, desde o registro da candidatura até o dia da eleição, inclusive, sob pena de multa de mil a cinqüenta mil Ufir, e cassação do registro ou do diploma, observado o procedimento previsto no art. 22 da Lei Complementar no 64, de 18 de maio de 1990.               
+Na instrução processual, ficou constatado o seguinte: (i) houve a gravação de uma conversa, em 22.08.2016, na casa da informante Roseli; (ii) a proprietária do imóvel em que ocorreu a gravação, Sra. Roseli, não alegou violação de sua privacidade ou intimidade em seu depoimento; (iii) o laudo pericial concluiu se tratar de gravação ambiental com vários interlocutores, em ambiente interno, e que não foram identificados elementos indicativos de edição; e (iv) não ocorreu instigação por Ricardo (que fez a gravação) ou outro presente no ato, para marcar a reunião com os recorrentes ou correligionários ou proposição de benefícios.
+Com base nas provas colhidas em juízo, a Justiça Eleitoral do Paraná condenou Marcel e Luíza pelo crime de captação ilícita de sufrágio, cassando seus mandatos, de acordo com o artigo 41-A, da Lei 9.504/1997, tendo a sentença sido confirmada pelo Tribunal Regional Eleitoral.
+Na decisão, foi discutida e afastada a alegação de ilicitude da prova. Aplicou-se, no caso, o tema 237 do Supremo Tribunal Federal no sentido de que “é lícita a prova consistente em gravação ambiental realizada por um dos interlocutores sem o conhecimento do outro”. Ficou assentando ainda que (i) a gravação foi realizada por um interlocutor no âmbito da residência da informante Roseli; (ii) a gravação foi espontânea, inexistindo induzimento ou flagrante preparado; e (iii) não há respaldo jurídico para sustentar a proteção ao sigilo da conversa entre um candidato e eleitores.
+Os candidatos recorreram ao Tribunal Superior Eleitoral, reiterando a tese de que a prova seria ilícita. De acordo com a tese recursal, a gravação teria sido realizada em ambiente privado (residência de eleitor), durante a campanha eleitoral, com a presença de outros candidatos e correligionários, para a divulgação de propostas e ideias de campanha, sem conhecimento, consentimento ou anuência dos demais interlocutores, notadamente os recorrentes, restando manifesta a ilicitude da prova. Houve, no caso, uma notória quebra da expectativa de privacidade, violando todas as regras de boa convivência que deve pautar as relações privadas.
+Além disso, os recorrentes citam a alteração trazida pela Lei nº 13.964/2019 (Pacote Anticrime), que incluiu o artigo 8ª-A e respectivos parágrafos à Lei nº 9.296/96 nos seguintes termos:
+“Art. 8º-A. Para investigação ou instrução criminal, poderá ser autorizada pelo juiz, a requerimento da autoridade policial ou do Ministério Público, a captação ambiental de sinais eletromagnéticos, ópticos ou acústicos, quando:
+I - a prova não puder ser feita por outros meios disponíveis e igualmente eficazes; e
+II - houver elementos probatórios razoáveis de autoria e participação em infrações criminais cujas penas máximas sejam superiores a 4 (quatro) anos ou em infrações penais conexas.
+§ 4º A captação ambiental feita por um dos interlocutores sem o prévio conhecimento da autoridade policial ou do Ministério Público poderá ser utilizada, em matéria de defesa, quando demonstrada a integridade da gravação.
+Diante disso, defendem que a prova é ilícita por não ter havido consentimento de todos os interlocutores, nem prévia autorização judicial, não podendo ser usada para fins de incriminação.  
+
+Questão para discussão:
+Analise a validade da gravação ambiental no presente caso, especialmente em face das modificações legislativas trazidas pela Lei nº 13.964/2019.
+PARTE 4 – ESCRITA AVANÇADA: REDAÇÃO, PERSUASÃO E RETÓRICA
+4.1 USANDO MODELOS PARA ELABORAÇÃO DE EMENTAS 
+EXERCÍCIO 27
+Usando o Chat-GPT, elabore a ementa de uma sentença por você elaborada
+Dica: para produzir uma EMENTA adequada, o ideal é inserir no comando algo que sinalize que se trata de ementa de jurisprudência (incluir, por exemplo, a palavra TRIBUNAL). Outra opção é oferecer um modelo para que a ementa seja produzida de acordo com a estrutura desejada. 
+
+PROMPT 1 – EMENTA (PROMPT PRÉ-ESTRUTURADO COM ONE-SHOT)
+Com base no texto fornecido, escreva o texto de uma EMENTA (JURISPRUDÊNCIA - TRIBUNAL) usando como base a **ESTRUTURA** do modelo abaixo, melhorando, adaptando e incluindo o que for necessário para garantir clareza, coesão, coerência, objetividade e precisão:
+<estrutura>
+Ementa: [TIPO DE MATÉRIA. TIPO DE AÇÃO. TÓPICOS DO MAIS GERAL AO MAIS ESPECÍFICO DIVIDIDOS POR PONTO EM LETRA MAIÚSCULA. RESULTADO].
+1. [Síntese do caso começando com "Trata-se de"].
+2. [Conclusão jurídica usando o verbo no presente e sem mencionar a decisão ou o tribunal. Escreva uma conclusão lógica aplicando o instituto jurídico mencionado no julgado com os fatos relevantes].
+3. [Justificativa da conclusão extraída da fundamentação da sentença com os tópicos mais relevantes]
+4. [Resultado do julgamento na voz passiva]
+</estrutura>
+Aqui um **EXEMPLO** para usar como base:
+<exemplo>
+Ementa: AÇÃO DIRETA DE INCONSTITUCIONALIDADE. DIREITO CONSTITUCIONAL. LEI N. 9.612/98. RÁDIODIFUSÃO COMUNITÁRIA. PROBIÇÃO DO PROSELITISMO. INCONSTITUCIONALIDADE. PROCEDÊNCIA DA AÇÃO DIRETA. 
+1. Trata-se de Ação Direta de Inconstitucionalidade em que se discute a constitucionalidade da proibição de proselitismo, aplicável às Rádios Comunitárias, prevista na Lei N. 9.612/98, considerando sua possível incompatibilidade com a liberdade religiosa e de expressão. 
+2. Por ser um instrumento para a garantia de outros direitos, a jurisprudência do Supremo Tribunal Federal reconhece a primazia da liberdade de expressão, por representar tanto o direito de não ser arbitrariamente privado ou impedido de manifestar seu próprio pensamento quanto o direito coletivo de receber informações e de conhecer a expressão do pensamento alheio.
+3. A liberdade religiosa não é exercível apenas em privado, mas também no espaço público, e inclui o direito de tentar convencer os outros, por meio do ensinamento, a mudar de religião. O discurso proselitista é, pois, inerente à liberdade de expressão religiosa. Precedentes. Viola, pois, a Constituição Federal a proibição de veiculação de discurso proselitista em serviço de radiodifusão comunitária.
+4. Ação direta julgada procedente. 
+</exemplo>
+
+
+PROMPT EMENTA MODELO CNJ
+# TAREFA
+
+- Você é uma analista jurídico especializado em analisar um caso fornecido com profundidade, precisão e detalhes, captando as nuances, com o propósito de escrever uma **EMENTA**, conforme ESTRUTURA fornecida
+- **ESCREVA** a EMENTA do caso fornecido, seguindo estritamente a ESTRUTURA fornecida
+- Cite apenas fatos, normas e precedentes do caso fornecido
+- Comece o texto com ***Ementa***
+
+# ESTRUTURA
+- Use o formato da ESTRUTURA aqui fornecida, melhorando, adaptando e incluindo o que for necessário para garantir clareza, coesão, coerência, objetividade e precisão:
+
+<estrutura>
+
+## ***Ementa***: `RAMO DO DIREITO. CLASSE PROCESSUAL. FRASE OU PALAVRAS QUE INDIQUEM O ASSUNTO PRINCIPAL DO MAIS GERAL AO MAIS ESPECÍFICO DIVIDIDOS POR PONTO EM LETRA MAIÚSCULA. CONCLUSÃO.`
+
+### **I. CASO EM EXAME**
+1. `Apresente o caso, com a indicação dos fatos relevantes e do pedido principal`
+
+### **II. QUESTÃO EM DISCUSSÃO**
+2. `Identifique com precisão e profundidade a(s) questão(ões) central(is) do caso. Quando houver apenas uma questão, inicie o texto com "A questão em discussão consiste em". Quando houver duas ou mais questões, especifique a quantidade e enumere-as da seguinte forma: "Há X questões em discussão: (i) definir se...; (ii) estabelecer se...; (iii) determinar se...; etc."`
+
+### **III. RAZÕES DE DECIDIR**
+- `Apresente as principais justificativas que fundamentam a decisão, extraídas da fundamentação. Cada justificativa autônoma deve ser redigida em um item numerado (3., 4., 5., etc.), de forma concisa e objetiva, contendo apenas uma ideia central por item. Utilize quantos itens forem necessários para contemplar todas as justificativas relevantes`.
+3. [Justificativa 1]
+4. [Justificativa 2]...
+
+### **IV. DISPOSITIVO E TESE**
+5. `Apresente o resultado do julgamento. Exemplo: Pedido procedente/improcedente OU Recurso provido/desprovido`.
+*Tese de julgamento*: `Enumere a(s) tese(s) jurídica(s) firmada(s) no julgamento (ratio decidendi), de forma concisa e objetiva, seguindo esta formatação:    "1. [Tese 1].      2. [Tese 2].     3. [Tese 3]..." Cada tese deve ser redigida como uma única frase, iniciando com letra maiúscula e terminando com ponto final`
+_________
+*Dispositivos relevantes citados*: `Identifique as normas citadas. Exemplo: CF/1988, art. 1º, III e IV; CC, arts. 1.641, II, e 1.639, § 2º.`
+*Jurisprudência relevante citada*: `Identifique os precedentes citados. Exemplo: STF, ADPF nº 130, Rel. Min. Ayres Britto, Plenário, j. 30.04.2009.`
+
+</estrutura>
+
+## EXEMPLO
+- O EXEMPLO a seguir pode ser usado como modelo:
+<exemplo>
+
+***Ementa***: DIREITO CONSTITUCIONAL E PROCESSUAL. PROPOSTA DE PADRONIZAÇÃO. EMENTA-PADRÃO. RECOMENDAÇÃO DE MODELO PARA A ELABORAÇÃO DE EMENTAS PELOS TRIBUNAIS. APROVAÇÃO.
+### **I. CASO EM EXAME**
+1. Proposta de padronização de ementas dos acórdãos proferidos pelos mais de 90 tribunais brasileiros.
+### **II. QUESTÃO EM DISCUSSÃO**
+2. A questão central consiste em discutir um modelo de ementa com o objetivo de facilitar a compreensão das decisões, a aplicação dos precedentes e o uso de inteligência artificial.
+### **III. RAZÕES DE DECIDIR**
+3. Ementas devem ser claras, objetivas e escritas em linguagem simples, sob pena de prejudicar a pesquisa e a compreensão pelas partes do processo, pela comunidade jurídica e pela população em geral.
+4. Precedentes que não são conhecidos ou compreendidos não podem ser seguidos. Assim, a padronização das ementas favorece a consolidação do sistema brasileiro de precedentes.
+5. Por fim, a adoção de um modelo de ementas favorece o treinamento de ferramentas de inteligência artificial para a busca de precedentes.
+### **IV. DISPOSITIVO E TESE**
+6. Recomendação aprovada.
+______
+*Dispositivos relevantes citados*: CF/1988, arts. 5º, XIV, 37, caput, e 93, IX. CPC, arts. 926 e seguintes
+*Jurisprudência relevante citada*: CNJ, AN nº  00000-65.2042.2.00.0000, rel. Conselheiro João da Silva, j. 01.07.2078; CNJ, ADI nº  0001, rel. Min. George Marmelstein, j. 14.11.2046
+
+</exemplo>
+4.2 USANDO MODELOS PARA CRIAR O ESQUELETO DA MINUTA
+
+EXERCÍCIO 28
+A partir das peças essenciais de um processo, elabore o esqueleto de minuta de sentença com relatório, fundamentação e dispositivo
+
+PROMPT SENTENÇA (PROMPT PRÉ-ESTRUTURADO)
+
+## TAREFA
+- Você é um juiz e um escritor incrível, especializado na redação de minutas de senteça
+- Escreva a SENTENÇA JUDICIAL do TEXTO fornecido, usando como base a ESTRUTURA MODELO do modelo abaixo, adaptando e inserindo novos dados se necessário.
+
+## ESTRUTURA
+
+- Siga a estrutura a seguir: 
+
+<estrutura>
+
+RELATÓRIO
+`NOME DA PARTE AUTORA` propôs a presente ação `TIPO DE AÇÃO JUDICIAL` contra a `NOME DA PARTE REQUERIDA`, alegando que `RESUMIR OS FATOS ALEGADOS PELA PARTE AUTORA`. Para reforçar sua alegação, aponta como causa de pedir que `INDICAR A CAUSA DE PEDIR E OS ARGUMENTOS RELEVANTES`. Ao final, pediu que `RESUMIR O PEDIDO PRINCIPAL`.
+`NOME DA PARTE REQUERIDA` apresentou contestação, sustentando que `RESUMIR OS FATOS ALEGADOS PELA PARTE REQUERIDA`. Para isso, argumenta que `INDICAR OS ARGUMENTOS JURÍDICOS ALEGADOS PELA PARTE REQUERIDA`. Por fim, requereu que [...].
+`RESUMA OUTRAS PEÇAS PROCESSUAIS QUANDO HOUVER`
+É o que havia a relatar. Passo a decidir.
+FUNDAMENTAÇÃO
+O ponto central da controvérsia é decidir se `INCLUIR a QUESTÃO CENTRAL DA CONTROVÉRSIA`. Em outras palavras,`INCLUIR a QUESTÃO CENTRAL EM OUTRO PONTO DE VISTA`.
+O sistema jurídico brasileiro tem como princípio e fundamentos a ideia de que `DETALHAR OS PRINCÍPIOS E OS CONCEITOS QUE SE APLICAM AO CASO`.
+No caso dos autos, `NOME DA PARTE AUTORA` demonstrou que [...]. 
+Por sua vez, `NOME DA PARTE REQUERIDA` alegou [...]
+Confrontando os argumentos das partes, entendo que `ARGUMENTO CENTRAL`.
+Além disso, `REFORÇO ARGUMENTATIVO`
+Conclui-se, assim, que [...].
+A jurisprudência dos tribunais reforça essa conclusão... `REFORÇO DE JURISPRUDÊNCIA SEM FAZER REFERÊNCIA`.
+Em resumo, (a) `RESUMO DOS FATOS`; (b) `RESUMO DA CAUSA PEDIR`; (c) `RESUMO DA CONCLUSÃO COM O ARGUMENTO VENCEDOR`. 
+DISPOSITIVO
+Ante o exposto, JULGO `PROCEDENTE OU IMPROCEDENTE OU PARCIALMENTE PROCEDENTE` o pedido, no sentido de....
+`Aplicar as regras de sucumbência quando houver, usando como exemplo o seguinte texto apenas como modelo: "A parte `sucumbente` será responsável pelos honorários de sucumbência, que determino em 10% sobre o valor da condenação, conforme o art. 85, §§ 2º e 3º, inciso I, do Código de Processo Civil. Caso haja isenção de pagamento concedida, esta seguirá a condição de suspensão de cobrança estabelecida no art. 98, § 3º, do mesmo código.
+No cálculo, devem ser observadas as orientações constantes no Manual de Cálculos da Justiça Federal, atualizado pelas orientações mais recentes do tema"`.
+Sentença publicada e registrada eletronicamente. Intimem-se via sistema. 
+Fortaleza/Ce, `data fornecida pelo sistema`. 
+JUIZ FEDERAL
+
+</estrutura>
+4.3 ROTA CENTRAL: ESTRUTURA ARGUMENTATIVA (LAYOUT DE ARGUMENTOS)
+
+EXERCÍCIO 29
+Usando o Chat-GPT, escreva um texto sobre a importância de dominar as duas rotas da persuasão. Teste diferentes modelos de layout, conforme as possibilidades da tabela.
+
+Estrutura/ComponentesExemploMelhor contexto para usoAIDA (Attention, Interest, Desire, Action)Atenção: "Cansado de conexões lentas?" Interesse: "Nosso serviço de internet de alta velocidade oferece a solução ideal." Desejo: "Imagine baixar arquivos em segundos." Ação: "Assine agora!"Marketing, vendas, anúncios publicitáriosPAS (Problem, Agitate, Solution)Problema: "Problemas para dormir?" Agitação: "O sono inadequado pode afetar sua saúde." Solução: "Experimente nosso aplicativo de meditação guiada."Copywriting, propostas de solução de problemas, vendasACCA (Awareness, Comprehension, Conviction, Action)Conscientização: "A poluição do ar está aumentando." Compreensão: "Devido a carros e indústrias poluentes." Convicção: "Podemos reduzir a poluição usando transportes limpos." Ação: "Comece a usar bicicleta para o trabalho."Campanhas de sensibilização, marketing social, políticaBAB (Before, After, Bridge)Antes: "Dificuldades para se concentrar no trabalho." Depois: "Após usar nosso aplicativo, sua produtividade pode disparar." Ponte: "Baixe nosso aplicativo!"Vendas, marketing, apresentações de produtosPPPP (Picture, Promise, Prove, Push)Foto: "Imagine dirigir o carro dos seus sonhos." Promessa: "Nosso carro elétrico oferece desempenho e sustentabilidade." Prova: "Clientes relatam economia de combustível." Empurrão: "Agende um test-drive hoje!"Copywriting, vendas, propostas de produtos4Cs (Clear, Concise, Compelling, Credible)Claro: "Nosso software de contabilidade simplifica a gestão financeira." Conciso: "Rastreia todas as suas transações." Atraente: "Liberte-se das preocupações financeiras." Credível: "Confiado por milhares de empresas."Apresentações de produtos, propostas de projetos, correspondência comercialQUEST (Qualify, Understand, Educate, Stimulate, Transition)Qualificar: "Você busca uma vida mais saudável?" Entender: "Equilibrar dieta e exercício é desafiador." Educar: "Nosso app oferece planos personalizados." Estimular: "Imagine alcançar sua meta de saúde." Transição: "Baixe agora e comece sua jornada."Propostas de soluções, apresentações de produtos, marketing de conteúdoIRAC (Issue, Rule, Application, Conclusion)Questão: "A legalidade da demissão de um empregado." Regra: "A legislação trabalhista exige justa causa." Aplicação: "O empregado foi demitido sem justa causa." Conclusão: "A demissão foi ilegal."Redação jurídica, análise de casos, argumentação em tribunalCREAC (Conclusion, Rule, Explanation, Application, Conclusion)Conclusão: "O uso de dados pessoais pela empresa violou as leis de privacidade." Regra: "Leis de privacidade protegem contra uso não autorizado." Explicação: "Uso de dados sem consentimento viola estas leis." Aplicação: "A empresa usou dados sem consentimento." Conclusão: "Houve violação da lei de privacidade."Redação jurídica, análise de privacidade de dados, consultoria jurídicaFIRAC (Facts, Issue, Rule, Analysis, Conclusion)Fatos: "Um consumidor sofreu danos por produto defeituoso." Questão: "Se o fabricante é responsável." Regra: "A lei de proteção ao consumidor exige que produtos sejam seguros." Análise: "O produto era perigoso." Conclusão: "O fabricante é responsável."Direito do consumidor, análise de responsabilidade de produto, educação jurídicaToulmin (Claim, Grounds, Warrant, Rebuttal, Qualifier)Declaração: "Reduzir emissão de carbono diminui aquecimento global." Suporte: "Estudos mostram que emissões menores estabilizam clima." Garantia: "Políticas ambientais podem reduzir emissões." Refutação: "Apesar da oposição econômica, benefícios ambientais são cruciais." Qualificador: "É provável que a redução de carbono beneficie o ambiente."Redação jurídica, análise de casos, debates, discussõesEstrutura de Narrativa (Setup, Confronto, Resolução)Setup: "Ana sonhou em escrever um livro." Confronto: "Enfrentou anos de rejeição." Resolução: "Seu livro foi publicado e tornou-se um best-seller."Storytelling, marketing literário, palestras motivacionaisROGERIANOReconhecimento: "Entendo sua preocupação com custos." Afirmação: "Importante encontrar solução econômica." Resposta: "Nossa proposta equilibra custo e qualidade."Comunicação terapêutica, resolução de conflitos, negociaçãoCRARC (Conclusão, Regra, Aplicação, Refutação, Conclusão)Conclusão: "A expansão urbana prejudica habitats." Regra: "Leis exigem proteção de ecossistemas." Aplicação: "A expansão viola essas leis." Refutação: "Embora traga benefícios econômicos, preservação é essencial." Conclusão: "A expansão deve ser reavaliada."Advocacia ambiental, debates políticos, educação em sustentabilidadeSOAR (Situation, Objective, Action, Result)Situação: "Necessidade de aumentar vendas." Objetivo: "Elevar vendas em 20%." Ação: "Implementar nova estratégia de marketing." Resultado: "Vendas aumentaram 25%."Propostas de projeto, planejamento estratégico, relatórios de progressoCARE (Challenge, Action, Result, Evidence)Desafio: "Melhorar satisfação do cliente." Ação: "Introduzir suporte ao cliente 24/7." Resultado: "Satisfação do cliente aumentou em 30%." Evidência: "Pesquisas de satisfação comprovam."Estudos de caso, marketing de resultados, apresentações de vendasSPIN (Situation, Problem, Implication, Need-payoff)Situação: "Clientes enfrentam atrasos na entrega." Problema: "Atrasos afetam a satisfação do cliente." Implicação: "Clientes insatisfeitos podem mudar para concorrentes." Necessidade-pagamento: "Sistema de entrega eficiente melhora satisfação e retenção."Vendas consultivas, negociações de negócios, personalizaçãoHEAR (Hook, Empathize, Argument, Resolution)Gancho: "Você sabia que a meditação pode melhorar sua saúde mental?" Empatia: "Entendemos que a vida moderna é estressante." Argumento: "Nossa app de meditação é baseada em evidências científicas." Resolução: "Experimente nossa app e sinta a diferença!"Discursos persuasivos, marketing, redação publicitáriaSCQA (Situation, Complication, Question, Answer)Situação: "Mercado de tecnologia em rápida mudança." Complicação: "Empresas lutam para acompanhar." Pergunta: "Como se manter competitivo?" Resposta: "Nossa consultoria oferece estratégias de inovação."Apresentações executivas, redação de relatórios, comunicação corporativaTRAC (Thesis, Reason, Antithesis, Conclusion)Tese: "Teletrabalho aumenta a produtividade." Razão: "Funcionários têm menos interrupções." Antítese: "Alguns argumentam que reduz a colaboração." Conclusão: "Teletrabalho, se bem gerido, pode melhorar a produtividade sem prejudicar a colaboração."Debates acadêmicos, artigos de opinião, discussões críticas
+4.4 ROTA CENTRAL: CATEGORIA DE ARGUMENTOS
+
+EXERCÍCIO 30 
+Usando o Chat-GPT, escreva um texto com o seguinte mote: “O Problema da Proteção dos Direitos Autorais nos LLMs nos dados de treinamento”. 
+Explore diferentes tipologias de argumentos com as possibilidades da tabela a seguir.
+
+Categoria de ArgumentoFunçãoExemplosPrincípioBaseado em valores e direitos fundamentaisAs mulheres têm direito à igualdade de oportunidades em todos os campos, inclusive nas forças armadas, de acordo com o princípio da igualdade de gênero.Dogmática JurídicaBaseado em normas, princípios e interpretações aceitas do direitoInterpretação de leis existentes que proíbem a discriminação com base no sexo no serviço militar, argumentando que essas leis requerem que as mulheres sejam permitidas em cargos de comando nas forças armadas.Política PúblicaFoco na aplicação prática das leis e seus impactosA inclusão das mulheres nas forças armadas pode melhorar a eficácia operacional e representação, contribuindo para uma força de trabalho mais diversificada e resiliente.EmpíricoBaseado em evidências empíricas ou científicasPesquisas demonstram que equipes mistas de gênero podem melhorar a tomada de decisões e a eficácia operacional nas forças armadas.Pragmático/ConsequencialistaFoco nas implicações práticas de uma política ou açãoA integração de mulheres nas forças armadas pode levar à necessidade de revisar e adaptar os regulamentos e protocolos existentes, com potenciais custos associados.EconômicoBaseado no impacto econômico de uma decisão ou políticaA inclusão de mulheres em cargos de comando nas forças armadas poderia levar a uma utilização mais eficiente dos recursos humanos.Direito ComparadoConsidera práticas legais em outras jurisdiçõesAlguns países já permitem que mulheres ocupem cargos de comando nas forças armadas e têm experimentado resultados positivos, o que pode servir como referência.Histórico ou CulturalAnalisa a questão dentro de um contexto histórico ou culturalA posição das mulheres nas forças armadas evoluiu significativamente ao longo do tempo, refletindo mudanças mais amplas na sociedade em relação ao papel das mulheres.PsicológicoFoca no impacto psicológico de uma decisão ou políticaA presença de mulheres em cargos de comando nas forças armadas pode contribuir para uma maior satisfação e moral da tropa, ao promover um ambiente mais diversificado e inclusivo.Prospectivo/VisionárioConsidera como uma decisão ou política pode influenciar o curso futuro de eventosA inclusão de mulheres em cargos de comando pode ser vista como uma parte essencial da modernização e adaptação das forças armadas às realidades do século XXI.Experiência Pessoal/AnedóticoBaseado em histórias pessoais ou experiências individuaisHistórias pessoais de mulheres que alcançaram cargos de comando nas forças armadas podem ser usadas para ilustrar os desafios e sucessos potenciais.
+4.5 ROTA CENTRAL: IDENTIFICANDO FALÁCIAS
+
+EXERCÍCIO 31
+Usando o Chat-GPT, analise quais são as principais falácias dos textos a seguir
+Dica: seja específico quanto aos objetivos: 
+- identificar falácias, indicando por que são falácias e como elas podem ser refutadas
+- identificar contradições lógicas e informar por que são contradições lógicas e como corrigi-las
+- identificar incoerências e inconsistências
+- identificar suposições não comprovadas ou de validade questionável
+- modificar o argumento para torná-lo sólido, coerente, consistente, racional e mais convincente
+- sugerir contra-argumentos 
+
+TEXTO PARA ANÁLISE
+No debate contínuo sobre liberdades civis, a delicada questão do discurso de ódio se apresenta como um ponto de confronto recorrente. Alguns argumentam que, sendo uma sociedade democrática, cada indivíduo deve ter o direito de expressar suas opiniões, não importa o quão ofensivas ou inflamatórias possam ser para alguns. Afinal, na Grécia Antiga, o berço da democracia, a liberdade de expressão era respeitada e estimada. Devemos realmente mudar este princípio agora, depois de séculos de sua consolidação?
+De fato, lembremos de um líder político influente que, apesar de ter proferido um discurso inflamado em sua campanha, conseguiu ser eleito e é considerado por muitos como um dos grandes líderes do nosso tempo. Portanto, se ele conseguiu transformar o discurso de ódio em sucesso, isso não significaria que tais discursos podem até ter impactos positivos em determinados cenários?
+Além disso, muitos daqueles que condenam o discurso de ódio são os mesmos que têm uma tendência a se sentir ofendidos com facilidade. Devemos realmente permitir que essas pessoas hipersensíveis, que levam tudo para o lado pessoal, ditem as regras para o resto de nós? Eles, provavelmente, nem entenderiam o valor da liberdade de expressão, uma vez que estão constantemente em busca de uma "zona segura".
+Ademais, todas as pessoas têm o direito de expressar suas opiniões. Um líder religioso influente, que eu admiro muito, sempre reforça isso em suas pregações. Se um homem de tamanha sabedoria e conexão com o divino nos diz isso, quem sou eu para discordar?
+Claro, não podemos ignorar o fato de que algumas pessoas foram afetadas negativamente por discursos de ódio. Mas pensemos em João, que uma vez disse algo ofensivo sem querer e agora é taxado como propagador de discurso de ódio. Isso certamente demonstra que nem todo discurso de ódio é intencional ou maléfico.
+Para finalizar, apesar do potencial do discurso de ódio para causar danos, é um componente essencial da liberdade de expressão e um elemento chave da democracia. Afinal, a maioria das pessoas que eu conheço concorda com isso.
+
+BALONEY DETECTION KIT DE CARL SAGAN
+1) Questionar a fonte da informação: Verifique a credibilidade da fonte e procure outras fontes independentes que possam confirmar ou refutar a alegação.
+2) Buscar evidências: Para avaliar a veracidade de uma alegação, busque por evidências que a sustentem e verifique se essas evidências são sólidas, confiáveis e baseadas em dados.
+3) Analisar argumentos e falácias lógicas: Preste atenção à lógica e à estrutura dos argumentos apresentados. Identifique falácias lógicas, como ataques pessoais, apelos à autoridade ou falsas analogias, que podem comprometer a validade do argumento.
+4) Observar consistência interna e externa: Verifique se a alegação é consistente com o que já se sabe sobre o assunto e se ela se encaixa no contexto geral das informações disponíveis. A consistência interna diz respeito à coerência das ideias apresentadas, enquanto a consistência externa refere-se à harmonia entre a alegação e o conhecimento estabelecido sobre o tema.
+5) Analisar a plausibilidade e a probabilidade: Avalie se a alegação é plausível com base no que se sabe sobre o mundo e se ela é provável em comparação com outras explicações possíveis.
+6) Questionar a autoridade: Embora as autoridades em um campo possam ser mais conhecedoras do assunto, isso não significa que estejam sempre corretas. Não aceite uma alegação apenas com base na autoridade de quem a faz, mas sim nas evidências e nos argumentos que a sustentam.
+7) Considerar múltiplas hipóteses: Antes de aceitar uma explicação como verdadeira, considere outras hipóteses alternativas e compare suas respectivas forças e fraquezas.
+8) Ter uma mente aberta, mas cética: Esteja disposto a considerar novas ideias e informações, mas também seja cético e crítico ao analisá-las.
+
+4.4 FIGURAS RETÓRICAS
+
+EXERCÍCIO 32
+Usando o Chat-GPT, liste e identifique os principais recursos retóricos usados por Martin Luther King em seu famoso discurso Eu Tenho um Sonho
+
+EU TENHO UM SONHO – MARTIN LUTHER KING JR.
+"Eu estou contente em unir-me com vocês no dia que entrará para a história como a maior demonstração pela liberdade na história de nossa nação.
+Cem anos atrás, um grande americano, na qual estamos sob sua simbólica sombra, assinou a Proclamação de Emancipação. Esse importante decreto veio como um grande farol de esperança para milhões de escravos negros que tinham murchados nas chamas da injustiça. Ele veio como uma alvorada para terminar a longa noite de seus cativeiros.
+Mas cem anos depois, o Negro ainda não é livre.
+Cem anos depois, a vida do Negro ainda é tristemente inválida pelas algemas da segregação e as cadeias de discriminação.
+Cem anos depois, o Negro vive em uma ilha só de pobreza no meio de um vasto oceano de prosperidade material. Cem anos depois, o Negro ainda adoece nos cantos da sociedade americana e se encontram exilados em sua própria terra. Assim, nós viemos aqui hoje para dramatizar sua vergonhosa condição.
+De certo modo, nós viemos à capital de nossa nação para trocar um cheque. Quando os arquitetos de nossa república escreveram as magníficas palavras da Constituição e a Declaração da Independência, eles estavam assinando uma nota promissória para a qual todo americano seria seu herdeiro. Esta nota era uma promessa que todos os homens, sim, os homens negros, como também os homens brancos, teriam garantidos os direitos inalienáveis de vida, liberdade e a busca da felicidade. Hoje é óbvio que aquela América não apresentou esta nota promissória. Em vez de honrar esta obrigação sagrada, a América deu para o povo negro um cheque sem fundo, um cheque que voltou marcado com "fundos insuficientes".
+Mas nós nos recusamos a acreditar que o banco da justiça é falível. Nós nos recusamos a acreditar que há capitais insuficientes de oportunidade nesta nação. Assim nós viemos trocar este cheque, um cheque que nos dará o direito de reclamar as riquezas de liberdade e a segurança da justiça.
+Nós também viemos para recordar à América dessa cruel urgência. Este não é o momento para descansar no luxo refrescante ou tomar o remédio tranqüilizante do gradualismo.
+Agora é o tempo para transformar em realidade as promessas de democracia.
+Agora é o tempo para subir do vale das trevas da segregação ao caminho iluminado pelo sol da justiça racial.
+Agora é o tempo para erguer nossa nação das areias movediças da injustiça racial para a pedra sólida da fraternidade. Agora é o tempo para fazer da justiça uma realidade para todos os filhos de Deus.
+Seria fatal para a nação negligenciar a urgência desse momento. Este verão sufocante do legítimo descontentamento dos Negros não passará até termos um renovador outono de liberdade e igualdade. Este ano de 1963 não é um fim, mas um começo. Esses que esperam que o Negro agora estará contente, terão um violento despertar se a nação votar aos negócios de sempre.
+Mas há algo que eu tenho que dizer ao meu povo que se dirige ao portal que conduz ao palácio da justiça. No processo de conquistar nosso legítimo direito, nós não devemos ser culpados de ações de injustiças. Não vamos satisfazer nossa sede de liberdade bebendo da xícara da amargura e do ódio. Nós sempre temos que conduzir nossa luta num alto nível de dignidade e disciplina. Nós não devemos permitir que nosso criativo protesto se degenere em violência física. Novamente e novamente nós temos que subir às majestosas alturas da reunião da força física com a força de alma. Nossa nova e maravilhosa combatividade mostrou à comunidade negra que não devemos ter uma desconfiança para com todas as pessoas brancas, para muitos de nossos irmãos brancos, como comprovamos pela presença deles aqui hoje, vieram entender que o destino deles é amarrado ao nosso destino. Eles vieram perceber que a liberdade deles é ligada indissoluvelmente a nossa liberdade. Nós não podemos caminhar só.
+E como nós caminhamos, nós temos que fazer a promessa que nós sempre marcharemos à frente. Nós não podemos retroceder. Há esses que estão perguntando para os devotos dos direitos civis, "Quando vocês estarão satisfeitos?"
+Nós nunca estaremos satisfeitos enquanto o Negro for vítima dos horrores indizíveis da brutalidade policial. Nós nunca estaremos satisfeitos enquanto nossos corpos, pesados com a fadiga da viagem, não poderem ter hospedagem nos motéis das estradas e os hotéis das cidades. Nós não estaremos satisfeitos enquanto um Negro não puder votar no Mississipi e um Negro em Nova Iorque acreditar que ele não tem motivo para votar. Não, não, nós não estamos satisfeitos e nós não estaremos satisfeitos até que a justiça e a retidão rolem abaixo como águas de uma poderosa correnteza.
+Eu não esqueci que alguns de você vieram até aqui após grandes testes e sofrimentos. Alguns de você vieram recentemente de celas estreitas das prisões. Alguns de vocês vieram de áreas onde sua busca pela liberdade lhe deixaram marcas pelas tempestades das perseguições e pelos ventos de brutalidade policial. Você são o veteranos do sofrimento. Continuem trabalhando com a fé que sofrimento imerecido é redentor. Voltem para o Mississippi, voltem para o Alabama, voltem para a Carolina do Sul, voltem para a Geórgia, voltem para Louisiana, voltem para as ruas sujas e guetos de nossas cidades do norte, sabendo que de alguma maneira esta situação pode e será mudada. Não se deixe caiar no vale de desespero.
+Eu digo a você hoje, meus amigos, que embora nós enfrentemos as dificuldades de hoje e amanhã. Eu ainda tenho um sonho. É um sonho profundamente enraizado no sonho americano.
+Eu tenho um sonho que um dia esta nação se levantará e viverá o verdadeiro significado de sua crença - nós celebraremos estas verdades e elas serão claras para todos, que os homens são criados iguais.
+Eu tenho um sonho que um dia nas colinas vermelhas da Geórgia os filhos dos descendentes de escravos e os filhos dos desdentes dos donos de escravos poderão se sentar junto à mesa da fraternidade.
+Eu tenho um sonho que um dia, até mesmo no estado de Mississippi, um estado que transpira com o calor da injustiça, que transpira com o calor de opressão, será transformado em um oásis de liberdade e justiça.
+Eu tenho um sonho que minhas quatro pequenas crianças vão um dia viver em uma nação onde elas não serão julgadas pela cor da pele, mas pelo conteúdo de seu caráter. Eu tenho um sonho hoje!
+Eu tenho um sonho que um dia, no Alabama, com seus racistas malignos, com seu governador que tem os lábios gotejando palavras de intervenção e negação; nesse justo dia no Alabama meninos negros e meninas negras poderão unir as mãos com meninos brancos e meninas brancas como irmãs e irmãos. Eu tenho um sonho hoje!
+Eu tenho um sonho que um dia todo vale será exaltado, e todas as colinas e montanhas virão abaixo, os lugares ásperos serão aplainados e os lugares tortuosos serão endireitados e a glória do Senhor será revelada e toda a carne estará junta.
+Esta é nossa esperança. Esta é a fé com que regressarei para o Sul. Com esta fé nós poderemos cortar da montanha do desespero uma pedra de esperança. Com esta fé nós poderemos transformar as discórdias estridentes de nossa nação em uma bela sinfonia de fraternidade. Com esta fé nós poderemos trabalhar juntos, rezar juntos, lutar juntos, para ir encarcerar juntos, defender liberdade juntos, e quem sabe nós seremos um dia livre. Este será o dia, este será o dia quando todas as crianças de Deus poderão cantar com um novo significado.
+"Meu país, doce terra de liberdade, eu te canto.
+Terra onde meus pais morreram, terra do orgulho dos peregrinos,
+De qualquer lado da montanha, ouço o sino da liberdade!"
+E se a América é uma grande nação, isto tem que se tornar verdadeiro.
+E assim ouvirei o sino da liberdade no extraordinário topo da montanha de New Hampshire.
+Ouvirei o sino da liberdade nas poderosas montanhas poderosas de Nova York.
+Ouvirei o sino da liberdade nos engrandecidos Alleghenies da Pennsylvania.
+Ouvirei o sino da liberdade nas montanhas cobertas de neve Rockies do Colorado.
+Ouvirei o sino da liberdade nas ladeiras curvas da Califórnia.
+Mas não é só isso. Ouvirei o sino da liberdade na Montanha de Pedra da Geórgia.
+Ouvirei o sino da liberdade na Montanha de Vigilância do Tennessee.
+Ouvirei o sino da liberdade em todas as colinas do Mississipi.
+Em todas as montanhas, ouviu o sino da liberdade.
+E quando isto acontecer, quando nós permitimos o sino da liberdade soar, quando nós deixarmos ele soar em toda moradia e todo vilarejo, em todo estado e em toda cidade, nós poderemos acelerar aquele dia quando todas as crianças de Deus, homens pretos e homens brancos, judeus e gentios, protestantes e católicos, poderão unir mãos e cantar nas palavras do velho spiritual negro:
+"Livre afinal, livre afinal.
+Agradeço ao Deus todo-poderoso, nós somos livres afinal."
+
+4.5 TESTANDO ELEMENTOS RETÓRICOS NO TEXTO
+
+EXERCÍCIO 33
+Usando o Chat-GPT, elabore um texto incluindo diferentes recursos retóricos
+Dica: use a tabela a seguir como base para explorar diferentes recursos
+
+Figura de retóricaSignificadoExemploAnáfora (Repetição intencional)É a repetição de uma mesma palavra ou de um mesmo grupo de palavras no início de frases ou versos sucessivos."Eu tenho um sonho que um dia esta nação se levantará... Eu tenho um sonho que um dia no estado de Alabama... Eu tenho um sonho hoje!" (Discurso "I Have a Dream", Martin Luther King Jr.)Regra de trêsÉ a técnica de enfatizar ou reforçar um ponto ao expressar três exemplos ou razões."Governar é promover a justiça social, é desenvolver a economia, é garantir a segurança de todos." (Hipotético discurso político)Antítese (Contraste)É o uso de contrastes ou opostos em uma frase ou entre conceitos para criar ênfase."Não pergunte o que seu país pode fazer por você - pergunte o que você pode fazer por seu país." (Discurso inaugural de John F. Kennedy)
+4.6 O PODER DA METÁFORA
+
+EXERCÍCIO 34
+Usando o Chat-GPT, peça para ele produzir metáforas de alguma ideia que você pretende desenvolver
+Dica: peça para ele direcionar a metáfora conforme os propósitos, valores ou sentimentos que você pretende instigar no leitor. Por exemplo, “elabore uma metáfora sobre DIGNIDADE que instigue no leitor a ideia de LIBERDADE”
+Dica2: apesar de o ChatGPT ser uma poderosa ferramenta de criação de metáforas, muitas vezes ele se torna previsível, com metáforas que podem se tornar clichê por serem demasiadamente usadas no texto. Essas metáforas devem ser evitadas. Alguns exemplos: tapeçaria, tecido, dança, música, mergulho, orquestra, farol, chave, navegar, oceano, bússola, jardim, semente
+4.7 PERSUASÃO – GATILHOS MENTAIS
+
+EXERCÍCIO 35
+Usando o Chat-GPT, elabore um texto persuasivo, sobre um tema polêmico (por exemplo, legalização das drogas, descriminalização do aborto etc.) e inclua alguns possíveis gatilhos mentais
+Dica: use como base alguns gatilhos da tabela a seguir
+
+Gatilho MentalDescriçãoExemplo de Persuasão JurídicaConformidadeAs pessoas tendem a se comportar de maneira semelhante aos outros ao seu redor."Cada juiz antes de nós interpretou essa lei de maneira semelhante. Devemos honrar essa tradição."AutoridadeAs pessoas respeitam a opinião de especialistas e figuras de autoridade."O especialista líder em Direito Constitucional, Dr. Smith, argumenta que essa ação é inconstitucional."Apelo à identidadeAs pessoas são influenciadas por argumentos que ressoam com a sua própria identidade pessoal ou de grupo."Como defensores da justiça e igualdade, devemos garantir que todos sejam tratados de maneira justa perante a lei."AncoragemAs pessoas são influenciadas por uma primeira peça de informação (a "âncora") ao tomar decisões."Considerando que a punição mínima para tal crime é de 10 anos, meu cliente merece no máximo essa sentença, dada sua cooperação."EnquadramentoA maneira como uma informação é apresentada pode influenciar a forma como ela é interpretada e utilizada."Não vejo isso como um caso de invasão de propriedade, mas um caso de um homem desesperado tentando alimentar sua família."EscassezAs pessoas valorizam coisas que são raras ou difíceis de obter."Esta é a única chance de nosso cliente buscar reparação por seus danos. Não podemos deixar essa oportunidade escorregar entre os dedos."ReciprocidadeAs pessoas têm tendência a querer dar algo em troca quando recebem algo."O réu já demonstrou remorso genuíno e fez restituições. Agora, pedimos clemência em troca."ConsistênciaAs pessoas tendem a ser consistentes com suas crenças anteriores e ações."O tribunal tem consistentemente apoiado os direitos dos trabalhadores nesses casos. Nós pedimos que você continue essa tradição."ContrasteAs pessoas avaliam as diferenças entre duas opções para fazer uma escolha."Em comparação com o réu anterior, que cometeu crimes semelhantes mas não mostrou remorso, nosso cliente se comportou de maneira exemplar."CompromissoAs pessoas gostam de honrar os compromissos que fizeram, especialmente se foram feitos de forma voluntária."A promotoria se comprometeu a buscar justiça, e uma sentença excessivamente severa não seria justa neste caso particular."
+
+4.8 PERSUASÃO - EMOÇÕES
+EXERCÍCIO 36
+Usando o Chat-GPT, escreva um texto persuasivo sobre um tema polêmico, inserindo emoções para influenciar a mudança de atitude 
+Dica: use como base alguns gatilhos da tabela a seguir
+
+EmoçãoEfeito na Mudança de AtitudeExemplo de Uso em Texto JurídicoMedoO medo pode criar uma sensação de urgência e tornar as pessoas mais receptivas à mudança."Se não agirmos agora, a segurança pública estará em grave perigo. Precisamos de leis mais rigorosas para impedir esses crimes violentos."RaivaA raiva pode levar as pessoas a buscar mudanças e justiça."A corrupção desenfreada nesta organização causou indignação pública. Exigimos a mais alta punição para esses atos."EmpatiaA empatia pode fazer com que as pessoas se sintam mais conectadas a uma causa ou indivíduo."Imagine o sofrimento que a vítima teve que suportar. Nós imploramos por justiça em seu nome."FelicidadeA felicidade pode tornar as pessoas mais abertas a novas ideias."Com a aprovação desta legislação, estaremos garantindo a alegria e a liberdade de milhares de nossos cidadãos."TristezaA tristeza pode fazer com que as pessoas queiram mudanças para evitar mais sofrimento."A perda devastadora que o demandante sofreu é inimaginável. Precisamos fazer tudo ao nosso alcance para evitar tais tragédias no futuro."SurpresaA surpresa pode chamar a atenção das pessoas e torná-las mais receptivas à nova informação."Você ficará surpreso ao saber quantas pessoas são afetadas por esse problema. É hora de abordar esta questão urgentemente."NojoO nojo pode levar as pessoas a rejeitar comportamentos ou situações prejudiciais."A conduta do acusado é simplesmente repugnante e deve ser punida de maneira adequada."CuriosidadeA curiosidade pode inspirar as pessoas a explorar novas ideias e possibilidades."Este caso nos oferece a oportunidade de reexaminar nossas suposições e explorar novas interpretações da lei."AlegriaA alegria pode tornar as pessoas mais dispostas a aceitar mudanças e novas ideias."Com a inovação no nosso sistema jurídico, podemos olhar para um futuro mais brilhante e alegre para a justiça."EsperançaA esperança pode motivar as pessoas a trabalhar para mudanças positivas e inovação."Nós temos a esperança de que, com esta nova legislação, possamos construir um sistema mais justo e equitativo."
+4.9 PERSUASÃO – AFETOS CONCRETOS E AFETOS ABSTRATOS
+
+EXERCÍCIO 37
+Usando o Chat-GPT, escreva um texto persuasivo sobre um tema polêmico, inserindo emoções abstratas e concretas para influenciar a mudança de atitude 
+Dica: use a tabela a seguir como base
+
+ApeloEfeitoTipo de EmoçãoExemplosAfeto ConcretoImpulsiona ações imediatas; mais eficaz na tomada de decisões de curto prazoEmoções mais agudas, intensas e imediatas que estão diretamente ligadas a uma experiência ou evento específico. Isso pode incluir alegria, surpresa, medo, indignação, raiva ou tristeza.Em uma argumentação jurídica sobre um caso de negligência médica, um advogado pode destacar o medo específico e a dor física intensa que o cliente sofreu devido à negligência, despertando uma forte resposta emocional no júri ou juiz.Afeto AbstratoImpulsiona ações futuras; mais eficaz na tomada de decisões de longo prazoEmoções mais sutis, difusas e de longo prazo que são mais estados gerais de espírito ou sentimentos. Isso pode incluir sentimentos de justiça, equidade, segurança, satisfação, tranquilidade ou sentimento de pertença.Em uma ação de reforma legal ou de política pública, um advogado pode apelar para sentimentos abstratos de justiça e equidade. Mesmo que esses sentimentos não levem a uma ação imediata, eles podem mudar gradualmente as atitudes e percepções a longo prazo sobre a necessidade de reforma.
+4.10 PERSUASÃO – EUFEMISMOS E DISFEMISMOS
+
+EXERCÍCIO 38
+Usando o Chat-GPT, escreva dois textos, com visões antagônicas, sobre um tema polêmico (aborto, aquecimento global, porte de armas, legalização das drogas etc.) e inclua eufemismos e disfemismos, a depender do ponto de vista
+Dica: use a tabela a seguir como base
+
+ÁreaEufemismoDisfemismoAbortoInterrupção Voluntária da Gravidez (IVG)Assassinato de bebêsProcedimento Médico SeguroExterminação do fetoAquecimento GlobalMudança Climática GradualCatástrofe AmbientalAlteração dos Padrões ClimáticosDestruição ClimáticaArmasFerramentas de AutodefesaMáquinas de MorteArmas de Fogo para Uso RecreativoArmas de DestruiçãoLegalização de DrogasRegulamentação de SubstânciasLiberação de NarcóticosUso Controlado de SubstânciasPromoção da DependênciaDesempregoRedefinição da Força de TrabalhoCortes de Emprego em Larga EscalaRealinhamento de Recursos HumanosDespedimentos em MassaPolíticaOtimização de RecursosCortes Orçamentários DrásticosFlexibilização das RegulamentaçõesDesregulamentação AbruptaPobrezaVida de Renda BaixaVida de MisériaSituação de Desvantagem EconômicaExistência Abaixo da Linha de PobrezaGuerraOperações Militares de IntervençãoCarnificina em Larga EscalaAção EstratégicaInvasão ViolentaSaúde MentalDesafios de Saúde MentalDoença MentalNecessidade de Suporte EmocionalInsanidade
+4.11 PERSUASÃO - STORYTELLING
+
+EXERCÍCIO 39
+Usando o Chat-GPT, escreva a descrição do fato de um caso jurídico em três atos ORDEM – CAOS – REORDEM
+Dica 1: a tabela a seguir mostra a ideia básica
+Dica 2: teste a inclusão de descrições mais vívidas (mas sem inventar dados), de mudança de ponto de vista e mudança de ritmo 
+
+Atos do StorytellingDescriçãoExemplo do Caso JurídicoTexto OriginalOrdemNessa fase, a história apresenta o cenário normal, a situação de estabilidade antes do incidente.
+O ritmo costuma ser mais lento, com frases e palavras mais longas.
+O ponto de vista costuma ser o do protagonista.João é um trabalhador exausto retornando para casa, ansiando pelo abraço de seu filho."Em 21 de agosto de 2022, João caminhava pela rua das Flores, exausto após uma jornada de trabalho árdua e desgastante. Em seus pensamentos, só havia o desejo de retonar à casa e receber o abraço caloroso de seu filho de quatro anos."CaosNesse ponto, um evento disruptivo ocorre, interrompendo a ordem e lançando o protagonista (e, por extensão, o público) ao caos e incerteza.
+O ritmo costuma ser mais rápido, com frases e palavras mais curtas.
+O ponto de vista costuma variar a depender do propósito.Às 18:20, um caminhão desgovernado invade a calçada e atropela João. Sua vida é dramaticamente alterada pela imprudência da empresa que negligenciou a manutenção dos freios do caminhão."Às 18:20, uma tragédia ocorreu. Um caminhão desgovernado avançou o sinal em alta velocidade, subiu a calçada e atingiu tudo o que estava à sua frente. João, que estava ali, não teve tempo de reagir. Com o impacto, seu corpo foi arremessado e, ao cair no chão, sua perna sofreu fratura exposta, jorrando sangue pelo asfalto."ReordemNessa fase, a ordem é reestabelecida, embora possa ser diferente da ordem original. Esse é o momento de resolução, onde a justiça é restaurada ou alguma forma de reparação é alcançada.O advogado de João apela ao juiz para considerar a dor, o sofrimento e os danos financeiros sofridos por João e pede uma indenização adequada."Diante disso, digno julgador, a solução justa do caso está em suas mãos. Vossa Excelência, com seu aguçado senso de justiça, tem o poder de fixar a indenização devida não só para minimizar a dor, o sofrimento e os prejuízos financeiros de João, mas também para mostrar para as empresas que a ganância desenfreada não pode passar por cima do cuidado com as pessoas."
+4.12 PERSUASÃO INDIVIDUALIZADA
+
+EXERCÍCIO 40
+Usando o Chat-GPT, escreva um texto persuasivo sobre um tema polêmico, direcionando a mensagem para diversos tipos de personalidade e valores pessoais
+Peça para o Chat-GPT explicar o porquê da mensagem
+
+BIG FIVE
+FatorDescriçãoCaracterísticas da PessoaAbertura (Openness)Refere-se à disposição para experimentar diferentes atividades, à imaginação, criatividade, e a uma preferência por variedade e novidade.Indivíduos com alta abertura tendem a ser curiosos, apreciar a arte e a beleza, e serem abertos a novas ideias e experiências. Pessoas com baixa abertura tendem a ser mais tradicionais e preferem a rotina.Conscienciosidade (Conscientiousness)Relacionada ao grau de organização, responsabilidade, e dependabilidade.Indivíduos com alta conscienciosidade são confiáveis, organizados, e responsáveis. Eles cumprem seus compromissos e preferem planejar com antecedência. Indivíduos com baixa conscienciosidade podem ser mais desorganizados e procrastinadores.Extroversão (Extraversion)Refere-se à quantidade de energia direcionada para o mundo externo, e envolve características como sociabilidade, assertividade, e emocionalidade positiva.Indivíduos extrovertidos são sociáveis, gostam de estar no centro das atenções, e são confortáveis em grupos grandes. Indivíduos introvertidos são mais reservados, preferem atividades solitárias ou com poucas pessoas, e são mais introspectivos.Amabilidade (Agreeableness)Envolve características como altruísmo, simpatia, cooperação e consideração pelos outros.Indivíduos com alta amabilidade são cooperativos, simpáticos e consideram as necessidades dos outros. Aqueles com baixa amabilidade podem ser mais competitivos e, por vezes, mais críticos com os outros.Neuroticismo (Neuroticism)Refere-se à tendência de experimentar emoções negativas, como raiva, ansiedade ou depressão. Também está associado à instabilidade emocional e ao grau de reação a eventos estressantes.Indivíduos com alto neuroticismo são mais propensos a terem reações emocionais intensas e podem ter dificuldades para lidar com o estresse. Aqueles com baixo neuroticismo são mais calmos e menos propensos a se perturbar em situações estressantes.
+
+Pontuação no Traço de PersonalidadeCaracterísticasSuscetibilidade a MensagensAlta em Abertura (Openness)Abertos a novas experiências, criativos, curiososPropagandas que destacam inovação, mudança, criatividade e perspectivas futurasBaixa em Abertura (Openness)Conservadores, resistentes à mudança, preferem o familiarMensagens que enfatizam a segurança, a tradição, e o conhecidoAlta em Conscienciosidade (Conscientiousness)Organizados, responsáveis, confiáveisMensagens que destacam responsabilidade, ordem, e ética no trabalhoBaixa em Conscienciosidade (Conscientiousness)Desorganizados, impetuosos, descuidadosMensagens que destacam espontaneidade, flexibilidade e despreocupaçãoAlta em Extroversão (Extraversion)Sociáveis, assertivos, cheios de energiaMensagens que destacam socialização, eventos e atividades grupaisBaixa em Extroversão (Extraversion)Reservados, preferem solidão, independentesMensagens que destacam a solitude, a independência, e o autocontroleAlta em Amabilidade (Agreeableness)Cooperação, compaixão, valorizam a harmonia socialMensagens que destacam a cooperação, a harmonia social e a compaixãoBaixa em Amabilidade (Agreeableness)Antagonistas, competidores, desconfiadosMensagens que destacam a competitividade, o individualismo e a autossuficiênciaAlta em Neuroticismo (Neuroticism)Emocionalmente instáveis, ansiosos, sensíveisPropagandas que provocam sentimentos de medo, incerteza e ansiedadeBaixa em Neuroticismo (Neuroticism)Emocionalmente estáveis, resilientes, confiantesPropagandas que destacam a segurança, a calma e a estabilidade
+16 TIPOS DE PERSONALIADDE MYERS-BRIGGS (MBTI)
+
+TipoCaracterísticasDescriçãoISTJPrático, realista, factual, organizado e responsável.Os ISTJs são tipicamente metódicos e confiáveis, valorizando a lealdade e a tradição. Eles são ótimos em cumprir tarefas e tendem a ser sérios e diretos em sua comunicação.ISFJQuente, atencioso, tranquilo, dedicado e responsável.Os ISFJs são conhecidos por serem gentis e atenciosos. Eles valorizam a harmonia e a cooperação e são bastante atentos às necessidades dos outros.INFJBusca sentido e conexão nas ideias, relacionamentos e posses materiais.Os INFJs são tipicamente idealistas, com altos padrões morais e uma forte concentração em futuros possíveis. Eles são interessados em entender as pessoas em um nível profundo.INTJTem ideias originais e grande força de vontade.Os INTJs são visionários e estratégicos, com uma compreensão profunda das coisas. Eles são determinados e dedicados a suas ideias.ISTPTolerante, flexível, analítico e gosta de resolver problemas práticos.Os ISTPs são realistas e práticos, conhecidos por sua capacidade de permanecer calmos sob pressão. Eles gostam de entender como as coisas funcionam.ISFPSensível, amável, discreto, flexível e curioso.Os ISFPs são criativos e sensíveis, com uma apreciação pela beleza e pelas artes. Eles valorizam a autonomia e a liberdade de expressão.INFPIdealista, leal aos seus valores e às pessoas que são importantes para eles.Os INFPs são idealistas e criativos, guiados por seus valores e desejos de fazer o bem. Eles buscam significado e propósito na vida.INTPBusca desenvolver explicações lógicas para tudo que lhes interessa.Os INTPs são analíticos e abstratos, apaixonados pela teoria e pela busca do entendimento. Eles são flexíveis e tolerantes até que seus princípios sejam violados.ESTPFlexível, tolerante, toma ação prontamente.Os ESTPs são energéticos e pragmáticos, vivendo no presente momento e buscando resultados práticos. Eles são diretos e honestos em sua comunicação.ESFPSociável, amigável, aceita a vida com alegria.Os ESFPs são entusiastas e espontâneos, apreciando a vida e querendo que os outros façam o mesmo. Eles são calorosos e gregários, e gostam de estar no centro das atenções.ENFPEntusiasmado, inovador, gosta de começar projetos mas pode ter dificuldade em concluí-los.Os ENFPs são criativos e entusiasmados, buscando a inspiração e as possibilidades do futuro. Eles valorizam a individualidade e geral
+VALORES
+
+CategoriaCaracterísticasDescriçãoConservadorTradicional, prático, favorável a valores estabelecidos e instituiçõesOs conservadores tendem a favorecer a manutenção de tradições e têm uma perspectiva mais cética em relação à mudança social rápida. Eles geralmente defendem a economia de livre mercado e a redução do poder do governo na economia.LiberalProgressista, aberto a novas ideias, favorece as liberdades individuais e a igualdadeOs liberais tendem a apoiar os direitos civis, as liberdades individuais, a democracia representativa e os aspectos sociais progressistas. Eles também podem apoiar uma maior intervenção governamental na economia para alcançar a igualdade de oportunidades.LibertárioFavorece a liberdade individual, cético do poder governamentalOs libertários favorecem a máxima liberdade individual e são céticos em relação ao poder do governo, tanto em termos de economia quanto de questões sociais. Eles acreditam que as pessoas devem ter a liberdade de fazer suas próprias escolhas, desde que não prejudiquem os outros.SocialistaFavorece a igualdade econômica, apoia a intervenção do governo na economiaOs socialistas acreditam que a economia deve ser controlada e regulada pelo governo ou pelos trabalhadores para promover a igualdade. Eles apoiam medidas como a saúde universal, a educação gratuita e a proteção dos direitos dos trabalhadores.CentristaMistura de visões, nem estritamente conservadoras nem liberaisOs centristas não se inclinam fortemente para a esquerda ou para a direita. Eles podem ter opiniões que se enquadram em ambos os lados do espectro político e são muitas vezes influenciados por outras considerações, como a pragmática ou o contexto específico.Verde/ambientalistaPrioriza questões ambientais, sustentabilidadeAs pessoas nesse grupo priorizam a proteção do meio ambiente e a sustentabilidade. Eles defendem políticas como energia renovável, conservação da natureza e redução da poluição.
+SIGNOS (SEM BASE CIENTÍFICA)
+
+Signo do ZodíacoCaracterísticas GeraisSuscetibilidade a MensagensÁriesIndependentes, entusiasmados, corajososPropagandas que destacam ação, liderança, aventuraTouroPráticos, teimosos, apegados ao confortoPropagandas que destacam luxo, conforto, estabilidadeGêmeosComunicativos, inconstantes, curiososPropagandas que destacam novas ideias, comunicação, aprendizadoCâncerSensíveis, apegados à família, empáticosPropagandas que destacam família, segurança emocional, cuidadoLeãoDominantes, extrovertidos, generososPropagandas que destacam status, reconhecimento, generosidadeVirgemMetódicos, críticos, atentos aos detalhesPropagandas que destacam organização, eficiência, saúdeLibraDiplomáticos, indecisos, apreciam a harmoniaPropagandas que destacam equilíbrio, harmonia, justiçaEscorpiãoIntensos, passionais, misteriososPropagandas que destacam profundidade, mistério, transformaçãoSagitárioOtimistas, aventureiros, amantes da liberdadePropagandas que destacam aventura, otimismo, liberdadeCapricórnioDisciplinados, ambiciosos, cautelososPropagandas que destacam sucesso, disciplina, estruturaAquárioInovadores, independentes, humanitáriosPropagandas que destacam inovação, individualidade, causas sociaisPeixesEmpáticos, sonhadores, intuitivosPropagandas que destacam empatia, sonhos, espiritualidade
+
+
+1 No original: "Machines are for answers; humans are for questions". Extraído de KELLY, Kevin. What technology wants. Penguin, 2011.
+---------------
+
+
+------------------------------------------------------------
+
+
+---------------
+
+
+------------------------------------------------------------
+
+
+PÁGINA 1
+

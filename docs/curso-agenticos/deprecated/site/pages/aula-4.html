@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 4: Construindo os Primeiros Agentes | Sistemas Agenticos</title>
+    <meta name="description" content="Capacitacao para construir skills, commands e sistemas agenticos funcionais usando Spec-Driven Development e RPI">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">S</span>
+                <span class="logo-text">Sistemas Agenticos</span>
+            </a>
+            <nav class="nav-main">
+                <ul>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Aulas</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="aula-0.html">Aula 0: Abertura</a></li>
+                            <li><a href="aula-1.html">Aula 1: Fundamentos</a></li>
+                            <li><a href="aula-2a.html">Aula 2A: Anatomia</a></li>
+                            <li><a href="aula-2b.html">Aula 2B: Claude Code</a></li>
+                            <li><a href="aula-3.html">Aula 3: Arquitetura</a></li>
+                            <li><a href="aula-4.html" class="active">Aula 4: Construindo</a></li>
+                            <li><a href="aula-5.html">Aula 5: Sistema CLERK</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="glossario.html">Glossario</a></li>
+                    <li><a href="recursos.html">Recursos</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" aria-label="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Lesson Hero -->
+    <section class="lesson-hero">
+        <div class="container">
+            <span class="badge badge-module">Modulo 4</span>
+            <h1>Construindo os Primeiros Agentes</h1>
+            <p class="lesson-subtitle">Do spec ao codigo: metodologias e praticas para criar sistemas agenticos funcionais</p>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    4 horas
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    7 blocos praticos
+                </span>
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Avancado
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lesson Content -->
+    <div class="lesson-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lesson-sidebar">
+            <nav class="lesson-nav">
+                <h4>Nesta Aula</h4>
+                <ul>
+                    <li><a href="#bloco1" class="lesson-nav-link">1. Paradigma Spec-Driven</a></li>
+                    <li><a href="#bloco2" class="lesson-nav-link">2. Anatomia de Skills</a></li>
+                    <li><a href="#bloco3" class="lesson-nav-link">3. Criando Commands</a></li>
+                    <li><a href="#bloco4" class="lesson-nav-link">4. Padrao RPI</a></li>
+                    <li><a href="#bloco5" class="lesson-nav-link">5. Prompt Learning Loop</a></li>
+                    <li><a href="#bloco6" class="lesson-nav-link">6. Debugging e Iteracao</a></li>
+                    <li><a href="#bloco7" class="lesson-nav-link">7. Projeto Pratico</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lesson-content">
+            <!-- Mobile TOC -->
+            <div class="mobile-toc">
+                <button class="mobile-toc-trigger">
+                    <span>Navegacao</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <nav class="mobile-toc-content">
+                    <ul>
+                        <li><a href="#bloco1">1. Paradigma Spec-Driven</a></li>
+                        <li><a href="#bloco2">2. Anatomia de Skills</a></li>
+                        <li><a href="#bloco3">3. Criando Commands</a></li>
+                        <li><a href="#bloco4">4. Padrao RPI</a></li>
+                        <li><a href="#bloco5">5. Prompt Learning Loop</a></li>
+                        <li><a href="#bloco6">6. Debugging e Iteracao</a></li>
+                        <li><a href="#bloco7">7. Projeto Pratico</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Introducao -->
+            <section class="lesson-block" id="intro">
+                <h2>Objetivos da Aula</h2>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">O Que Voce Vai Aprender</div>
+                    <p>Esta aula capacita voce para <strong>construir skills, commands e sistemas agenticos funcionais</strong>. Ao final, voce tera criado seu primeiro agente de triagem de processos, aplicando metodologias comprovadas de desenvolvimento.</p>
+                </div>
+
+                <h3>Pre-requisitos</h3>
+                <ul>
+                    <li>Aulas 0, 1, 2A, 2B e 3 completadas</li>
+                    <li>Claude Code instalado e configurado</li>
+                    <li>Compreensao de workflows vs agents</li>
+                    <li>Familiaridade com commands e skills basicos</li>
+                </ul>
+
+                <h3>Entregaveis</h3>
+                <ul>
+                    <li>Skill de triagem de processos funcional</li>
+                    <li>Command para invocar a skill</li>
+                    <li>Documentacao de specs e testes</li>
+                    <li>Metodologia RPI aplicada</li>
+                </ul>
+            </section>
+
+            <!-- Bloco 1: Paradigma Spec-Driven -->
+            <section id="bloco1" class="lesson-block">
+                <h2>Bloco 1: O Paradigma Spec-Driven</h2>
+                <span class="badge badge-time">35 min</span>
+
+                <h3>1.1 Por Que Spec-Driven?</h3>
+
+                <blockquote>
+                    <p>"O modelo nao sabe o que voce esta construindo. Nao conhece seus requisitos. Nao conhece suas decisoes de design. Entao faz suposicoes, e essas suposicoes estao frequentemente erradas."</p>
+                    <cite>Al Harris, Amazon Kiro</cite>
+                </blockquote>
+
+                <h4>O Problema com "Vibe Coding"</h4>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  "VIBE CODING" (Anti-padrao)                                    │
+│                                                                 │
+│  Usuario: "Gere uma minuta de sentenca"                         │
+│           ↓                                                     │
+│  Agente:  [Gera algo baseado em suposicoes]                     │
+│           ↓                                                     │
+│  Usuario: "Nao era isso que eu queria"                          │
+│           ↓                                                     │
+│  Agente:  [Tenta de novo, ainda advinhando]                     │
+│           ↓                                                     │
+│  [Loop infinito de frustracao]                                  │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h4>A Diferenca Crucial</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vibe Coding</th>
+                            <th>Vibe Engineering</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nao sabe o que quer</td>
+                            <td>Sabe exatamente o que quer</td>
+                        </tr>
+                        <tr>
+                            <td>Deixa a IA decidir tudo</td>
+                            <td>Usa IA para acelerar</td>
+                        </tr>
+                        <tr>
+                            <td>Aceita qualquer output</td>
+                            <td>Valida contra especificacao</td>
+                        </tr>
+                        <tr>
+                            <td>"Gere algo bom"</td>
+                            <td>"Gere isso com estas regras"</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <blockquote>
+                    <p>"Vibe Coding e quando voce nao sabe o que esta fazendo e deixa a IA fazer tudo. Vibe Engineering e quando voce sabe exatamente o que quer e usa IA para acelerar."</p>
+                    <cite>Kitze, AI Engineer Summit</cite>
+                </blockquote>
+
+                <h3>1.2 A Estrutura de Tres Fases</h3>
+
+                <p><strong>Spec-Driven Development</strong> = Requirements → Design → Tasks</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  FASE 1: REQUIREMENTS                                           │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │ User Story: "Como [papel], quero [acao], para [beneficio]"  ││
+│  │ Criterios de aceitacao: [lista especifica]                  ││
+│  │ Restricoes: [o que NAO fazer]                               ││
+│  └─────────────────────────────────────────────────────────────┘│
+│                           ↓                                     │
+│  FASE 2: DESIGN                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │ Arquitetura: [diagrama ASCII]                               ││
+│  │ Estrutura de dados: [formato entrada/saida]                 ││
+│  │ Fluxo: [etapas em ordem]                                    ││
+│  └─────────────────────────────────────────────────────────────┘│
+│                           ↓                                     │
+│  FASE 3: TASKS                                                  │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │ [ ] Tarefa 1: [atomica, verificavel]                        ││
+│  │ [ ] Tarefa 2: [atomica, verificavel]                        ││
+│  │ [ ] Tarefa 3: [atomica, verificavel]                        ││
+│  └─────────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <div class="callout callout-tip">
+                    <div class="callout-title">Insight Fundamental</div>
+                    <p>"Se voce acertar o spec, o codigo quase escreve a si mesmo." - Al Harris</p>
+                </div>
+
+                <h3>1.3 Exemplo Pratico: Spec para Gerador de Relatorios</h3>
+
+                <h4>FASE 1 - Requirements</h4>
+
+                <pre><code class="language-markdown">## User Story
+Como magistrado, quero gerar relatorios estruturados de processos
+para ter uma visao rapida dos fatos antes de decidir.
+
+## Criterios de Aceitacao
+- [ ] Deve incluir: numero do processo, partes, data de ajuizamento
+- [ ] Deve listar fatos em ordem cronologica
+- [ ] Deve identificar pedidos do autor
+- [ ] Deve listar documentos probatorios anexados
+- [ ] Formato: Markdown com secoes numeradas
+
+## Restricoes
+- NAO incluir analise juridica (isso e outra etapa)
+- NAO citar precedentes (ainda nao e hora)
+- NAO fazer juizo de valor sobre os fatos</code></pre>
+
+                <h4>FASE 2 - Design</h4>
+
+                <pre class="diagram"><code>ENTRADA:
+└── Arquivo TXT com conteudo do processo (OCR convertido)
+
+SAIDA:
+└── relatorio.md com estrutura:
+    ├── # RELATORIO
+    ├── ## 1. Identificacao
+    │   ├── Numero
+    │   ├── Partes
+    │   └── Data ajuizamento
+    ├── ## 2. Fatos (cronologico)
+    ├── ## 3. Pedidos
+    └── ## 4. Documentos Probatorios</code></pre>
+
+                <h4>FASE 3 - Tasks</h4>
+
+                <pre><code class="language-markdown">[ ] T1: Extrair metadados do processo (numero, partes, data)
+[ ] T2: Identificar e ordenar fatos cronologicamente
+[ ] T3: Listar pedidos do autor
+[ ] T4: Catalogar documentos probatorios
+[ ] T5: Montar relatorio no formato especificado
+[ ] T6: Verificar se todos os campos estao preenchidos</code></pre>
+
+                <h3>1.4 O Conceito de "Spec Anchoring"</h3>
+
+                <p><strong>Problema:</strong> 6 meses depois, voce olha o codigo e nao sabe por que ele existe.</p>
+                <p><strong>Solucao:</strong> Todo codigo gerado e vinculado a spec que o originou.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  SPEC ANCHORING                                                 │
+│                                                                 │
+│  Requirement R1: "Extrair numero do processo"                   │
+│         ↓                                                       │
+│  Task T1: "Usar regex para encontrar padrao XXXXXXX-XX.XXXX"    │
+│         ↓                                                       │
+│  Codigo: extract_process_number()                               │
+│         ↓                                                       │
+│  Teste: test_extract_process_number()                           │
+│                                                                 │
+│  [Tudo rastreavel de volta ao requirement original]             │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h4>Beneficio para Manutencao</h4>
+                <ul>
+                    <li>Mudou um requirement? → Veja TODAS as mudancas de codigo necessarias</li>
+                    <li>Bug no codigo? → Volte ao requirement para entender a intencao</li>
+                </ul>
+            </section>
+
+            <!-- Bloco 2: Anatomia de Skills -->
+            <section id="bloco2" class="lesson-block">
+                <h2>Bloco 2: Anatomia de Skills</h2>
+                <span class="badge badge-time">40 min</span>
+
+                <h3>2.1 A Verdade Simples</h3>
+
+                <blockquote>
+                    <p>"Skills are just folders. That's literally all they are."</p>
+                    <cite>Barry Zhang, Anthropic</cite>
+                </blockquote>
+
+                <h4>Desmistificando</h4>
+
+                <pre class="diagram"><code>Skills ≠ Magia complexa
+Skills = Pastas com arquivos Markdown contendo expertise
+
+.claude/skills/
+└── minha-skill/
+    ├── SKILL.md              # Obrigatorio (a expertise real)
+    ├── examples/             # Opcional (mostrar o que e bom)
+    │   ├── exemplo1.md
+    │   └── exemplo2.md
+    └── templates/            # Opcional (estruturas reutilizaveis)
+        └── template.md</code></pre>
+
+                <h3>2.2 A Diferenca: Commands vs Skills</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th>Command</th>
+                            <th>Skill</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Invocacao</strong></td>
+                            <td>Explicita (<code>/meu-comando</code>)</td>
+                            <td>Automatica (por contexto)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tamanho</strong></td>
+                            <td>Arquivo unico</td>
+                            <td>Pasta com multiplos arquivos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Quando usar</strong></td>
+                            <td>Tarefas simples ("faca X")</td>
+                            <td>Expertise complexa ("como fazer X bem")</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Exemplos</strong></td>
+                            <td>Opcional</td>
+                            <td>Recomendado</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Limite pratico</strong></td>
+                            <td>&lt; 50 linhas</td>
+                            <td>&gt; 50 linhas ou precisa exemplos</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2.3 A Formula do SKILL.md</h3>
+
+                <p>Estrutura que o Claude Code respeita:</p>
+
+                <pre><code class="language-markdown"># [Nome da Skill]
+
+> Descricao de uma linha (o que faz)
+
+## Quando Usar
+
+- Situacao 1
+- Situacao 2
+- Situacao 3
+
+## Como Funciona
+
+[Explicacao da metodologia/processo - 3-4 paragrafos]
+
+## Regras (CRITICO)
+
+1. SEMPRE faca X
+2. NUNCA faca Y
+3. PREFIRA Z sobre W
+
+## Formato de Saida
+
+[Template ou estrutura exata esperada]
+
+## Exemplos
+
+### Exemplo 1: [Caso simples]
+**Entrada:** [O que voce fornece]
+**Saida:** [O que espera receber]
+
+### Exemplo 2: [Caso complexo]
+**Entrada:** [O que voce fornece]
+**Saida:** [O que espera receber]</code></pre>
+
+                <h3>2.4 Dissecar uma Skill Real: relatorio-judicial</h3>
+
+                <pre class="diagram"><code>.claude/skills/relatorio-judicial/
+└── SKILL.md</code></pre>
+
+                <h4>Anatomia do SKILL.md</h4>
+
+                <pre><code class="language-markdown"># Skill: Relatorio Judicial
+
+> Gera relatorios judiciais estruturados a partir de documentos
+> processuais longos.
+
+## Quando Usar
+
+- Processo com mais de 20 paginas
+- Autos digitalizados via OCR
+- Necessidade de visao sintetica antes de decidir
+
+## Metodologia: Refinamento Iterativo
+
+Esta skill aplica o metodo de Refinamento Iterativo:
+
+1. LEITURA INICIAL: Ler documento em chunks de 2000 tokens
+2. EXTRACAO: Identificar elementos-chave por chunk
+3. CONSOLIDACAO: Unir extracoes em estrutura coerente
+4. VALIDACAO: Verificar completude contra checklist
+
+## Regras
+
+1. SEMPRE manter neutralidade (sem juizo de valor)
+2. NUNCA inventar fatos nao presentes nos autos
+3. SEMPRE citar pagina/documento fonte
+4. NUNCA incluir analise juridica (etapa posterior)
+
+## Formato de Saida
+
+# RELATORIO
+Processo: [NUMERO]
+Partes: [AUTOR] vs [REU]
+
+## 1. SINTESE
+[3-5 linhas resumindo o caso]
+
+## 2. FATOS RELEVANTES
+| Data | Fato | Fonte |
+|------|------|-------|
+| ...  | ...  | p. X  |
+
+## 3. PEDIDOS
+- Pedido 1
+- Pedido 2
+
+## 4. DOCUMENTOS PROBATORIOS
+- Doc 1 (p. X)
+- Doc 2 (p. Y)</code></pre>
+
+                <h3>2.5 A Hierarquia de Tres Niveis</h3>
+
+                <pre class="diagram"><code>~/.claude/                          (Preferencias globais)
+├── CLAUDE.md                       (Seu estilo: portugues, convencoes)
+├── commands/                       (Commands que usa em todo lugar)
+│   └── resumir-doc.md
+└── skills/                         (Skills globais)
+    └── minha-skill/
+
+./projeto/                          (Especifico do projeto)
+├── CLAUDE.md                       (Sobrescreve global para este projeto)
+├── .claude/commands/               (Commands do projeto)
+│   └── pesquisar-jurisprudencia.md
+└── .claude/skills/                 (Skills do projeto)
+    └── relatorio-judicial/</code></pre>
+
+                <p><strong>Precedencia:</strong> Projeto sobrescreve global.</p>
+
+                <h3>2.6 Progressive Disclosure: CLAUDE.md Leve</h3>
+
+                <blockquote>
+                    <p>"CLAUDE.md enorme = tokens desperdicados em cada requisicao."</p>
+                    <cite>Barry Zhang, Anthropic</cite>
+                </blockquote>
+
+                <h4>Anti-padrao</h4>
+                <pre><code class="language-markdown"># CLAUDE.md (2000 linhas)
+[Toda a documentacao do projeto embutida]
+[API reference completa]
+[Exemplos de cada skill]</code></pre>
+
+                <h4>Padrao Correto</h4>
+                <pre><code class="language-markdown"># CLAUDE.md (200-300 linhas)
+
+## Projeto: CLERK
+
+Sistema de analise juridica para casos previdenciarios.
+
+## Contextos
+
+- Arquitetura: Ver `docs/arquitetura.md`
+- API: Ver `docs/api.md`
+- Skills disponiveis:
+  - `relatorio-judicial` - Resumos de processos
+  - `elaboracao-minuta` - Minutas de decisao
+
+## Regras Criticas
+
+- SEMPRE verificar precedentes antes de citar
+- NUNCA usar linguagem informal em sentencas
+- PREFERIR Markdown para todos os outputs</code></pre>
+            </section>
+
+            <!-- Bloco 3: Criando Commands -->
+            <section id="bloco3" class="lesson-block">
+                <h2>Bloco 3: Criando Commands</h2>
+                <span class="badge badge-time">35 min</span>
+
+                <h3>3.1 O Que Sao Commands</h3>
+
+                <p><strong>Commands = Atalhos para instrucoes repetidas</strong></p>
+
+                <p>Em vez de digitar o mesmo prompt toda vez:</p>
+
+                <pre><code>"Analise este documento juridico e crie um resumo com fatos,
+argumentos e conclusoes. Use formato Markdown com secoes
+numeradas. Cite a pagina fonte de cada informacao."</code></pre>
+
+                <p>Voce cria um command e usa:</p>
+
+                <pre><code class="language-bash">/resumir-juridico path/to/documento.pdf</code></pre>
+
+                <h3>3.2 Anatomia de um Command</h3>
+
+                <h4>Estrutura Basica</h4>
+
+                <pre><code class="language-markdown"># /nome-do-comando
+
+Descricao curta do que faz
+
+---
+
+[Instrucoes completas que seriam o prompt]
+
+$ARGUMENTS</code></pre>
+
+                <p><strong>Onde salvar:</strong> <code>.claude/commands/nome-do-comando.md</code></p>
+
+                <h3>3.3 O Padrao de 3 Passos</h3>
+
+                <h4>Passo 1: Identifique a Tarefa Repetida</h4>
+                <p>Pergunte-se:</p>
+                <ul>
+                    <li>Que instrucao eu repito mais frequentemente?</li>
+                    <li>Que prompt eu copio-colo como template?</li>
+                    <li>Que prompt eu uso palavra-por-palavra?</li>
+                </ul>
+
+                <h4>Passo 2: Escreva o Arquivo do Command</h4>
+
+                <pre><code class="language-markdown"># /resumir-juridico
+
+Cria resumo estruturado de documentos juridicos
+
+---
+
+Analise o documento juridico fornecido e gere um resumo com:
+
+1. **Informacoes do Caso**
+   - Numero do processo
+   - Partes envolvidas
+   - Jurisdicao
+
+2. **Fatos (cronologico)**
+   - Eventos-chave em ordem
+   - Datas importantes
+
+3. **Argumentos**
+   - Argumentos do autor
+   - Resposta do reu (se houver)
+
+4. **Conclusoes**
+   - Decisao do juiz (se disponivel)
+   - Precedentes citados
+
+Documento para analisar: $ARGUMENTS</code></pre>
+
+                <h4>Passo 3: Use</h4>
+
+                <pre><code class="language-bash">claude > /resumir-juridico processo-12345.pdf</code></pre>
+
+                <h3>3.4 Variaveis em Commands</h3>
+
+                <p><strong>$ARGUMENTS</strong> = Tudo que vem depois do comando</p>
+
+                <pre class="diagram"><code>/meu-comando argumento1 argumento2 argumento3
+             └──────────────────────────────┘
+                     $ARGUMENTS</code></pre>
+
+                <h4>Multiplos Argumentos Nomeados (Avancado)</h4>
+
+                <pre><code class="language-markdown"># /criar-minuta
+
+---
+
+Crie uma minuta de decisao com os seguintes parametros:
+
+Processo: $1
+Tipo de acao: $2
+Decisao: $3
+
+[Restante das instrucoes]</code></pre>
+
+                <p>Uso:</p>
+                <pre><code class="language-bash">/criar-minuta "12345-XX.2024" "BPC" "procedente"</code></pre>
+
+                <h3>3.5 Commands vs Skills: Quando Usar Cada</h3>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  DECISION TREE: Command ou Skill?                               │
+│                                                                 │
+│  A tarefa e simples (< 50 linhas)?                              │
+│      │                                                          │
+│      ├── SIM → Use COMMAND                                      │
+│      │                                                          │
+│      └── NAO → A tarefa precisa de exemplos?                    │
+│               │                                                 │
+│               ├── SIM → Use SKILL                               │
+│               │                                                 │
+│               └── NAO → A tarefa e invocada explicitamente?     │
+│                        │                                        │
+│                        ├── SIM → Use COMMAND                    │
+│                        └── NAO → Use SKILL (auto-detecta)       │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>3.6 Exemplos de Commands Uteis</h3>
+
+                <h4>Command 1: Pesquisa Rapida</h4>
+                <pre><code class="language-markdown"># /pesquisar-tema
+
+Pesquisa rapida de precedentes sobre um tema
+
+---
+
+Busque precedentes vinculantes (Temas STF/STJ) sobre:
+
+$ARGUMENTS
+
+Retorne:
+- Numero do tema
+- Tese firmada (resumida)
+- Aplicabilidade ao caso</code></pre>
+
+                <h4>Command 2: Verificacao de Formato</h4>
+                <pre><code class="language-markdown"># /verificar-sentenca
+
+Valida formato de sentenca antes de finalizar
+
+---
+
+Verifique se a sentenca segue o formato correto:
+
+1. [ ] Tem RELATORIO?
+2. [ ] Tem FUNDAMENTACAO?
+3. [ ] Tem DISPOSITIVO?
+4. [ ] Cita precedentes corretamente?
+5. [ ] Usa linguagem formal?
+
+Sentenca para verificar: $ARGUMENTS
+
+Liste problemas encontrados e sugira correcoes.</code></pre>
+
+                <h4>Command 3: Conversao de Formato</h4>
+                <pre><code class="language-markdown"># /para-markdown
+
+Converte documento para Markdown limpo
+
+---
+
+Converta o conteudo fornecido para Markdown:
+
+- Use cabecalhos hierarquicos (#, ##, ###)
+- Formate listas corretamente
+- Preserve tabelas
+- Remova formatacao desnecessaria
+
+Conteudo: $ARGUMENTS</code></pre>
+            </section>
+
+            <!-- Bloco 4: O Padrao RPI -->
+            <section id="bloco4" class="lesson-block">
+                <h2>Bloco 4: O Padrao RPI</h2>
+                <span class="badge badge-time">40 min</span>
+
+                <h3>4.1 O Que e RPI</h3>
+
+                <p><strong>RPI = Research → Plan → Implement</strong></p>
+
+                <blockquote>
+                    <p>"Os melhores agentes de producao nao eram tao agenticos assim. Eram principalmente software, mas havia esses nucleos de IA fazendo coisas especificas."</p>
+                    <cite>Insight das Transcricoes AI Engineer</cite>
+                </blockquote>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  PADRAO RPI: O Ciclo de Alto Desempenho                         │
+│                                                                 │
+│  ┌───────────┐                                                  │
+│  │  RESEARCH │ ← Entender o problema                            │
+│  │           │   Explorar o espaco                              │
+│  │           │   Gerar documento de findings                    │
+│  └─────┬─────┘                                                  │
+│        │                                                        │
+│        ▼ [GATE: Humano revisa findings]                         │
+│                                                                 │
+│  ┌───────────┐                                                  │
+│  │   PLAN    │ ← Quebrar em tarefas discretas                   │
+│  │           │   Especificar arquivos e linhas                  │
+│  │           │   Incluir estrategia de rollback                 │
+│  └─────┬─────┘                                                  │
+│        │                                                        │
+│        ▼ [GATE: Humano aprova plano]                            │
+│                                                                 │
+│  ┌───────────┐                                                  │
+│  │ IMPLEMENT │ ← Seguir plano passo-a-passo                     │
+│  │           │   Rodar testes apos cada mudanca                 │
+│  │           │   Validar contra requirements                    │
+│  └───────────┘                                                  │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.2 Por Que RPI Funciona</h3>
+
+                <h4>Problema sem RPI</h4>
+                <pre class="diagram"><code>Usuario: "Construa um sistema de relatorios"
+    ↓
+Agente: [Comeca a construir baseado em suposicoes]
+    ↓
+Usuario: "Nao era isso..."
+    ↓
+[Desperdicio de tokens e tempo]</code></pre>
+
+                <h4>Com RPI</h4>
+                <pre class="diagram"><code>Usuario: "Construa um sistema de relatorios"
+    ↓
+Agente (RESEARCH): "Encontrei 3 abordagens possiveis..."
+    ↓
+Usuario: "A abordagem 2 faz mais sentido"
+    ↓
+Agente (PLAN): "Aqui esta o plano em 7 etapas..."
+    ↓
+Usuario: "Aprovado, mas ajuste etapa 4"
+    ↓
+Agente (IMPLEMENT): [Executa plano aprovado]
+    ↓
+[Resultado alinhado com expectativa]</code></pre>
+
+                <h3>4.3 RESEARCH: A Fase de Exploracao</h3>
+
+                <p><strong>Objetivo:</strong> Entender o espaco do problema ANTES de construir.</p>
+
+                <h4>O que fazer:</h4>
+                <ol>
+                    <li>Explorar codigo/documentos existentes</li>
+                    <li>Identificar padroes e convencoes</li>
+                    <li>Mapear dependencias</li>
+                    <li>Documentar findings</li>
+                </ol>
+
+                <h4>Output Esperado</h4>
+                <pre><code class="language-markdown"># Findings: [Nome do Projeto]
+
+## 1. Contexto Atual
+[O que existe hoje]
+
+## 2. Padroes Identificados
+[Convencoes do projeto]
+
+## 3. Dependencias
+[O que precisa funcionar junto]
+
+## 4. Riscos e Consideracoes
+[Potenciais problemas]
+
+## 5. Abordagens Possiveis
+- Abordagem A: [pros/cons]
+- Abordagem B: [pros/cons]
+- Abordagem C: [pros/cons]
+
+## 6. Recomendacao
+[Qual abordagem e por que]</code></pre>
+
+                <h3>4.4 PLAN: A Fase de Planejamento</h3>
+
+                <p><strong>Objetivo:</strong> Quebrar em tarefas atomicas e verificaveis.</p>
+
+                <h4>Caracteristicas de Boas Tarefas</h4>
+                <ul>
+                    <li><strong>Atomicas:</strong> Uma coisa por vez</li>
+                    <li><strong>Verificaveis:</strong> Sei quando terminou</li>
+                    <li><strong>Estimaveis:</strong> Posso prever esforco</li>
+                    <li><strong>Rastreavel:</strong> Vinculada a requirement</li>
+                </ul>
+
+                <h4>Output Esperado</h4>
+                <pre><code class="language-markdown"># Plano de Implementacao: [Nome]
+
+## Arquitetura Proposta
+[Diagrama ASCII]
+
+## Tarefas
+
+### Task 1: [Nome]
+- **Arquivos:** criar/modificar X
+- **Descricao:** [O que fazer]
+- **Verificacao:** [Como saber que funcionou]
+- **Rollback:** [Como desfazer se der errado]
+
+### Task 2: [Nome]
+...
+
+## Ordem de Execucao
+1. Task 1 (sem dependencias)
+2. Task 2 (depende de Task 1)
+3. Task 3 (paralelo com Task 2)
+
+## Pontos de Checkpoint
+- Apos Task 2: validar X
+- Apos Task 5: rodar testes Y</code></pre>
+
+                <h3>4.5 IMPLEMENT: A Fase de Execucao</h3>
+
+                <p><strong>Objetivo:</strong> Executar o plano aprovado, com verificacao a cada passo.</p>
+
+                <h4>Regras de Implementacao</h4>
+                <ol>
+                    <li><strong>Seguir o plano:</strong> Nao improvisar</li>
+                    <li><strong>Verificar a cada passo:</strong> Rodar testes</li>
+                    <li><strong>Documentar desvios:</strong> Se algo mudar, registrar</li>
+                    <li><strong>Checkpoint com humano:</strong> Nos pontos definidos</li>
+                </ol>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  IMPLEMENT: Ciclo por Task                                      │
+│                                                                 │
+│  Para cada Task no plano:                                       │
+│                                                                 │
+│  1. EXECUTAR a task                                             │
+│         ↓                                                       │
+│  2. VERIFICAR resultado                                         │
+│         ↓                                                       │
+│     Passou? ─── SIM ───→ Proxima task                           │
+│         │                                                       │
+│        NAO                                                      │
+│         │                                                       │
+│         ↓                                                       │
+│  3. DIAGNOSTICAR falha                                          │
+│         ↓                                                       │
+│  4. CORRIGIR ou ROLLBACK                                        │
+│         ↓                                                       │
+│  5. RE-VERIFICAR                                                │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>4.6 RPI no Claude Code: Skills que Implementam</h3>
+
+                <p>O Claude Code ja tem skills que seguem RPI:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Skill</th>
+                            <th>Fase RPI</th>
+                            <th>Funcao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>writing-plans</code></td>
+                            <td>PLAN</td>
+                            <td>Cria planos detalhados com tasks atomicas</td>
+                        </tr>
+                        <tr>
+                            <td><code>feature-dev</code></td>
+                            <td>Ciclo completo</td>
+                            <td>Research → Plan → Implement com gates</td>
+                        </tr>
+                        <tr>
+                            <td><code>brainstorming</code></td>
+                            <td>RESEARCH</td>
+                            <td>Exploracao e refinamento de ideias</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Bloco 5: Prompt Learning Loop -->
+            <section id="bloco5" class="lesson-block">
+                <h2>Bloco 5: Prompt Learning Loop</h2>
+                <span class="badge badge-time">35 min</span>
+
+                <h3>5.1 O Insight Fundamental</h3>
+
+                <blockquote>
+                    <p>"As instrucoes humanas de por que falhou... Esse texto e realmente muito valioso."</p>
+                    <cite>SallyAnn DeLucia, Arize</cite>
+                </blockquote>
+
+                <p><strong>O problema:</strong> Prompts nao sao escritos uma vez - sao aprendidos atraves de iteracao.</p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  PROMPT LEARNING LOOP                                           │
+│                                                                 │
+│  1. ESCREVER prompt inicial                                     │
+│         │                                                       │
+│         ▼                                                       │
+│  2. RODAR com exemplos (3-5 casos de teste)                     │
+│         │                                                       │
+│         ▼                                                       │
+│  3. AVALIAR resultados                                          │
+│         │                                                       │
+│         ├── O que funcionou?                                    │
+│         └── O que falhou?                                       │
+│         │                                                       │
+│         ▼                                                       │
+│  4. REFINAR prompt baseado em falhas                            │
+│         │                                                       │
+│         ▼                                                       │
+│  5. REPETIR ate qualidade consistente                           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>5.2 Overfitting = Expertise</h3>
+
+                <div class="callout callout-tip">
+                    <div class="callout-title">Insight Contra-intuitivo</div>
+                    <p>"Quando voce otimiza um prompt extensivamente para exemplos especificos, voce nao esta 'overfitting' - esta construindo expertise. O prompt aprende seu dominio."</p>
+                </div>
+
+                <h4>Por que funciona:</h4>
+                <ul>
+                    <li>Seu dominio tem padroes especificos</li>
+                    <li>Prompts genericos nao conhecem esses padroes</li>
+                    <li>Otimizacao repetida ENSINA os padroes ao prompt</li>
+                </ul>
+
+                <h3>5.3 O Ciclo Pratico</h3>
+
+                <p>Para sua primeira skill, use este ciclo:</p>
+
+                <pre class="diagram"><code>ITERACAO 1:
+├── Prompt inicial: "Gere um resumo juridico"
+├── Teste: 3 documentos reais
+├── Resultado: 2 bons, 1 ruim
+└── Analise: "O prompt perde informacoes de danos"
+
+ITERACAO 2:
+├── Prompt refinado: + secao explicita "DANOS E PEDIDOS"
+├── Teste: mesmos 3 documentos
+├── Resultado: 3 bons
+└── Analise: "Formato inconsistente"
+
+ITERACAO 3:
+├── Prompt refinado: + template de formato rigido
+├── Teste: 5 documentos (incluindo novos)
+├── Resultado: 5 bons
+└── Conclusao: Prompt estavel</code></pre>
+
+                <h3>5.4 Feedback Especifico vs Generico</h3>
+
+                <h4>Feedback FRACO</h4>
+                <pre><code>"O resumo nao esta bom. Tente de novo."</code></pre>
+
+                <h4>Feedback FORTE</h4>
+                <pre><code>"O resumo esta faltando:
+1. O valor dos danos (R$ 50.000) - mencione na secao PEDIDOS
+2. A data do acidente (15/03/2022) - adicione na CRONOLOGIA
+3. O precedente Tema 173 - cite na secao FUNDAMENTACAO
+
+Alem disso, o formato da tabela esta incorreto:
+- Use | para separar colunas
+- Inclua linha de cabecalho"</code></pre>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">Regra de Ouro</div>
+                    <p>Quanto mais especifico o feedback, mais rapido o aprendizado.</p>
+                </div>
+
+                <h3>5.5 Metricas para o Loop</h3>
+
+                <p><strong>O que medir a cada iteracao:</strong></p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metrica</th>
+                            <th>O que significa</th>
+                            <th>Como medir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Taxa de sucesso</strong></td>
+                            <td>% de outputs aceitaveis</td>
+                            <td>Sucesso / Total</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Completude</strong></td>
+                            <td>Todos os campos preenchidos?</td>
+                            <td>Checklist</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Formato</strong></td>
+                            <td>Segue o template?</td>
+                            <td>Comparacao</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Precisao</strong></td>
+                            <td>Informacoes corretas?</td>
+                            <td>Verificacao manual</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>5.6 O Ponto de Parada</h3>
+
+                <p><strong>Quando parar de iterar:</strong></p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  CRITERIOS DE CONVERGENCIA                                      │
+│                                                                 │
+│  [ ] 5 sucessos consecutivos em documentos diferentes           │
+│  [ ] Taxa de sucesso > 90% em 10 testes                         │
+│  [ ] Nenhuma falha critica nas ultimas 5 iteracoes              │
+│  [ ] Formato consistente em todos os outputs                    │
+│                                                                 │
+│  Se TODOS marcados → Prompt estavel, pode usar em producao      │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+            </section>
+
+            <!-- Bloco 6: Debugging e Iteracao -->
+            <section id="bloco6" class="lesson-block">
+                <h2>Bloco 6: Debugging e Iteracao</h2>
+                <span class="badge badge-time">40 min</span>
+
+                <h3>6.1 O Framework de Custo do Erro</h3>
+
+                <blockquote>
+                    <p>"Custo do erro e descoberta do erro - Se seus erros vao ser de alto risco e muito dificeis de descobrir, vai ser muito dificil confiar no agente."</p>
+                    <cite>Barry Zhang, Anthropic</cite>
+                </blockquote>
+
+                <h4>Mapeie Suas Tarefas</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tarefa</th>
+                            <th>Custo do Erro</th>
+                            <th>Padrao</th>
+                            <th>Checkpoint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ler PDF</td>
+                            <td>Baixo</td>
+                            <td>HOOTL</td>
+                            <td>Apenas no fim</td>
+                        </tr>
+                        <tr>
+                            <td>Elaborar minuta</td>
+                            <td>Alto</td>
+                            <td>HITL</td>
+                            <td>Antes de salvar</td>
+                        </tr>
+                        <tr>
+                            <td>Revisar precedentes</td>
+                            <td>Medio</td>
+                            <td>HOTL</td>
+                            <td>10% amostra</td>
+                        </tr>
+                        <tr>
+                            <td>Gerar relatorio</td>
+                            <td>Medio</td>
+                            <td>HOTL</td>
+                            <td>Por excecao</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Legenda:</strong></p>
+                <ul>
+                    <li><strong>HITL:</strong> Human-in-the-Loop (revisao obrigatoria)</li>
+                    <li><strong>HOTL:</strong> Human-on-the-Loop (amostragem)</li>
+                    <li><strong>HOOTL:</strong> Human-out-of-the-Loop (automatico)</li>
+                </ul>
+
+                <h3>6.2 O Checklist de Debugging</h3>
+
+                <p><strong>Quando o agente falha:</strong></p>
+
+                <pre class="diagram"><code>┌─────────────────────────────────────────────────────────────────┐
+│  DEBUGGING WORKFLOW                                             │
+│                                                                 │
+│  PASSO 1: PARE (nao entre em panico, nao itere cegamente)       │
+│                                                                 │
+│  PASSO 2: ENTENDA                                               │
+│           - Qual era a tarefa?                                  │
+│           - O que foi produzido?                                │
+│           - O que deu errado?                                   │
+│                                                                 │
+│  PASSO 3: ISOLE                                                 │
+│           - E um problema de prompt?                            │
+│           - E um problema de contexto?                          │
+│           - E um problema de ferramenta/permissao?              │
+│                                                                 │
+│  PASSO 4: TESTE                                                 │
+│           - Rode o agente com input simplificado                │
+│           - Verifique cada componente separadamente             │
+│                                                                 │
+│  PASSO 5: CORRIJA                                               │
+│           - Ajuste spec/prompt                                  │
+│           - Adicione mais contexto                              │
+│           - Mude estrategia de checkpoint                       │
+│                                                                 │
+│  PASSO 6: VERIFIQUE                                             │
+│           - Teste a correcao                                    │
+│           - Funcionou?                                          │
+│           - Pode falhar de forma nova?                          │
+│                                                                 │
+│  PASSO 7: DOCUMENTE                                             │
+│           - Por que falhou?                                     │
+│           - Como corrigiu?                                      │
+│           - O que mudou?                                        │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>6.3 Os 10 Erros Mais Comuns</h3>
+
+                <h4>Erro 1: Vibe Coding (Nao Vibe Engineering)</h4>
+                <pre><code>❌ ERRADO:
+"Gere uma minuta para BPC."
+[Aceita qualquer output]
+
+✅ CERTO:
+"Gere uma minuta para BPC com estas specs:
+- Requerente: Maria Silva, 68 anos
+- Questao-chave: Requisito de idade
+- Deve citar: Tema 173 (STF)
+- Formato: Markdown com citacoes ABNT"</code></pre>
+
+                <h4>Erro 2: Nenhum Checkpoint para Decisoes de Alto Risco</h4>
+                <pre><code>❌ ERRADO (autonomo sem supervisao):
+Deixar agente escrever e enviar documentos juridicos sem revisao.
+
+✅ CERTO (checkpoints calibrados):
+if risco_erro > 0.7:
+    pedir revisao humana antes da acao</code></pre>
+
+                <h4>Erro 3: Stack Traces Completos no Feedback</h4>
+                <pre><code>❌ ERRADO:
+Claude >> [500 linhas de stack trace]
+"Corrija este erro"
+
+✅ CERTO:
+Claude >> [2-3 linhas de resumo]
+"O erro aconteceu porque X. Para corrigir, tente Y.
+Linha especifica: linha 47 em process_pdf()"</code></pre>
+
+                <h4>Erro 4: CLAUDE.md Inchado</h4>
+                <pre><code>❌ ERRADO:
+CLAUDE.md com 2000 linhas de documentacao embutida
+→ Agente fica confuso, tokens desperdicados
+
+✅ CERTO:
+CLAUDE.md com 250 linhas + referencias a docs externos
+→ Agente ainda acessa detalhes quando precisa</code></pre>
+
+                <h4>Erro 5: Pular a Fase de Planejamento</h4>
+                <pre><code>❌ ERRADO (vai direto para implementacao):
+> Gere a minuta completa
+[Agente advinha a estrutura]
+
+✅ CERTO (Research → Plan → Implement):
+> Primeiro, qual estrutura esta minuta deve ter?
+[Agente propoe outline]
+> Aprovar outline
+[Agente implementa com estrutura aprovada]</code></pre>
+
+                <h4>Erro 6: Sem Spec Antes de Construir</h4>
+                <pre><code>❌ ERRADO:
+"Construa um gerador de relatorios"
+[Agente advinha o que "relatorio" significa]
+
+✅ CERTO:
+"Construa um gerador de relatorios com estas specs:
+- Secao 1: Metadados do processo (numero, partes, data)
+- Secao 2: Cronologia dos fatos
+- Secao 3: Questoes juridicas (lista)
+- Secao 4: Provas (com referencias)"</code></pre>
+
+                <h4>Erro 7: Um Prompt Monolitico</h4>
+                <pre><code>❌ ERRADO:
+Um prompt de 500 linhas tentando fazer tudo
+
+✅ CERTO:
+Multiplos commands/skills focados:
+- /extrair-fatos
+- /identificar-questoes
+- /citar-precedentes
+- /minutar-decisao</code></pre>
+
+                <h4>Erro 8: Testar Apenas no Final</h4>
+                <pre><code>❌ ERRADO:
+Construir agente completo → Testar → Encontrar 10 bugs → Recomecar
+
+✅ CERTO:
+Testar APOS CADA PASSO:
+1. Extrair fatos → Verificar fatos extraidos corretamente
+2. Identificar questoes → Verificar questoes identificadas
+3. Minutar decisao → Verificar minuta valida</code></pre>
+
+                <h4>Erro 9: Confiar no Agente Sem Verificacao</h4>
+                <pre><code>❌ ERRADO (autonomia L5 sem justificativa):
+Permitir agente escrever e enviar documentos sem supervisao
+
+✅ CERTO (autonomia graduada):
+Comecar em L2 (agente propoe, humano decide)
+↓
+Mover para L3 (agente executa, humano aprova decisoes)
+↓
+So graduar para L4+ apos sucesso consistente</code></pre>
+
+                <h4>Erro 10: Nao Documentar Por Que Falhou</h4>
+                <pre><code>❌ ERRADO:
+Agente falha → Deletar tentativa → Recomecar
+
+✅ CERTO:
+Agente falha → Documentar falha → Aprender por que → Corrigir raiz
+→ Adicionar teste para prevenir regressao</code></pre>
+
+                <h3>6.4 Padroes de Iteracao</h3>
+
+                <h4>Padrao A: Refinamento de 3 Passos</h4>
+                <pre class="diagram"><code>1. BASELINE: Fazer algo funcionar (mesmo que grosseiro)
+2. MEDICAO: Avaliar contra spec
+3. MELHORIA DIRECIONADA: Corrigir o problema #1, re-medir
+4. REPETIR ate score aceitavel</code></pre>
+
+                <h4>Padrao B: Aneis Concentricos</h4>
+                <pre class="diagram"><code>Anel 1: Fazer o caminho feliz funcionar
+Anel 2: Adicionar tratamento de erros
+Anel 3: Adicionar casos de borda
+Anel 4: Otimizar para velocidade/custo
+Anel 5: Documentar e arquivar</code></pre>
+            </section>
+
+            <!-- Bloco 7: Projeto Pratico Guiado -->
+            <section id="bloco7" class="lesson-block">
+                <h2>Bloco 7: Projeto Pratico Guiado</h2>
+                <span class="badge badge-time">45 min</span>
+
+                <h3>7.1 O Projeto: "Assistente de Triagem"</h3>
+
+                <p>Vamos construir juntos um sistema completo usando tudo que aprendemos:</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Objetivo do Projeto</div>
+                    <p>Criar um assistente que faz triagem inicial de processos, identificando:</p>
+                    <ul>
+                        <li>Tipo de acao (BPC, auxilio-doenca, pensao por morte)</li>
+                        <li>Complexidade (trivial vs hard case)</li>
+                        <li>Proximos passos recomendados</li>
+                    </ul>
+                </div>
+
+                <h3>7.2 Fase 1: Spec-Driven (15 min)</h3>
+
+                <h4>REQUIREMENTS</h4>
+
+                <pre><code class="language-markdown">## User Story
+Como magistrado, quero que o sistema faca triagem inicial de processos
+para priorizar meu tempo em casos complexos.
+
+## Criterios de Aceitacao
+- [ ] Identificar tipo de acao corretamente em 95% dos casos
+- [ ] Classificar complexidade (TRIVIAL/HARD CASE)
+- [ ] Listar 3-5 proximos passos recomendados
+- [ ] Formato: Markdown estruturado
+
+## Restricoes
+- NAO tomar decisoes (apenas triagem)
+- NAO citar precedentes ainda
+- NAO gerar minuta</code></pre>
+
+                <h4>DESIGN</h4>
+
+                <pre class="diagram"><code>ENTRADA:
+└── Arquivo TXT com peticao inicial
+
+PROCESSAMENTO:
+├── Extrair tipo de acao (palavras-chave)
+├── Identificar indicadores de complexidade
+└── Mapear para recomendacoes
+
+SAIDA:
+└── triagem.md
+    ├── ## Tipo de Acao
+    ├── ## Complexidade
+    ├── ## Justificativa
+    └── ## Proximos Passos</code></pre>
+
+                <h4>TASKS</h4>
+
+                <pre><code class="language-markdown">[ ] T1: Criar lista de palavras-chave por tipo de acao
+[ ] T2: Definir criterios de complexidade
+[ ] T3: Escrever SKILL.md com metodologia
+[ ] T4: Criar 2 exemplos (trivial e hard case)
+[ ] T5: Testar com 3 documentos reais
+[ ] T6: Refinar baseado em falhas</code></pre>
+
+                <h3>7.3 Fase 2: Construir a Skill (15 min)</h3>
+
+                <p><strong>Arquivo:</strong> <code>.claude/skills/triagem-processos/SKILL.md</code></p>
+
+                <pre><code class="language-markdown"># Skill: Triagem de Processos
+
+> Faz triagem inicial de processos previdenciarios,
+> classificando tipo e complexidade.
+
+## Quando Usar
+
+- Processo novo recebido
+- Necessidade de priorizacao
+- Redistribuicao de acervo
+
+## Metodologia
+
+### Passo 1: Identificar Tipo de Acao
+Buscar palavras-chave:
+- BPC/LOAS: "beneficio assistencial", "idoso", "deficiente", "miserabilidade"
+- Auxilio-doenca: "incapacidade", "pericia", "doenca", "afastamento"
+- Aposentadoria: "tempo de contribuicao", "idade", "especial"
+- Pensao por morte: "obito", "dependente", "pensao"
+
+### Passo 2: Avaliar Complexidade
+TRIVIAL se TODOS:
+- [ ] Tipo de acao claro
+- [ ] Fatos incontroversos
+- [ ] Precedente aplicavel diretamente
+- [ ] Sem questoes de prova complexas
+
+HARD CASE se QUALQUER:
+- [ ] Questao juridica nova
+- [ ] Fatos controversos
+- [ ] Multiplas teses possiveis
+- [ ] Provas conflitantes
+
+### Passo 3: Recomendar Proximos Passos
+Baseado na classificacao, sugerir:
+- Para TRIVIAL: fluxo automatizado
+- Para HARD CASE: analise aprofundada
+
+## Regras
+
+1. SEMPRE justificar a classificacao
+2. NUNCA decidir (apenas triar)
+3. SEMPRE listar proximos passos
+4. PREFERIR TRIVIAL quando na duvida (erro seguro)
+
+## Formato de Saida
+
+# TRIAGEM PROCESSUAL
+
+## 1. Identificacao
+- Processo: [numero]
+- Data triagem: [data]
+
+## 2. Tipo de Acao
+**[TIPO]**
+Justificativa: [por que este tipo]
+
+## 3. Complexidade
+**[TRIVIAL/HARD CASE]**
+Justificativa: [criterios aplicados]
+
+## 4. Proximos Passos
+1. [Passo 1]
+2. [Passo 2]
+3. [Passo 3]
+
+---
+*Triagem automatica - revisar antes de prosseguir*</code></pre>
+
+                <h3>7.4 Fase 3: Testar e Iterar (15 min)</h3>
+
+                <h4>Prompt Learning Loop</h4>
+
+                <pre class="diagram"><code>TESTE 1: Processo BPC (trivial)
+├── Input: peticao_bpc_simples.txt
+├── Output esperado: BPC, TRIVIAL
+├── Output real: [verificar]
+└── Status: [ ] OK [ ] Ajustar
+
+TESTE 2: Processo pensao (complexo)
+├── Input: peticao_pensao_uniao_homoafetiva.txt
+├── Output esperado: Pensao, HARD CASE
+├── Output real: [verificar]
+└── Status: [ ] OK [ ] Ajustar
+
+TESTE 3: Processo misto
+├── Input: peticao_bpc_com_questao_nova.txt
+├── Output esperado: BPC, HARD CASE
+├── Output real: [verificar]
+└── Status: [ ] OK [ ] Ajustar</code></pre>
+
+                <h4>Se falhar, aplicar debugging:</h4>
+                <ol>
+                    <li>Qual teste falhou?</li>
+                    <li>Por que falhou?</li>
+                    <li>O que ajustar na skill?</li>
+                    <li>Re-testar</li>
+                </ol>
+
+                <h3>7.5 Criar Command para Invocar</h3>
+
+                <p><strong>Arquivo:</strong> <code>.claude/commands/triar-processo.md</code></p>
+
+                <pre><code class="language-markdown"># /triar-processo
+
+Faz triagem inicial de um processo previdenciario
+
+---
+
+Use a skill de triagem-processos para analisar o documento fornecido.
+
+Identifique:
+1. Tipo de acao
+2. Complexidade (TRIVIAL ou HARD CASE)
+3. Proximos passos recomendados
+
+Documento: $ARGUMENTS</code></pre>
+
+                <p><strong>Uso:</strong></p>
+                <pre><code class="language-bash">claude > /triar-processo processo-12345.txt</code></pre>
+
+                <h3>7.6 Checklist de Conclusao</h3>
+
+                <pre class="diagram"><code>## Projeto Completo?
+
+### Spec-Driven
+- [ ] Requirements documentados
+- [ ] Design com entrada/saida claros
+- [ ] Tasks atomicas listadas
+
+### Skill
+- [ ] SKILL.md criado
+- [ ] Metodologia documentada
+- [ ] Regras explicitas (SEMPRE/NUNCA)
+- [ ] Formato de saida definido
+
+### Command
+- [ ] Command criado para invocar
+- [ ] $ARGUMENTS corretamente usado
+
+### Testes
+- [ ] 3+ documentos testados
+- [ ] Falhas identificadas e corrigidas
+- [ ] Taxa de sucesso > 80%
+
+### Documentacao
+- [ ] CLAUDE.md atualizado com referencia
+- [ ] Exemplos de uso documentados</code></pre>
+            </section>
+
+            <!-- Sintese -->
+            <section class="lesson-block" id="sintese">
+                <h2>Sintese: O Que Aprendemos</h2>
+
+                <h3>Conceitos-Chave</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Conceito</th>
+                            <th>O Que E</th>
+                            <th>Quando Usar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Spec-Driven</strong></td>
+                            <td>Requirements → Design → Tasks</td>
+                            <td>Antes de construir QUALQUER coisa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Skill</strong></td>
+                            <td>Pasta com expertise reutilizavel</td>
+                            <td>Tarefas complexas e recorrentes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Command</strong></td>
+                            <td>Atalho para prompt repetido</td>
+                            <td>Tarefas simples e frequentes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RPI</strong></td>
+                            <td>Research → Plan → Implement</td>
+                            <td>Projetos de media/alta complexidade</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Prompt Learning Loop</strong></td>
+                            <td>Iteracao com feedback especifico</td>
+                            <td>Otimizacao continua de prompts</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Citacoes para Lembrar</h3>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">Sabedoria Destilada</div>
+                    <ul>
+                        <li>"Skills are just folders." - Barry Zhang</li>
+                        <li>"Se voce acertar o spec, o codigo quase escreve a si mesmo." - Al Harris</li>
+                        <li>"Vibe Engineering e quando voce sabe exatamente o que quer e usa IA para acelerar." - Kitze</li>
+                        <li>"As instrucoes humanas de por que falhou... Esse texto e realmente muito valioso." - SallyAnn DeLucia</li>
+                    </ul>
+                </div>
+
+                <h3>Checklist do Construtor de Agentes</h3>
+
+                <pre class="diagram"><code>Antes de construir:
+[ ] Tenho spec clara? (Requirements, Design, Tasks)
+[ ] Sei se preciso de Skill ou Command?
+[ ] Defini formato de saida?
+
+Durante a construcao:
+[ ] Estou seguindo RPI? (Research → Plan → Implement)
+[ ] Tenho checkpoints entre fases?
+[ ] Estou testando incrementalmente?
+
+Apos construir:
+[ ] Testei com 3+ casos reais?
+[ ] Documentei falhas e correcoes?
+[ ] Prompt esta estavel (5 sucessos consecutivos)?</code></pre>
+            </section>
+
+            <!-- Navegacao entre aulas -->
+            <nav class="lesson-pagination">
+                <a href="aula-3.html" class="pagination-prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>
+                        <small>Anterior</small>
+                        Aula 3: Arquitetura de Agentes
+                    </span>
+                </a>
+                <a href="aula-5.html" class="pagination-next">
+                    <span>
+                        <small>Proxima</small>
+                        Aula 5: Sistema CLERK
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </nav>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sistemas Agenticos</h4>
+                    <p>Curso pratico de IA Agentica para profissionais do Direito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navegacao</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="glossario.html">Glossario</a></li>
+                        <li><a href="recursos.html">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Para duvidas sobre o curso, entre em contato com o instrutor.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Curso de Sistemas Agenticos - Material Educacional</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

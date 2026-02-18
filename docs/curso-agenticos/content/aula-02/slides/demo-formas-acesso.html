@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Três Formas de Usar o Claude Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dim: rgba(190, 156, 109, 0.4);
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-blue: #60a5fa;
+            --super-purple: #a78bfa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+            cursor: pointer;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(10, 10, 18, 0.1) 0%,
+                rgba(10, 10, 18, 0.5) 60%,
+                rgba(10, 10, 18, 0.9) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Container principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1300px;
+            padding: 30px 40px;
+        }
+
+        /* Título */
+        .main-title {
+            text-align: center;
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 0.1s forwards;
+        }
+
+        .main-title h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .main-title .highlight {
+            color: var(--super-gold);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-bottom: 35px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 0.2s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Grid das 3 formas */
+        .forms-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        /* Card base */
+        .form-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-card.visible {
+            opacity: 0.4;
+            transform: translateY(0) scale(0.97);
+            filter: grayscale(30%);
+        }
+
+        .form-card.spotlight {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: grayscale(0%);
+            border-color: var(--super-gold);
+            box-shadow:
+                0 0 60px rgba(190, 156, 109, 0.15),
+                0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-card.recommended {
+            border-color: var(--super-gold);
+        }
+
+        .form-card.recommended.spotlight {
+            box-shadow:
+                0 0 80px rgba(190, 156, 109, 0.25),
+                0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Badge Recomendado */
+        .recommended-badge {
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--super-gold);
+            color: var(--super-bg-dark);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65em;
+            font-weight: 700;
+            padding: 5px 15px;
+            border-radius: 0 0 10px 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            z-index: 20;
+        }
+
+        /* Mock window */
+        .mock-window {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Terminal Mock */
+        .terminal-mock {
+            background: #0d0d0d;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-header {
+            background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .window-dot.red { background: #ff5f56; }
+        .window-dot.yellow { background: #ffbd2e; }
+        .window-dot.green { background: #27ca40; }
+
+        .window-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .terminal-body {
+            flex: 1;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            line-height: 1.7;
+        }
+
+        .terminal-line {
+            margin-bottom: 4px;
+        }
+
+        .prompt { color: var(--super-gold); }
+        .command { color: var(--super-cream); }
+        .output { color: rgba(255,255,255,0.5); }
+        .success { color: var(--super-green); }
+
+        .cursor {
+            display: inline-block;
+            width: 7px;
+            height: 14px;
+            background: var(--super-gold);
+            margin-left: 3px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* IDE Mock */
+        .ide-mock {
+            background: #1e1e1e;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ide-header {
+            background: #323233;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ide-body {
+            flex: 1;
+            display: flex;
+        }
+
+        .ide-sidebar {
+            width: 45px;
+            background: #252526;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+            gap: 15px;
+            border-right: 1px solid #3c3c3c;
+        }
+
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.9em;
+        }
+
+        .sidebar-icon.active {
+            color: var(--super-blue);
+        }
+
+        .ide-content {
+            flex: 1;
+            display: flex;
+        }
+
+        .ide-explorer {
+            width: 120px;
+            background: #252526;
+            padding: 10px;
+            border-right: 1px solid #3c3c3c;
+        }
+
+        .explorer-title {
+            font-size: 0.6em;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .explorer-item {
+            font-size: 0.65em;
+            color: rgba(255,255,255,0.6);
+            padding: 3px 0;
+            padding-left: 10px;
+        }
+
+        .explorer-item.folder::before {
+            content: '📁 ';
+        }
+
+        .explorer-item.file::before {
+            content: '📄 ';
+        }
+
+        .ide-editor {
+            flex: 1;
+            padding: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .ide-chat {
+            width: 140px;
+            background: #1a1a2e;
+            border-left: 1px solid rgba(190, 156, 109, 0.3);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            font-size: 0.6em;
+            color: var(--super-gold);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .chat-message {
+            font-size: 0.6em;
+            color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.05);
+            padding: 6px 8px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .chat-message.user {
+            background: rgba(190, 156, 109, 0.15);
+            color: var(--super-cream);
+        }
+
+        /* Desktop Mock */
+        .desktop-mock {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .desktop-header {
+            background: rgba(0,0,0,0.3);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .desktop-logo {
+            font-size: 1.2em;
+        }
+
+        .desktop-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            color: var(--super-cream);
+            font-weight: 500;
+        }
+
+        .desktop-body {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .desktop-bubble {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            line-height: 1.5;
+        }
+
+        .desktop-bubble.ai {
+            background: rgba(255,255,255,0.08);
+            color: var(--super-cream);
+            align-self: flex-start;
+        }
+
+        .desktop-bubble.user {
+            background: rgba(190, 156, 109, 0.2);
+            color: var(--super-cream);
+            align-self: flex-end;
+        }
+
+        .desktop-input {
+            margin-top: auto;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 10px 15px;
+            font-size: 0.7em;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* Card info */
+        .card-info {
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title .icon {
+            font-size: 1.1em;
+        }
+
+        .card-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.6);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .card-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .feature-tag {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65em;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            color: rgba(255, 244, 228, 0.5);
+        }
+
+        .feature-tag.pro {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: rgba(74, 222, 128, 0.3);
+            color: var(--super-green);
+        }
+
+        .feature-tag.con {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        /* Footer quote */
+        .footer-quote {
+            text-align: center;
+            padding: 20px 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .footer-quote.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quote-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            font-style: italic;
+            color: rgba(255, 244, 228, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .quote-author {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Progress indicator */
+        .progress-indicator {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(190, 156, 109, 0.2);
+            border: 1px solid rgba(190, 156, 109, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 10px rgba(190, 156, 109, 0.5);
+        }
+
+        /* Click hint */
+        .click-hint {
+            position: absolute;
+            bottom: 55px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.2);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            z-index: 20;
+            transition: opacity 0.4s ease;
+        }
+
+        .click-hint.hidden { opacity: 0; }
+
+        /* Embed mode */
+        body.embed-mode .container { padding: 20px 25px; }
+        body.embed-mode .main-title h1 { font-size: 1.6em; }
+        body.embed-mode .subtitle { font-size: 0.8em; margin-bottom: 20px; }
+        body.embed-mode .forms-grid { gap: 15px; }
+        body.embed-mode .mock-window { height: 160px; }
+        body.embed-mode .card-info { padding: 15px; }
+        body.embed-mode .card-title { font-size: 1.1em; }
+        body.embed-mode .card-desc { font-size: 0.7em; }
+        body.embed-mode .footer-quote { padding: 15px 30px; }
+        body.embed-mode .quote-text { font-size: 0.85em; }
+    </style>
+</head>
+<body>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="main-title">
+            <h1><span class="highlight">3 Formas</span> de Usar o Claude Code</h1>
+        </div>
+        <p class="subtitle">Mesmo poder, diferentes interfaces</p>
+
+        <div class="forms-grid">
+            <!-- Card 1: Terminal -->
+            <div class="form-card recommended" id="card1">
+                <div class="recommended-badge">Recomendado</div>
+                <div class="mock-window">
+                    <div class="terminal-mock">
+                        <div class="terminal-header">
+                            <div class="window-dots">
+                                <span class="window-dot red"></span>
+                                <span class="window-dot yellow"></span>
+                                <span class="window-dot green"></span>
+                            </div>
+                            <span class="window-title">Terminal</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <span class="prompt">$</span> <span class="command">claude</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="output">Claude Code v1.0</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="success">> Olá! Como posso ajudar?</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="prompt">></span> <span class="command">analise este projeto</span><span class="cursor"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3 class="card-title"><span class="icon">⌨️</span> Terminal (CLI)</h3>
+                    <p class="card-desc">Interface nativa. Potência máxima. Funciona onde seu shell funciona.</p>
+                    <div class="card-features">
+                        <span class="feature-tag pro">Controle total</span>
+                        <span class="feature-tag pro">Multi-terminal</span>
+                        <span class="feature-tag pro">CI/CD</span>
+                        <span class="feature-tag">Power users</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: IDE -->
+            <div class="form-card" id="card2">
+                <div class="mock-window">
+                    <div class="ide-mock">
+                        <div class="ide-header">
+                            <div class="window-dots">
+                                <span class="window-dot red"></span>
+                                <span class="window-dot yellow"></span>
+                                <span class="window-dot green"></span>
+                            </div>
+                            <span class="window-title" style="color: var(--super-blue);">VS Code</span>
+                        </div>
+                        <div class="ide-body">
+                            <div class="ide-sidebar">
+                                <div class="sidebar-icon">📁</div>
+                                <div class="sidebar-icon">🔍</div>
+                                <div class="sidebar-icon active">🤖</div>
+                                <div class="sidebar-icon">⚙️</div>
+                            </div>
+                            <div class="ide-content">
+                                <div class="ide-explorer">
+                                    <div class="explorer-title">Explorer</div>
+                                    <div class="explorer-item folder">src</div>
+                                    <div class="explorer-item file">app.ts</div>
+                                    <div class="explorer-item file">utils.ts</div>
+                                </div>
+                                <div class="ide-editor">
+                                    <span style="color: #569cd6;">function</span> <span style="color: #dcdcaa;">main</span>() {<br>
+                                    &nbsp;&nbsp;<span style="color: #6a9955;">// código...</span><br>
+                                    }
+                                </div>
+                                <div class="ide-chat">
+                                    <div class="chat-header">🤖 Claude</div>
+                                    <div class="chat-message user">Explique este código</div>
+                                    <div class="chat-message">Esta função inicializa...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3 class="card-title"><span class="icon">💻</span> IDE Extension</h3>
+                    <p class="card-desc">Integrado ao editor. Diffs nativos. Usa seleção como contexto.</p>
+                    <div class="card-features">
+                        <span class="feature-tag pro">Diffs visuais</span>
+                        <span class="feature-tag pro">Contexto do editor</span>
+                        <span class="feature-tag">Desenvolvedores</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Desktop -->
+            <div class="form-card" id="card3">
+                <div class="mock-window">
+                    <div class="desktop-mock">
+                        <div class="desktop-header">
+                            <div class="window-dots">
+                                <span class="window-dot red"></span>
+                                <span class="window-dot yellow"></span>
+                                <span class="window-dot green"></span>
+                            </div>
+                            <span class="desktop-logo">🤖</span>
+                            <span class="desktop-title">Claude Desktop</span>
+                        </div>
+                        <div class="desktop-body">
+                            <div class="desktop-bubble ai">
+                                Olá! Sou o Claude. Como posso ajudar você hoje?
+                            </div>
+                            <div class="desktop-bubble user">
+                                Organize os arquivos da pasta Downloads
+                            </div>
+                            <div class="desktop-bubble ai">
+                                Vou analisar e organizar seus arquivos por tipo...
+                            </div>
+                            <div class="desktop-input">Digite sua mensagem...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3 class="card-title"><span class="icon">🖥️</span> Desktop App</h3>
+                    <p class="card-desc">Interface gráfica amigável. Claude Code via Claude Desktop.</p>
+                    <div class="card-features">
+                        <span class="feature-tag pro">Interface amigável</span>
+                        <span class="feature-tag con">Requer MCPs</span>
+                        <span class="feature-tag">Iniciantes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-quote" id="footerQuote">
+            <p class="quote-text">"É <span class="highlight">terminal-first</span> sem lock-in de IDE — funciona em qualquer lugar que seu shell funcione."</p>
+            <p class="quote-author">— Claude Code Documentation</p>
+        </div>
+    </div>
+
+    <div class="click-hint" id="hint">Clique para avançar</div>
+
+    <div class="progress-indicator">
+        <div class="progress-dot" id="dot1"></div>
+        <div class="progress-dot" id="dot2"></div>
+        <div class="progress-dot" id="dot3"></div>
+        <div class="progress-dot" id="dot4"></div>
+    </div>
+
+    <script>
+        let state = 0;
+        const TOTAL_STATES = 4;
+
+        const elements = {
+            card1: document.getElementById('card1'),
+            card2: document.getElementById('card2'),
+            card3: document.getElementById('card3'),
+            footerQuote: document.getElementById('footerQuote'),
+            hint: document.getElementById('hint'),
+            dots: [
+                document.getElementById('dot1'),
+                document.getElementById('dot2'),
+                document.getElementById('dot3'),
+                document.getElementById('dot4')
+            ]
+        };
+
+        function updateDots() {
+            elements.dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i < state);
+            });
+        }
+
+        function advance() {
+            state++;
+
+            if (state === 1) {
+                // Terminal com spotlight
+                elements.card1.classList.add('visible', 'spotlight');
+                updateDots();
+
+            } else if (state === 2) {
+                // IDE aparece, Terminal fica visible
+                elements.card1.classList.remove('spotlight');
+                elements.card1.classList.add('visible');
+                elements.card2.classList.add('visible', 'spotlight');
+                updateDots();
+
+            } else if (state === 3) {
+                // Desktop aparece, IDE fica visible
+                elements.card2.classList.remove('spotlight');
+                elements.card2.classList.add('visible');
+                elements.card3.classList.add('visible', 'spotlight');
+                updateDots();
+
+            } else if (state === 4) {
+                // Todos visible, Terminal volta ao spotlight, quote aparece
+                elements.card3.classList.remove('spotlight');
+                elements.card3.classList.add('visible');
+                elements.card1.classList.add('spotlight');
+                elements.footerQuote.classList.add('visible');
+                elements.hint.classList.add('hidden');
+                updateDots();
+
+            } else if (state > TOTAL_STATES) {
+                state = TOTAL_STATES;
+            }
+        }
+
+        // Event listeners
+        document.body.addEventListener('click', advance);
+        document.body.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') {
+                advance();
+            }
+        });
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Cross-iframe communication
+        window.addEventListener('message', (e) => {
+            if (e.data.action === 'advance') advance();
+        });
+    </script>
+</body>
+</html>

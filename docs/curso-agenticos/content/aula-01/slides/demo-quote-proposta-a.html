@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Proposta A - Split Screen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+            background: var(--super-bg-dark);
+        }
+
+        /* Layout Split Screen */
+        .split-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Lado esquerdo - Citação */
+        .quote-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            background: linear-gradient(135deg, var(--super-bg-dark) 0%, var(--super-bg-section) 100%);
+            position: relative;
+        }
+
+        /* Linha vertical decorativa */
+        .quote-side::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 15%;
+            height: 70%;
+            width: 3px;
+            background: linear-gradient(to bottom, transparent, var(--super-gold), transparent);
+        }
+
+        /* Aspas decorativas */
+        .quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 6em;
+            font-weight: 700;
+            color: var(--super-gold);
+            opacity: 0.2;
+            line-height: 0.5;
+            margin-bottom: 10px;
+            animation: fadeIn 1s ease 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 0.2; transform: translateY(0); }
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.6;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .decorative-bar {
+            width: 60px;
+            height: 3px;
+            background: var(--super-gold);
+            margin-bottom: 20px;
+            animation: expandBar 0.8s ease 0.6s both;
+        }
+
+        @keyframes expandBar {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 1px;
+            animation: fadeInUp 1s ease 0.8s both;
+        }
+
+        .author-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.6);
+            margin-top: 5px;
+            animation: fadeInUp 1s ease 0.9s both;
+        }
+
+        /* Lado direito - Foto */
+        .photo-side {
+            flex: 0.8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            filter: grayscale(30%);
+            animation: fadeInRight 1s ease 0.3s both;
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                var(--super-bg-dark) 0%,
+                transparent 30%
+            );
+        }
+
+        /* Badge */
+        .decade-badge {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(190, 156, 109, 0.4);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease 1s both;
+        }
+
+        .decade-badge .label {
+            font-size: 0.65em;
+            color: var(--super-gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .decade-badge .value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            color: var(--super-cream);
+            font-weight: 600;
+        }
+
+        /* Embed mode */
+        body.embed-mode .quote-side { padding: 40px; }
+        body.embed-mode .quote-text { font-size: 1.4em; }
+        body.embed-mode .quote-mark { font-size: 5em; }
+    </style>
+</head>
+<body>
+    <div class="split-container">
+        <!-- Lado da citação -->
+        <div class="quote-side">
+            <div class="quote-mark">"</div>
+            <p class="quote-text">
+                <span class="highlight">2025-2035</span> é a década dos agentes...
+                você vai criar organizações de <span class="highlight">Operadores</span> para tarefas
+                de longa duração à sua escolha
+                <span style="opacity: 0.7;">(por exemplo, administrar uma empresa inteira)</span>.
+            </p>
+            <div class="decorative-bar"></div>
+            <div class="author-name">Andrej Karpathy</div>
+            <div class="author-title">Ex-Director of AI @ Tesla | Co-founder OpenAI</div>
+        </div>
+
+        <!-- Lado da foto -->
+        <div class="photo-side">
+            <img src="andrej-karpathy.jpg" alt="Andrej Karpathy">
+            <div class="photo-overlay"></div>
+            <div class="decade-badge">
+                <div class="label">A Década dos</div>
+                <div class="value">AGENTES</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

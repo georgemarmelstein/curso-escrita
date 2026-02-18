@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primeiros Passos com Claude Code</title>
+    <!-- Google Fonts - Stack do Superposts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    <style>
+        /* ============================================
+           VARIAVEIS CSS - Paleta: SUPER (Institucional)
+           ============================================ */
+        :root {
+            --cor-primaria: #194A68;
+            --cor-secundaria: #BE9C6D;
+            --cor-fundo: #3A3A3A;
+            --cor-accent: #5287A8;
+            --cor-texto: #FFF4E4;
+            --r-main-font: 'IBM Plex Serif', 'Lora', Georgia, serif;
+            --r-heading-font: 'Outfit', 'Montserrat', 'Helvetica Neue', sans-serif;
+            --r-main-color: #FFF4E4;
+            --r-heading-color: #BE9C6D;
+            --r-background-color: #3A3A3A;
+        }
+
+        /* ============================================
+           TIPOGRAFIA
+           ============================================ */
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            text-transform: none;
+            font-weight: 600;
+            font-family: 'Outfit', 'Montserrat', 'Helvetica Neue', sans-serif;
+            color: var(--cor-secundaria);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .reveal p, .reveal li, .reveal blockquote {
+            font-family: 'IBM Plex Serif', 'Lora', Georgia, serif;
+            color: var(--cor-texto);
+        }
+        .reveal pre, .reveal code {
+            font-family: 'IBM Plex Mono', 'Consolas', 'Monaco', monospace;
+        }
+
+        /* ============================================
+           LAYOUT BASE
+           ============================================ */
+        .reveal section {
+            text-align: center;
+        }
+        .reveal ul {
+            list-style-type: none;
+        }
+        .reveal ul li::before {
+            content: "•";
+            color: var(--cor-secundaria);
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        .reveal blockquote {
+            background: none;
+            box-shadow: none;
+            font-family: 'IBM Plex Serif', 'Lora', Georgia, serif;
+        }
+        .reveal pre {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border-radius: 8px;
+        }
+        .reveal pre code {
+            overflow: visible;
+            max-height: none;
+        }
+
+        /* ============================================
+           OVERLAYS - Estilo Vignette (do superposts)
+           ============================================ */
+        .reveal .slides section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(0,0,0,0.3) 0%,
+                rgba(0,0,0,0.5) 50%,
+                rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .reveal .slides section.no-overlay::before {
+            display: none;
+        }
+        .reveal .slides section.light-overlay::before {
+            background: rgba(0,0,0,0.5);
+            top: -50vh;
+            left: -50vw;
+            width: 200vw;
+            height: 200vh;
+        }
+
+        /* Titulos acima do overlay para maior destaque */
+        .reveal .slides section h1,
+        .reveal .slides section h2,
+        .reveal .slides section h3,
+        .reveal .slides section h4 {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Conteudo tambem acima do overlay */
+        .reveal .slides section > div,
+        .reveal .slides section > p,
+        .reveal .slides section > ul,
+        .reveal .slides section > blockquote,
+        .reveal .slides section > pre {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ============================================
+           DESTAQUE PROGRESSIVO (Spotlight Effect)
+           ============================================ */
+        .reveal .slides section .fragment.highlight-current-visible {
+            opacity: 0.3;
+            transform: scale(0.95);
+            filter: grayscale(30%);
+        }
+        .reveal .slides section .fragment.highlight-current-visible.current-fragment {
+            opacity: 1;
+            transform: scale(1.02);
+            filter: grayscale(0%);
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.4), 0 8px 32px rgba(0,0,0,0.5);
+            border-color: var(--cor-secundaria) !important;
+        }
+        .reveal .slides section .fragment.highlight-current-visible.visible:not(.current-fragment) {
+            opacity: 0.5;
+            transform: scale(0.98);
+            filter: grayscale(20%);
+        }
+
+        /* ============================================
+           LISTA COM HIGHLIGHT PROGRESSIVO
+           ============================================ */
+        .reveal .highlight-list li.highlight-current-item {
+            opacity: 0.35;
+            transition: opacity 0.4s ease, transform 0.3s ease;
+        }
+        .reveal .highlight-list li.highlight-current-item.visible {
+            opacity: 0.5;
+        }
+        .reveal .highlight-list li.highlight-current-item.current-fragment {
+            opacity: 1;
+            transform: translateX(10px);
+        }
+        .reveal .highlight-list li.highlight-current-item:first-child:not(.visible) {
+            opacity: 1;
+        }
+
+        /* ============================================
+           HIGHLIGHTS
+           ============================================ */
+        .highlight-color-pop {
+            color: var(--cor-secundaria);
+            font-weight: 700;
+        }
+        .highlight-box {
+            background: var(--cor-secundaria);
+            color: var(--cor-fundo);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* ============================================
+           CARDS E GRIDS
+           ============================================ */
+        .card {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .card-accent {
+            border-left: 4px solid var(--cor-secundaria);
+        }
+
+        /* ============================================
+           IFRAMES PARA DEMOS
+           ============================================ */
+        .demo-iframe-container {
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0 0 0 -50vw;
+            position: relative;
+            left: 50%;
+        }
+        .demo-iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+    <!-- ============================================
+         SLIDE 1 - CAPA (Demo Interativo)
+         ============================================ -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-capa-terminal.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 2 - QUOTE KARPATHY
+         ============================================ -->
+    <section data-background-color="#0a0a12" data-background-opacity="1">
+        <div class="demo-iframe-container">
+            <iframe src="demo-quote-karpathy.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 3 - TRANSICAO: O que e Claude Code
+         ============================================ -->
+    <section class="light-overlay" data-background-image="../../../site/assets/20260115_1707_Image Generation_remix_01kf1m7rqgebv9z49cz2vvee0y.png" data-background-size="cover">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+            <h2 style="color: #BE9C6D; text-shadow: 2px 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.8); font-weight: 700; letter-spacing: 0.5px; font-size: 3em;">O que é Claude Code?</h2>
+            <p style="font-family: 'Lora', Georgia, serif; font-style: italic; color: rgba(255, 244, 228, 0.85); font-size: 1em; margin-top: 20px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8);">Um fantasma superinteligente no seu computador</p>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 4 - DEFINICOES (Demo Interativo)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-definicoes.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 5 - QUOTE BARRY ZHANG (Anthropic)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-quote-anthropic.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 6 - INSTALACAO (Demo Interativo)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-instalacao.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 7 - FORMA: DESKTOP/WEB
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-forma-desktop.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 8 - FORMA: IDE
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-forma-ide.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 9 - FORMA: TERMINAL (Recomendado)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-forma-terminal.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 10 - QUOTE BORIS CHERNY (Hackear)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-quote-boris.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 11 - ESTRUTURA: Os Dois Mundos
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-diretorios-intro.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 12 - COMANDOS ESSENCIAIS
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-comandos-essenciais.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 13 - CONFIGURAÇÕES E AUTONOMIA
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-configuracoes.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- ============================================
+         SLIDE 14 - PLUGIN SHOP (Arsenal do Iniciante)
+         ============================================ -->
+    <section data-background-color="#0a0a12">
+        <div class="demo-iframe-container">
+            <iframe src="demo-plugin-shop.html" loading="lazy"></iframe>
+        </div>
+    </section>
+
+
+    <!-- PLACEHOLDER: Mais slides serao adicionados -->
+
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            backgroundTransition: 'fade',
+            slideNumber: true,
+            controls: true,
+            progress: true,
+            center: true,
+            keyboard: true,
+        });
+
+    </script>
+</body>
+</html>

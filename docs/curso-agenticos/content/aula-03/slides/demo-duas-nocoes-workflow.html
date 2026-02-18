@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Duas Noções de Workflow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-red: #ef4444;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Background */
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                linear-gradient(90deg,
+                    rgba(96, 165, 250, 0.05) 0%,
+                    transparent 50%,
+                    rgba(167, 139, 250, 0.05) 100%),
+                var(--super-bg-dark);
+            z-index: 0;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 25px 20px 15px;
+        }
+
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65em;
+            color: var(--super-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SPLIT SCREEN
+           ═══════════════════════════════════════════════════════════ */
+        .split-container {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        /* Divider */
+        .divider {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg,
+                transparent,
+                var(--super-gold) 20%,
+                var(--super-gold) 80%,
+                transparent);
+            z-index: 10;
+        }
+
+        .divider-text {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--super-bg-dark);
+            padding: 15px 20px;
+            border: 2px solid var(--super-gold);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: var(--super-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 20;
+            white-space: nowrap;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(190, 156, 109, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(190, 156, 109, 0.5); }
+        }
+
+        /* Side panels */
+        .side-panel {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .side-panel:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .side-panel.left {
+            padding-right: 50px;
+            border-right: 1px solid rgba(96, 165, 250, 0.1);
+        }
+
+        .side-panel.right {
+            padding-left: 50px;
+            border-left: 1px solid rgba(167, 139, 250, 0.1);
+        }
+
+        /* Panel header */
+        .panel-header {
+            margin-bottom: 20px;
+        }
+
+        .panel-icon {
+            font-size: 2.5em;
+            margin-bottom: 12px;
+        }
+
+        .panel-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .left .panel-title {
+            color: var(--super-blue);
+        }
+
+        .right .panel-title {
+            color: var(--super-purple);
+        }
+
+        .panel-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Diagram */
+        .diagram-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .diagram-svg {
+            width: 100%;
+            max-width: 350px;
+            height: 180px;
+        }
+
+        /* Features list */
+        .features-list {
+            margin-top: auto;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .left .feature-item {
+            border-left: 3px solid var(--super-blue);
+        }
+
+        .right .feature-item {
+            border-left: 3px solid var(--super-purple);
+        }
+
+        .feature-icon {
+            font-size: 1.1em;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            font-size: 0.85em;
+            color: rgba(255, 244, 228, 0.8);
+            line-height: 1.4;
+        }
+
+        .feature-label {
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        /* When to use */
+        .when-box {
+            margin-top: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.8em;
+        }
+
+        .left .when-box {
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+        }
+
+        .right .when-box {
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .when-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .left .when-label {
+            color: var(--super-blue);
+        }
+
+        .right .when-label {
+            color: var(--super-purple);
+        }
+
+        .when-text {
+            color: rgba(255, 244, 228, 0.7);
+            line-height: 1.5;
+        }
+
+        /* Bottom note */
+        .bottom-note {
+            text-align: center;
+            padding: 15px 20px;
+            background: rgba(190, 156, 109, 0.1);
+            border-top: 1px solid rgba(190, 156, 109, 0.2);
+        }
+
+        .bottom-note-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            color: var(--super-gold);
+            font-weight: 500;
+        }
+
+        .bottom-note-text span {
+            color: var(--super-cream);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .header { padding: 15px 15px 10px; }
+        body.embed-mode .header-title { font-size: 1.3em; }
+        body.embed-mode .side-panel { padding: 15px 25px; }
+        body.embed-mode .side-panel.left { padding-right: 35px; }
+        body.embed-mode .side-panel.right { padding-left: 35px; }
+        body.embed-mode .panel-icon { font-size: 2em; }
+        body.embed-mode .panel-title { font-size: 1.1em; }
+        body.embed-mode .feature-item { padding: 8px 10px; margin-bottom: 8px; }
+        body.embed-mode .feature-text { font-size: 0.75em; }
+        body.embed-mode .diagram-svg { height: 140px; }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Dois Paradigmas</div>
+            <h1 class="header-title">Workflow: Humano-Agente vs Agente-Agente</h1>
+        </div>
+
+        <div class="split-container">
+            <div class="divider"></div>
+            <div class="divider-text">Complementares</div>
+
+            <!-- Left: Human-Agent -->
+            <div class="side-panel left">
+                <div class="panel-header">
+                    <div class="panel-icon">&#129309;</div>
+                    <div class="panel-title">Humano-Agente</div>
+                    <div class="panel-subtitle">Colaboração Iterativa</div>
+                </div>
+
+                <div class="diagram-container">
+                    <svg class="diagram-svg" viewBox="0 0 300 150">
+                        <!-- Human -->
+                        <circle cx="70" cy="75" r="35" fill="rgba(96, 165, 250, 0.2)" stroke="#60a5fa" stroke-width="2"/>
+                        <text x="70" y="70" text-anchor="middle" fill="#60a5fa" font-size="24">&#128100;</text>
+                        <text x="70" y="90" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="600">HUMANO</text>
+
+                        <!-- Bidirectional arrows -->
+                        <path d="M 110 60 L 180 60" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                        <path d="M 180 90 L 110 90" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+                        <text x="145" y="55" text-anchor="middle" fill="rgba(255,244,228,0.5)" font-size="8">instrui</text>
+                        <text x="145" y="105" text-anchor="middle" fill="rgba(255,244,228,0.5)" font-size="8">pergunta</text>
+
+                        <!-- Agent -->
+                        <circle cx="220" cy="75" r="35" fill="rgba(96, 165, 250, 0.2)" stroke="#60a5fa" stroke-width="2"/>
+                        <text x="220" y="70" text-anchor="middle" fill="#60a5fa" font-size="24">&#129302;</text>
+                        <text x="220" y="90" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="600">AGENTE</text>
+
+                        <!-- Loop indicator -->
+                        <path d="M 220 115 Q 220 135 145 135 Q 70 135 70 115" stroke="#60a5fa" stroke-width="1.5" fill="none" stroke-dasharray="4"/>
+                        <text x="145" y="145" text-anchor="middle" fill="#60a5fa" font-size="8">loop iterativo</text>
+
+                        <defs>
+                            <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                                <path d="M0,0 L8,4 L0,8 Z" fill="#60a5fa"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+
+                <div class="features-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">&#128172;</span>
+                        <div class="feature-text">
+                            <span class="feature-label">Diálogo contínuo</span> - Humano guia, agente executa e reporta
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#128203;</span>
+                        <div class="feature-text">
+                            <span class="feature-label">Refinamento</span> - Especificação emerge da conversa
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#9989;</span>
+                        <div class="feature-text">
+                            <span class="feature-label">Validação humana</span> - Checkpoints de aprovação
+                        </div>
+                    </div>
+                </div>
+
+                <div class="when-box">
+                    <div class="when-label">Quando usar</div>
+                    <div class="when-text">Construção de sistemas, brainstorming, tarefas que precisam de julgamento humano frequente.</div>
+                </div>
+            </div>
+
+            <!-- Right: Agent-Agent -->
+            <div class="side-panel right">
+                <div class="panel-header">
+                    <div class="panel-icon">&#129302;&#129302;</div>
+                    <div class="panel-title">Agente-Agente</div>
+                    <div class="panel-subtitle">Orquestração Autônoma</div>
+                </div>
+
+                <div class="diagram-container">
+                    <svg class="diagram-svg" viewBox="0 0 300 150">
+                        <!-- Orchestrator -->
+                        <circle cx="145" cy="35" r="28" fill="rgba(167, 139, 250, 0.3)" stroke="#a78bfa" stroke-width="2"/>
+                        <text x="145" y="32" text-anchor="middle" fill="#a78bfa" font-size="18">&#129302;</text>
+                        <text x="145" y="48" text-anchor="middle" fill="#a78bfa" font-size="8" font-weight="600">ORQUESTR.</text>
+
+                        <!-- Arrows down -->
+                        <path d="M 120 60 L 70 85" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4"/>
+                        <path d="M 145 63 L 145 85" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4"/>
+                        <path d="M 170 60 L 220 85" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4"/>
+
+                        <!-- Workers -->
+                        <rect x="40" y="90" width="60" height="40" rx="6" fill="rgba(167, 139, 250, 0.2)" stroke="#a78bfa" stroke-width="1.5"/>
+                        <text x="70" y="108" text-anchor="middle" fill="#a78bfa" font-size="12">&#129302;</text>
+                        <text x="70" y="122" text-anchor="middle" fill="#a78bfa" font-size="7">Worker 1</text>
+
+                        <rect x="115" y="90" width="60" height="40" rx="6" fill="rgba(167, 139, 250, 0.2)" stroke="#a78bfa" stroke-width="1.5"/>
+                        <text x="145" y="108" text-anchor="middle" fill="#a78bfa" font-size="12">&#129302;</text>
+                        <text x="145" y="122" text-anchor="middle" fill="#a78bfa" font-size="7">Worker 2</text>
+
+                        <rect x="190" y="90" width="60" height="40" rx="6" fill="rgba(167, 139, 250, 0.2)" stroke="#a78bfa" stroke-width="1.5"/>
+                        <text x="220" y="108" text-anchor="middle" fill="#a78bfa" font-size="12">&#129302;</text>
+                        <text x="220" y="122" text-anchor="middle" fill="#a78bfa" font-size="7">Worker N</text>
+
+                        <text x="145" y="145" text-anchor="middle" fill="rgba(255,244,228,0.5)" font-size="8">delegação dinâmica</text>
+                    </svg>
+                </div>
+
+                <div class="features-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">&#9989;</span>
+                        <div class="feature-text">
+                            <span class="feature-label">Delegação</span> - Orquestrador divide e distribui tarefas
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#9889;</span>
+                        <div class="feature-text">
+                            <span class="feature-label">Paralelismo</span> - Workers executam simultaneamente
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#128202;</span>
+                        <div class="feature-text">
+                            <span class="feature-label">Síntese</span> - Resultados consolidados automaticamente
+                        </div>
+                    </div>
+                </div>
+
+                <div class="when-box">
+                    <div class="when-label">Quando usar</div>
+                    <div class="when-text">Operação de sistemas prontos, tarefas repetitivas, processamento em escala sem intervenção.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-note">
+            <div class="bottom-note-text">
+                <span>&#128161;</span> Os dois paradigmas <span>não são excludentes</span> - sistemas maduros usam ambos em diferentes fases
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Add hover effects via JS for better control
+        const featureItems = document.querySelectorAll('.feature-item');
+        featureItems.forEach((item, index) => {
+            item.style.animationDelay = `${index * 0.1}s`;
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-10px)';
+            item.style.animation = 'slideIn 0.4s ease forwards';
+            item.style.animationDelay = `${0.5 + index * 0.1}s`;
+        });
+
+        // Add animation keyframes dynamically
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

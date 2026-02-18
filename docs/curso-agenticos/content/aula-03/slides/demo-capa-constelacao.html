@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Capa Constelação</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           PALETA SUPER
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #050510;
+            --super-green: #4ade80;
+            --super-cyan: #22d3ee;
+            --super-purple: #a78bfa;
+            --super-pink: #f472b6;
+            --super-amber: #fbbf24;
+            --super-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Deep space background */
+        .space-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(167, 139, 250, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at 80% 20%, rgba(74, 222, 128, 0.06) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, rgba(190, 156, 109, 0.05) 0%, transparent 60%),
+                linear-gradient(180deg, #050510 0%, #0a0a1a 50%, #050510 100%);
+            z-index: 0;
+        }
+
+        /* Star field */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center,
+                transparent 0%,
+                rgba(5, 5, 16, 0.3) 50%,
+                rgba(5, 5, 16, 0.9) 100%);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           CONSTELLATION SVG
+           ═══════════════════════════════════════════════════════════ */
+        .constellation-container {
+            position: relative;
+            width: 700px;
+            height: 450px;
+            margin-bottom: 30px;
+        }
+
+        .constellation-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Constellation lines */
+        .constellation-line {
+            stroke: rgba(190, 156, 109, 0.3);
+            stroke-width: 1;
+            fill: none;
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+            animation: drawConstellation 2s ease forwards;
+        }
+
+        .constellation-line.secondary {
+            stroke: rgba(190, 156, 109, 0.15);
+            stroke-dasharray: 4 4;
+        }
+
+        @keyframes drawConstellation {
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* Star nodes */
+        .star-node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .star-node:hover {
+            filter: brightness(1.5);
+        }
+
+        .star-glow {
+            fill: none;
+            opacity: 0.5;
+        }
+
+        .star-core {
+            fill: white;
+        }
+
+        /* Central star (main) */
+        .star-main .star-core {
+            fill: var(--super-gold);
+            filter: drop-shadow(0 0 20px rgba(190, 156, 109, 0.8));
+        }
+
+        .star-main .star-glow {
+            fill: var(--super-gold);
+            opacity: 0.3;
+            animation: mainPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes mainPulse {
+            0%, 100% { opacity: 0.3; r: 25; }
+            50% { opacity: 0.5; r: 35; }
+        }
+
+        /* Star labels */
+        .star-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            fill: rgba(255, 244, 228, 0.7);
+            text-anchor: middle;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .star-label.main-label {
+            font-size: 12px;
+            fill: var(--super-gold);
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Animated shooting star */
+        .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--super-gold), transparent);
+            opacity: 0;
+            animation: shoot 6s ease-in-out infinite;
+        }
+
+        .shooting-star:nth-child(1) {
+            top: 15%;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .shooting-star:nth-child(2) {
+            top: 40%;
+            left: -100px;
+            animation-delay: 3s;
+        }
+
+        @keyframes shoot {
+            0% { left: -100px; opacity: 0; }
+            10% { opacity: 1; }
+            30% { left: 110%; opacity: 0; }
+            100% { left: 110%; opacity: 0; }
+        }
+
+        /* Nebula effect behind central star */
+        .nebula {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(ellipse at center,
+                rgba(190, 156, 109, 0.15) 0%,
+                rgba(167, 139, 250, 0.08) 40%,
+                transparent 70%);
+            border-radius: 50%;
+            filter: blur(30px);
+            animation: nebulaPulse 5s ease-in-out infinite;
+        }
+
+        @keyframes nebulaPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TITLE
+           ═══════════════════════════════════════════════════════════ */
+        .title-container {
+            text-align: center;
+            z-index: 20;
+            opacity: 0;
+            animation: titleReveal 1.5s ease 2s forwards;
+        }
+
+        @keyframes titleReveal {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.5);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .title-main {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3.5em;
+            font-weight: 600;
+            color: var(--super-cream);
+            letter-spacing: 4px;
+            text-shadow:
+                0 0 80px rgba(190, 156, 109, 0.4),
+                0 0 120px rgba(190, 156, 109, 0.2);
+            margin-bottom: 12px;
+        }
+
+        .title-sub {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.2em;
+            color: rgba(255, 244, 228, 0.5);
+            font-style: italic;
+            letter-spacing: 2px;
+        }
+
+        /* Constellation name label */
+        .constellation-name {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65em;
+            color: rgba(190, 156, 109, 0.4);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 1s ease 2.5s forwards;
+        }
+
+        .constellation-name span {
+            color: var(--super-gold);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           EMBED MODE
+           ═══════════════════════════════════════════════════════════ */
+        body.embed-mode .title-main { font-size: 2.6em; }
+        body.embed-mode .constellation-container { width: 600px; height: 380px; }
+        body.embed-mode .constellation-name { bottom: 20px; right: 25px; }
+    </style>
+</head>
+<body>
+    <div class="space-bg"></div>
+    <div class="stars" id="stars"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <div class="constellation-container">
+            <div class="shooting-star"></div>
+            <div class="shooting-star"></div>
+            <div class="nebula"></div>
+
+            <svg class="constellation-svg" viewBox="0 0 700 450">
+                <!-- Constellation lines -->
+                <!-- Main connections -->
+                <line class="constellation-line" x1="350" y1="200" x2="200" y2="120" style="animation-delay: 0.2s;" />
+                <line class="constellation-line" x1="350" y1="200" x2="500" y2="120" style="animation-delay: 0.4s;" />
+                <line class="constellation-line" x1="350" y1="200" x2="150" y2="280" style="animation-delay: 0.6s;" />
+                <line class="constellation-line" x1="350" y1="200" x2="550" y2="280" style="animation-delay: 0.8s;" />
+                <line class="constellation-line" x1="350" y1="200" x2="350" y2="350" style="animation-delay: 1s;" />
+
+                <!-- Secondary connections -->
+                <line class="constellation-line secondary" x1="200" y1="120" x2="150" y2="280" style="animation-delay: 1.2s;" />
+                <line class="constellation-line secondary" x1="500" y1="120" x2="550" y2="280" style="animation-delay: 1.4s;" />
+                <line class="constellation-line secondary" x1="150" y1="280" x2="350" y2="350" style="animation-delay: 1.6s;" />
+                <line class="constellation-line secondary" x1="550" y1="280" x2="350" y2="350" style="animation-delay: 1.8s;" />
+
+                <!-- Outer stars connections -->
+                <line class="constellation-line secondary" x1="200" y1="120" x2="100" y2="80" style="animation-delay: 2s;" />
+                <line class="constellation-line secondary" x1="500" y1="120" x2="600" y2="80" style="animation-delay: 2s;" />
+
+                <!-- Star nodes -->
+                <!-- LLM (top left) -->
+                <g class="star-node" transform="translate(200, 120)">
+                    <circle class="star-glow" r="15" fill="rgba(251, 191, 36, 0.3)" />
+                    <circle class="star-core" r="6" fill="#fbbf24" style="filter: drop-shadow(0 0 8px #fbbf24);" />
+                    <text class="star-label" y="28" style="animation-delay: 2.2s;">LLM</text>
+                </g>
+
+                <!-- HARNESS (top right) -->
+                <g class="star-node" transform="translate(500, 120)">
+                    <circle class="star-glow" r="15" fill="rgba(34, 211, 238, 0.3)" />
+                    <circle class="star-core" r="6" fill="#22d3ee" style="filter: drop-shadow(0 0 8px #22d3ee);" />
+                    <text class="star-label" y="28" style="animation-delay: 2.3s;">HARNESS</text>
+                </g>
+
+                <!-- TOOLS (bottom left) -->
+                <g class="star-node" transform="translate(150, 280)">
+                    <circle class="star-glow" r="12" fill="rgba(74, 222, 128, 0.3)" />
+                    <circle class="star-core" r="5" fill="#4ade80" style="filter: drop-shadow(0 0 8px #4ade80);" />
+                    <text class="star-label" y="25" style="animation-delay: 2.4s;">TOOLS</text>
+                </g>
+
+                <!-- MCP (bottom right) -->
+                <g class="star-node" transform="translate(550, 280)">
+                    <circle class="star-glow" r="12" fill="rgba(167, 139, 250, 0.3)" />
+                    <circle class="star-core" r="5" fill="#a78bfa" style="filter: drop-shadow(0 0 8px #a78bfa);" />
+                    <text class="star-label" y="25" style="animation-delay: 2.5s;">MCP</text>
+                </g>
+
+                <!-- MEMORY (bottom center) -->
+                <g class="star-node" transform="translate(350, 350)">
+                    <circle class="star-glow" r="12" fill="rgba(244, 114, 182, 0.3)" />
+                    <circle class="star-core" r="5" fill="#f472b6" style="filter: drop-shadow(0 0 8px #f472b6);" />
+                    <text class="star-label" y="25" style="animation-delay: 2.6s;">MEMORY</text>
+                </g>
+
+                <!-- Small outer stars -->
+                <g class="star-node" transform="translate(100, 80)">
+                    <circle class="star-core" r="3" fill="rgba(255,255,255,0.6)" />
+                </g>
+                <g class="star-node" transform="translate(600, 80)">
+                    <circle class="star-core" r="3" fill="rgba(255,255,255,0.6)" />
+                </g>
+
+                <!-- CENTRAL STAR (AGENT) -->
+                <g class="star-node star-main" transform="translate(350, 200)">
+                    <circle class="star-glow" r="30" />
+                    <circle class="star-core" r="12" />
+                    <text class="star-label main-label" y="50" style="animation-delay: 2s;">AGENT</text>
+                </g>
+            </svg>
+        </div>
+
+        <div class="title-container">
+            <div class="title-label">Aula 03</div>
+            <h1 class="title-main">Construindo Sistemas Agênticos</h1>
+            <p class="title-sub">Uma nova constelação de possibilidades</p>
+        </div>
+    </div>
+
+    <div class="constellation-name">
+        Constelação <span>Agentis Major</span>
+    </div>
+
+    <script>
+        // Generate random stars
+        function generateStars() {
+            const container = document.getElementById('stars');
+            const count = 150;
+
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 2 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(star);
+            }
+        }
+
+        generateStars();
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // Notify parent ready
+        if (window.self !== window.top) {
+            window.parent.postMessage({ type: 'capa-constelacao-ready' }, '*');
+        }
+    </script>
+</body>
+</html>

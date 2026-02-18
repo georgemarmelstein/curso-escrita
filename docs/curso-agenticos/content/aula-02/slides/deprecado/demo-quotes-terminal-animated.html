@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Animated - Quote Simulation</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-gold-dark: #9a7d52;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --terminal-bg: #0d0d14;
+            --terminal-border: rgba(190, 156, 109, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            background: var(--super-bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        /* Terminal container */
+        .terminal {
+            width: 100%;
+            max-width: 900px;
+            background: var(--terminal-bg);
+            border-radius: 12px;
+            border: 1px solid var(--terminal-border);
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.5),
+                0 0 60px rgba(190, 156, 109, 0.08);
+            overflow: hidden;
+        }
+
+        /* Terminal header */
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: linear-gradient(180deg, rgba(190, 156, 109, 0.08) 0%, rgba(190, 156, 109, 0.02) 100%);
+            border-bottom: 1px solid var(--terminal-border);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.75em;
+            color: rgba(190, 156, 109, 0.6);
+            margin-right: 60px;
+        }
+
+        /* Terminal body */
+        .terminal-body {
+            padding: 30px;
+            min-height: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Linha de comando */
+        .command-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .prompt {
+            color: var(--super-gold);
+            margin-right: 10px;
+            font-size: 0.95em;
+        }
+
+        .command-text {
+            color: var(--super-cream);
+            font-size: 0.95em;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: var(--super-gold);
+            margin-left: 2px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        .cursor.hidden {
+            opacity: 0;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Output area */
+        .output-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Quote output */
+        .quote-output {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .quote-output.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quote-label {
+            font-size: 0.7em;
+            color: rgba(190, 156, 109, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25em;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.6;
+            margin-bottom: 30px;
+            min-height: 120px;
+        }
+
+        .quote-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .quote-char {
+            opacity: 0;
+            transition: opacity 0.05s ease;
+        }
+
+        .quote-char.visible {
+            opacity: 1;
+        }
+
+        /* Author section */
+        .author-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(190, 156, 109, 0.15);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+        }
+
+        .author-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--super-gold-dark), var(--super-gold));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1em;
+            color: var(--super-bg-dark);
+            font-weight: 600;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--super-cream);
+            margin-bottom: 4px;
+        }
+
+        .author-role {
+            font-size: 0.75em;
+            color: var(--super-gold);
+            opacity: 0.7;
+        }
+
+        /* Footer hint */
+        .terminal-footer {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--terminal-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-hint {
+            font-size: 0.65em;
+            color: rgba(190, 156, 109, 0.4);
+        }
+
+        .footer-hint kbd {
+            background: rgba(190, 156, 109, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin: 0 2px;
+        }
+
+        .quote-counter {
+            font-size: 0.7em;
+            color: rgba(190, 156, 109, 0.5);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 20px; }
+        body.embed-mode .terminal { max-width: 800px; }
+        body.embed-mode .terminal-body { min-height: 320px; padding: 25px; }
+        body.embed-mode .quote-text { font-size: 1.1em; min-height: 100px; }
+        body.embed-mode .author-avatar { width: 42px; height: 42px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-dots">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="terminal-title">claude ~ quotes</div>
+        </div>
+
+        <div class="terminal-body">
+            <div class="command-line">
+                <span class="prompt">claude></span>
+                <span class="command-text" id="commandText"></span>
+                <span class="cursor" id="cursor"></span>
+            </div>
+
+            <div class="output-area">
+                <div class="quote-output" id="quoteOutput">
+                    <div class="quote-label">OUTPUT</div>
+                    <p class="quote-text" id="quoteText"></p>
+                    <div class="author-section" id="authorSection">
+                        <div class="author-avatar" id="authorAvatar"></div>
+                        <div class="author-info">
+                            <div class="author-name" id="authorName"></div>
+                            <div class="author-role" id="authorRole"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="terminal-footer">
+            <span class="footer-hint"><kbd>Space</kbd> ou <kbd>clique</kbd> para avançar</span>
+            <span class="quote-counter" id="quoteCounter">1/3</span>
+        </div>
+    </div>
+
+    <script>
+        const quotes = [
+            {
+                command: '/andrej-karpathy',
+                text: `"Claude Code acertou a <span class="highlight">ordem de precedência</span> e empacotou isso em uma forma CLI bonita, minimalista e convincente que mudou o que IA parece — não é apenas um site que você visita como o Google, é um pequeno <span class="highlight">espírito/fantasma</span> que 'vive' no seu computador. Este é um <span class="highlight">paradigma novo e distinto</span> de interação com uma IA."`,
+                author: 'Andrej Karpathy',
+                role: 'Ex-Director of AI @ Tesla',
+                initials: 'AK'
+            },
+            {
+                command: '/boris-cherny',
+                text: `"<span class="highlight">Não existe um único jeito certo</span> de usar o Claude Code: nós o construímos para que você possa <span class="highlight">hackeá-lo do jeito que quiser</span>."`,
+                author: 'Boris Cherny',
+                role: 'Criador do Claude Code @ Anthropic',
+                initials: 'BC'
+            },
+            {
+                command: '/ben-mann',
+                text: `"Não construa para o modelo de hoje, construa para o <span class="highlight">modelo de seis meses a partir de agora</span>."`,
+                author: 'Ben Mann',
+                role: 'Co-Founder @ Anthropic',
+                initials: 'BM'
+            }
+        ];
+
+        let currentIndex = 0;
+        let isAnimating = false;
+        let animationTimeout = null;
+
+        const commandText = document.getElementById('commandText');
+        const cursor = document.getElementById('cursor');
+        const quoteOutput = document.getElementById('quoteOutput');
+        const quoteText = document.getElementById('quoteText');
+        const authorSection = document.getElementById('authorSection');
+        const authorAvatar = document.getElementById('authorAvatar');
+        const authorName = document.getElementById('authorName');
+        const authorRole = document.getElementById('authorRole');
+        const quoteCounter = document.getElementById('quoteCounter');
+
+        // Typing animation for command
+        async function typeCommand(text, speed = 60) {
+            commandText.textContent = '';
+            for (let i = 0; i < text.length; i++) {
+                commandText.textContent += text[i];
+                await sleep(speed + Math.random() * 30);
+            }
+        }
+
+        // Typing animation for quote (preserving HTML)
+        async function typeQuote(html, speed = 25) {
+            quoteText.innerHTML = '';
+
+            // Parse HTML and create character spans
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+
+            const chars = [];
+            function extractChars(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    for (const char of node.textContent) {
+                        chars.push({ char, isHighlight: false });
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    const isHighlight = node.classList && node.classList.contains('highlight');
+                    if (isHighlight) {
+                        for (const char of node.textContent) {
+                            chars.push({ char, isHighlight: true });
+                        }
+                    } else {
+                        for (const child of node.childNodes) {
+                            extractChars(child);
+                        }
+                    }
+                }
+            }
+            extractChars(tempDiv);
+
+            // Build output with spans
+            let outputHtml = '';
+            let inHighlight = false;
+
+            for (let i = 0; i < chars.length; i++) {
+                const { char, isHighlight } = chars[i];
+
+                if (isHighlight && !inHighlight) {
+                    outputHtml += '<span class="highlight">';
+                    inHighlight = true;
+                } else if (!isHighlight && inHighlight) {
+                    outputHtml += '</span>';
+                    inHighlight = false;
+                }
+
+                outputHtml += `<span class="quote-char" data-index="${i}">${char === ' ' ? '&nbsp;' : escapeHtml(char)}</span>`;
+            }
+
+            if (inHighlight) outputHtml += '</span>';
+
+            quoteText.innerHTML = outputHtml;
+
+            // Animate each character
+            const charSpans = quoteText.querySelectorAll('.quote-char');
+            for (let i = 0; i < charSpans.length; i++) {
+                if (!isAnimating) break;
+                charSpans[i].classList.add('visible');
+                await sleep(speed + Math.random() * 15);
+            }
+        }
+
+        function escapeHtml(char) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return map[char] || char;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => {
+                animationTimeout = setTimeout(resolve, ms);
+            });
+        }
+
+        async function showQuote(index) {
+            if (isAnimating) {
+                clearTimeout(animationTimeout);
+            }
+
+            isAnimating = true;
+            const quote = quotes[index];
+
+            // Reset
+            quoteOutput.classList.remove('visible');
+            authorSection.classList.remove('visible');
+            commandText.textContent = '';
+            quoteText.innerHTML = '';
+            cursor.classList.remove('hidden');
+
+            // Update counter
+            quoteCounter.textContent = `${index + 1}/${quotes.length}`;
+
+            // Type command
+            await sleep(300);
+            await typeCommand(quote.command);
+
+            // Hide cursor, show output area
+            cursor.classList.add('hidden');
+            await sleep(200);
+
+            quoteOutput.classList.add('visible');
+            await sleep(300);
+
+            // Type quote
+            await typeQuote(quote.text);
+
+            // Show author
+            await sleep(400);
+            authorAvatar.textContent = quote.initials;
+            authorName.textContent = quote.author;
+            authorRole.textContent = quote.role;
+            authorSection.classList.add('visible');
+
+            isAnimating = false;
+        }
+
+        function nextQuote() {
+            if (isAnimating) {
+                // Skip animation
+                clearTimeout(animationTimeout);
+                isAnimating = false;
+
+                // Show everything immediately
+                const quote = quotes[currentIndex];
+                cursor.classList.add('hidden');
+                commandText.textContent = quote.command;
+                quoteOutput.classList.add('visible');
+                quoteText.innerHTML = quote.text;
+                const charSpans = quoteText.querySelectorAll('.quote-char');
+                charSpans.forEach(span => span.classList.add('visible'));
+                authorAvatar.textContent = quote.initials;
+                authorName.textContent = quote.author;
+                authorRole.textContent = quote.role;
+                authorSection.classList.add('visible');
+                return;
+            }
+
+            currentIndex = (currentIndex + 1) % quotes.length;
+            showQuote(currentIndex);
+        }
+
+        function prevQuote() {
+            if (isAnimating) return;
+            currentIndex = (currentIndex - 1 + quotes.length) % quotes.length;
+            showQuote(currentIndex);
+        }
+
+        // Event listeners
+        document.addEventListener('click', nextQuote);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                nextQuote();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevQuote();
+            }
+        });
+
+        // Start
+        showQuote(0);
+
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+    </script>
+</body>
+</html>

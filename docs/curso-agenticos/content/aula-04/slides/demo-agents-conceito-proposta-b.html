@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agents Conceito - Organograma Interativo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --super-gold: #BE9C6D;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-green: #4ade80;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: var(--super-bg-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        /* Grid sutil */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(190, 156, 109, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(190, 156, 109, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            font-weight: 700;
+            color: var(--super-cream);
+        }
+
+        .header h1 .gold { color: var(--super-gold); }
+
+        /* Organograma */
+        .org-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Nó principal */
+        .node-main {
+            margin-bottom: 0;
+        }
+
+        .node-box {
+            background: linear-gradient(135deg, rgba(190, 156, 109, 0.25), rgba(190, 156, 109, 0.08));
+            border: 2px solid var(--super-gold);
+            border-radius: 14px;
+            padding: 18px 45px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .node-box::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 17px;
+            background: linear-gradient(135deg, var(--super-gold), transparent);
+            z-index: -1;
+            opacity: 0.2;
+        }
+
+        .node-box:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(190, 156, 109, 0.3);
+        }
+
+        .node-box.active {
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.4);
+        }
+
+        .node-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--super-cream);
+        }
+
+        /* Conectores */
+        .connector-v {
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(180deg, var(--super-gold), rgba(190, 156, 109, 0.3));
+        }
+
+        .connector-split {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            position: relative;
+        }
+
+        .connector-split::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 400px;
+            height: 2px;
+            background: rgba(190, 156, 109, 0.3);
+        }
+
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .branch-line {
+            width: 2px;
+            height: 25px;
+            background: rgba(190, 156, 109, 0.3);
+        }
+
+        /* Células clicáveis */
+        .cell {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            padding: 20px 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            max-width: 280px;
+        }
+
+        .cell:hover {
+            background: rgba(190, 156, 109, 0.08);
+            border-color: rgba(190, 156, 109, 0.4);
+        }
+
+        .cell.active {
+            background: rgba(190, 156, 109, 0.12);
+            border-color: var(--super-gold);
+            box-shadow: 0 0 25px rgba(190, 156, 109, 0.2);
+        }
+
+        .cell-icon {
+            font-size: 1.8em;
+            margin-bottom: 12px;
+        }
+
+        .cell-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: var(--super-gold);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .cell-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05em;
+            line-height: 1.5;
+            color: rgba(255, 244, 228, 0.85);
+        }
+
+        .cell-text strong {
+            color: var(--super-gold);
+        }
+
+        /* Layout das duas colunas */
+        .two-columns {
+            display: flex;
+            gap: 100px;
+            margin-top: 0;
+        }
+
+        /* Seção YAML separada */
+        .yaml-section {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .yaml-connector {
+            width: 2px;
+            height: 35px;
+            background: linear-gradient(180deg, transparent, var(--super-green));
+        }
+
+        .yaml-cell {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.08), rgba(74, 222, 128, 0.02));
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 12px;
+            padding: 25px 35px;
+            max-width: 550px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .yaml-cell:hover {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: var(--super-green);
+        }
+
+        .yaml-cell.active {
+            background: rgba(74, 222, 128, 0.12);
+            border-color: var(--super-green);
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.2);
+        }
+
+        .yaml-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .yaml-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(74, 222, 128, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+        }
+
+        .yaml-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--super-green);
+        }
+
+        .yaml-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .yaml-line {
+            font-family: 'Playfair Display', serif;
+            font-size: 1em;
+            line-height: 1.5;
+            color: rgba(255, 244, 228, 0.85);
+            padding-left: 60px;
+        }
+
+        .yaml-line code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            padding: 2px 8px;
+            background: rgba(190, 156, 109, 0.15);
+            border-radius: 4px;
+            color: var(--super-gold);
+        }
+
+        /* Dica de interação */
+        .hint {
+            margin-top: 40px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            color: rgba(255, 244, 228, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 25px; }
+        body.embed-mode .header h1 { font-size: 2.4em; }
+        body.embed-mode .header { margin-bottom: 35px; }
+        body.embed-mode .cell { padding: 16px 22px; }
+        body.embed-mode .yaml-cell { padding: 20px 28px; }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1>O que são <span class="gold">Agents</span>?</h1>
+        </header>
+
+        <div class="org-chart">
+            <!-- Nó principal -->
+            <div class="node-main">
+                <div class="node-box" data-cell="main">
+                    <div class="node-title">agent.md</div>
+                </div>
+            </div>
+
+            <div class="connector-v"></div>
+
+            <!-- Duas células lado a lado -->
+            <div class="connector-split">
+                <div class="two-columns">
+                    <div class="branch">
+                        <div class="branch-line"></div>
+                        <div class="cell" data-cell="definicao">
+                            <div class="cell-icon">📄</div>
+                            <div class="cell-title">Definição</div>
+                            <div class="cell-text">
+                                Arquivos <strong>.md</strong> que definem <strong>especialistas</strong> do Claude para tarefas específicas.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="branch">
+                        <div class="branch-line"></div>
+                        <div class="cell" data-cell="analogia">
+                            <div class="cell-icon">⚖️</div>
+                            <div class="cell-title">Analogia</div>
+                            <div class="cell-text">
+                                Como <strong>procuradores</strong> com poderes específicos em uma procuração.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção YAML -->
+            <div class="yaml-section">
+                <div class="yaml-connector"></div>
+                <div class="yaml-cell" data-cell="yaml">
+                    <div class="yaml-header">
+                        <div class="yaml-icon">📋</div>
+                        <div class="yaml-title">YAML + Instruções</div>
+                    </div>
+                    <div class="yaml-content">
+                        <div class="yaml-line">
+                            O <code>YAML</code> no início é o cabeçalho que especifica os <strong>poderes</strong> (ferramentas, modelo).
+                        </div>
+                        <div class="yaml-line">
+                            O restante são <strong>instruções em linguagem natural</strong>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hint">Clique nos elementos para destacar</div>
+    </div>
+
+    <script>
+        (function() {
+            try { if (window.self !== window.top) document.body.classList.add('embed-mode'); }
+            catch (e) { document.body.classList.add('embed-mode'); }
+        })();
+
+        // Interação por clique
+        document.querySelectorAll('[data-cell]').forEach(cell => {
+            cell.addEventListener('click', () => {
+                // Remove active de todos
+                document.querySelectorAll('[data-cell]').forEach(c => c.classList.remove('active'));
+                // Adiciona active no clicado
+                cell.classList.add('active');
+            });
+        });
+
+        // Clique fora remove highlight
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('[data-cell]')) {
+                document.querySelectorAll('[data-cell]').forEach(c => c.classList.remove('active'));
+            }
+        });
+    </script>
+</body>
+</html>

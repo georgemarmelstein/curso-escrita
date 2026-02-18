@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Loop Agentico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* PALETA SUPER */
+        :root {
+            --super-gold: #BE9C6D;
+            --super-gold-light: #d4b896;
+            --super-cream: #FFF4E4;
+            --super-bg-dark: #0a0a12;
+            --super-bg-section: #1a1a2e;
+            --super-green: #4ade80;
+            --super-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--super-bg-dark) 0%, var(--super-bg-section) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2em;
+            color: var(--super-gold);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .title p {
+            font-size: 0.95em;
+            color: rgba(255, 244, 228, 0.6);
+        }
+
+        /* Loop container */
+        .loop-container {
+            position: relative;
+            width: 450px;
+            height: 450px;
+        }
+
+        /* SVG circle path */
+        .loop-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .loop-path {
+            fill: none;
+            stroke: rgba(190, 156, 109, 0.2);
+            stroke-width: 3;
+        }
+
+        .loop-path-active {
+            fill: none;
+            stroke: var(--super-gold);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            filter: drop-shadow(0 0 10px rgba(190, 156, 109, 0.5));
+        }
+
+        /* Nodes */
+        .node {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(190, 156, 109, 0.3);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+        .node.active {
+            border-color: var(--super-gold);
+            background: rgba(190, 156, 109, 0.15);
+            transform: scale(1.15);
+            box-shadow: 0 0 40px rgba(190, 156, 109, 0.4),
+                        0 0 80px rgba(190, 156, 109, 0.2);
+        }
+
+        .node.dimmed {
+            opacity: 0.35;
+            transform: scale(0.9);
+        }
+
+        .node-icon {
+            font-size: 2em;
+            margin-bottom: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .node.active .node-icon {
+            transform: scale(1.2);
+        }
+
+        .node-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: var(--super-cream);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Posicoes dos nodes */
+        .node-think { top: 0; left: 50%; transform: translateX(-50%); }
+        .node-act { top: 50%; right: 0; transform: translateY(-50%); }
+        .node-observe { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .node-correct { top: 50%; left: 0; transform: translateY(-50%); }
+
+        .node-think.active { transform: translateX(-50%) scale(1.15); }
+        .node-act.active { transform: translateY(-50%) scale(1.15); }
+        .node-observe.active { transform: translateX(-50%) scale(1.15); }
+        .node-correct.active { transform: translateY(-50%) scale(1.15); }
+
+        /* Arrows */
+        .arrow {
+            position: absolute;
+            color: var(--super-gold);
+            font-size: 1.5em;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .arrow.active {
+            opacity: 1;
+            animation: pulse-arrow 0.5s ease;
+        }
+
+        @keyframes pulse-arrow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .arrow-1 { top: 70px; right: 70px; transform: rotate(45deg); }
+        .arrow-2 { bottom: 70px; right: 70px; transform: rotate(135deg); }
+        .arrow-3 { bottom: 70px; left: 70px; transform: rotate(-135deg); }
+        .arrow-4 { top: 70px; left: 70px; transform: rotate(-45deg); }
+
+        /* Center info */
+        .center-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            max-width: 180px;
+        }
+
+        .iteration-counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3em;
+            font-weight: 700;
+            color: var(--super-gold);
+            text-shadow: 0 0 30px rgba(190, 156, 109, 0.5);
+        }
+
+        .iteration-label {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 5px;
+        }
+
+        .status-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--super-cream);
+            margin-top: 15px;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            border: 1px solid rgba(190, 156, 109, 0.3);
+        }
+
+        /* Description */
+        .description-box {
+            margin-top: 30px;
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(190, 156, 109, 0.2);
+            border-radius: 12px;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .description-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1em;
+            font-style: italic;
+            color: var(--super-cream);
+            line-height: 1.6;
+        }
+
+        .description-text .highlight {
+            color: var(--super-gold);
+            font-weight: 600;
+        }
+
+        .description-source {
+            font-size: 0.8em;
+            color: rgba(255, 244, 228, 0.5);
+            margin-top: 10px;
+        }
+
+        /* Navigation */
+        .nav-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--super-gold);
+            box-shadow: 0 0 12px var(--super-gold-light);
+            transform: scale(1.3);
+        }
+
+        /* Controls hint */
+        .controls-hint {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75em;
+            color: rgba(255, 244, 228, 0.4);
+        }
+
+        /* Embed mode */
+        body.embed-mode { padding: 15px; }
+        body.embed-mode .title { margin-bottom: 20px; }
+        body.embed-mode .title h1 { font-size: 1.5em; }
+        body.embed-mode .title p { font-size: 0.85em; }
+        body.embed-mode .loop-container { width: 320px; height: 320px; }
+        body.embed-mode .node { width: 70px; height: 70px; }
+        body.embed-mode .node-icon { font-size: 1.4em; }
+        body.embed-mode .node-label { font-size: 0.65em; }
+        body.embed-mode .arrow { font-size: 1.1em; }
+        body.embed-mode .arrow-1 { top: 50px; right: 50px; }
+        body.embed-mode .arrow-2 { bottom: 50px; right: 50px; }
+        body.embed-mode .arrow-3 { bottom: 50px; left: 50px; }
+        body.embed-mode .arrow-4 { top: 50px; left: 50px; }
+        body.embed-mode .iteration-counter { font-size: 2em; }
+        body.embed-mode .iteration-label { font-size: 0.7em; }
+        body.embed-mode .status-text { font-size: 0.75em; padding: 6px 12px; }
+        body.embed-mode .center-info { max-width: 130px; }
+        body.embed-mode .description-box { padding: 15px 25px; margin-top: 20px; }
+        body.embed-mode .description-text { font-size: 0.95em; }
+        body.embed-mode .nav-indicator { bottom: 15px; }
+        body.embed-mode .controls-hint { display: none; }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>O Loop Agentico</h1>
+        <p>Clique para avancar pelo ciclo</p>
+    </div>
+
+    <div class="loop-container">
+        <!-- SVG for circular path -->
+        <svg class="loop-svg" viewBox="0 0 450 450">
+            <circle class="loop-path" cx="225" cy="225" r="160"/>
+            <circle class="loop-path-active" cx="225" cy="225" r="160" id="activePath"/>
+        </svg>
+
+        <!-- Nodes -->
+        <div class="node node-think" data-step="0">
+            <div class="node-icon">&#129504;</div>
+            <div class="node-label">Think</div>
+        </div>
+
+        <div class="node node-act" data-step="1">
+            <div class="node-icon">&#9889;</div>
+            <div class="node-label">Act</div>
+        </div>
+
+        <div class="node node-observe" data-step="2">
+            <div class="node-icon">&#128065;</div>
+            <div class="node-label">Observe</div>
+        </div>
+
+        <div class="node node-correct" data-step="3">
+            <div class="node-icon">&#128260;</div>
+            <div class="node-label">Correct</div>
+        </div>
+
+        <!-- Arrows -->
+        <div class="arrow arrow-1" data-arrow="0">&#10140;</div>
+        <div class="arrow arrow-2" data-arrow="1">&#10140;</div>
+        <div class="arrow arrow-3" data-arrow="2">&#10140;</div>
+        <div class="arrow arrow-4" data-arrow="3">&#10140;</div>
+
+        <!-- Center info -->
+        <div class="center-info">
+            <div class="iteration-counter" id="counter">1</div>
+            <div class="iteration-label">iteracao</div>
+            <div class="status-text" id="status">Planejando...</div>
+        </div>
+    </div>
+
+    <div class="description-box">
+        <p class="description-text">
+            "Este loop roda <span class="highlight">ate a tarefa estar completa</span>
+            (diferente do assistente que responde <span class="highlight">uma vez</span>)."
+        </p>
+        <p class="description-source">ZenML - Claude Code Agent Architecture</p>
+    </div>
+
+    <div class="nav-indicator">
+        <div class="nav-dot active" data-index="0" title="Think"></div>
+        <div class="nav-dot" data-index="1" title="Act"></div>
+        <div class="nav-dot" data-index="2" title="Observe"></div>
+        <div class="nav-dot" data-index="3" title="Correct"></div>
+    </div>
+
+    <div class="controls-hint">Clique em qualquer lugar para avancar</div>
+
+    <script>
+        // Embed mode detection
+        function detectEmbedMode() {
+            try {
+                if (window.self !== window.top) {
+                    document.body.classList.add('embed-mode');
+                }
+            } catch (e) {
+                document.body.classList.add('embed-mode');
+            }
+        }
+        detectEmbedMode();
+
+        // State
+        let currentStep = 0;
+        let iteration = 1;
+        const nodes = document.querySelectorAll('.node');
+        const arrows = document.querySelectorAll('.arrow');
+        const dots = document.querySelectorAll('.nav-dot');
+        const counter = document.getElementById('counter');
+        const status = document.getElementById('status');
+        const activePath = document.getElementById('activePath');
+
+        const statuses = [
+            'Planejando...',
+            'Executando...',
+            'Analisando...',
+            'Ajustando...'
+        ];
+
+        const pathLengths = [0, 250, 500, 750, 1000];
+
+        function updateDisplay() {
+            // Update nodes
+            nodes.forEach((node, i) => {
+                node.classList.remove('active', 'dimmed');
+                if (i === currentStep) {
+                    node.classList.add('active');
+                } else {
+                    node.classList.add('dimmed');
+                }
+            });
+
+            // Update arrows
+            arrows.forEach((arrow, i) => {
+                arrow.classList.remove('active');
+                if (i === currentStep) {
+                    arrow.classList.add('active');
+                }
+            });
+
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentStep);
+            });
+
+            // Update center info
+            counter.textContent = iteration;
+            status.textContent = statuses[currentStep];
+
+            // Animate path
+            activePath.style.strokeDashoffset = 1000 - pathLengths[currentStep + 1];
+        }
+
+        function nextStep() {
+            currentStep = (currentStep + 1) % 4;
+            if (currentStep === 0) {
+                iteration++;
+                // Reset path animation
+                activePath.style.strokeDashoffset = 1000;
+            }
+            updateDisplay();
+        }
+
+        // Initialize
+        updateDisplay();
+
+        // Click handler
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-dot')) {
+                const idx = parseInt(e.target.closest('.nav-dot').dataset.index);
+                currentStep = idx;
+                updateDisplay();
+                return;
+            }
+            nextStep();
+        });
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStep();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                currentStep = currentStep === 0 ? 3 : currentStep - 1;
+                updateDisplay();
+            }
+        });
+
+        // Auto-play when embedded (optional)
+        // setInterval(nextStep, 2000);
+    </script>
+</body>
+</html>
